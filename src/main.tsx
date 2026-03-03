@@ -1,19 +1,7 @@
-import { QueryClient } from "@tanstack/react-query";
-import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { RouterProvider } from "@tanstack/react-router";
 import ReactDOM from "react-dom/client";
-import { ThemeProvider } from "./contexts/ThemeContext";
-import { routeTree } from "./routeTree.gen";
-
-const queryClient = new QueryClient();
-
-const router = createRouter({
-	routeTree,
-	context: {
-		queryClient,
-	},
-	defaultPreload: "intent",
-	scrollRestoration: true,
-});
+import { ThemeProvider } from "./app/contexts/ThemeContext";
+import { router } from "./app/router/routerConfig";
 
 declare module "@tanstack/react-router" {
 	interface Register {

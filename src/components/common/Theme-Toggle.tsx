@@ -1,12 +1,12 @@
 import { Moon, Sun } from "lucide-react";
 import { motion } from "motion/react";
+import { useTheme } from "@/app/contexts/ThemeContext";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useTheme } from "@/contexts/ThemeContext";
 import { Button } from "../ui/button";
 
 export default function ThemeToggle() {

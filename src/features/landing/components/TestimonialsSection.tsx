@@ -1,4 +1,4 @@
-import { Star } from "lucide-react";
+import { QuoteIcon, Star } from "lucide-react";
 import { useId } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,14 +9,17 @@ export default function TestimonialsSection() {
 	return (
 		<section
 			id={`testimonials-${baseId}`}
-			className="relative z-10 container mx-auto px-6 py-20"
+			className="relative z-10 container mx-auto px-6 py-24"
 		>
 			<div className="text-center mb-16">
-				<h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+				<p className="text-sm font-semibold uppercase tracking-widest text-primary mb-3">
+					Testimonials
+				</p>
+				<h2 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">
 					What Our Community Says
 				</h2>
-				<p className="text-xl text-muted-foreground">
-					Real stories from mentors and learners who've grown with SkillShare.
+				<p className="text-lg text-muted-foreground max-w-xl mx-auto">
+					Real stories from mentors and learners who've grown with UpStride.
 				</p>
 			</div>
 
@@ -24,32 +27,43 @@ export default function TestimonialsSection() {
 				{testimonials.map((testimonial) => (
 					<Card
 						key={testimonial.name}
-						className="bg-gradient-to-br from-card/80 to-card/60 backdrop-blur-sm border-border/50"
+						className="group border border-border/60 bg-card hover:border-primary/30
+							transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1
+							rounded-2xl overflow-hidden"
 					>
-						<CardContent className="p-6">
-							<div className="flex items-center mb-4">
-								<Avatar className="mr-3">
-									<AvatarFallback className="bg-gradient-to-br from-primary/20 to-secondary/20">
+						<CardContent className="p-7 flex flex-col h-full">
+							{/* Quote Icon */}
+							<QuoteIcon className="h-7 w-7 text-primary/30 mb-4 flex-shrink-0 group-hover:text-primary/50 transition-colors" />
+
+							<p className="text-muted-foreground leading-relaxed mb-6 flex-1 italic text-sm">
+								"{testimonial.content}"
+							</p>
+
+							{/* Stars */}
+							<div className="flex mb-4">
+								{[...Array(testimonial.rating)].map((_, i) => (
+									<Star
+										key={`${testimonial.name}-star-${i}`}
+										className="h-4 w-4 text-yellow-400 fill-yellow-400"
+									/>
+								))}
+							</div>
+
+							{/* Author */}
+							<div className="flex items-center gap-3 pt-4 border-t border-border/50">
+								<Avatar className="h-10 w-10 ring-2 ring-primary/10">
+									<AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
 										{testimonial.avatar}
 									</AvatarFallback>
 								</Avatar>
 								<div>
-									<div className="font-semibold">{testimonial.name}</div>
-									<div className="text-sm text-muted-foreground">
+									<div className="font-semibold text-sm">
+										{testimonial.name}
+									</div>
+									<div className="text-xs text-muted-foreground">
 										{testimonial.role}
 									</div>
 								</div>
-							</div>
-							<p className="text-muted-foreground mb-4">
-								{testimonial.content}
-							</p>
-							<div className="flex">
-								{[...Array(testimonial.rating)].map((_, i) => (
-									<Star
-										key={`${testimonial.name}-star-${i}`}
-										className="h-4 w-4 text-yellow-500 fill-current"
-									/>
-								))}
 							</div>
 						</CardContent>
 					</Card>
