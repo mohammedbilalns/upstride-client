@@ -3,9 +3,14 @@ import type { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import "../styles.css";
+import type { User } from "@/shared/types/user";
 
 interface RouterContext {
 	queryClient: QueryClient;
+	auth: {
+		user: User | null;
+		isAuthenticated: boolean;
+	};
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
