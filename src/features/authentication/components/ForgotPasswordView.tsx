@@ -4,6 +4,7 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import FieldError from "@/components/common/Field-Error";
 import type { AuthView } from "../types";
 import { forgotPasswordSchema } from "../validators";
 
@@ -62,11 +63,7 @@ export function ForgotPasswordView({ onNavigate }: Props) {
 								onBlur={field.handleBlur}
 								onChange={(e) => field.handleChange(e.target.value)}
 							/>
-							{field.state.meta.errors?.[0] && (
-								<p className="text-xs text-destructive mt-1">
-									{field.state.meta.errors[0].message}
-								</p>
-							)}
+							<FieldError message={field.state.meta.errors?.[0]?.message} />
 						</div>
 					)}
 				</form.Field>

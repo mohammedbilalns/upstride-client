@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import FieldError from "@/components/common/Field-Error";
 import { changePasswordSchema } from "../validators";
 
 interface Props {
@@ -100,11 +101,7 @@ export function ChangePasswordView({ resetToken }: Props) {
 									)}
 								</button>
 							</div>
-							{field.state.meta.errors?.[0] && (
-								<p className="text-xs text-destructive">
-									{field.state.meta.errors[0].message}
-								</p>
-							)}
+							<FieldError message={field.state.meta.errors?.[0]?.message} />
 						</div>
 					)}
 				</form.Field>
@@ -136,11 +133,7 @@ export function ChangePasswordView({ resetToken }: Props) {
 									)}
 								</button>
 							</div>
-							{field.state.meta.errors?.[0] && (
-								<p className="text-xs text-destructive">
-									{field.state.meta.errors[0].message}
-								</p>
-							)}
+							<FieldError message={field.state.meta.errors?.[0]?.message} />
 						</div>
 					)}
 				</form.Field>

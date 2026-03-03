@@ -32,8 +32,8 @@ export function AuthQuoteCarousel() {
 			setTimeout(() => {
 				setCurrentIndex((prev) => (prev + 1) % QUOTES.length);
 				setIsFading(false);
-			}, 500); // 500ms fade transition
-		}, 5000); // Change quote every 5 seconds
+			}, 500);
+		}, 5000);
 
 		return () => clearInterval(intervalId);
 	}, []);
