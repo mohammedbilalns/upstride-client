@@ -7,7 +7,7 @@ import ErrorComponent from "@/components/common/Error-Component";
 import NotFoundComponent from "@/components/common/Not-Found";
 import type { User } from "@/shared/types/user";
 
-interface RouterContext {
+export interface RouterContext {
 	queryClient: QueryClient;
 	auth: {
 		user: User | null;

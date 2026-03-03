@@ -1,5 +1,5 @@
-import axios, { type AxiosError } from "axios";
 import type { InternalAxiosRequestConfig } from "axios";
+import axios, { type AxiosError } from "axios";
 import { router } from "@/app/router/routerConfig";
 import { env } from "@/shared/config/env";
 
@@ -75,7 +75,7 @@ api.interceptors.response.use(
 							isAuthenticated: true,
 						},
 					},
-				} as any);
+				});
 
 				// Retry the original request with new tokens
 				originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -91,7 +91,7 @@ api.interceptors.response.use(
 							accessToken: null,
 						},
 					},
-				} as any);
+				});
 				return Promise.reject(refreshError);
 			}
 		}
@@ -109,7 +109,7 @@ api.interceptors.response.use(
 							accessToken: null,
 						},
 					},
-				} as any);
+				});
 				router.navigate({
 					to: "/auth",
 					search: { error: "blocked" },
