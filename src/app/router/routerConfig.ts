@@ -1,7 +1,8 @@
-import { type RouterContext } from "@/routes/__root";
 import { QueryClient } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
+import type { RouterContext } from "@/routes/__root";
 import { routeTree } from "@/routeTree.gen";
+import PendingComponent from "@/components/common/Pending-Component";
 
 const queryClient = new QueryClient();
 export const router = createRouter({
@@ -15,5 +16,8 @@ export const router = createRouter({
 		},
 	} as RouterContext,
 	defaultPreload: "intent",
+	defaultPendingComponent: PendingComponent,
+	defaultPendingMs: 0,
+	defaultPendingMinMs: 100,
 	scrollRestoration: true,
 });
