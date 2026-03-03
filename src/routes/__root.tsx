@@ -12,6 +12,7 @@ interface RouterContext {
 	auth: {
 		user: User | null;
 		isAuthenticated: boolean;
+		accessToken: string | null;
 	};
 }
 

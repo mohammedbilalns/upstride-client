@@ -10,6 +10,7 @@ export const router = createRouter({
 		auth: {
 			user: null,
 			isAuthenticated: false,
+			accessToken: null,
 		},
 	},
 	defaultPreload: "intent",
