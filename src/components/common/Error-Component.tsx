@@ -11,7 +11,6 @@ export default function ErrorComponent({ error }: ErrorComponentProps) {
 
 	return (
 		<div className="relative min-h-[92vh] flex flex-col justify-center items-center p-6 overflow-hidden bg-slate-950 text-white">
-			{/* Decorative background elements */}
 			<motion.div
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 0.4 }}
@@ -51,7 +50,7 @@ export default function ErrorComponent({ error }: ErrorComponentProps) {
 				transition={{ duration: 0.6, ease: "easeOut" }}
 				className="relative z-10 w-full max-w-lg"
 			>
-				<div className="bg-white/[0.03] backdrop-blur-2xl rounded-3xl border border-white/10 p-10 md:p-14 text-center shadow-2xl overflow-hidden group">
+				<div className="bg-white/3 backdrop-blur-2xl rounded-3xl border border-white/10 p-10 md:p-14 text-center shadow-2xl overflow-hidden group">
 					{/* Glowing top line */}
 					<div className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-red-500/50 to-transparent" />
 
@@ -98,6 +97,7 @@ export default function ErrorComponent({ error }: ErrorComponentProps) {
 					<div className="flex flex-col sm:flex-row gap-4 justify-center">
 						<motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
 							<button
+								type="button"
 								onClick={() => router.invalidate()}
 								className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-white/10 text-white font-semibold rounded-2xl hover:bg-white/20 transition-all duration-300 border border-white/10 shadow-lg"
 							>

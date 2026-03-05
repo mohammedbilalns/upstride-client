@@ -1,8 +1,7 @@
 import { Zap } from "lucide-react";
 import { useState } from "react";
-
+import { OnboardingView } from "@/features/onboarding/components/OnboardingView";
 import { AuthQuoteCarousel } from "../components/AuthQuoteCarousel";
-
 import { ChangePasswordView } from "../components/ChangePasswordView";
 import { ForgotPasswordOtpView } from "../components/ForgotPasswordOtpView";
 import { ForgotPasswordView } from "../components/ForgotPasswordView";
@@ -15,6 +14,7 @@ export default function AuthPage() {
 	const [view, setView] = useState<AuthView>("login");
 	const [pendingEmail, setPendingEmail] = useState("");
 	const [resetToken, setResetToken] = useState("");
+	const [setupToken, setSetupToken] = useState("");
 
 	function handleNavigate(nextView: AuthView, payload?: string) {
 		if (nextView === "register-otp" || nextView === "forgot-password-otp") {
@@ -22,6 +22,9 @@ export default function AuthPage() {
 		}
 		if (nextView === "change-password") {
 			if (payload) setResetToken(payload);
+		}
+		if (nextView === "onboarding") {
+			if (payload) setSetupToken(payload);
 		}
 		setView(nextView);
 	}
@@ -33,14 +36,15 @@ export default function AuthPage() {
 		"forgot-password": "Reset your password",
 		"forgot-password-otp": "Enter reset code",
 		"change-password": "Set new password",
+		onboarding: "Customize your experience",
 	};
 
 	return (
 		<div className="min-h-screen bg-background flex">
-			{/* Left decorative panel (Slider) */}
+			{/* Left Slider */}
 			<AuthQuoteCarousel />
 
-			{/* Right form panel */}
+			{/* Right form  */}
 			<div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
 				{/* Mobile logo */}
 				<div className="md:hidden flex items-center gap-2.5 mb-8">
@@ -54,7 +58,9 @@ export default function AuthPage() {
 					<title>{titles[view]}</title>
 				</noscript>
 
-				<div className="w-full max-w-sm">
+				<div
+					className={`w-full ${view === "onboarding" ? "max-w-2xl" : "max-w-sm"}`}
+				>
 					{view === "login" && <LoginView onNavigate={handleNavigate} />}
 
 					{view === "register" && <RegisterView onNavigate={handleNavigate} />}
@@ -75,8 +81,14 @@ export default function AuthPage() {
 					)}
 
 					{view === "change-password" && (
-						<ChangePasswordView resetToken={resetToken} />
+						<ChangePasswordView
+							email={pendingEmail}
+							resetToken={resetToken}
+							onNavigate={handleNavigate}
+						/>
 					)}
+
+					{view === "onboarding" && <OnboardingView setupToken={setupToken} />}
 				</div>
 			</div>
 		</div>

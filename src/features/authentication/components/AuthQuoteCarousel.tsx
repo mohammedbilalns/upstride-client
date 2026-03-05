@@ -3,18 +3,21 @@ import { useEffect, useState } from "react";
 
 const QUOTES = [
 	{
+		id: "quote-1",
 		line1: "The best investment",
 		line2: "you can make",
 		line3: "is in yourself.",
 		author: "WARREN BUFFETT",
 	},
 	{
+		id: "quote-2",
 		line1: "The right guidance",
 		line2: "can turn potential",
 		line3: "into reality.",
 		author: "JOHN C. MAXWELL",
 	},
 	{
+		id: "quote-3",
 		line1: "True growth begins",
 		line2: "at the end of your",
 		line3: "comfort zone.",
@@ -99,9 +102,9 @@ export function AuthQuoteCarousel() {
 
 				{/* Carousel Indicators */}
 				<div className="flex items-center gap-2 mt-8">
-					{QUOTES.map((_, idx) => (
+					{QUOTES.map((quote, idx) => (
 						<div
-							key={idx}
+							key={quote.id}
 							className={`h-1.5 rounded-full transition-all duration-300 ${
 								idx === currentIndex ? "w-6 bg-white" : "w-2 bg-white/30"
 							}`}

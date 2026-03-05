@@ -1,11 +1,11 @@
 import { useForm } from "@tanstack/react-form";
 import { ArrowLeft, Loader2 } from "lucide-react";
-
+import FieldError from "@/components/common/Field-Error";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import FieldError from "@/components/common/Field-Error";
 import type { AuthView } from "../types";
+import { useRequestPasswordReset } from "../hooks/use-request-password-reset";
 import { forgotPasswordSchema } from "../validators";
 
 interface Props {
@@ -13,15 +13,19 @@ interface Props {
 }
 
 export function ForgotPasswordView({ onNavigate }: Props) {
+	const requestResetMutation = useRequestPasswordReset({
+		onSuccess: () => {
+			onNavigate("forgot-password-otp", form.state.values.email);
+		},
+	});
+
 	const form = useForm({
 		defaultValues: { email: "" },
 		validators: {
 			onSubmit: forgotPasswordSchema,
 		},
 		onSubmit: async ({ value }) => {
-			// TODO: call request-password-reset API
-			console.log(value);
-			onNavigate("forgot-password-otp", value.email);
+			requestResetMutation.mutate(value);
 		},
 	});
 

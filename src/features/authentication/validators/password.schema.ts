@@ -2,7 +2,7 @@ import { z } from "zod";
 import { passwordSchema as passwordSchema_1 } from "@/shared/validators/password.schema";
 
 export const forgotPasswordSchema = z.object({
-	email: z.email("Please enter a valid email"),
+	email: z.email("Please enter a valid email").trim(),
 });
 
 export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;

@@ -1,23 +1,29 @@
 import { useForm } from "@tanstack/react-form";
-import { useRouter } from "@tanstack/react-router";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useState } from "react";
-
+import FieldError from "@/components/common/Field-Error";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import FieldError from "@/components/common/Field-Error";
+import { useResetPassword } from "../hooks/use-reset-password";
 import { changePasswordSchema } from "../validators";
+import type { AuthView } from "../types";
 
 interface Props {
+	email: string;
 	resetToken: string;
+	onNavigate: (view: AuthView) => void;
 }
 
-export function ChangePasswordView({ resetToken }: Props) {
-	const router = useRouter();
+export function ChangePasswordView({ email, resetToken, onNavigate }: Props) {
 	const [showPass, setShowPass] = useState(false);
 	const [showConfirm, setShowConfirm] = useState(false);
-	const [success, setSuccess] = useState(false);
+
+	const resetPasswordMutation = useResetPassword({
+		onSuccess: () => {
+			onNavigate("login");
+		},
+	});
 
 	const form = useForm({
 		defaultValues: { password: "", confirmPassword: "" },
@@ -25,38 +31,13 @@ export function ChangePasswordView({ resetToken }: Props) {
 			onSubmit: changePasswordSchema,
 		},
 		onSubmit: async ({ value }) => {
-			// TODO: call reset-password API with resetToken + value.password
-			console.log({ resetToken, password: value.password });
-			setSuccess(true);
-			setTimeout(() => router.navigate({ to: "/auth" }), 1800);
+			resetPasswordMutation.mutate({
+				tempToken: resetToken,
+				email,
+				newPassword: value.password,
+			});
 		},
 	});
-
-	if (success) {
-		return (
-			<div className="text-center space-y-4 py-8">
-				<div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto">
-					<svg
-						className="h-8 w-8 text-green-500"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth={2}
-							d="M5 13l4 4L19 7"
-						/>
-					</svg>
-				</div>
-				<h2 className="text-2xl font-bold tracking-tight">Password reset!</h2>
-				<p className="text-sm text-muted-foreground">
-					Your password has been updated. Redirecting to login…
-				</p>
-			</div>
-		);
-	}
 
 	return (
 		<div className="space-y-6">
@@ -151,7 +132,15 @@ export function ChangePasswordView({ resetToken }: Props) {
 									label: "One uppercase letter",
 									test: /[A-Z]/.test(field.state.value),
 								},
+								{
+									label: "One lowercase letter",
+									test: /[a-z]/.test(field.state.value),
+								},
 								{ label: "One number", test: /[0-9]/.test(field.state.value) },
+								{
+									label: "One special character",
+									test: /[^a-zA-Z0-9]/.test(field.state.value),
+								},
 							].map(({ label, test }) => (
 								<li
 									key={label}

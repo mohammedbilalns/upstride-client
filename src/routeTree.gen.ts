@@ -9,111 +9,206 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
+import { Route as UserLayoutRouteImport } from './routes/_user-layout'
+import { Route as PublicLayoutRouteImport } from './routes/_public-layout'
+import { Route as AdminLayoutRouteImport } from './routes/_admin-layout'
+import { Route as PublicLayoutIndexRouteImport } from './routes/_public-layout/index'
+import { Route as UserLayoutProfileRouteImport } from './routes/_user-layout/profile'
+import { Route as UserLayoutHomeRouteImport } from './routes/_user-layout/home'
+import { Route as PublicLayoutAuthRouteImport } from './routes/_public-layout/auth'
+import { Route as AdminLayoutDashboardRouteImport } from './routes/_admin-layout/dashboard'
 
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+const UserLayoutRoute = UserLayoutRouteImport.update({
+  id: '/_user-layout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRoute = AuthenticatedRouteImport.update({
-  id: '/_authenticated',
+const PublicLayoutRoute = PublicLayoutRouteImport.update({
+  id: '/_public-layout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const AdminLayoutRoute = AdminLayoutRouteImport.update({
+  id: '/_admin-layout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublicLayoutIndexRoute = PublicLayoutIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => PublicLayoutRoute,
 } as any)
-const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
+const UserLayoutProfileRoute = UserLayoutProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => UserLayoutRoute,
+} as any)
+const UserLayoutHomeRoute = UserLayoutHomeRouteImport.update({
   id: '/home',
   path: '/home',
-  getParentRoute: () => AuthenticatedRoute,
+  getParentRoute: () => UserLayoutRoute,
+} as any)
+const PublicLayoutAuthRoute = PublicLayoutAuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => PublicLayoutRoute,
+} as any)
+const AdminLayoutDashboardRoute = AdminLayoutDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminLayoutRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
-  '/home': typeof AuthenticatedHomeRoute
+  '/': typeof PublicLayoutIndexRoute
+  '/dashboard': typeof AdminLayoutDashboardRoute
+  '/auth': typeof PublicLayoutAuthRoute
+  '/home': typeof UserLayoutHomeRoute
+  '/profile': typeof UserLayoutProfileRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
-  '/home': typeof AuthenticatedHomeRoute
+  '/': typeof PublicLayoutIndexRoute
+  '/dashboard': typeof AdminLayoutDashboardRoute
+  '/auth': typeof PublicLayoutAuthRoute
+  '/home': typeof UserLayoutHomeRoute
+  '/profile': typeof UserLayoutProfileRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/_authenticated': typeof AuthenticatedRouteWithChildren
-  '/auth': typeof AuthRoute
-  '/_authenticated/home': typeof AuthenticatedHomeRoute
+  '/_admin-layout': typeof AdminLayoutRouteWithChildren
+  '/_public-layout': typeof PublicLayoutRouteWithChildren
+  '/_user-layout': typeof UserLayoutRouteWithChildren
+  '/_admin-layout/dashboard': typeof AdminLayoutDashboardRoute
+  '/_public-layout/auth': typeof PublicLayoutAuthRoute
+  '/_user-layout/home': typeof UserLayoutHomeRoute
+  '/_user-layout/profile': typeof UserLayoutProfileRoute
+  '/_public-layout/': typeof PublicLayoutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/home'
+  fullPaths: '/' | '/dashboard' | '/auth' | '/home' | '/profile'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/home'
-  id: '__root__' | '/' | '/_authenticated' | '/auth' | '/_authenticated/home'
+  to: '/' | '/dashboard' | '/auth' | '/home' | '/profile'
+  id:
+    | '__root__'
+    | '/_admin-layout'
+    | '/_public-layout'
+    | '/_user-layout'
+    | '/_admin-layout/dashboard'
+    | '/_public-layout/auth'
+    | '/_user-layout/home'
+    | '/_user-layout/profile'
+    | '/_public-layout/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
-  AuthRoute: typeof AuthRoute
+  AdminLayoutRoute: typeof AdminLayoutRouteWithChildren
+  PublicLayoutRoute: typeof PublicLayoutRouteWithChildren
+  UserLayoutRoute: typeof UserLayoutRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated': {
-      id: '/_authenticated'
+    '/_user-layout': {
+      id: '/_user-layout'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteImport
+      preLoaderRoute: typeof UserLayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_public-layout': {
+      id: '/_public-layout'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof PublicLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_admin-layout': {
+      id: '/_admin-layout'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AdminLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_public-layout/': {
+      id: '/_public-layout/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof PublicLayoutIndexRouteImport
+      parentRoute: typeof PublicLayoutRoute
     }
-    '/_authenticated/home': {
-      id: '/_authenticated/home'
+    '/_user-layout/profile': {
+      id: '/_user-layout/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof UserLayoutProfileRouteImport
+      parentRoute: typeof UserLayoutRoute
+    }
+    '/_user-layout/home': {
+      id: '/_user-layout/home'
       path: '/home'
       fullPath: '/home'
-      preLoaderRoute: typeof AuthenticatedHomeRouteImport
-      parentRoute: typeof AuthenticatedRoute
+      preLoaderRoute: typeof UserLayoutHomeRouteImport
+      parentRoute: typeof UserLayoutRoute
+    }
+    '/_public-layout/auth': {
+      id: '/_public-layout/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof PublicLayoutAuthRouteImport
+      parentRoute: typeof PublicLayoutRoute
+    }
+    '/_admin-layout/dashboard': {
+      id: '/_admin-layout/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AdminLayoutDashboardRouteImport
+      parentRoute: typeof AdminLayoutRoute
     }
   }
 }
 
-interface AuthenticatedRouteChildren {
-  AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
+interface AdminLayoutRouteChildren {
+  AdminLayoutDashboardRoute: typeof AdminLayoutDashboardRoute
 }
 
-const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedHomeRoute: AuthenticatedHomeRoute,
+const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
+  AdminLayoutDashboardRoute: AdminLayoutDashboardRoute,
 }
 
-const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
-  AuthenticatedRouteChildren,
+const AdminLayoutRouteWithChildren = AdminLayoutRoute._addFileChildren(
+  AdminLayoutRouteChildren,
+)
+
+interface PublicLayoutRouteChildren {
+  PublicLayoutAuthRoute: typeof PublicLayoutAuthRoute
+  PublicLayoutIndexRoute: typeof PublicLayoutIndexRoute
+}
+
+const PublicLayoutRouteChildren: PublicLayoutRouteChildren = {
+  PublicLayoutAuthRoute: PublicLayoutAuthRoute,
+  PublicLayoutIndexRoute: PublicLayoutIndexRoute,
+}
+
+const PublicLayoutRouteWithChildren = PublicLayoutRoute._addFileChildren(
+  PublicLayoutRouteChildren,
+)
+
+interface UserLayoutRouteChildren {
+  UserLayoutHomeRoute: typeof UserLayoutHomeRoute
+  UserLayoutProfileRoute: typeof UserLayoutProfileRoute
+}
+
+const UserLayoutRouteChildren: UserLayoutRouteChildren = {
+  UserLayoutHomeRoute: UserLayoutHomeRoute,
+  UserLayoutProfileRoute: UserLayoutProfileRoute,
+}
+
+const UserLayoutRouteWithChildren = UserLayoutRoute._addFileChildren(
+  UserLayoutRouteChildren,
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AuthenticatedRoute: AuthenticatedRouteWithChildren,
-  AuthRoute: AuthRoute,
+  AdminLayoutRoute: AdminLayoutRouteWithChildren,
+  PublicLayoutRoute: PublicLayoutRouteWithChildren,
+  UserLayoutRoute: UserLayoutRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

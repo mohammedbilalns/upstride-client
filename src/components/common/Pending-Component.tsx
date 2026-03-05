@@ -6,7 +6,7 @@ interface PendingComponentProps {
 
 export default function PendingComponent({ resource }: PendingComponentProps) {
 	return (
-		<div className="fixed inset-0 z-[9999] flex flex-col justify-center items-center bg-background/80 backdrop-blur-md">
+		<div className="fixed inset-0 z-9999 flex flex-col justify-center items-center bg-background/80 backdrop-blur-md">
 			<div className="relative flex flex-col items-center gap-6">
 				{/*  Spinner */}
 				<div className="relative w-12 h-12">

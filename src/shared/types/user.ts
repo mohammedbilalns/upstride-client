@@ -1,12 +1,24 @@
-export type UserRole = "user" | "mentor" | "admin" | "superadmin";
+export type UserRole = "USER" | "MENTOR" | "ADMIN" | "SUPER_ADMIN";
+export type AuthType = "LOCAL" | "GOOGLE" | "LINKEDIN";
+export type SkillLevel = "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
 
 export interface User {
 	id: string;
 	name: string;
 	email: string;
 	phone: string;
+	authType: AuthType;
+	profilePictureId: string | null;
 	role: UserRole;
-	isActive: boolean;
+	isBlocked: boolean;
+	isVerified: boolean;
 	createdAt: Date;
-	isBlocked?: boolean;
+	updatedAt: Date;
+	preferences?: {
+		interests: string[];
+		skills: {
+			skillId: string;
+			level: SkillLevel;
+		}[];
+	};
 }

@@ -5,12 +5,13 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import "../styles.css";
 import ErrorComponent from "@/components/common/Error-Component";
 import NotFoundComponent from "@/components/common/Not-Found";
-import type { User } from "@/shared/types/user";
+
+import type { AuthenticatedUser } from "@/features/authentication/types";
 
 export interface RouterContext {
 	queryClient: QueryClient;
 	auth: {
-		user: User | null;
+		user: AuthenticatedUser | null;
 		isAuthenticated: boolean;
 		accessToken: string | null;
 	};
