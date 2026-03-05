@@ -1,10 +1,10 @@
 import { QueryClient } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
+import PendingComponent from "@/components/common/Pending-Component";
 import type { RouterContext } from "@/routes/__root";
 import { routeTree } from "@/routeTree.gen";
-import PendingComponent from "@/components/common/Pending-Component";
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 export const router = createRouter({
 	routeTree,
 	context: {

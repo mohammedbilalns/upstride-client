@@ -7,8 +7,18 @@ export const ROUTES = {
 		RESEND_REGISTER_OTP: "/resend-registration-otp",
 		GOOGLE: "/google",
 		LINKEDIN: "/linkedin",
+		SAVE_INTERESTS: "/save-interests",
 		REQUEST_PASSWORD_RESET: "/reset-password",
 		VERIFY_RESET_PASSWORD_OTP: "/verify-reset-password-otp",
 		RESEND_RESET_PASSWORD_OTP: "/resend-reset-password-otp",
+		CHANGE_PASSWORD: "/change-password",
+		REFRESH: "/refresh",
+		LOGOUT: "/logout",
+		REVOKE_SESSION: "/revoke-session",
+		REVOKE_ALL_OTHER_SESSIONS: "/revoke-all-other-sessions",
+	},
+	CATALOG: {
+		BASE: "/catalog",
+		ONBOARDING: "/onboarding",
 	},
 };

@@ -1,18 +1,15 @@
+import * as passwordSchema from "@/shared/validators/password.schema";
 import { z } from "zod";
 
 export const registerSchema = z
 	.object({
-		name: z.string().min(2, "Name must be at least 2 characters"),
-		email: z.string().email("Please enter a valid email"),
+		name: z.string().trim().min(2, "Name must be at least 2 characters"),
+		email: z.email("Please enter a valid email"),
 		phone: z
 			.string()
 			.min(7, "Phone number is too short")
 			.regex(/^\+?[0-9\s\-()]+$/, "Invalid phone number"),
-		password: z
-			.string()
-			.min(8, "Password must be at least 8 characters")
-			.regex(/[A-Z]/, "Must contain at least one uppercase letter")
-			.regex(/[0-9]/, "Must contain at least one number"),
+		password: passwordSchema.passwordSchema,
 		confirmPassword: z.string(),
 	})
 	.refine((d) => d.password === d.confirmPassword, {
@@ -21,3 +18,4 @@ export const registerSchema = z
 	});
 
 export type RegisterFormValues = z.infer<typeof registerSchema>;
+export type RegisterPayload = Omit<RegisterFormValues, "confirmPassword">;

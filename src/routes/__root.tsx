@@ -29,6 +29,7 @@ function RootComponent() {
 			<TanStackDevtools
 				config={{
 					position: "bottom-right",
+					openHotkey: ["control", "shift", "d"],
 				}}
 				plugins={[
 					{

@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import type { AuthView } from "../types";
 import { registerSchema } from "../validators";
 import FieldError from "@/components/common/Field-Error";
+import { useRegister } from "../hooks/use-register";
 
 interface Props {
 	onNavigate: (view: AuthView, email?: string) => void;
@@ -66,6 +67,19 @@ function SocialAuthButtons() {
 export function RegisterView({ onNavigate }: Props) {
 	const [showPass, setShowPass] = useState(false);
 	const [showConfirm, setShowConfirm] = useState(false);
+	const [apiError, setApiError] = useState<string | null>(null);
+
+	const registration = useRegister({
+		onSuccess: (email) => {
+			onNavigate("register-otp", email);
+		},
+		onError: (error: any) => {
+			const message =
+				error.response?.data?.message ||
+				"Registration failed. Please try again.";
+			setApiError(message);
+		},
+	});
 
 	const form = useForm({
 		defaultValues: {
@@ -79,9 +93,9 @@ export function RegisterView({ onNavigate }: Props) {
 			onSubmit: registerSchema,
 		},
 		onSubmit: async ({ value }) => {
-			// TODO: call register API
-			console.log(value);
-			onNavigate("register-otp", value.email);
+			setApiError(null);
+			const { confirmPassword, ...payload } = value;
+			registration.mutate(payload);
 		},
 	});
 
@@ -103,6 +117,12 @@ export function RegisterView({ onNavigate }: Props) {
 				</span>
 				<Separator className="flex-1" />
 			</div>
+
+			{apiError && (
+				<div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm font-medium animate-in fade-in slide-in-from-top-1">
+					{apiError}
+				</div>
+			)}
 
 			<form
 				onSubmit={(e) => {
@@ -231,8 +251,12 @@ export function RegisterView({ onNavigate }: Props) {
 
 				<form.Subscribe selector={(s) => s.isSubmitting}>
 					{(isSubmitting) => (
-						<Button type="submit" className="w-full" disabled={isSubmitting}>
-							{isSubmitting && (
+						<Button
+							type="submit"
+							className="w-full"
+							disabled={isSubmitting || registration.isPending}
+						>
+							{(isSubmitting || registration.isPending) && (
 								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							)}
 							Create Account

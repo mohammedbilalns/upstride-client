@@ -1,5 +1,5 @@
 import { useRouter } from "@tanstack/react-router";
-import { ArrowLeft, Loader2, RefreshCw } from "lucide-react";
+import { ArrowLeft, Loader2, RefreshCw, Timer } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -9,8 +9,11 @@ import {
 	InputOTPSlot,
 } from "@/components/ui/input-otp";
 import type { AuthView } from "../types";
+import { useVerifyOtp } from "../hooks/use-verify-otp";
+import { useResendOtp } from "../hooks/use-resend-otp";
 
-const OTP_TIMEOUT_SECONDS = 120; // 2 minutes
+const OTP_RESEND_COOLDOWN = 60; // 1 minute to resend
+const OTP_EXPIRY_SECONDS = 300; // 5 minutes total expiry
 const OTP_LENGTH = 6;
 
 interface Props {
@@ -27,22 +30,75 @@ function formatTime(s: number) {
 export function OtpView({ email, onNavigate }: Props) {
 	const router = useRouter();
 	const [otp, setOtp] = useState("");
-	const [timeLeft, setTimeLeft] = useState(OTP_TIMEOUT_SECONDS);
+	const [resendTimer, setResendTimer] = useState(OTP_RESEND_COOLDOWN);
+	const [expiryTimer, setExpiryTimer] = useState(OTP_EXPIRY_SECONDS);
 	const [canResend, setCanResend] = useState(false);
-	const [loading, setLoading] = useState(false);
-	const [resending, setResending] = useState(false);
+	const [isExpired, setIsExpired] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-	const startTimer = useCallback(() => {
-		if (timerRef.current) clearInterval(timerRef.current);
-		setTimeLeft(OTP_TIMEOUT_SECONDS);
+	const timersRef = useRef<{
+		resend: ReturnType<typeof setInterval> | null;
+		expiry: ReturnType<typeof setInterval> | null;
+	}>({ resend: null, expiry: null });
+
+	const verifyMutation = useVerifyOtp({
+		onSuccess: async () => {
+			await router.navigate({ to: "/home" });
+		},
+		onError: (err: any) => {
+			setError(
+				err.response?.data?.message ||
+					"Invalid or expired OTP. Please try again.",
+			);
+		},
+	});
+
+	const resendMutation = useResendOtp({
+		onSuccess: () => {
+			setOtp("");
+			setError(null);
+			startTimers();
+		},
+		onError: (err: any) => {
+			setError(
+				err.response?.data?.message ||
+					"Failed to resend OTP. Please try again later.",
+			);
+		},
+	});
+
+	const startTimers = useCallback(() => {
+		// Clear existing
+		if (timersRef.current.resend) clearInterval(timersRef.current.resend);
+		if (timersRef.current.expiry) clearInterval(timersRef.current.expiry);
+
+		// Reset states
+		setResendTimer(OTP_RESEND_COOLDOWN);
+		setExpiryTimer(OTP_EXPIRY_SECONDS);
 		setCanResend(false);
-		timerRef.current = setInterval(() => {
-			setTimeLeft((prev) => {
+		setIsExpired(false);
+
+		// Resend Timer
+		timersRef.current.resend = setInterval(() => {
+			setResendTimer((prev) => {
 				if (prev <= 1) {
-					clearInterval(timerRef.current!);
+					clearInterval(timersRef.current.resend!);
 					setCanResend(true);
+					return 0;
+				}
+				return prev - 1;
+			});
+		}, 1000);
+
+		// Expiry Timer
+		timersRef.current.expiry = setInterval(() => {
+			setExpiryTimer((prev) => {
+				if (prev <= 1) {
+					clearInterval(timersRef.current.expiry!);
+					setIsExpired(true);
+					setError(
+						"This verification code has expired. Please request a new one.",
+					);
 					return 0;
 				}
 				return prev - 1;
@@ -51,39 +107,22 @@ export function OtpView({ email, onNavigate }: Props) {
 	}, []);
 
 	useEffect(() => {
-		startTimer();
+		startTimers();
 		return () => {
-			if (timerRef.current) clearInterval(timerRef.current);
+			if (timersRef.current.resend) clearInterval(timersRef.current.resend);
+			if (timersRef.current.expiry) clearInterval(timersRef.current.expiry);
 		};
-	}, [startTimer]);
+	}, [startTimers]);
 
 	async function handleVerify() {
-		if (otp.length < OTP_LENGTH) return;
-		setLoading(true);
+		if (otp.length < OTP_LENGTH || isExpired) return;
 		setError(null);
-		try {
-			// TODO: call verify-registration-otp API
-			console.log({ email, otp });
-			await router.navigate({ to: "/home" });
-		} catch {
-			setError("Invalid or expired OTP. Please try again.");
-		} finally {
-			setLoading(false);
-		}
+		verifyMutation.mutate({ email, otp });
 	}
 
 	async function handleResend() {
 		if (!canResend) return;
-		setResending(true);
-		setError(null);
-		try {
-			// TODO: call resend-registration-otp API
-			console.log("Resend OTP for", email);
-			setOtp("");
-			startTimer();
-		} finally {
-			setResending(false);
-		}
+		resendMutation.mutate(email);
 	}
 
 	return (
@@ -97,12 +136,26 @@ export function OtpView({ email, onNavigate }: Props) {
 				Back to register
 			</button>
 
-			<div>
-				<h2 className="text-2xl font-bold tracking-tight">Check your email</h2>
-				<p className="text-sm text-muted-foreground mt-1">
-					We sent a {OTP_LENGTH}-digit verification code to{" "}
-					<span className="font-medium text-foreground">{email}</span>
-				</p>
+			<div className="flex justify-between items-start">
+				<div>
+					<h2 className="text-2xl font-bold tracking-tight">
+						Check your email
+					</h2>
+					<p className="text-sm text-muted-foreground mt-1">
+						We sent a code to{" "}
+						<span className="font-medium text-foreground">{email}</span>
+					</p>
+				</div>
+				<div
+					className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${
+						isExpired
+							? "bg-destructive/10 text-destructive border-destructive/20"
+							: "bg-primary/5 text-primary border-primary/10"
+					}`}
+				>
+					<Timer className="h-3.5 w-3.5" />
+					{isExpired ? "Expired" : `Expires in ${formatTime(expiryTimer)}`}
+				</div>
 			</div>
 
 			<div className="flex flex-col items-center gap-5">
@@ -114,6 +167,7 @@ export function OtpView({ email, onNavigate }: Props) {
 						setError(null);
 					}}
 					onComplete={handleVerify}
+					disabled={isExpired}
 				>
 					<InputOTPGroup>
 						{Array.from({ length: OTP_LENGTH }, (_, i) => (
@@ -123,17 +177,25 @@ export function OtpView({ email, onNavigate }: Props) {
 				</InputOTP>
 
 				{error && (
-					<p className="text-sm text-destructive text-center">{error}</p>
+					<p
+						className={`text-sm text-center ${isExpired ? "text-destructive font-medium" : "text-destructive"}`}
+					>
+						{error}
+					</p>
 				)}
 			</div>
 
 			<Button
 				onClick={handleVerify}
-				disabled={otp.length < OTP_LENGTH || loading}
+				disabled={
+					otp.length < OTP_LENGTH || verifyMutation.isPending || isExpired
+				}
 				className="w-full"
 			>
-				{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-				Verify Email
+				{verifyMutation.isPending && (
+					<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+				)}
+				{isExpired ? "Code Expired" : "Verify Email"}
 			</Button>
 
 			{/* Resend row with countdown timer displayed inline */}
@@ -141,11 +203,11 @@ export function OtpView({ email, onNavigate }: Props) {
 				<span className="text-muted-foreground">Didn't receive a code?</span>
 				<button
 					type="button"
-					disabled={!canResend || resending}
+					disabled={!canResend || resendMutation.isPending}
 					onClick={handleResend}
 					className="flex items-center gap-1.5 font-semibold text-primary hover:underline disabled:opacity-40 disabled:no-underline disabled:cursor-not-allowed transition-colors"
 				>
-					{resending ? (
+					{resendMutation.isPending ? (
 						<Loader2 className="h-3.5 w-3.5 animate-spin" />
 					) : (
 						<RefreshCw className="h-3.5 w-3.5" />
@@ -154,7 +216,7 @@ export function OtpView({ email, onNavigate }: Props) {
 						"Resend"
 					) : (
 						<span className="font-mono tabular-nums">
-							Resend in {formatTime(timeLeft)}
+							Resend in {formatTime(resendTimer)}
 						</span>
 					)}
 				</button>

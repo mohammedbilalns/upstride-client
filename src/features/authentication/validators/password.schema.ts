@@ -1,18 +1,15 @@
 import { z } from "zod";
+import { passwordSchema as passwordSchema_1 } from "@/shared/validators/password.schema";
 
 export const forgotPasswordSchema = z.object({
-	email: z.string().email("Please enter a valid email"),
+	email: z.email("Please enter a valid email"),
 });
 
 export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 
 export const changePasswordSchema = z
 	.object({
-		password: z
-			.string()
-			.min(8, "Password must be at least 8 characters")
-			.regex(/[A-Z]/, "Must contain at least one uppercase letter")
-			.regex(/[0-9]/, "Must contain at least one number"),
+		password: passwordSchema_1,
 		confirmPassword: z.string(),
 	})
 	.refine((d) => d.password === d.confirmPassword, {
