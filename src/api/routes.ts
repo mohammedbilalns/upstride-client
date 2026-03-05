@@ -23,4 +23,9 @@ export const ROUTES = {
 		BASE: "/catalog",
 		ONBOARDING: "/onboarding",
 	},
+	USER_MANAGEMENT: {
+		BASE: "/users",
+		BLOCK: (id: string) => `/${id}/block`,
+		UNBLOCK: (id: string) => `/${id}/unblock`,
+	},
 };
