@@ -1,15 +1,13 @@
 import { z } from "zod";
-import * as passwordSchema from "@/shared/validators/password.schema";
+import { passwordSchema } from "@/shared/validators/password.schema";
+import { phoneSchema } from "@/shared/validators/phone.schema";
 
 export const registerSchema = z
 	.object({
 		name: z.string().trim().min(2, "Name must be at least 2 characters"),
-		email: z.email("Please enter a valid email"),
-		phone: z
-			.string()
-			.min(7, "Phone number is too short")
-			.regex(/^\+?[0-9\s\-()]+$/, "Invalid phone number"),
-		password: passwordSchema.passwordSchema,
+		email: z.email("Please enter a valid email").trim(),
+		phone: phoneSchema,
+		password: passwordSchema,
 		confirmPassword: z.string(),
 	})
 	.refine((d) => d.password === d.confirmPassword, {
