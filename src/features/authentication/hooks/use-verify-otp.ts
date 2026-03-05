@@ -3,7 +3,9 @@ import { authService } from "../services/auth.service";
 
 interface UseVerifyOtpOptions {
 	onSuccess: () => void;
-	onError?: (error: any) => void;
+	onError?: (
+		error: Error | { response?: { data?: { message?: string } } },
+	) => void;
 }
 
 export const useVerifyOtp = ({ onSuccess, onError }: UseVerifyOtpOptions) => {

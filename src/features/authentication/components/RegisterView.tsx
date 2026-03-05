@@ -1,14 +1,14 @@
 import { useForm } from "@tanstack/react-form";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useState } from "react";
+import FieldError from "@/components/common/Field-Error";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { useRegister } from "../hooks/use-register";
 import type { AuthView } from "../types";
 import { registerSchema } from "../validators";
-import FieldError from "@/components/common/Field-Error";
-import { useRegister } from "../hooks/use-register";
 import { SocialAuthButtons } from "./SocialAuthButtons";
 
 interface Props {
@@ -24,9 +24,12 @@ export function RegisterView({ onNavigate }: Props) {
 		onSuccess: (email) => {
 			onNavigate("register-otp", email);
 		},
-		onError: (error: any) => {
+		onError: (
+			error: Error | { response?: { data?: { message?: string } } },
+		) => {
+			const errorData = error as { response?: { data?: { message?: string } } };
 			const message =
-				error.response?.data?.message ||
+				errorData.response?.data?.message ||
 				"Registration failed. Please try again.";
 			setApiError(message);
 		},

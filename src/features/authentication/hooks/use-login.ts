@@ -1,12 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
-import { authService } from "../services/auth.service";
-import type { LoginPayload } from "../validators/login.schema";
 import { useRouter } from "@tanstack/react-router";
 import type { UserRole } from "@/shared/types/user";
+import { authService } from "../services/auth.service";
+import type { LoginPayload } from "../validators/login.schema";
 
 export function useLogin(options?: {
 	onSuccess?: (data: { user: { role: UserRole } }) => void;
-	onError?: (error: any) => void;
+	onError?: (
+		error: Error | { response?: { data?: { message?: string } } },
+	) => void;
 }) {
 	const router = useRouter();
 
@@ -20,7 +22,7 @@ export function useLogin(options?: {
 			if (user && accessToken && router.options.context) {
 				router.options.context.auth = {
 					isAuthenticated: true,
-					user,
+					user: user as typeof router.options.context.auth.user,
 					accessToken,
 				};
 			}

@@ -1,5 +1,5 @@
-import * as passwordSchema from "@/shared/validators/password.schema";
 import { z } from "zod";
+import * as passwordSchema from "@/shared/validators/password.schema";
 
 export const registerSchema = z
 	.object({

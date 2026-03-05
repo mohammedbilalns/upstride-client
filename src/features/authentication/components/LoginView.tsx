@@ -2,16 +2,15 @@ import { useForm } from "@tanstack/react-form";
 import { useRouter } from "@tanstack/react-router";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useState } from "react";
-
+import FieldError from "@/components/common/Field-Error";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { useLogin } from "../hooks/use-login";
 import type { AuthView } from "../types";
 import { loginSchema } from "../validators";
-import FieldError from "@/components/common/Field-Error";
 import { SocialAuthButtons } from "./SocialAuthButtons";
-import { useLogin } from "../hooks/use-login";
 
 interface Props {
 	onNavigate: (view: AuthView) => void;
@@ -24,15 +23,18 @@ export function LoginView({ onNavigate }: Props) {
 
 	const loginMutation = useLogin({
 		onSuccess: async ({ user }) => {
-			if (user.role === "admin" || user.role === "superadmin") {
+			if (user.role === "ADMIN" || user.role === "SUPER_ADMIN") {
 				await router.navigate({ to: "/dashboard" });
 			} else {
 				await router.navigate({ to: "/home" });
 			}
 		},
-		onError: (error: any) => {
+		onError: (
+			error: Error | { response?: { data?: { message?: string } } },
+		) => {
+			const errorData = error as { response?: { data?: { message?: string } } };
 			const message =
-				error.response?.data?.message ||
+				errorData.response?.data?.message ||
 				"Invalid credentials. Please try again.";
 			setApiError(message);
 		},

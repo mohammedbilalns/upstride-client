@@ -4,7 +4,9 @@ import type { RegisterPayload } from "../validators/register.schema";
 
 interface UseRegisterOptions {
 	onSuccess: (email: string) => void;
-	onError?: (error: any) => void;
+	onError?: (
+		error: Error | { response?: { data?: { message?: string } } },
+	) => void;
 }
 
 export const useRegister = ({ onSuccess, onError }: UseRegisterOptions) => {

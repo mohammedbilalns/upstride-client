@@ -39,7 +39,7 @@ export function ForgotPasswordOtpView({ email, onNavigate }: Props) {
 		timerRef.current = setInterval(() => {
 			setTimeLeft((prev) => {
 				if (prev <= 1) {
-					clearInterval(timerRef.current!);
+					clearInterval(timerRef.current ?? undefined);
 					setCanResend(true);
 					return 0;
 				}
@@ -64,8 +64,12 @@ export function ForgotPasswordOtpView({ email, onNavigate }: Props) {
 			console.log({ email, otp });
 			const mockResetToken = "mock-reset-token";
 			onNavigate("change-password", mockResetToken);
-		} catch {
-			setError("Invalid or expired OTP. Please try again.");
+		} catch (err: unknown) {
+			const errorData = err as { response?: { data?: { message?: string } } };
+			setError(
+				errorData.response?.data?.message ||
+					"Invalid or expired OTP. Please try again.",
+			);
 		} finally {
 			setLoading(false);
 		}
@@ -115,9 +119,11 @@ export function ForgotPasswordOtpView({ email, onNavigate }: Props) {
 					onComplete={handleVerify}
 				>
 					<InputOTPGroup>
-						{Array.from({ length: OTP_LENGTH }, (_, i) => (
-							<InputOTPSlot key={i} index={i} />
-						))}
+						{[...Array(OTP_LENGTH)]
+							.map(() => crypto.randomUUID())
+							.map((id, index) => (
+								<InputOTPSlot key={id} index={index} />
+							))}
 					</InputOTPGroup>
 				</InputOTP>
 

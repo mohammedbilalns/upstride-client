@@ -98,6 +98,7 @@ export default function ErrorComponent({ error }: ErrorComponentProps) {
 					<div className="flex flex-col sm:flex-row gap-4 justify-center">
 						<motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
 							<button
+								type="button"
 								onClick={() => router.invalidate()}
 								className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-white/10 text-white font-semibold rounded-2xl hover:bg-white/20 transition-all duration-300 border border-white/10 shadow-lg"
 							>

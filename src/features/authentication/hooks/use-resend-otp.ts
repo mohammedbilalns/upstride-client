@@ -3,7 +3,9 @@ import { authService } from "../services/auth.service";
 
 interface UseResendOtpOptions {
 	onSuccess?: () => void;
-	onError?: (error: any) => void;
+	onError?: (
+		error: Error | { response?: { data?: { message?: string } } },
+	) => void;
 }
 
 export const useResendOtp = ({

@@ -8,9 +8,9 @@ import {
 	InputOTPGroup,
 	InputOTPSlot,
 } from "@/components/ui/input-otp";
-import type { AuthView } from "../types";
-import { useVerifyOtp } from "../hooks/use-verify-otp";
 import { useResendOtp } from "../hooks/use-resend-otp";
+import { useVerifyOtp } from "../hooks/use-verify-otp";
+import type { AuthView } from "../types";
 
 const OTP_RESEND_COOLDOWN = 60;
 const OTP_EXPIRY_SECONDS = 300;
@@ -45,9 +45,10 @@ export function OtpView({ email, onNavigate }: Props) {
 		onSuccess: async () => {
 			await router.navigate({ to: "/home" });
 		},
-		onError: (err: any) => {
+		onError: (err: Error | { response?: { data?: { message?: string } } }) => {
+			const errorData = err as { response?: { data?: { message?: string } } };
 			setError(
-				err.response?.data?.message ||
+				errorData.response?.data?.message ||
 					"Invalid or expired OTP. Please try again.",
 			);
 		},
@@ -59,9 +60,10 @@ export function OtpView({ email, onNavigate }: Props) {
 			setError(null);
 			startTimers();
 		},
-		onError: (err: any) => {
+		onError: (err: Error | { response?: { data?: { message?: string } } }) => {
+			const errorData = err as { response?: { data?: { message?: string } } };
 			setError(
-				err.response?.data?.message ||
+				errorData.response?.data?.message ||
 					"Failed to resend OTP. Please try again later.",
 			);
 		},
@@ -82,7 +84,7 @@ export function OtpView({ email, onNavigate }: Props) {
 		timersRef.current.resend = setInterval(() => {
 			setResendTimer((prev) => {
 				if (prev <= 1) {
-					clearInterval(timersRef.current.resend!);
+					clearInterval(timersRef.current.resend ?? undefined);
 					setCanResend(true);
 					return 0;
 				}
@@ -94,7 +96,7 @@ export function OtpView({ email, onNavigate }: Props) {
 		timersRef.current.expiry = setInterval(() => {
 			setExpiryTimer((prev) => {
 				if (prev <= 1) {
-					clearInterval(timersRef.current.expiry!);
+					clearInterval(timersRef.current.expiry ?? undefined);
 					setIsExpired(true);
 					setError(
 						"This verification code has expired. Please request a new one.",
@@ -170,9 +172,11 @@ export function OtpView({ email, onNavigate }: Props) {
 					disabled={isExpired}
 				>
 					<InputOTPGroup>
-						{Array.from({ length: OTP_LENGTH }, (_, i) => (
-							<InputOTPSlot key={i} index={i} />
-						))}
+						{[...Array(OTP_LENGTH)]
+							.map(() => crypto.randomUUID())
+							.map((id, index) => (
+								<InputOTPSlot key={id} index={index} />
+							))}
 					</InputOTPGroup>
 				</InputOTP>
 

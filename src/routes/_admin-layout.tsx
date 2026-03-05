@@ -1,4 +1,4 @@
-import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_admin-layout")({
 	beforeLoad: async ({ context, location }) => {
@@ -10,8 +10,8 @@ export const Route = createFileRoute("/_admin-layout")({
 		}
 
 		if (
-			context.auth.user?.role !== "admin" &&
-			context.auth.user?.role !== "superadmin"
+			context.auth.user?.role !== "ADMIN" &&
+			context.auth.user?.role !== "SUPER_ADMIN"
 		) {
 			throw redirect({
 				to: "/home",

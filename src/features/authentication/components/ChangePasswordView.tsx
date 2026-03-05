@@ -2,11 +2,10 @@ import { useForm } from "@tanstack/react-form";
 import { useRouter } from "@tanstack/react-router";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useState } from "react";
-
+import FieldError from "@/components/common/Field-Error";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import FieldError from "@/components/common/Field-Error";
 import { changePasswordSchema } from "../validators";
 
 interface Props {
@@ -41,7 +40,9 @@ export function ChangePasswordView({ resetToken }: Props) {
 						fill="none"
 						stroke="currentColor"
 						viewBox="0 0 24 24"
+						aria-labelledby="successIconTitle"
 					>
+						<title id="successIconTitle">Success Checkmark</title>
 						<path
 							strokeLinecap="round"
 							strokeLinejoin="round"
