@@ -4,7 +4,8 @@ export type AuthView =
 	| "register-otp"
 	| "forgot-password"
 	| "forgot-password-otp"
-	| "change-password";
+	| "change-password"
+	| "onboarding";
 
 import type { User } from "@/shared/types/user";
 

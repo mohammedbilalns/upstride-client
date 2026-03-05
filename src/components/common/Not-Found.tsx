@@ -44,7 +44,7 @@ export default function NotFoundComponent() {
 				transition={{ duration: 0.6, ease: "easeOut" }}
 				className="relative z-10 w-full max-w-lg"
 			>
-				<div className="bg-white/[0.03] backdrop-blur-2xl rounded-3xl border border-white/10 p-10 md:p-14 text-center shadow-2xl overflow-hidden group">
+				<div className="bg-white/3 backdrop-blur-2xl rounded-3xl border border-white/10 p-10 md:p-14 text-center shadow-2xl overflow-hidden group">
 					{/* Glowing top line */}
 					<div className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-blue-500/50 to-transparent" />
 

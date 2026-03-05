@@ -1,6 +1,7 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider } from "@tanstack/react-router";
 import ReactDOM from "react-dom/client";
+import { Toaster } from "./components/ui/sonner";
 import { ThemeProvider } from "./app/contexts/ThemeContext";
 import { queryClient, router } from "./app/router/routerConfig";
 
@@ -19,6 +20,7 @@ if (!rootElement.innerHTML) {
 		<ThemeProvider>
 			<QueryClientProvider client={queryClient}>
 				<RouterProvider router={router} />
+				<Toaster richColors position="top-right" />
 			</QueryClientProvider>
 		</ThemeProvider>,
 	);

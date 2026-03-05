@@ -141,7 +141,7 @@ export function RegisterView({ onNavigate }: Props) {
 									onBlur={field.handleBlur}
 									onChange={(e) => {
 										const digits = e.target.value.replace(/\D/g, "");
-										field.handleChange(digits ? `+91 ${digits}` : "");
+										field.handleChange(digits ? `+91${digits}` : "");
 									}}
 								/>
 							</div>

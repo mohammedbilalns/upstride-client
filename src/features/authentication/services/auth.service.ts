@@ -34,7 +34,7 @@ export const authService = {
 	): Promise<{ message: string; data: VerifyRegisterOtpResponse }> => {
 		const response = await api.post(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.VERIFY_REGISTER_OTP}`,
-			{ email, code: otp },
+			{ email, otp },
 		);
 		return response.data;
 	},
