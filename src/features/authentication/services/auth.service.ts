@@ -1,6 +1,7 @@
 import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
 import type {
+	AuthenticatedUser,
 	ChangePasswordInput,
 	LoginResponse,
 	RequestPasswordResetInput,
@@ -111,6 +112,14 @@ export const authService = {
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.SAVE_INTERESTS}`,
 			data,
 		);
+		return response.data;
+	},
+
+	getMe: async (): Promise<{
+		message: string;
+		data: { user: AuthenticatedUser };
+	}> => {
+		const response = await api.get(`${ROUTES.AUTH.BASE}${ROUTES.AUTH.ME}`);
 		return response.data;
 	},
 };

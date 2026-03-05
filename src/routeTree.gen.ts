@@ -13,6 +13,7 @@ import { Route as UserLayoutRouteImport } from './routes/_user-layout'
 import { Route as PublicLayoutRouteImport } from './routes/_public-layout'
 import { Route as AdminLayoutRouteImport } from './routes/_admin-layout'
 import { Route as PublicLayoutIndexRouteImport } from './routes/_public-layout/index'
+import { Route as UserLayoutProfileRouteImport } from './routes/_user-layout/profile'
 import { Route as UserLayoutHomeRouteImport } from './routes/_user-layout/home'
 import { Route as PublicLayoutAuthRouteImport } from './routes/_public-layout/auth'
 import { Route as AdminLayoutDashboardRouteImport } from './routes/_admin-layout/dashboard'
@@ -33,6 +34,11 @@ const PublicLayoutIndexRoute = PublicLayoutIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PublicLayoutRoute,
+} as any)
+const UserLayoutProfileRoute = UserLayoutProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => UserLayoutRoute,
 } as any)
 const UserLayoutHomeRoute = UserLayoutHomeRouteImport.update({
   id: '/home',
@@ -55,12 +61,14 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AdminLayoutDashboardRoute
   '/auth': typeof PublicLayoutAuthRoute
   '/home': typeof UserLayoutHomeRoute
+  '/profile': typeof UserLayoutProfileRoute
 }
 export interface FileRoutesByTo {
   '/': typeof PublicLayoutIndexRoute
   '/dashboard': typeof AdminLayoutDashboardRoute
   '/auth': typeof PublicLayoutAuthRoute
   '/home': typeof UserLayoutHomeRoute
+  '/profile': typeof UserLayoutProfileRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -70,13 +78,14 @@ export interface FileRoutesById {
   '/_admin-layout/dashboard': typeof AdminLayoutDashboardRoute
   '/_public-layout/auth': typeof PublicLayoutAuthRoute
   '/_user-layout/home': typeof UserLayoutHomeRoute
+  '/_user-layout/profile': typeof UserLayoutProfileRoute
   '/_public-layout/': typeof PublicLayoutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/auth' | '/home'
+  fullPaths: '/' | '/dashboard' | '/auth' | '/home' | '/profile'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/auth' | '/home'
+  to: '/' | '/dashboard' | '/auth' | '/home' | '/profile'
   id:
     | '__root__'
     | '/_admin-layout'
@@ -85,6 +94,7 @@ export interface FileRouteTypes {
     | '/_admin-layout/dashboard'
     | '/_public-layout/auth'
     | '/_user-layout/home'
+    | '/_user-layout/profile'
     | '/_public-layout/'
   fileRoutesById: FileRoutesById
 }
@@ -123,6 +133,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof PublicLayoutIndexRouteImport
       parentRoute: typeof PublicLayoutRoute
+    }
+    '/_user-layout/profile': {
+      id: '/_user-layout/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof UserLayoutProfileRouteImport
+      parentRoute: typeof UserLayoutRoute
     }
     '/_user-layout/home': {
       id: '/_user-layout/home'
@@ -176,10 +193,12 @@ const PublicLayoutRouteWithChildren = PublicLayoutRoute._addFileChildren(
 
 interface UserLayoutRouteChildren {
   UserLayoutHomeRoute: typeof UserLayoutHomeRoute
+  UserLayoutProfileRoute: typeof UserLayoutProfileRoute
 }
 
 const UserLayoutRouteChildren: UserLayoutRouteChildren = {
   UserLayoutHomeRoute: UserLayoutHomeRoute,
+  UserLayoutProfileRoute: UserLayoutProfileRoute,
 }
 
 const UserLayoutRouteWithChildren = UserLayoutRoute._addFileChildren(
