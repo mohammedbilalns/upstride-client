@@ -16,7 +16,10 @@ import { Route as PublicLayoutIndexRouteImport } from './routes/_public-layout/i
 import { Route as UserLayoutProfileRouteImport } from './routes/_user-layout/profile'
 import { Route as UserLayoutHomeRouteImport } from './routes/_user-layout/home'
 import { Route as PublicLayoutAuthRouteImport } from './routes/_public-layout/auth'
+import { Route as AdminLayoutUserManagementRouteImport } from './routes/_admin-layout/user-management'
+import { Route as AdminLayoutMentorManagementRouteImport } from './routes/_admin-layout/mentor-management'
 import { Route as AdminLayoutDashboardRouteImport } from './routes/_admin-layout/dashboard'
+import { Route as AdminLayoutCatalogManagementRouteImport } from './routes/_admin-layout/catalog-management'
 
 const UserLayoutRoute = UserLayoutRouteImport.update({
   id: '/_user-layout',
@@ -50,22 +53,46 @@ const PublicLayoutAuthRoute = PublicLayoutAuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => PublicLayoutRoute,
 } as any)
+const AdminLayoutUserManagementRoute =
+  AdminLayoutUserManagementRouteImport.update({
+    id: '/user-management',
+    path: '/user-management',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
+const AdminLayoutMentorManagementRoute =
+  AdminLayoutMentorManagementRouteImport.update({
+    id: '/mentor-management',
+    path: '/mentor-management',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
 const AdminLayoutDashboardRoute = AdminLayoutDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AdminLayoutRoute,
 } as any)
+const AdminLayoutCatalogManagementRoute =
+  AdminLayoutCatalogManagementRouteImport.update({
+    id: '/catalog-management',
+    path: '/catalog-management',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof PublicLayoutIndexRoute
+  '/catalog-management': typeof AdminLayoutCatalogManagementRoute
   '/dashboard': typeof AdminLayoutDashboardRoute
+  '/mentor-management': typeof AdminLayoutMentorManagementRoute
+  '/user-management': typeof AdminLayoutUserManagementRoute
   '/auth': typeof PublicLayoutAuthRoute
   '/home': typeof UserLayoutHomeRoute
   '/profile': typeof UserLayoutProfileRoute
 }
 export interface FileRoutesByTo {
   '/': typeof PublicLayoutIndexRoute
+  '/catalog-management': typeof AdminLayoutCatalogManagementRoute
   '/dashboard': typeof AdminLayoutDashboardRoute
+  '/mentor-management': typeof AdminLayoutMentorManagementRoute
+  '/user-management': typeof AdminLayoutUserManagementRoute
   '/auth': typeof PublicLayoutAuthRoute
   '/home': typeof UserLayoutHomeRoute
   '/profile': typeof UserLayoutProfileRoute
@@ -75,7 +102,10 @@ export interface FileRoutesById {
   '/_admin-layout': typeof AdminLayoutRouteWithChildren
   '/_public-layout': typeof PublicLayoutRouteWithChildren
   '/_user-layout': typeof UserLayoutRouteWithChildren
+  '/_admin-layout/catalog-management': typeof AdminLayoutCatalogManagementRoute
   '/_admin-layout/dashboard': typeof AdminLayoutDashboardRoute
+  '/_admin-layout/mentor-management': typeof AdminLayoutMentorManagementRoute
+  '/_admin-layout/user-management': typeof AdminLayoutUserManagementRoute
   '/_public-layout/auth': typeof PublicLayoutAuthRoute
   '/_user-layout/home': typeof UserLayoutHomeRoute
   '/_user-layout/profile': typeof UserLayoutProfileRoute
@@ -83,15 +113,34 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/auth' | '/home' | '/profile'
+  fullPaths:
+    | '/'
+    | '/catalog-management'
+    | '/dashboard'
+    | '/mentor-management'
+    | '/user-management'
+    | '/auth'
+    | '/home'
+    | '/profile'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/auth' | '/home' | '/profile'
+  to:
+    | '/'
+    | '/catalog-management'
+    | '/dashboard'
+    | '/mentor-management'
+    | '/user-management'
+    | '/auth'
+    | '/home'
+    | '/profile'
   id:
     | '__root__'
     | '/_admin-layout'
     | '/_public-layout'
     | '/_user-layout'
+    | '/_admin-layout/catalog-management'
     | '/_admin-layout/dashboard'
+    | '/_admin-layout/mentor-management'
+    | '/_admin-layout/user-management'
     | '/_public-layout/auth'
     | '/_user-layout/home'
     | '/_user-layout/profile'
@@ -155,6 +204,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicLayoutAuthRouteImport
       parentRoute: typeof PublicLayoutRoute
     }
+    '/_admin-layout/user-management': {
+      id: '/_admin-layout/user-management'
+      path: '/user-management'
+      fullPath: '/user-management'
+      preLoaderRoute: typeof AdminLayoutUserManagementRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
+    '/_admin-layout/mentor-management': {
+      id: '/_admin-layout/mentor-management'
+      path: '/mentor-management'
+      fullPath: '/mentor-management'
+      preLoaderRoute: typeof AdminLayoutMentorManagementRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
     '/_admin-layout/dashboard': {
       id: '/_admin-layout/dashboard'
       path: '/dashboard'
@@ -162,15 +225,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLayoutDashboardRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
+    '/_admin-layout/catalog-management': {
+      id: '/_admin-layout/catalog-management'
+      path: '/catalog-management'
+      fullPath: '/catalog-management'
+      preLoaderRoute: typeof AdminLayoutCatalogManagementRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
   }
 }
 
 interface AdminLayoutRouteChildren {
+  AdminLayoutCatalogManagementRoute: typeof AdminLayoutCatalogManagementRoute
   AdminLayoutDashboardRoute: typeof AdminLayoutDashboardRoute
+  AdminLayoutMentorManagementRoute: typeof AdminLayoutMentorManagementRoute
+  AdminLayoutUserManagementRoute: typeof AdminLayoutUserManagementRoute
 }
 
 const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
+  AdminLayoutCatalogManagementRoute: AdminLayoutCatalogManagementRoute,
   AdminLayoutDashboardRoute: AdminLayoutDashboardRoute,
+  AdminLayoutMentorManagementRoute: AdminLayoutMentorManagementRoute,
+  AdminLayoutUserManagementRoute: AdminLayoutUserManagementRoute,
 }
 
 const AdminLayoutRouteWithChildren = AdminLayoutRoute._addFileChildren(

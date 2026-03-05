@@ -1,5 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { ArrowLeft, Loader2 } from "lucide-react";
+import { useState } from "react";
 import FieldError from "@/components/common/Field-Error";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,9 +14,18 @@ interface Props {
 }
 
 export function ForgotPasswordView({ onNavigate }: Props) {
+	const [apiError, setApiError] = useState<string | null>(null);
+
 	const requestResetMutation = useRequestPasswordReset({
 		onSuccess: () => {
 			onNavigate("forgot-password-otp", form.state.values.email);
+		},
+		onError: (error) => {
+			const errorData = error as { response?: { data?: { message?: string } } };
+			const message =
+				errorData.response?.data?.message ||
+				"Something went wrong. Please try again.";
+			setApiError(message);
 		},
 	});
 
@@ -25,6 +35,7 @@ export function ForgotPasswordView({ onNavigate }: Props) {
 			onSubmit: forgotPasswordSchema,
 		},
 		onSubmit: async ({ value }) => {
+			setApiError(null);
 			requestResetMutation.mutate(value);
 		},
 	});
@@ -46,6 +57,12 @@ export function ForgotPasswordView({ onNavigate }: Props) {
 					Enter your email address and we'll send you a reset code.
 				</p>
 			</div>
+
+			{apiError && (
+				<div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm font-medium animate-in fade-in slide-in-from-top-1">
+					{apiError}
+				</div>
+			)}
 
 			<form
 				onSubmit={(e) => {
@@ -74,8 +91,12 @@ export function ForgotPasswordView({ onNavigate }: Props) {
 
 				<form.Subscribe selector={(s) => s.isSubmitting}>
 					{(isSubmitting) => (
-						<Button type="submit" className="w-full" disabled={isSubmitting}>
-							{isSubmitting && (
+						<Button
+							type="submit"
+							className="w-full"
+							disabled={isSubmitting || requestResetMutation.isPending}
+						>
+							{(isSubmitting || requestResetMutation.isPending) && (
 								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							)}
 							Send Reset Code
