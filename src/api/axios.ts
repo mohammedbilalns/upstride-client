@@ -52,7 +52,10 @@ api.interceptors.response.use(
 			// Skip refresh for auth or expertise-related endpoints
 			const isAuthEndpoint =
 				originalRequest.url?.includes("/auth") &&
-				!originalRequest.url.includes("/me");
+				!originalRequest.url.includes("/me") &&
+				!originalRequest.url.includes("/active-sessions") &&
+				!originalRequest.url.includes("/revoke-session") &&
+				!originalRequest.url.includes("/revoke-all-other-sessions");
 
 			if (isAuthEndpoint) {
 				clearAuthSession(router);

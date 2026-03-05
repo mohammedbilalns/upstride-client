@@ -42,3 +42,15 @@ export interface ChangePasswordInput {
 	email: string;
 	newPassword: string;
 }
+
+export interface ActiveSession {
+	id: string;
+	deviceName: string;
+	deviceType: string;
+	lastUsedAt: string;
+	isCurrent: boolean;
+}
+
+export interface GetActiveSessionsResponse {
+	sessions: ActiveSession[];
+}

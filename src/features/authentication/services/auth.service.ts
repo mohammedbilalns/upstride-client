@@ -3,6 +3,7 @@ import { ROUTES } from "@/api/routes";
 import type {
 	AuthenticatedUser,
 	ChangePasswordInput,
+	GetActiveSessionsResponse,
 	LoginResponse,
 	RequestPasswordResetInput,
 	SaveUserInterestsResponse,
@@ -120,6 +121,28 @@ export const authService = {
 		data: { user: AuthenticatedUser };
 	}> => {
 		const response = await api.get(`${ROUTES.AUTH.BASE}${ROUTES.AUTH.ME}`);
+		return response.data;
+	},
+	getActiveSessions: async (): Promise<{
+		message: string;
+		data: GetActiveSessionsResponse;
+	}> => {
+		const response = await api.get(
+			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.ACTIVE_SESSIONS}`,
+		);
+		return response.data;
+	},
+	revokeSession: async (sessionId: string): Promise<{ message: string }> => {
+		const response = await api.post(
+			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.REVOKE_SESSION}`,
+			{ targetSessionId: sessionId },
+		);
+		return response.data;
+	},
+	revokeAllOtherSessions: async (): Promise<{ message: string }> => {
+		const response = await api.post(
+			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.REVOKE_ALL_OTHER_SESSIONS}`,
+		);
 		return response.data;
 	},
 };
