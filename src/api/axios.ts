@@ -2,6 +2,7 @@ import type { InternalAxiosRequestConfig } from "axios";
 import axios, { type AxiosError } from "axios";
 import { router } from "@/app/router/routerConfig";
 import { env } from "@/shared/config/env";
+import { clearAuthSession } from "@/features/authentication/utils/clear-auth-session";
 
 /**
  * Custom axios request config type with an internal retry flag
@@ -50,11 +51,11 @@ api.interceptors.response.use(
 		if (error.response?.status === 401 && !originalRequest._retry) {
 			// Skip refresh for auth or expertise-related endpoints
 			const isAuthEndpoint =
-				(originalRequest.url?.includes("/auth") &&
-					!originalRequest.url.includes("/me")) ||
-				originalRequest.url?.includes("/expertise");
+				originalRequest.url?.includes("/auth") &&
+				!originalRequest.url.includes("/me");
 
 			if (isAuthEndpoint) {
+				clearAuthSession(router);
 				return Promise.reject(error);
 			}
 
@@ -82,16 +83,8 @@ api.interceptors.response.use(
 				return api(originalRequest);
 			} catch (refreshError) {
 				// Refresh failed → log out and clear auth state
-				router.update({
-					context: {
-						...router.options.context,
-						auth: {
-							user: null,
-							isAuthenticated: false,
-							accessToken: null,
-						},
-					},
-				});
+				clearAuthSession(router);
+				router.navigate({ to: "/auth" });
 				return Promise.reject(refreshError);
 			}
 		}
@@ -100,16 +93,7 @@ api.interceptors.response.use(
 			// Handle forbidden access (403) — blocked users
 			const data = error.response.data as { message?: string };
 			if (data?.message?.toLowerCase().includes("blocked")) {
-				router.update({
-					context: {
-						...router.options.context,
-						auth: {
-							user: null,
-							isAuthenticated: false,
-							accessToken: null,
-						},
-					},
-				});
+				clearAuthSession(router);
 				router.navigate({
 					to: "/auth",
 					search: { error: "blocked" },
