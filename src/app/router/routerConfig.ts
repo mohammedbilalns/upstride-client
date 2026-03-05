@@ -17,7 +17,5 @@ export const router = createRouter({
 	} as RouterContext,
 	defaultPreload: "intent",
 	defaultPendingComponent: PendingComponent,
-	defaultPendingMs: 0,
-	defaultPendingMinMs: 100,
 	scrollRestoration: true,
 });
