@@ -9,16 +9,16 @@ const QUOTES = [
 		author: "WARREN BUFFETT",
 	},
 	{
-		line1: "A mentor empowers",
-		line2: "a person to see",
-		line3: "a possible future.",
-		author: "THOMAS CHUNG",
+		line1: "The right guidance",
+		line2: "can turn potential",
+		line3: "into reality.",
+		author: "JOHN C. MAXWELL",
 	},
 	{
-		line1: "Show me a successful individual",
-		line2: "and I'll show you",
-		line3: "someone who had a mentor.",
-		author: "BOB PROCTOR",
+		line1: "True growth begins",
+		line2: "at the end of your",
+		line3: "comfort zone.",
+		author: "ROY T. BENNETT",
 	},
 ];
 
@@ -68,19 +68,19 @@ export function AuthQuoteCarousel() {
 
 			{/* Quote Carousel block */}
 			<div className="relative space-y-6 flex-1 flex flex-col justify-center my-8 z-10">
-				{/* Giant decorative opening quote mark */}
-				<span
-					className="absolute -top-12 left-0 leading-none font-serif select-none text-white/20 pointer-events-none transition-opacity duration-500"
-					style={{ fontSize: "9rem", lineHeight: 0.8, marginLeft: "-0.08em" }}
-					aria-hidden
-				>
-					"
-				</span>
-
 				<div
-					className={`transition-opacity duration-500 ${isFading ? "opacity-0" : "opacity-100"}`}
+					className={`relative transition-opacity duration-500 ${isFading ? "opacity-0" : "opacity-100"}`}
 				>
-					<blockquote className="relative text-3xl font-bold leading-snug tracking-tight text-white mb-6">
+					{/* Giant decorative opening quote mark */}
+					<span
+						className="absolute -top-12 left-0 leading-none font-serif select-none text-white/20 pointer-events-none z-0"
+						style={{ fontSize: "9rem", lineHeight: 0.8, marginLeft: "-0.08em" }}
+						aria-hidden
+					>
+						"
+					</span>
+
+					<blockquote className="relative z-10 text-3xl font-bold leading-snug tracking-tight text-white mb-6">
 						{currentQuote.line1}
 						<br />
 						<span className="text-white/70">{currentQuote.line2}</span>
