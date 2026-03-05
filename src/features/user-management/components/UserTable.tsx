@@ -195,8 +195,8 @@ export function UserTable({ users }: UserTableProps) {
 				}
 				message={
 					actionType === "block"
-						? `Are you sure you want to block ${selectedUser?.name}? They will be immediately signed out from all devices and lose access to the platform.`
-						: `Are you sure you want to unblock ${selectedUser?.name}? They will regain access to log in and use the platform.`
+						? `Are you sure you want to block ${selectedUser?.name}?`
+						: `Are you sure you want to unblock ${selectedUser?.name}?`
 				}
 				variant={actionType === "block" ? "destructive" : "green"}
 				confirmText={
