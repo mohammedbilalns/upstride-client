@@ -1,7 +1,9 @@
 import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
 import type {
+	ChangePasswordInput,
 	LoginResponse,
+	RequestPasswordResetInput,
 	SaveUserInterestsResponse,
 	VerifyRegisterOtpResponse,
 	VerifyResetOtpResponse,
@@ -59,10 +61,12 @@ export const authService = {
 		return response.data;
 	},
 
-	requestPasswordReset: async (email: string): Promise<{ message: string }> => {
+	requestPasswordReset: async (
+		data: RequestPasswordResetInput,
+	): Promise<{ message: string }> => {
 		const response = await api.post(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.REQUEST_PASSWORD_RESET}`,
-			{ email },
+			data,
 		);
 		return response.data;
 	},
@@ -73,7 +77,7 @@ export const authService = {
 	): Promise<{ message: string; data: VerifyResetOtpResponse }> => {
 		const response = await api.post(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.VERIFY_RESET_PASSWORD_OTP}`,
-			{ email, code: otp },
+			{ email, otp },
 		);
 		return response.data;
 	},
@@ -88,11 +92,9 @@ export const authService = {
 		return response.data;
 	},
 
-	changePassword: async (data: {
-		tempToken: string;
-		email: string;
-		newPassword: string;
-	}): Promise<{ message: string }> => {
+	changePassword: async (
+		data: ChangePasswordInput,
+	): Promise<{ message: string }> => {
 		const response = await api.post(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.CHANGE_PASSWORD}`,
 			data,

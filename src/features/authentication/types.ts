@@ -32,3 +32,13 @@ export interface VerifyResetOtpResponse {
 }
 
 export type SaveUserInterestsResponse = LoginResponse;
+
+export interface RequestPasswordResetInput {
+	email: string;
+}
+
+export interface ChangePasswordInput {
+	tempToken: string;
+	email: string;
+	newPassword: string;
+}

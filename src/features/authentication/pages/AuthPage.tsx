@@ -81,7 +81,11 @@ export default function AuthPage() {
 					)}
 
 					{view === "change-password" && (
-						<ChangePasswordView resetToken={resetToken} />
+						<ChangePasswordView
+							email={pendingEmail}
+							resetToken={resetToken}
+							onNavigate={handleNavigate}
+						/>
 					)}
 
 					{view === "onboarding" && <OnboardingView setupToken={setupToken} />}
