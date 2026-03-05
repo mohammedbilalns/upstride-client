@@ -12,8 +12,8 @@ import type { AuthView } from "../types";
 import { useVerifyOtp } from "../hooks/use-verify-otp";
 import { useResendOtp } from "../hooks/use-resend-otp";
 
-const OTP_RESEND_COOLDOWN = 60; // 1 minute to resend
-const OTP_EXPIRY_SECONDS = 300; // 5 minutes total expiry
+const OTP_RESEND_COOLDOWN = 60;
+const OTP_EXPIRY_SECONDS = 300;
 const OTP_LENGTH = 6;
 
 interface Props {
@@ -198,7 +198,7 @@ export function OtpView({ email, onNavigate }: Props) {
 				{isExpired ? "Code Expired" : "Verify Email"}
 			</Button>
 
-			{/* Resend row with countdown timer displayed inline */}
+			{/* Resend row with countdown */}
 			<div className="flex items-center justify-center gap-2 text-sm">
 				<span className="text-muted-foreground">Didn't receive a code?</span>
 				<button

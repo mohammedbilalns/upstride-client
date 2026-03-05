@@ -11,6 +11,7 @@ import type { AuthView } from "../types";
 import { loginSchema } from "../validators";
 import FieldError from "@/components/common/Field-Error";
 import { SocialAuthButtons } from "./SocialAuthButtons";
+import { useLogin } from "../hooks/use-login";
 
 interface Props {
 	onNavigate: (view: AuthView) => void;
@@ -19,15 +20,31 @@ interface Props {
 export function LoginView({ onNavigate }: Props) {
 	const router = useRouter();
 	const [showPassword, setShowPassword] = useState(false);
+	const [apiError, setApiError] = useState<string | null>(null);
+
+	const loginMutation = useLogin({
+		onSuccess: async ({ user }) => {
+			if (user.role === "admin" || user.role === "superadmin") {
+				await router.navigate({ to: "/dashboard" });
+			} else {
+				await router.navigate({ to: "/home" });
+			}
+		},
+		onError: (error: any) => {
+			const message =
+				error.response?.data?.message ||
+				"Invalid credentials. Please try again.";
+			setApiError(message);
+		},
+	});
 
 	const form = useForm({
 		defaultValues: { email: "", password: "" },
 		onSubmit: async ({ value }) => {
+			setApiError(null);
 			const result = loginSchema.safeParse(value);
 			if (!result.success) return;
-			// TODO: call login API
-			console.log(result.data);
-			await router.navigate({ to: "/home" });
+			loginMutation.mutate(result.data);
 		},
 		validators: {
 			onSubmit: loginSchema,
@@ -42,6 +59,12 @@ export function LoginView({ onNavigate }: Props) {
 					Sign in to your account to continue
 				</p>
 			</div>
+
+			{apiError && (
+				<div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm font-medium animate-in fade-in slide-in-from-top-1">
+					{apiError}
+				</div>
+			)}
 
 			<SocialAuthButtons />
 
@@ -121,8 +144,12 @@ export function LoginView({ onNavigate }: Props) {
 
 				<form.Subscribe selector={(s) => s.isSubmitting}>
 					{(isSubmitting) => (
-						<Button type="submit" className="w-full" disabled={isSubmitting}>
-							{isSubmitting && (
+						<Button
+							type="submit"
+							className="w-full"
+							disabled={isSubmitting || loginMutation.isPending}
+						>
+							{(isSubmitting || loginMutation.isPending) && (
 								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							)}
 							Sign in
