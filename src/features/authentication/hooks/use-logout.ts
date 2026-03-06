@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
+import { toast } from "sonner";
 import { authService } from "../services/auth.service";
 import { clearAuthSession } from "../utils/clear-auth-session";
-import { toast } from "sonner";
 
 export function useLogout() {
 	const router = useRouter();

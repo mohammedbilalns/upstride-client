@@ -1,16 +1,16 @@
-import { Link, useRouteContext, useLocation } from "@tanstack/react-router";
+import { Link, useLocation, useRouteContext } from "@tanstack/react-router";
 import {
-	Users,
-	GraduationCap,
-	Library,
-	Zap,
-	LogOut,
 	ChevronRight,
+	GraduationCap,
 	LayoutDashboard,
+	Library,
+	LogOut,
+	Users,
+	Zap,
 } from "lucide-react";
 import ThemeToggle from "@/components/common/Theme-Toggle";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { useLogout } from "@/features/authentication/hooks/use-logout";
 import { cn } from "@/shared/utils/cn";
 

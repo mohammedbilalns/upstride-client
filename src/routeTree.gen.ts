@@ -20,6 +20,7 @@ import { Route as AdminLayoutUserManagementRouteImport } from './routes/_admin-l
 import { Route as AdminLayoutMentorManagementRouteImport } from './routes/_admin-layout/mentor-management'
 import { Route as AdminLayoutDashboardRouteImport } from './routes/_admin-layout/dashboard'
 import { Route as AdminLayoutCatalogManagementRouteImport } from './routes/_admin-layout/catalog-management'
+import { Route as UserLayoutMentorRegisterRouteImport } from './routes/_user-layout/mentor.register'
 
 const UserLayoutRoute = UserLayoutRouteImport.update({
   id: '/_user-layout',
@@ -76,6 +77,12 @@ const AdminLayoutCatalogManagementRoute =
     path: '/catalog-management',
     getParentRoute: () => AdminLayoutRoute,
   } as any)
+const UserLayoutMentorRegisterRoute =
+  UserLayoutMentorRegisterRouteImport.update({
+    id: '/mentor/register',
+    path: '/mentor/register',
+    getParentRoute: () => UserLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof PublicLayoutIndexRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof PublicLayoutAuthRoute
   '/home': typeof UserLayoutHomeRoute
   '/profile': typeof UserLayoutProfileRoute
+  '/mentor/register': typeof UserLayoutMentorRegisterRoute
 }
 export interface FileRoutesByTo {
   '/': typeof PublicLayoutIndexRoute
@@ -96,6 +104,7 @@ export interface FileRoutesByTo {
   '/auth': typeof PublicLayoutAuthRoute
   '/home': typeof UserLayoutHomeRoute
   '/profile': typeof UserLayoutProfileRoute
+  '/mentor/register': typeof UserLayoutMentorRegisterRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -110,6 +119,7 @@ export interface FileRoutesById {
   '/_user-layout/home': typeof UserLayoutHomeRoute
   '/_user-layout/profile': typeof UserLayoutProfileRoute
   '/_public-layout/': typeof PublicLayoutIndexRoute
+  '/_user-layout/mentor/register': typeof UserLayoutMentorRegisterRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -122,6 +132,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/home'
     | '/profile'
+    | '/mentor/register'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/home'
     | '/profile'
+    | '/mentor/register'
   id:
     | '__root__'
     | '/_admin-layout'
@@ -145,6 +157,7 @@ export interface FileRouteTypes {
     | '/_user-layout/home'
     | '/_user-layout/profile'
     | '/_public-layout/'
+    | '/_user-layout/mentor/register'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -232,6 +245,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLayoutCatalogManagementRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
+    '/_user-layout/mentor/register': {
+      id: '/_user-layout/mentor/register'
+      path: '/mentor/register'
+      fullPath: '/mentor/register'
+      preLoaderRoute: typeof UserLayoutMentorRegisterRouteImport
+      parentRoute: typeof UserLayoutRoute
+    }
   }
 }
 
@@ -270,11 +290,13 @@ const PublicLayoutRouteWithChildren = PublicLayoutRoute._addFileChildren(
 interface UserLayoutRouteChildren {
   UserLayoutHomeRoute: typeof UserLayoutHomeRoute
   UserLayoutProfileRoute: typeof UserLayoutProfileRoute
+  UserLayoutMentorRegisterRoute: typeof UserLayoutMentorRegisterRoute
 }
 
 const UserLayoutRouteChildren: UserLayoutRouteChildren = {
   UserLayoutHomeRoute: UserLayoutHomeRoute,
   UserLayoutProfileRoute: UserLayoutProfileRoute,
+  UserLayoutMentorRegisterRoute: UserLayoutMentorRegisterRoute,
 }
 
 const UserLayoutRouteWithChildren = UserLayoutRoute._addFileChildren(

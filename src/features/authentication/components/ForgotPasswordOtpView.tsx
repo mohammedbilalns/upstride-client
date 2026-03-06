@@ -7,8 +7,8 @@ import {
 	InputOTPGroup,
 	InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { useVerifyPasswordResetOtp } from "../hooks/use-verify-password-reset-otp";
 import { useResendPasswordResetOtp } from "../hooks/use-resend-password-reset-otp";
+import { useVerifyPasswordResetOtp } from "../hooks/use-verify-password-reset-otp";
 import type { AuthView } from "../types";
 
 const OTP_TIMEOUT_SECONDS = 120;

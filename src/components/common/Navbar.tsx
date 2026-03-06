@@ -1,6 +1,8 @@
 import { Link, useRouteContext } from "@tanstack/react-router";
-import { Bell, Zap, User as UserIcon, LogOut } from "lucide-react";
+import { Bell, LogOut, User as UserIcon, Zap } from "lucide-react";
 import ThemeToggle from "@/components/common/Theme-Toggle";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -10,8 +12,6 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { useLogout } from "@/features/authentication/hooks/use-logout";
 
 export default function UserNavbar() {

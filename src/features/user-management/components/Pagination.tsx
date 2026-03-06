@@ -41,14 +41,12 @@ export function Pagination({
 		if (totalPages <= showMax) {
 			for (let i = 1; i <= totalPages; i++) pages.push(i);
 		} else {
-			// Always show first page
 			pages.push(1);
 
 			if (currentPage > 3) {
 				pages.push("ellipsis-1");
 			}
 
-			// Show neighbors
 			const start = Math.max(2, currentPage - 1);
 			const end = Math.min(totalPages - 1, currentPage + 1);
 
@@ -60,7 +58,6 @@ export function Pagination({
 				pages.push("ellipsis-2");
 			}
 
-			// Always show last page
 			if (!pages.includes(totalPages)) pages.push(totalPages);
 		}
 		return pages;
