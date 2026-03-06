@@ -1,32 +1,32 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
-	Mail,
-	Phone,
-	User as UserIcon,
-	ShieldCheck,
-	Briefcase,
 	Award,
+	Briefcase,
+	Mail,
 	Pencil,
+	Phone,
+	ShieldCheck,
+	User as UserIcon,
 } from "lucide-react";
 import { useState } from "react";
-import { ActiveSessionList } from "@/features/authentication/components/ActiveSessionList";
-import { activeSessionsQueryOptions } from "@/features/authentication/hooks/use-active-sessions";
-import {
-	profileQueryOptions,
-	useProfile,
-	ProfileEditView,
-} from "@/features/profile-management";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
+	CardDescription,
 	CardHeader,
 	CardTitle,
-	CardDescription,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
+import { ActiveSessionList } from "@/features/authentication/components/ActiveSessionList";
+import { activeSessionsQueryOptions } from "@/features/authentication/hooks/use-active-sessions";
+import {
+	ProfileEditView,
+	profileQueryOptions,
+	useProfile,
+} from "@/features/profile-management";
 
 export const Route = createFileRoute("/_user-layout/profile")({
 	loader: async ({ context }) => {

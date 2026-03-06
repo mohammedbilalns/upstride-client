@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { MentorManagementService } from "../../user-management/services/mentor-management.service";
 import type { RejectMentorInput } from "@/shared/types/mentor";
+import { MentorManagementService } from "../../user-management/services/mentor-management.service";
 
 export function useApproveMentor() {
 	const queryClient = useQueryClient();

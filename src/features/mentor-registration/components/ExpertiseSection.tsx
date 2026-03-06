@@ -1,7 +1,8 @@
 import { Award, Plus, Trash2 } from "lucide-react";
+import FieldError from "@/components/common/Field-Error";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import {
 	Select,
 	SelectContent,
@@ -9,9 +10,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import FieldError from "@/components/common/Field-Error";
-import { SkillLevelValues } from "@/shared/types/user";
 import type { MentorSkill } from "@/features/mentor-registration/types";
+import { SkillLevelValues } from "@/shared/types/user";
 
 interface ExpertiseSectionProps {
 	form: any;

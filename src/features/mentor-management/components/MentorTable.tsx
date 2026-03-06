@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { User as UserIcon } from "lucide-react";
+import { useState } from "react";
 import {
 	Table,
 	TableBody,
@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/table";
 import type { Mentor } from "@/shared/types/mentor";
 import { useApproveMentor, useRejectMentor } from "../hooks/use-mentor-actions";
-import { MentorTableRow } from "./MentorTableRow";
 import { MentorActionModals } from "./MentorActionModals";
+import { MentorTableRow } from "./MentorTableRow";
 
 interface MentorTableProps {
 	mentors: Mentor[];

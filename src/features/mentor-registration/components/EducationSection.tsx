@@ -1,22 +1,21 @@
 import {
+	Eye,
+	FileText,
 	GraduationCap,
+	Loader2,
 	Plus,
 	Trash2,
 	Upload,
-	FileText,
-	Loader2,
-	Eye,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import FieldError from "@/components/common/Field-Error";
-import { fileService } from "@/shared/services/file.service";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { useState, useEffect } from "react";
-
+import FieldError from "@/components/common/Field-Error";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useDeleteFile } from "@/shared/hooks/use-file";
+import { fileService } from "@/shared/services/file.service";
 
 interface EducationSectionProps {
 	form: any;

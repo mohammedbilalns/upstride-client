@@ -1,7 +1,8 @@
 import { User } from "lucide-react";
+import FieldError from "@/components/common/Field-Error";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
 	Select,
 	SelectContent,
@@ -9,7 +10,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import FieldError from "@/components/common/Field-Error";
 import { useProfessions } from "../hooks/use-catalog";
 
 interface ProfessionalSummarySectionProps {

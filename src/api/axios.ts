@@ -85,7 +85,7 @@ api.interceptors.response.use(
 				originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 				return api(originalRequest);
 			} catch (refreshError) {
-				// Refresh failed → log out and clear auth state
+				// Refresh failed then log out and clear auth state
 				clearAuthSession(router);
 				router.navigate({ to: "/auth" });
 				return Promise.reject(refreshError);

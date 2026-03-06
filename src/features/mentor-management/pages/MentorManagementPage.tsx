@@ -8,9 +8,9 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Route } from "@/routes/_admin-layout/mentor-management";
-import { useMentors } from "../hooks/use-mentors";
 import { Pagination } from "../../user-management/components/Pagination";
 import { MentorTable } from "../components/MentorTable";
+import { useMentors } from "../hooks/use-mentors";
 
 export function MentorManagementPage() {
 	const navigate = useNavigate({ from: Route.fullPath });

@@ -1,8 +1,11 @@
+import { format, isValid, parse } from "date-fns";
 import { Briefcase, Plus, Trash2 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import FieldError from "@/components/common/Field-Error";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
 	Select,
 	SelectContent,
@@ -10,10 +13,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { format, parse, isValid } from "date-fns";
-import FieldError from "@/components/common/Field-Error";
 import { useProfessions } from "../hooks/use-catalog";
-import { toast } from "sonner";
 
 interface ExperienceSectionProps {
 	form: any;

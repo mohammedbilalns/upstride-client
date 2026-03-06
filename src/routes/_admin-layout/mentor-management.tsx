@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { MentorManagementPage } from "@/features/mentor-management/pages/MentorManagementPage";
 import { mentorManagementQueryOptions } from "@/features/mentor-management/hooks/use-mentors";
-import { MentorManagementSearchSchema } from "@/shared/validators/mentor-management-params";
+import { MentorManagementPage } from "@/features/mentor-management/pages/MentorManagementPage";
+import { MentorManagementSearchSchema } from "@/features/mentor-management/validators/mentor-management-params";
 
 export const Route = createFileRoute("/_admin-layout/mentor-management")({
 	validateSearch: (search) => MentorManagementSearchSchema.parse(search),

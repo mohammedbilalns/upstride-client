@@ -3,8 +3,8 @@ import {
 	queryOptions,
 	useQuery,
 } from "@tanstack/react-query";
-import { MentorManagementService } from "../../user-management/services/mentor-management.service";
 import type { GetMentorApplicationsInput } from "@/shared/types/mentor";
+import { MentorManagementService } from "../../user-management/services/mentor-management.service";
 
 export const mentorManagementQueryOptions = (
 	params: GetMentorApplicationsInput,

@@ -1,7 +1,7 @@
-import type { Mentor } from "@/shared/types/mentor";
-import { Briefcase, User as UserIcon, Globe, ExternalLink } from "lucide-react";
+import { Briefcase, ExternalLink, Globe, User as UserIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import type { Mentor } from "@/shared/types/mentor";
 
 interface MentorRowDetailsProps {
 	mentor: Mentor;

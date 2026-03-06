@@ -1,26 +1,26 @@
 import { useForm } from "@tanstack/react-form";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { useState } from "react";
-import { Loader2, ArrowRight } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { useOnboardingCatalog } from "@/features/onboarding/hooks/use-catalog";
 import {
 	useRegisterMentor,
 	useResubmitMentor,
 } from "@/features/mentor-registration/hooks/use-mentor-registration";
-import {
-	registerMentorSchema,
-	resubmitMentorSchema,
-} from "@/shared/validators/mentor-registration.schema";
 import type {
 	Mentor,
 	MentorExperience,
 	MentorSkill,
 } from "@/features/mentor-registration/types";
-import { ProfessionalSummarySection } from "./ProfessionalSummarySection";
-import { ExpertiseSection } from "./ExpertiseSection";
-import { ExperienceSection } from "./ExperienceSection";
+import {
+	registerMentorSchema,
+	resubmitMentorSchema,
+} from "@/features/mentor-registration/validators/mentor-registration.schema";
+import { useOnboardingCatalog } from "@/features/onboarding/hooks/use-catalog";
 import { EducationSection } from "./EducationSection";
-import { toast } from "sonner";
+import { ExperienceSection } from "./ExperienceSection";
+import { ExpertiseSection } from "./ExpertiseSection";
+import { ProfessionalSummarySection } from "./ProfessionalSummarySection";
 
 interface MentorFormProps {
 	existingProfile: Mentor | null;

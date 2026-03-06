@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { ChevronDown, ChevronUp, Mail, Calendar } from "lucide-react";
+import { Calendar, ChevronDown, ChevronUp, Mail } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
