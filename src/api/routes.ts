@@ -35,6 +35,9 @@ export const ROUTES = {
 		REGISTRATION_INFO: "/registration-info",
 		REGISTER: "/register",
 		RESUBMIT: "/resubmit",
+		APPLICATIONS: "/applications",
+		APPROVE: (id: string) => `/applications/${id}/approve`,
+		REJECT: (id: string) => `/applications/${id}/reject`,
 	},
 	STORAGE: {
 		BASE: "/storage",
