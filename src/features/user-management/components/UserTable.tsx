@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -87,22 +86,14 @@ export function UserTable({ users }: UserTableProps) {
 								className="hover:bg-muted/30 transition-colors"
 							>
 								<TableCell className="py-4">
-									<div className="flex items-center gap-3">
-										<Avatar className="h-10 w-10 border border-border/50 shadow-sm ring-2 ring-background">
-											<AvatarImage src={user.profilePictureUrl || ""} />
-											<AvatarFallback className="bg-primary/5 text-primary">
-												{user.name.charAt(0)}
-											</AvatarFallback>
-										</Avatar>
-										<div className="flex flex-col">
-											<span className="font-semibold text-foreground/90 leading-tight">
-												{user.name}
-											</span>
-											<span className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-												<Mail className="w-3 h-3" />
-												{user.email}
-											</span>
-										</div>
+									<div className="flex flex-col">
+										<span className="font-semibold text-foreground/90 leading-tight">
+											{user.name}
+										</span>
+										<span className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+											<Mail className="w-3 h-3" />
+											{user.email}
+										</span>
 									</div>
 								</TableCell>
 								<TableCell>
