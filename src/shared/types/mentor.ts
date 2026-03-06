@@ -5,7 +5,7 @@ export interface GetMentorApplicationsInput {
 	sort?: "recent" | "old" | "status";
 }
 
-export interface MentorApplicationDTO {
+export interface Mentor {
 	id: string;
 	userId: string;
 	name: string;
@@ -13,18 +13,24 @@ export interface MentorApplicationDTO {
 	organization: string;
 	yearsOfExperience: number;
 	currentRole: string;
-	expertises: string[];
-	skills: {
+	bio: string;
+	personalWebsite: string | null;
+	expertises: {
 		name: string;
-		level: string;
+		skills: {
+			name: string;
+			level: string;
+		}[];
 	}[];
+	resumeUrl: string;
+	resubmissionCount: number;
 	status: "approved" | "rejected" | "pending";
 	appliedAt: string;
 	updatedAt: string;
 }
 
 export interface GetMentorApplicationsResponse {
-	items: MentorApplicationDTO[];
+	items: Mentor[];
 	total: number;
 	page: number;
 	limit: number;

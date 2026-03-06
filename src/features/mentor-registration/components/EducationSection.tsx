@@ -141,7 +141,7 @@ export function EducationSection({
 											<FileText className="h-6 w-6 text-green-600 dark:text-green-400" />
 										</div>
 										<p className="text-sm font-medium text-green-700 dark:text-green-400">
-											Resume Uploaded Successfully
+											Resume added
 										</p>
 										<div className="flex gap-2 mt-4">
 											<Button

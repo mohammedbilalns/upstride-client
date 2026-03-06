@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -14,10 +15,11 @@ interface ConfirmModalProps {
 	onConfirm: () => void;
 	title: string;
 	message: string;
-	confirmText?: string;
+	confirmText?: ReactNode;
 	cancelText?: string;
 	variant?: "default" | "destructive" | "green";
 	isLoading?: boolean;
+	children?: ReactNode;
 }
 
 export function ConfirmModal({
@@ -30,6 +32,7 @@ export function ConfirmModal({
 	cancelText = "Cancel",
 	variant = "default",
 	isLoading = false,
+	children,
 }: ConfirmModalProps) {
 	const variantClass =
 		variant === "green"
@@ -42,6 +45,7 @@ export function ConfirmModal({
 				<DialogHeader>
 					<DialogTitle>{title}</DialogTitle>
 					<DialogDescription>{message}</DialogDescription>
+					{children}
 				</DialogHeader>
 				<DialogFooter className="gap-2 sm:gap-0">
 					<Button variant="ghost" onClick={onClose} disabled={isLoading}>
@@ -53,7 +57,9 @@ export function ConfirmModal({
 						onClick={onConfirm}
 						disabled={isLoading}
 					>
-						{isLoading ? "Processing..." : confirmText}
+						{isLoading && typeof confirmText === "string"
+							? "Processing..."
+							: confirmText}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

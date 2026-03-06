@@ -1,0 +1,35 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { MentorManagementService } from "../../user-management/services/mentor-management.service";
+import type { RejectMentorInput } from "@/shared/types/mentor";
+
+export function useApproveMentor() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (id: string) => MentorManagementService.approveApplication(id),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["mentor-applications"] });
+			toast.success("Mentor application approved successfully");
+		},
+		onError: (error: any) => {
+			toast.error(error.response?.data?.message || "Failed to approve mentor");
+		},
+	});
+}
+
+export function useRejectMentor() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (input: RejectMentorInput) =>
+			MentorManagementService.rejectApplication(input),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["mentor-applications"] });
+			toast.success("Mentor application rejected successfully");
+		},
+		onError: (error: any) => {
+			toast.error(error.response?.data?.message || "Failed to reject mentor");
+		},
+	});
+}
