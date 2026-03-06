@@ -1,7 +1,7 @@
 import {
+	keepPreviousData,
 	queryOptions,
 	useQuery,
-	keepPreviousData,
 } from "@tanstack/react-query";
 import { UserManagementService } from "../services/user-management.service";
 import type { GetUsersInput } from "../types";

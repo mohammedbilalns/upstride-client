@@ -1,6 +1,11 @@
 export type UserRole = "USER" | "MENTOR" | "ADMIN" | "SUPER_ADMIN";
 export type AuthType = "LOCAL" | "GOOGLE" | "LINKEDIN";
 export type SkillLevel = "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+export const SkillLevelValues = [
+	"BEGINNER",
+	"INTERMEDIATE",
+	"ADVANCED",
+] as const;
 
 export interface User {
 	id: string;

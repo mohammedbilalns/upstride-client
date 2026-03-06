@@ -5,8 +5,8 @@ import FieldError from "@/components/common/Field-Error";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { AuthView } from "../types";
 import { useRequestPasswordReset } from "../hooks/use-request-password-reset";
+import type { AuthView } from "../types";
 import { forgotPasswordSchema } from "../validators";
 
 interface Props {

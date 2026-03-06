@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { UserManagementService } from "../services/user-management.service";
 import { toast } from "sonner";
+import { UserManagementService } from "../services/user-management.service";
 
 export function useBlockUser() {
 	const queryClient = useQueryClient();

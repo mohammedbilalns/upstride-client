@@ -1,6 +1,7 @@
+import { Loader2, RefreshCcw, ShieldAlert, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { useActiveSessions } from "../hooks/use-active-sessions";
-import { ActiveSessionItem } from "./ActiveSessionItem";
+import { ConfirmModal } from "@/components/common/ConfirmModal";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -9,10 +10,9 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { useActiveSessions } from "../hooks/use-active-sessions";
 import { useRevokeAllOtherSessions } from "../hooks/use-revoke-all-other-sessions";
-import { ShieldAlert, Trash2, Loader2, RefreshCcw } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { ConfirmModal } from "@/components/common/ConfirmModal";
+import { ActiveSessionItem } from "./ActiveSessionItem";
 
 export function ActiveSessionList() {
 	const [isConfirmOpen, setIsConfirmOpen] = useState(false);

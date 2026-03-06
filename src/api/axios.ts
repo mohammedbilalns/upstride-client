@@ -1,8 +1,8 @@
 import type { InternalAxiosRequestConfig } from "axios";
 import axios, { type AxiosError } from "axios";
 import { router } from "@/app/router/routerConfig";
-import { env } from "@/shared/config/env";
 import { clearAuthSession } from "@/features/authentication/utils/clear-auth-session";
+import { env } from "@/shared/config/env";
 
 /**
  * Custom axios request config type with an internal retry flag

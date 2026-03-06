@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import type React from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { router } from "@/app/router/routerConfig";
 import { authService } from "@/features/authentication/services/auth.service";
 import type { AuthenticatedUser } from "@/features/authentication/types";
-import { router } from "@/app/router/routerConfig";
 
 interface AuthState {
 	user: AuthenticatedUser | null;

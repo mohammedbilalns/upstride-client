@@ -22,11 +22,23 @@ export const ROUTES = {
 	CATALOG: {
 		BASE: "/catalog",
 		ONBOARDING: "/onboarding",
+		PROFESSIONS: "/professions",
 	},
 	USER_MANAGEMENT: {
 		BASE: "/user-management",
 		FETCH_USERS: "/fetch-users",
 		BLOCK: (id: string) => `/${id}/block`,
 		UNBLOCK: (id: string) => `/${id}/unblock`,
+	},
+	MENTOR: {
+		BASE: "/mentor",
+		REGISTRATION_INFO: "/registration-info",
+		REGISTER: "/register",
+		RESUBMIT: "/resubmit",
+	},
+	STORAGE: {
+		BASE: "/storage",
+		GET_PRESIGNED_URL: "/presigned-upload-url",
+		DELETE_FILE: "/delete",
 	},
 };

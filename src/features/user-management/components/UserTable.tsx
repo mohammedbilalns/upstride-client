@@ -1,4 +1,17 @@
+import { format } from "date-fns";
+import {
+	Calendar,
+	Loader2,
+	Mail,
+	ShieldAlert,
+	ShieldCheck,
+	User as UserIcon,
+} from "lucide-react";
 import { useState } from "react";
+import { ConfirmModal } from "@/components/common/ConfirmModal";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
 	Table,
 	TableBody,
@@ -7,21 +20,8 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-	ShieldAlert,
-	ShieldCheck,
-	Mail,
-	Calendar,
-	User as UserIcon,
-	Loader2,
-} from "lucide-react";
-import { format } from "date-fns";
-import type { UserListDTO } from "../types";
-import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { useBlockUser, useUnblockUser } from "../hooks/use-user-actions";
+import type { UserListDTO } from "../types";
 
 interface UserTableProps {
 	users: UserListDTO[];

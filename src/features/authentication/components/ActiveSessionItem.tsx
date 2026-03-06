@@ -1,19 +1,19 @@
-import { useState } from "react";
-import type { ActiveSession } from "../types";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-	Monitor,
-	Smartphone,
-	Laptop,
-	XCircle,
-	Clock,
-	ShieldCheck,
-	Loader2,
-} from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { useRevokeSession } from "../hooks/use-revoke-session";
+import {
+	Clock,
+	Laptop,
+	Loader2,
+	Monitor,
+	ShieldCheck,
+	Smartphone,
+	XCircle,
+} from "lucide-react";
+import { useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useRevokeSession } from "../hooks/use-revoke-session";
+import type { ActiveSession } from "../types";
 
 interface ActiveSessionItemProps {
 	session: ActiveSession;

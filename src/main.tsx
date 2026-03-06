@@ -1,11 +1,11 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider } from "@tanstack/react-router";
 import ReactDOM from "react-dom/client";
-import { Toaster } from "./components/ui/sonner";
-import { ThemeProvider } from "./app/contexts/ThemeContext";
 import { AuthProvider, useAuth } from "./app/contexts/AuthContext";
+import { ThemeProvider } from "./app/contexts/ThemeContext";
 import { queryClient, router } from "./app/router/routerConfig";
 import PendingComponent from "./components/common/Pending-Component";
+import { Toaster } from "./components/ui/sonner";
 
 declare module "@tanstack/react-router" {
 	interface Register {
