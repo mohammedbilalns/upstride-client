@@ -4,13 +4,18 @@ import {
 	Phone,
 	User as UserIcon,
 	ShieldCheck,
-	MapPin,
 	Briefcase,
 	Award,
+	Pencil,
 } from "lucide-react";
+import { useState } from "react";
 import { ActiveSessionList } from "@/features/authentication/components/ActiveSessionList";
 import { activeSessionsQueryOptions } from "@/features/authentication/hooks/use-active-sessions";
-import { profileQueryOptions, useProfile } from "@/features/profile-management";
+import {
+	profileQueryOptions,
+	useProfile,
+	ProfileEditView,
+} from "@/features/profile-management";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -21,6 +26,7 @@ import {
 	CardDescription,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_user-layout/profile")({
 	loader: async ({ context }) => {
@@ -34,6 +40,7 @@ export const Route = createFileRoute("/_user-layout/profile")({
 
 function ProfileSection() {
 	const { data: profile, isLoading } = useProfile();
+	const [isEditing, setIsEditing] = useState(false);
 
 	if (isLoading) {
 		return (
@@ -53,28 +60,35 @@ function ProfileSection() {
 		);
 	}
 
+	if (isEditing) {
+		return (
+			<ProfileEditView profile={profile} onCancel={() => setIsEditing(false)} />
+		);
+	}
+
 	return (
 		<div className="grid gap-6 lg:grid-cols-3">
 			{/* Profile Basic Info Card */}
 			<Card className="lg:col-span-1 shadow-md overflow-hidden border-none bg-gradient-to-b from-primary/5 to-background">
-				<CardHeader className="text-center pb-2">
+				<CardHeader className="text-center pb-2 relative">
+					<Button
+						variant="ghost"
+						size="icon"
+						className="absolute top-2 right-2 rounded-full h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
+						onClick={() => setIsEditing(true)}
+					>
+						<Pencil className="h-4 w-4" />
+					</Button>
 					<div className="flex justify-center mb-4">
-						<div className="relative">
-							<Avatar className="h-32 w-32 border-4 border-background shadow-xl">
-								<AvatarImage
-									src={profile.profilePictureUrl || ""}
-									alt={profile.name}
-								/>
-								<AvatarFallback className="text-3xl font-bold bg-primary/10 text-primary">
-									{profile.name.charAt(0).toUpperCase()}
-								</AvatarFallback>
-							</Avatar>
-							<div className="absolute -bottom-1 -right-1 rounded-full bg-background p-1.5 shadow-md">
-								<div className="rounded-full bg-primary p-1">
-									<ShieldCheck className="h-4 w-4 text-white" />
-								</div>
-							</div>
-						</div>
+						<Avatar className="h-32 w-32 border-4 border-background shadow-xl">
+							<AvatarImage
+								src={profile.profilePictureUrl || ""}
+								alt={profile.name}
+							/>
+							<AvatarFallback className="text-3xl font-bold bg-primary/10 text-primary">
+								{profile.name.charAt(0).toUpperCase()}
+							</AvatarFallback>
+						</Avatar>
 					</div>
 					<CardTitle className="text-2xl font-bold">{profile.name}</CardTitle>
 					<Badge
@@ -105,6 +119,15 @@ function ProfileSection() {
 							</p>
 						</div>
 					</div>
+
+					<Button
+						variant="outline"
+						className="w-full mt-4 rounded-xl font-bold text-sm h-11 border-primary/20 hover:bg-primary/5 hover:text-primary transition-all group"
+						onClick={() => setIsEditing(true)}
+					>
+						<Pencil className="h-3.5 w-3.5 mr-2 group-hover:scale-110 transition-transform" />
+						Edit Profile
+					</Button>
 				</CardContent>
 			</Card>
 
