@@ -23,6 +23,7 @@ interface EducationSectionProps {
 	isUploading: boolean;
 	setIsUploading: (val: boolean) => void;
 	getErrorMessage: (errors: any[]) => string | undefined;
+	existingProfile?: any;
 }
 
 const MAX_EDUCATION_ITEMS = 5;
@@ -32,9 +33,12 @@ export function EducationSection({
 	isUploading,
 	setIsUploading,
 	getErrorMessage,
+	existingProfile,
 }: EducationSectionProps) {
 	const deleteFileMutation = useDeleteFile();
-	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+	const [previewUrl, setPreviewUrl] = useState<string | null>(
+		existingProfile?.resumeUrl || null,
+	);
 
 	useEffect(() => {
 		return () => {
@@ -132,7 +136,7 @@ export function EducationSection({
 								}`}
 							>
 								{field.state.value ? (
-									<div className="flex flex-col items-center animate-in zoom-in duration-300">
+									<div className="flex flex-col items-center">
 										<div className="h-12 w-12 rounded-full bg-green-500/10 dark:bg-green-500/20 flex items-center justify-center mb-3">
 											<FileText className="h-6 w-6 text-green-600 dark:text-green-400" />
 										</div>

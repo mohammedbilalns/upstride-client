@@ -30,9 +30,7 @@ export function StatusView({
 	return (
 		<Card className="mx-auto max-w-2xl border-none shadow-xl bg-gradient-to-b from-card to-card/50">
 			<CardHeader className="text-center pt-10">
-				<div className="flex justify-center mb-4 animate-in zoom-in duration-500">
-					{icon}
-				</div>
+				<div className="flex justify-center mb-4">{icon}</div>
 				<CardTitle className="text-3xl font-bold">{title}</CardTitle>
 				<CardDescription className="text-base mt-2 max-w-md mx-auto">
 					{description}

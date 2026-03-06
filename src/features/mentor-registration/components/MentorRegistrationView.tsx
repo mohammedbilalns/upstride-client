@@ -61,7 +61,7 @@ export function MentorRegistrationView() {
 
 	if (existingProfile && !existingProfile.isRejected && !isEditing) {
 		return (
-			<div className="container mx-auto py-20 px-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
+			<div className="container mx-auto py-20 px-4">
 				<StatusView
 					title="Application Under Review"
 					description="Our team is currently reviewing your mentor profile. We'll get back to you soon!"
@@ -89,7 +89,7 @@ export function MentorRegistrationView() {
 	}
 
 	return (
-		<div className="container mx-auto max-w-4xl py-12 animate-in fade-in duration-700">
+		<div className="container mx-auto max-w-4xl py-12">
 			<div className="mb-8 text-center sm:text-left">
 				<h1 className="text-3xl font-bold tracking-tight bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
 					{existingProfile ? "Update Your Application" : "Mentor Registration"}

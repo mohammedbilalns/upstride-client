@@ -122,7 +122,7 @@ export function ExpertiseSection({
 													(_: MentorSkill, index: number) => (
 														<div
 															key={index}
-															className="flex flex-col gap-2 p-3 rounded-xl bg-muted/20 border border-border/50 animate-in slide-in-from-left-2 duration-300"
+															className="flex flex-col gap-2 p-3 rounded-xl bg-muted/20 border border-border/50"
 														>
 															<div className="flex gap-3">
 																<form.Field

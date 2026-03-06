@@ -111,6 +111,7 @@ export function MentorForm({ existingProfile, onCancel }: MentorFormProps) {
 					isUploading={isUploading}
 					setIsUploading={setIsUploading}
 					getErrorMessage={getErrorMessage}
+					existingProfile={existingProfile}
 				/>
 			</div>
 
@@ -126,14 +127,21 @@ export function MentorForm({ existingProfile, onCancel }: MentorFormProps) {
 							Cancel
 						</Button>
 					)}
-					<form.Subscribe selector={(s) => [s.canSubmit, s.isSubmitting]}>
-						{([canSubmit, isSubmitting]) => (
+					<form.Subscribe
+						selector={(s) => [s.canSubmit, s.isSubmitting, s.isDirty]}
+					>
+						{([canSubmit, isSubmitting, isDirty]) => (
 							<Button
 								type="submit"
 								className={`rounded-full px-10 h-12 text-base font-semibold shadow-lg transition-all ${
 									onCancel ? "ml-auto" : "w-full sm:w-auto ml-auto"
-								} ${canSubmit ? "shadow-primary/25" : ""}`}
-								disabled={!canSubmit || isSubmitting || isUploading}
+								} ${canSubmit && (!existingProfile || isDirty) ? "shadow-primary/25" : ""}`}
+								disabled={
+									!canSubmit ||
+									isSubmitting ||
+									isUploading ||
+									(!!existingProfile && !isDirty)
+								}
 							>
 								{isSubmitting ? (
 									<>

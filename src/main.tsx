@@ -33,7 +33,7 @@ if (!rootElement.innerHTML) {
 			<QueryClientProvider client={queryClient}>
 				<AuthProvider>
 					<App />
-					<Toaster richColors position="top-right" />
+					<Toaster richColors position="bottom-right" />
 				</AuthProvider>
 			</QueryClientProvider>
 		</ThemeProvider>,
