@@ -1,0 +1,65 @@
+import { Eye, EyeOff } from "lucide-react";
+import type { ReactNode } from "react";
+import { useState } from "react";
+import FieldError from "@/components/common/Field-Error";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+interface PasswordFieldProps {
+	id: string;
+	label: string;
+	value: string;
+	onChange: (value: string) => void;
+	onBlur?: () => void;
+	placeholder?: string;
+	autoComplete?: string;
+	error?: string;
+	labelAction?: ReactNode;
+}
+
+export function PasswordField({
+	id,
+	label,
+	value,
+	onChange,
+	onBlur,
+	placeholder = "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022",
+	autoComplete = "current-password",
+	error,
+	labelAction,
+}: PasswordFieldProps) {
+	const [isVisible, setIsVisible] = useState(false);
+
+	return (
+		<div className="space-y-1.5">
+			<div className="flex justify-between items-center">
+				<Label htmlFor={id}>{label}</Label>
+				{labelAction}
+			</div>
+			<div className="relative">
+				<Input
+					id={id}
+					type={isVisible ? "text" : "password"}
+					placeholder={placeholder}
+					autoComplete={autoComplete}
+					value={value}
+					onBlur={onBlur}
+					onChange={(e) => onChange(e.target.value)}
+				/>
+				<button
+					type="button"
+					tabIndex={-1}
+					className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+					onClick={() => setIsVisible((visible) => !visible)}
+				>
+					{isVisible ? (
+						<EyeOff className="h-4 w-4" />
+					) : (
+						<Eye className="h-4 w-4" />
+					)}
+				</button>
+			</div>
+			<FieldError message={error} />
+		</div>
+	);
+}

@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "@tanstack/react-router";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import FieldError from "@/components/common/Field-Error";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { useLogin } from "../hooks/use-login";
 import type { AuthView } from "../types";
 import { loginSchema } from "../validators";
+import { PasswordField } from "./PasswordField";
 import { SocialAuthButtons } from "./SocialAuthButtons";
 
 interface Props {
@@ -18,7 +19,6 @@ interface Props {
 
 export function LoginView({ onNavigate }: Props) {
 	const router = useRouter();
-	const [showPassword, setShowPassword] = useState(false);
 	const [apiError, setApiError] = useState<string | null>(null);
 
 	const loginMutation = useLogin({
@@ -105,9 +105,15 @@ export function LoginView({ onNavigate }: Props) {
 
 				<form.Field name="password">
 					{(field) => (
-						<div className="space-y-1.5">
-							<div className="flex justify-between items-center">
-								<Label htmlFor={field.name}>Password</Label>
+						<PasswordField
+							id={field.name}
+							label="Password"
+							value={field.state.value}
+							onBlur={field.handleBlur}
+							onChange={field.handleChange}
+							autoComplete="current-password"
+							error={field.state.meta.errors?.[0]?.message}
+							labelAction={
 								<button
 									type="button"
 									onClick={() => onNavigate("forgot-password")}
@@ -115,32 +121,8 @@ export function LoginView({ onNavigate }: Props) {
 								>
 									Forgot password?
 								</button>
-							</div>
-							<div className="relative">
-								<Input
-									id={field.name}
-									type={showPassword ? "text" : "password"}
-									placeholder="••••••••"
-									autoComplete="current-password"
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-								/>
-								<button
-									type="button"
-									tabIndex={-1}
-									className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-									onClick={() => setShowPassword((p) => !p)}
-								>
-									{showPassword ? (
-										<EyeOff className="h-4 w-4" />
-									) : (
-										<Eye className="h-4 w-4" />
-									)}
-								</button>
-							</div>
-							<FieldError message={field.state.meta.errors?.[0]?.message} />
-						</div>
+							}
+						/>
 					)}
 				</form.Field>
 

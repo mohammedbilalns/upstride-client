@@ -1,10 +1,9 @@
 import { QueryClientProvider } from "@tanstack/react-query";
-import { RouterProvider } from "@tanstack/react-router";
 import ReactDOM from "react-dom/client";
-import { AuthProvider, useAuth } from "./app/contexts/AuthContext";
+import App from "./app/app";
+import { AuthProvider } from "./app/contexts/AuthContext";
 import { ThemeProvider } from "./app/contexts/ThemeContext";
-import { queryClient, router } from "./app/router/routerConfig";
-import PendingComponent from "./components/common/Pending-Component";
+import { queryClient, type router } from "./app/router/routerConfig";
 import { Toaster } from "./components/ui/sonner";
 
 declare module "@tanstack/react-router" {
@@ -13,18 +12,8 @@ declare module "@tanstack/react-router" {
 	}
 }
 
-const App = () => {
-	const { loading } = useAuth();
-
-	if (loading) {
-		return <PendingComponent resource="Session" />;
-	}
-
-	return <RouterProvider router={router} />;
-};
-
-// biome-ignore lint/style/noNonNullAssertion: <explanation>
-const rootElement = document.getElementById("app")!;
+const rootElement = document.getElementById("app");
+if (!rootElement) throw new Error("Root element not found in html");
 
 if (!rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement);

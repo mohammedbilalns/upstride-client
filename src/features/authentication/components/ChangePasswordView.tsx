@@ -1,13 +1,10 @@
 import { useForm } from "@tanstack/react-form";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { useState } from "react";
-import FieldError from "@/components/common/Field-Error";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useResetPassword } from "../hooks/use-reset-password";
 import type { AuthView } from "../types";
 import { changePasswordSchema } from "../validators";
+import { PasswordField } from "./PasswordField";
 
 interface Props {
 	email: string;
@@ -16,9 +13,6 @@ interface Props {
 }
 
 export function ChangePasswordView({ email, resetToken, onNavigate }: Props) {
-	const [showPass, setShowPass] = useState(false);
-	const [showConfirm, setShowConfirm] = useState(false);
-
 	const resetPasswordMutation = useResetPassword({
 		onSuccess: () => {
 			onNavigate("login");
@@ -57,65 +51,29 @@ export function ChangePasswordView({ email, resetToken, onNavigate }: Props) {
 			>
 				<form.Field name="password">
 					{(field) => (
-						<div className="space-y-1.5">
-							<Label htmlFor={field.name}>New Password</Label>
-							<div className="relative">
-								<Input
-									id={field.name}
-									type={showPass ? "text" : "password"}
-									placeholder="••••••••"
-									autoComplete="new-password"
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-								/>
-								<button
-									type="button"
-									tabIndex={-1}
-									className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-									onClick={() => setShowPass((p) => !p)}
-								>
-									{showPass ? (
-										<EyeOff className="h-4 w-4" />
-									) : (
-										<Eye className="h-4 w-4" />
-									)}
-								</button>
-							</div>
-							<FieldError message={field.state.meta.errors?.[0]?.message} />
-						</div>
+						<PasswordField
+							id={field.name}
+							label="New Password"
+							value={field.state.value}
+							onBlur={field.handleBlur}
+							onChange={field.handleChange}
+							autoComplete="new-password"
+							error={field.state.meta.errors?.[0]?.message}
+						/>
 					)}
 				</form.Field>
 
 				<form.Field name="confirmPassword">
 					{(field) => (
-						<div className="space-y-1.5">
-							<Label htmlFor={field.name}>Confirm Password</Label>
-							<div className="relative">
-								<Input
-									id={field.name}
-									type={showConfirm ? "text" : "password"}
-									placeholder="••••••••"
-									autoComplete="new-password"
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-								/>
-								<button
-									type="button"
-									tabIndex={-1}
-									className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-									onClick={() => setShowConfirm((p) => !p)}
-								>
-									{showConfirm ? (
-										<EyeOff className="h-4 w-4" />
-									) : (
-										<Eye className="h-4 w-4" />
-									)}
-								</button>
-							</div>
-							<FieldError message={field.state.meta.errors?.[0]?.message} />
-						</div>
+						<PasswordField
+							id={field.name}
+							label="Confirm Password"
+							value={field.state.value}
+							onBlur={field.handleBlur}
+							onChange={field.handleChange}
+							autoComplete="new-password"
+							error={field.state.meta.errors?.[0]?.message}
+						/>
 					)}
 				</form.Field>
 
