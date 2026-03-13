@@ -102,7 +102,7 @@ export function Pagination({
 				</Button>
 
 				<div className="flex items-center gap-1">
-					{getPageNumbers().map((page, index) => {
+					{getPageNumbers().map((page) => {
 						if (typeof page === "string") {
 							return (
 								<div

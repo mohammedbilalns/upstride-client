@@ -1,5 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-import { Camera, Loader2, X } from "lucide-react";
+import { Camera, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import FieldError from "@/components/common/Field-Error";
@@ -45,16 +45,14 @@ export function EditProfileDialog({ profile, open, onOpenChange }: Props) {
 	const form = useForm({
 		defaultValues: {
 			name: profile.name,
-			email: profile.email,
-			phone: profile.phone || "",
-			profilePictureId: "",
+			profilePictureId: undefined as string | undefined,
 		},
 		onSubmit: async ({ value }) => {
 			const result = profileUpdateSchema.safeParse(value);
 			if (!result.success) return;
 
 			// We only send name and profilePictureId if it was changed
-			const payload: any = {
+			const payload: { name: string; profilePictureId?: string } = {
 				name: value.name,
 			};
 
@@ -63,9 +61,6 @@ export function EditProfileDialog({ profile, open, onOpenChange }: Props) {
 			}
 
 			updateProfileMutation.mutate(payload);
-		},
-		validators: {
-			onSubmit: profileUpdateSchema,
 		},
 	});
 
@@ -164,55 +159,53 @@ export function EditProfileDialog({ profile, open, onOpenChange }: Props) {
 											placeholder="Your full name"
 										/>
 										<FieldError
-											message={field.state.meta.errors?.[0]?.message}
+											message={
+												(
+													field.state.meta.errors?.[0] as
+														| { message?: string }
+														| undefined
+												)?.message
+											}
 										/>
 									</div>
 								)}
 							</form.Field>
 
-							<form.Field name="email">
-								{(field) => (
-									<div className="space-y-2 opacity-70">
-										<Label
-											htmlFor={field.name}
-											className="text-sm font-bold uppercase tracking-wider text-muted-foreground"
-										>
-											Email Address
-										</Label>
-										<Input
-											id={field.name}
-											value={field.state.value}
-											readOnly
-											className="h-12 rounded-xl border-border/50 bg-secondary/30 cursor-not-allowed shadow-inner"
-										/>
-										<p className="text-[10px] text-muted-foreground italic">
-											Email cannot be changed.
-										</p>
-									</div>
-								)}
-							</form.Field>
+							<div className="space-y-2 opacity-70">
+								<Label
+									htmlFor="email-readonly"
+									className="text-sm font-bold uppercase tracking-wider text-muted-foreground"
+								>
+									Email Address
+								</Label>
+								<Input
+									id="email-readonly"
+									value={profile.email}
+									readOnly
+									className="h-12 rounded-xl border-border/50 bg-secondary/30 cursor-not-allowed shadow-inner"
+								/>
+								<p className="text-[10px] text-muted-foreground italic">
+									Email cannot be changed.
+								</p>
+							</div>
 
-							<form.Field name="phone">
-								{(field) => (
-									<div className="space-y-2 opacity-70">
-										<Label
-											htmlFor={field.name}
-											className="text-sm font-bold uppercase tracking-wider text-muted-foreground"
-										>
-											Phone Number
-										</Label>
-										<Input
-											id={field.name}
-											value={field.state.value}
-											readOnly
-											className="h-12 rounded-xl border-border/50 bg-secondary/30 cursor-not-allowed shadow-inner"
-										/>
-										<p className="text-[10px] text-muted-foreground italic">
-											Phone number cannot be changed.
-										</p>
-									</div>
-								)}
-							</form.Field>
+							<div className="space-y-2 opacity-70">
+								<Label
+									htmlFor="phone-readonly"
+									className="text-sm font-bold uppercase tracking-wider text-muted-foreground"
+								>
+									Phone Number
+								</Label>
+								<Input
+									id="phone-readonly"
+									value={profile.phone || ""}
+									readOnly
+									className="h-12 rounded-xl border-border/50 bg-secondary/30 cursor-not-allowed shadow-inner"
+								/>
+								<p className="text-[10px] text-muted-foreground italic">
+									Phone number cannot be changed.
+								</p>
+							</div>
 						</div>
 					</div>
 

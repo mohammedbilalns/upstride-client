@@ -68,7 +68,7 @@ export function LoginView({ onNavigate }: Props) {
 				</div>
 			)}
 
-			<SocialAuthButtons />
+			<SocialAuthButtons onNavigate={onNavigate} />
 
 			<div className="flex items-center gap-3">
 				<Separator className="flex-1" />

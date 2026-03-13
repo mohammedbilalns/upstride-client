@@ -39,13 +39,13 @@ export function ProfileEditView({ profile, onCancel }: Props) {
 	const form = useForm({
 		defaultValues: {
 			name: profile.name,
-			profilePictureId: "",
-		},
-		validators: {
-			onSubmit: profileUpdateSchema,
+			profilePictureId: undefined as string | undefined,
 		},
 		onSubmit: async ({ value }) => {
-			const payload: any = {
+			const result = profileUpdateSchema.safeParse(value);
+			if (!result.success) return;
+
+			const payload: { name: string; profilePictureId?: string } = {
 				name: value.name,
 			};
 
@@ -174,7 +174,13 @@ export function ProfileEditView({ profile, onCancel }: Props) {
 													className="h-12 bg-background border-border/50 rounded-xl focus-visible:ring-primary font-medium"
 												/>
 												<FieldError
-													message={field.state.meta.errors?.[0]?.message}
+													message={
+														(
+															field.state.meta.errors?.[0] as
+																| { message?: string }
+																| undefined
+														)?.message
+													}
 												/>
 											</div>
 										)}

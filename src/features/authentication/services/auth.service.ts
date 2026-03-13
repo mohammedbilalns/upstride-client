@@ -7,6 +7,8 @@ import type {
 	LoginResponse,
 	RequestPasswordResetInput,
 	SaveUserInterestsResponse,
+	SocialLoginInput,
+	SocialLoginResponse,
 	VerifyRegisterOtpResponse,
 	VerifyResetOtpResponse,
 } from "../types";
@@ -48,6 +50,15 @@ export const authService = {
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.RESEND_REGISTER_OTP}`,
 			{ email },
 		);
+		return response.data;
+	},
+
+	socialLogin: async (
+		data: SocialLoginInput,
+	): Promise<{ message: string; data: SocialLoginResponse }> => {
+		const endpoint =
+			data.provider === "GOOGLE" ? ROUTES.AUTH.GOOGLE : ROUTES.AUTH.LINKEDIN;
+		const response = await api.post(`${ROUTES.AUTH.BASE}${endpoint}`, data);
 		return response.data;
 	},
 

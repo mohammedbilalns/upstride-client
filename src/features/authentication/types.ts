@@ -20,9 +20,26 @@ export interface LoginResponse {
 	refreshToken?: string;
 }
 
+export interface SocialOnboardingResponse {
+	setupToken: string;
+}
+
+export type SocialLoginResponse = LoginResponse | SocialOnboardingResponse;
+
 export interface RegisterResponse {
 	message: string;
 }
+
+export type SocialLoginInput =
+	| {
+			provider: "GOOGLE";
+			accessToken: string;
+	  }
+	| {
+			provider: "LINKEDIN";
+			code: string;
+			redirectUri: string;
+	  };
 
 export interface VerifyRegisterOtpResponse {
 	setupToken: string;

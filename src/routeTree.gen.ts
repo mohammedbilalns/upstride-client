@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LinkedinRouteImport } from './routes/linkedin'
 import { Route as UserLayoutRouteImport } from './routes/_user-layout'
 import { Route as PublicLayoutRouteImport } from './routes/_public-layout'
 import { Route as AdminLayoutRouteImport } from './routes/_admin-layout'
@@ -22,6 +23,11 @@ import { Route as AdminLayoutDashboardRouteImport } from './routes/_admin-layout
 import { Route as AdminLayoutCatalogManagementRouteImport } from './routes/_admin-layout/catalog-management'
 import { Route as UserLayoutMentorRegisterRouteImport } from './routes/_user-layout/mentor.register'
 
+const LinkedinRoute = LinkedinRouteImport.update({
+  id: '/linkedin',
+  path: '/linkedin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UserLayoutRoute = UserLayoutRouteImport.update({
   id: '/_user-layout',
   getParentRoute: () => rootRouteImport,
@@ -86,6 +92,7 @@ const UserLayoutMentorRegisterRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof PublicLayoutIndexRoute
+  '/linkedin': typeof LinkedinRoute
   '/catalog-management': typeof AdminLayoutCatalogManagementRoute
   '/dashboard': typeof AdminLayoutDashboardRoute
   '/mentor-management': typeof AdminLayoutMentorManagementRoute
@@ -97,6 +104,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof PublicLayoutIndexRoute
+  '/linkedin': typeof LinkedinRoute
   '/catalog-management': typeof AdminLayoutCatalogManagementRoute
   '/dashboard': typeof AdminLayoutDashboardRoute
   '/mentor-management': typeof AdminLayoutMentorManagementRoute
@@ -111,6 +119,7 @@ export interface FileRoutesById {
   '/_admin-layout': typeof AdminLayoutRouteWithChildren
   '/_public-layout': typeof PublicLayoutRouteWithChildren
   '/_user-layout': typeof UserLayoutRouteWithChildren
+  '/linkedin': typeof LinkedinRoute
   '/_admin-layout/catalog-management': typeof AdminLayoutCatalogManagementRoute
   '/_admin-layout/dashboard': typeof AdminLayoutDashboardRoute
   '/_admin-layout/mentor-management': typeof AdminLayoutMentorManagementRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/linkedin'
     | '/catalog-management'
     | '/dashboard'
     | '/mentor-management'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/linkedin'
     | '/catalog-management'
     | '/dashboard'
     | '/mentor-management'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/_admin-layout'
     | '/_public-layout'
     | '/_user-layout'
+    | '/linkedin'
     | '/_admin-layout/catalog-management'
     | '/_admin-layout/dashboard'
     | '/_admin-layout/mentor-management'
@@ -164,10 +176,18 @@ export interface RootRouteChildren {
   AdminLayoutRoute: typeof AdminLayoutRouteWithChildren
   PublicLayoutRoute: typeof PublicLayoutRouteWithChildren
   UserLayoutRoute: typeof UserLayoutRouteWithChildren
+  LinkedinRoute: typeof LinkedinRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/linkedin': {
+      id: '/linkedin'
+      path: '/linkedin'
+      fullPath: '/linkedin'
+      preLoaderRoute: typeof LinkedinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_user-layout': {
       id: '/_user-layout'
       path: ''
@@ -307,6 +327,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminLayoutRoute: AdminLayoutRouteWithChildren,
   PublicLayoutRoute: PublicLayoutRouteWithChildren,
   UserLayoutRoute: UserLayoutRouteWithChildren,
+  LinkedinRoute: LinkedinRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

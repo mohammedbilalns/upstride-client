@@ -11,8 +11,17 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-
+import {
+	InputOTP,
+	InputOTPGroup,
+	InputOTPSlot,
+} from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
+import { PasswordField } from "@/features/authentication/components/PasswordField";
+import {
+	formatSecondsToClock,
+	useOtpFlow,
+} from "@/features/authentication/hooks/use-otp-flow";
 import {
 	changePasswordSchema,
 	requestChangePasswordSchema,
@@ -21,16 +30,6 @@ import {
 	useVerifyChangePasswordOtp,
 	verifyChangePasswordOtpSchema,
 } from "../index";
-import {
-	InputOTP,
-	InputOTPGroup,
-	InputOTPSlot,
-} from "@/components/ui/input-otp";
-import {
-	formatSecondsToClock,
-	useOtpFlow,
-} from "@/features/authentication/hooks/use-otp-flow";
-import { PasswordField } from "@/features/authentication/components/PasswordField";
 
 type Step = "request" | "verify" | "change" | "success";
 
