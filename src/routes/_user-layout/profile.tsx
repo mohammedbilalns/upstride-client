@@ -9,6 +9,7 @@ import {
 	User as UserIcon,
 } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/app/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,7 @@ import { Separator } from "@/components/ui/separator";
 import { ActiveSessionList } from "@/features/authentication/components/ActiveSessionList";
 import { activeSessionsQueryOptions } from "@/features/authentication/hooks/use-active-sessions";
 import {
+	ChangePasswordModal,
 	ProfileEditView,
 	profileQueryOptions,
 	useProfile,
@@ -150,7 +152,7 @@ function ProfileSection() {
 					{profile.preferences?.interests &&
 					profile.preferences.interests.length > 0 ? (
 						<div className="grid gap-6">
-							{profile.preferences.interests.map((interest) => (
+							{profile.preferences.interests.map((interest: any) => (
 								<div key={interest.id} className="space-y-4 group">
 									<div className="flex items-center gap-3">
 										<div className="h-8 w-1 rounded-full bg-primary" />
@@ -161,7 +163,7 @@ function ProfileSection() {
 
 									<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-2 ml-4">
 										{interest.skills && interest.skills.length > 0 ? (
-											interest.skills.map((skill) => (
+											interest.skills.map((skill: any) => (
 												<div
 													key={skill.skillId}
 													className="flex items-center justify-between p-3 rounded-xl bg-secondary/30 border border-transparent hover:border-primary/20 hover:bg-secondary/50 transition-all duration-200"
@@ -207,6 +209,9 @@ function ProfileSection() {
 }
 
 function RouteComponent() {
+	const { user } = useAuth();
+	const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+
 	return (
 		<main className="container mx-auto px-6 py-10 space-y-10">
 			{/* Header */}
@@ -243,11 +248,37 @@ function RouteComponent() {
 							Security & Sessions
 						</h2>
 					</div>
-					<div className="rounded-3xl border bg-card/50 backdrop-blur-sm shadow-xl overflow-hidden p-1">
+					<div className="rounded-3xl border bg-card/50 backdrop-blur-sm shadow-xl overflow-hidden p-6 space-y-6">
+						{user?.isLocalAuth && (
+							<div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-primary/5 border border-primary/10">
+								<div className="flex items-center gap-3">
+									<div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+										<ShieldCheck className="h-5 w-5" />
+									</div>
+									<div>
+										<p className="font-bold">Password Security</p>
+										<p className="text-xs text-muted-foreground">
+											Keep your account secure by using a strong password.
+										</p>
+									</div>
+								</div>
+								<Button
+									onClick={() => setIsChangePasswordOpen(true)}
+									className="w-full sm:w-auto rounded-xl font-bold"
+								>
+									Change Password
+								</Button>
+							</div>
+						)}
 						<ActiveSessionList />
 					</div>
 				</section>
 			</div>
+
+			<ChangePasswordModal
+				isOpen={isChangePasswordOpen}
+				onClose={() => setIsChangePasswordOpen(false)}
+			/>
 		</main>
 	);
 }

@@ -11,7 +11,7 @@ export const ROUTES = {
 		REQUEST_PASSWORD_RESET: "/reset-password",
 		VERIFY_RESET_PASSWORD_OTP: "/verify-reset-password-otp",
 		RESEND_RESET_PASSWORD_OTP: "/resend-reset-password-otp",
-		CHANGE_PASSWORD: "/change-password",
+		UPDATE_PASSWORD: "/update-password",
 		REFRESH: "/refresh",
 		LOGOUT: "/logout",
 		REVOKE_SESSION: "/revoke-session",
@@ -19,6 +19,14 @@ export const ROUTES = {
 		ACTIVE_SESSIONS: "/active-sessions",
 		ME: "/me",
 		PROFILE: "/profile",
+	},
+	PROFILE: {
+		BASE: "/profile",
+		ME: "/me",
+		ROOT: "/",
+		CHANGE_PASSWORD: "/change-password",
+		REQUEST_CHANGE_PASSWORD: "/change-password/request",
+		VERIFY_OTP: "/change-password/verify",
 	},
 	CATALOG: {
 		BASE: "/catalog",

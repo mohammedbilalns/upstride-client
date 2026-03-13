@@ -5,7 +5,7 @@ export const profileQueryOptions = queryOptions({
 	queryKey: ["profile"],
 	queryFn: async () => {
 		const response = await profileService.getProfile();
-		return response.data.profile;
+		return response.profile;
 	},
 	staleTime: 1000 * 60 * 5, // 5 minutes
 });

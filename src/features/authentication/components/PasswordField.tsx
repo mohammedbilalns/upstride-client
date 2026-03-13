@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 
 interface PasswordFieldProps {
 	id: string;
-	label: string;
+	label: ReactNode;
 	value: string;
 	onChange: (value: string) => void;
 	onBlur?: () => void;
@@ -15,6 +15,7 @@ interface PasswordFieldProps {
 	autoComplete?: string;
 	error?: string;
 	labelAction?: ReactNode;
+	disabled?: boolean;
 }
 
 export function PasswordField({
@@ -27,6 +28,7 @@ export function PasswordField({
 	autoComplete = "current-password",
 	error,
 	labelAction,
+	disabled,
 }: PasswordFieldProps) {
 	const [isVisible, setIsVisible] = useState(false);
 
@@ -45,11 +47,13 @@ export function PasswordField({
 					value={value}
 					onBlur={onBlur}
 					onChange={(e) => onChange(e.target.value)}
+					disabled={disabled}
 				/>
 				<button
 					type="button"
 					tabIndex={-1}
-					className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+					disabled={disabled}
+					className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground disabled:opacity-50"
 					onClick={() => setIsVisible((visible) => !visible)}
 				>
 					{isVisible ? (

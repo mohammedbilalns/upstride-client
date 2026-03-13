@@ -98,7 +98,7 @@ export const authService = {
 		data: ChangePasswordInput,
 	): Promise<{ message: string }> => {
 		const response = await api.post(
-			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.CHANGE_PASSWORD}`,
+			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.UPDATE_PASSWORD}`,
 			data,
 		);
 		return response.data;
@@ -120,7 +120,9 @@ export const authService = {
 		message: string;
 		data: { user: AuthenticatedUser };
 	}> => {
-		const response = await api.get(`${ROUTES.AUTH.BASE}${ROUTES.AUTH.ME}`);
+		const response = await api.get(
+			`${ROUTES.PROFILE.BASE}${ROUTES.PROFILE.ME}`,
+		);
 		return response.data;
 	},
 	getActiveSessions: async (): Promise<{

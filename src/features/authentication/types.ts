@@ -11,6 +11,7 @@ import type { User } from "@/shared/types/user";
 
 export type AuthenticatedUser = Pick<User, "id" | "name" | "role"> & {
 	profilePictureUrl: string | null;
+	isLocalAuth: boolean;
 };
 
 export interface LoginResponse {
