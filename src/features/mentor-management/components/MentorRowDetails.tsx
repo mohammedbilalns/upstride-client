@@ -1,4 +1,10 @@
-import { Briefcase, ExternalLink, Globe, User as UserIcon } from "lucide-react";
+import {
+	AlertCircle,
+	Briefcase,
+	ExternalLink,
+	Globe,
+	User as UserIcon,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Mentor } from "@/shared/types/mentor";
@@ -11,6 +17,17 @@ export function MentorRowDetails({ mentor }: MentorRowDetailsProps) {
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-in slide-in-from-top-2 duration-300">
 			<div className="space-y-4">
+				{mentor.status === "rejected" && mentor.rejectionReason && (
+					<div className="rounded-lg border border-rose-200 bg-rose-50 p-4">
+						<h4 className="mb-2 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-rose-700">
+							<AlertCircle className="h-4 w-4" />
+							Rejection Reason
+						</h4>
+						<p className="text-sm leading-relaxed text-rose-900 whitespace-pre-wrap">
+							{mentor.rejectionReason}
+						</p>
+					</div>
+				)}
 				<div>
 					<div className="flex items-center justify-between mb-2">
 						<h4 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">

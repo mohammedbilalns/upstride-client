@@ -64,18 +64,25 @@ export function MentorTableRow({
 					</div>
 				</TableCell>
 				<TableCell>
-					<Badge
-						className={
-							mentor.status === "approved"
-								? "bg-emerald-500/15 text-emerald-600 border-emerald-500/30"
-								: mentor.status === "rejected"
-									? "bg-rose-500/15 text-rose-600 border-rose-500/30"
-									: "bg-amber-500/15 text-amber-600 border-amber-500/30"
-						}
-						variant="outline"
-					>
-						{mentor.status.toUpperCase()}
-					</Badge>
+					<div className="space-y-1.5">
+						<Badge
+							className={
+								mentor.status === "approved"
+									? "bg-emerald-500/15 text-emerald-600 border-emerald-500/30"
+									: mentor.status === "rejected"
+										? "bg-rose-500/15 text-rose-600 border-rose-500/30"
+										: "bg-amber-500/15 text-amber-600 border-amber-500/30"
+							}
+							variant="outline"
+						>
+							{mentor.status.toUpperCase()}
+						</Badge>
+						{mentor.status === "rejected" && mentor.rejectionReason && (
+							<p className="max-w-[220px] truncate text-xs text-rose-700">
+								{mentor.rejectionReason}
+							</p>
+						)}
+					</div>
 				</TableCell>
 				<TableCell>
 					<span className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
