@@ -8,6 +8,9 @@ import NotFoundComponent from "@/components/common/Not-Found";
 
 import type { AuthenticatedUser } from "@/features/authentication/types";
 
+/**
+ * Context interface for the router.
+ */
 export interface RouterContext {
 	queryClient: QueryClient;
 	auth: {
@@ -17,12 +20,18 @@ export interface RouterContext {
 	};
 }
 
+/**
+ * Root route configuration.
+ */
 export const Route = createRootRouteWithContext<RouterContext>()({
 	component: RootComponent,
 	notFoundComponent: NotFoundComponent,
 	errorComponent: ErrorComponent,
 });
 
+/**
+ * Root component that wraps all route content.
+ */
 function RootComponent() {
 	return (
 		<>

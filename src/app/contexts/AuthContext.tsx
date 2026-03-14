@@ -1,5 +1,11 @@
 import type React from "react";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+	createContext,
+	useCallback,
+	useContext,
+	useEffect,
+	useState,
+} from "react";
 import { router } from "@/app/router/routerConfig";
 import { authService } from "@/features/authentication/services/auth.service";
 import type { AuthenticatedUser } from "@/features/authentication/types";
@@ -28,21 +34,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 	const [accessToken, setAccessToken] = useState<string | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 
-	const updateRouterContext = (state: AuthState) => {
+	/**
+	 * Update the router context with current auth state
+	 */
+	const updateRouterContext = useCallback((state: AuthState) => {
 		router.update({
 			context: {
 				...router.options.context,
 				auth: state,
 			},
 		});
-	};
+	}, []);
 
+	/**
+	 * Attempts to refresh the token and fetch user data
+	 */
 	useEffect(() => {
 		const initAuth = async () => {
 			try {
 				const refreshResponse = await authService.refreshToken();
 				const token = refreshResponse.data.accessToken;
 
+				// Set initial authenticated state
 				const newState: AuthState = {
 					user: null,
 					isAuthenticated: true,
@@ -53,9 +66,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 				setAccessToken(token);
 				setAuthenticated(true);
 
+				// Fetch user data with the new token
 				const meResponse = await authService.getMe();
 				const userData = meResponse.data.user;
 
+				// Update state with fetched user
 				const finalState: AuthState = {
 					user: userData,
 					isAuthenticated: true,
@@ -65,6 +80,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 				setUser(userData);
 				updateRouterContext(finalState);
 			} catch (error) {
+				// Token refresh failed - user is not authenticated
 				console.error("Failed to initialize auth session:", error);
 				const unauthState: AuthState = {
 					user: null,
@@ -78,8 +94,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 		};
 
 		initAuth();
-	}, []);
+	}, [updateRouterContext]);
 
+	/**
+	 * Logout function to clear authentication state
+	 */
 	const logout = async () => {
 		try {
 			await authService.logout();
@@ -113,6 +132,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 	);
 };
 
+/**
+ * Hook to access authentication context
+ */
 export const useAuth = () => {
 	const context = useContext(AuthContext);
 	if (context === undefined) {

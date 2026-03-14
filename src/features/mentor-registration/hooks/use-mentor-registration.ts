@@ -1,6 +1,13 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+	queryOptions,
+	useMutation,
+	useQuery,
+	useQueryClient,
+} from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import type { ApiError } from "@/api/apiError";
+import { catalogService } from "../services/catalog.service";
 import { mentorRegistrationService } from "../services/mentor-registration.service";
 
 export const useMentorRegistrationInfo = () => {
@@ -9,6 +16,14 @@ export const useMentorRegistrationInfo = () => {
 		queryFn: mentorRegistrationService.getRegistrationInfo,
 	});
 };
+
+export const professionsQueryOptions = queryOptions({
+	queryKey: ["professions"],
+	queryFn: async () => {
+		const response = await catalogService.getProfessions();
+		return response.data;
+	},
+});
 
 export const useRegisterMentor = () => {
 	const queryClient = useQueryClient();
@@ -21,7 +36,7 @@ export const useRegisterMentor = () => {
 			toast.success("Application submitted successfully!");
 			navigate({ to: "/home" });
 		},
-		onError: (err: any) => {
+		onError: (err: ApiError) => {
 			toast.error(
 				err.response?.data?.message || "Failed to submit application.",
 			);
@@ -40,7 +55,7 @@ export const useResubmitMentor = () => {
 			toast.success("Application updated successfully!");
 			navigate({ to: "/home" });
 		},
-		onError: (err: any) => {
+		onError: (err: ApiError) => {
 			toast.error(
 				err.response?.data?.message || "Failed to update application.",
 			);

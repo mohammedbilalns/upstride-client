@@ -12,6 +12,10 @@ export function formatSecondsToClock(s: number) {
 		.padStart(2, "0")}:${(s % 60).toString().padStart(2, "0")}`;
 }
 
+/**
+ * Manages OTP input state, resend cooldown timer, and expiry timer.
+ */
+//TODO: check the timer state resets
 export function useOtpFlow({
 	resendCooldownSeconds,
 	expirySeconds,
@@ -26,6 +30,7 @@ export function useOtpFlow({
 	);
 	const [isExpired, setIsExpired] = useState(false);
 
+	// Store interval IDs to allow cleanup
 	const timersRef = useRef<{
 		resend: ReturnType<typeof setInterval> | null;
 		expiry: ReturnType<typeof setInterval> | null;
@@ -36,12 +41,14 @@ export function useOtpFlow({
 		if (timersRef.current.expiry) clearInterval(timersRef.current.expiry);
 	}, []);
 
+	// Restart both timers with initial values
 	const resetTimers = useCallback(() => {
 		clearTimers();
 
 		setResendTimer(resendCooldownSeconds);
 		setCanResend(false);
 
+		// Resend countdown: decrement every second, enable resend when reaches 0
 		timersRef.current.resend = setInterval(() => {
 			setResendTimer((prev) => {
 				if (prev <= 1) {
@@ -55,6 +62,7 @@ export function useOtpFlow({
 			});
 		}, 1000);
 
+		// Expiry countdown: track if OTP has expired
 		if (typeof expirySeconds === "number") {
 			setExpiryTimer(expirySeconds);
 			setIsExpired(false);
@@ -79,6 +87,7 @@ export function useOtpFlow({
 		}
 	}, [clearTimers, expiryErrorMessage, expirySeconds, resendCooldownSeconds]);
 
+	// Initialize timers on mount, cleanup on unmount
 	useEffect(() => {
 		resetTimers();
 		return () => clearTimers();

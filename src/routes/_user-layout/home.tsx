@@ -8,7 +8,7 @@ export const Route = createFileRoute("/_user-layout/home")({
 function RouteComponent() {
 	return (
 		<div className="container mx-auto py-6 px-4 space-y-8">
-			<section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-background to-secondary/10 p-6 md:p-8 border border-border/50 shadow-xl animate-in fade-in zoom-in-95 duration-700">
+			<section className="relative overflow-hidden rounded-2xl bg-linear-to-br from-primary/10 via-background to-secondary/10 p-6 md:p-8 border border-border/50 shadow-xl animate-in fade-in zoom-in-95 duration-700">
 				<div className="absolute top-0 right-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-primary/5 blur-3xl" />
 				<div className="absolute bottom-0 left-0 -ml-16 -mb-16 h-64 w-64 rounded-full bg-secondary/5 blur-3xl" />
 
@@ -34,15 +34,15 @@ function RouteComponent() {
 									Register as Mentor
 									<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
 								</span>
-								<div className="absolute inset-0 z-0 bg-gradient-to-r from-primary via-primary/80 to-primary opacity-0 transition-opacity group-hover:opacity-100" />
+								<div className="absolute inset-0 z-0 bg-linear-to-r from-primary via-primary/80 to-primary opacity-0 transition-opacity group-hover:opacity-100" />
 							</Link>
 						</div>
 					</div>
 
 					<div className="w-full max-w-xs animate-in slide-in-from-right-4 duration-1000 hidden md:block">
-						<div className="aspect-square rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 border border-border/50 shadow-inner flex items-center justify-center relative group overflow-hidden">
+						<div className="aspect-square rounded-xl bg-linear-to-br from-primary/20 to-secondary/20 border border-border/50 shadow-inner flex items-center justify-center relative group overflow-hidden">
 							<GraduationCap className="h-32 w-32 text-primary/40 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-700" />
-							<div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
+							<div className="absolute inset-0 bg-linear-to-t from-background/40 to-transparent" />
 						</div>
 					</div>
 				</div>

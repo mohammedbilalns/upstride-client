@@ -5,18 +5,12 @@ import { clearAuthSession } from "@/features/authentication/utils/clear-auth-ses
 import { env } from "@/shared/config/env";
 
 /**
- * Custom axios request config type with an internal retry flag
- * to prevent infinite loops during token refresh attempts.
+ * Axios request config type with retry flag
  */
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 	_retry?: boolean;
 }
 
-/**
- * Axios instance configured for the API.
- * - Includes credentials for cookie-based auth
- * - Uses a base URL from environment variables
- */
 const api = axios.create({
 	baseURL: env.API_URL,
 	withCredentials: true,
@@ -37,10 +31,7 @@ api.interceptors.request.use((config) => {
 });
 
 /**
- * Response interceptor:
- * Handles global API errors including:
- * - 401 (Unauthorized): refreshes tokens and retries the request once
- * - 403 (Forbidden): clears user if blocked
+ * Response interceptor handles global API errors
  */
 api.interceptors.response.use(
 	(response) => response,

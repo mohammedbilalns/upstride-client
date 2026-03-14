@@ -1,4 +1,4 @@
-import react from "react";
+import react, { useEffect, useState } from "react";
 
 interface ThemeContextType {
 	isDarkMode: boolean;
@@ -11,13 +11,13 @@ const ThemeContext = react.createContext<ThemeContextType | undefined>(
 );
 
 export const ThemeProvider = ({ children }: { children: react.ReactNode }) => {
-	// Initialize state from localStorage
-	const [isDarkMode, setIsDarkMode] = react.useState<boolean>(() => {
+	// Initialize theme  state from localStorage
+	const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
 		return localStorage.getItem("theme") === "dark";
 	});
 
-	// Effect to apply the class and save to localStorage
-	react.useEffect(() => {
+	// apply the class and save to localStorage
+	useEffect(() => {
 		const root = window.document.documentElement;
 
 		if (isDarkMode) {
@@ -30,7 +30,6 @@ export const ThemeProvider = ({ children }: { children: react.ReactNode }) => {
 	}, [isDarkMode]);
 
 	const toggleTheme = () => setIsDarkMode((prev) => !prev);
-
 	const setTheme = (dark: boolean) => setIsDarkMode(dark);
 
 	return (
@@ -40,7 +39,7 @@ export const ThemeProvider = ({ children }: { children: react.ReactNode }) => {
 	);
 };
 
-// Custom Hook for theme consuption
+// Hook for theme consuption
 export const useTheme = () => {
 	const context = react.useContext(ThemeContext);
 	if (context === undefined) {

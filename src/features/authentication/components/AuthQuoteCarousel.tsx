@@ -44,7 +44,7 @@ export function AuthQuoteCarousel() {
 	const currentQuote = QUOTES[currentIndex];
 
 	return (
-		<div className="hidden md:flex md:w-2/5 relative overflow-hidden flex-col justify-between p-12 bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-950">
+		<div className="hidden md:flex md:w-2/5 relative overflow-hidden flex-col justify-between p-12 bg-linear-to-br from-blue-950 via-blue-900 to-indigo-950">
 			{/* Soft radial glow blobs */}
 			<div className="absolute top-[-80px] left-[-60px] w-72 h-72 rounded-full bg-white/10 blur-3xl pointer-events-none" />
 			<div className="absolute bottom-[-60px] right-[-40px] w-64 h-64 rounded-full bg-white/8 blur-2xl pointer-events-none" />

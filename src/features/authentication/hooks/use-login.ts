@@ -5,6 +5,9 @@ import { authService } from "../services/auth.service";
 import { setAuthSession } from "../utils/set-auth-session";
 import type { LoginPayload } from "../validators/login.schema";
 
+/**
+ * handles user login functionality.
+ */
 export function useLogin(options?: {
 	onSuccess?: (data: { user: { role: UserRole } }) => void;
 	onError?: (
@@ -18,6 +21,7 @@ export function useLogin(options?: {
 		onSuccess: (response) => {
 			const user = response.data?.user;
 			const accessToken = response.data?.accessToken;
+			// set Auth session
 			if (user && accessToken) {
 				setAuthSession(router, user, accessToken);
 			}

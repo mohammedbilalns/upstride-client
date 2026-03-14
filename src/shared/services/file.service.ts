@@ -11,6 +11,9 @@ export interface PresignedUrlResponse {
 }
 
 export const fileService = {
+	/**
+	 * Gets a presigned URL for uploading a file directly to s3.
+	 */
 	getPresignedUrl: async (
 		fileName: string,
 		mimetype: string,
@@ -27,6 +30,10 @@ export const fileService = {
 		return response.data;
 	},
 
+	/**
+	 * Uploads a file directly to cloud storage using a presigned URL.
+	 */
+	//TODO: improve to include the progress of file upload
 	uploadFile: async (
 		url: string,
 		fields: Record<string, string>,
@@ -48,6 +55,9 @@ export const fileService = {
 		}
 	},
 
+	/**
+	 * Deletes a file from cloud storage.
+	 */
 	deleteFile: async (key: string): Promise<void> => {
 		const response = await api.delete(
 			`${ROUTES.STORAGE.BASE}${ROUTES.STORAGE.DELETE_FILE}`,
@@ -61,6 +71,12 @@ export const fileService = {
 		}
 	},
 
+	/**
+	 *  method that handles the complete file upload flow:
+	 * Gets presigned URL from backend
+	 * Uploads file directly to storage
+	 * Returns the storage key for reference
+	 */
 	handleFileUpload: async (
 		file: File,
 		category: "resume" | "profile-picture",

@@ -17,7 +17,6 @@ export type AuthenticatedUser = Pick<User, "id" | "name" | "role"> & {
 export interface LoginResponse {
 	user: AuthenticatedUser;
 	accessToken: string;
-	refreshToken?: string;
 }
 
 export interface SocialOnboardingResponse {
@@ -33,7 +32,7 @@ export interface RegisterResponse {
 export type SocialLoginInput =
 	| {
 			provider: "GOOGLE";
-			accessToken: string;
+			code: string;
 	  }
 	| {
 			provider: "LINKEDIN";

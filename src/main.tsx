@@ -20,11 +20,16 @@ if (!rootElement) throw new Error("Root element not found in html");
 if (!rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement);
 	root.render(
+		//  Provides dark/light theme context to the entire app
 		<ThemeProvider>
+			{/* Provides React Query client for data fetching */}
 			<QueryClientProvider client={queryClient}>
+				{/* Provides authentication state and methods */}
 				<AuthProvider>
+					{/*Provides Google OAuth functionality */}
 					<GoogleOAuthProvider clientId={env.GOOGLE_CLIENT_ID || ""}>
 						<App />
+						{/* Toast notifications component */}
 						<Toaster richColors position="bottom-right" />
 					</GoogleOAuthProvider>
 				</AuthProvider>

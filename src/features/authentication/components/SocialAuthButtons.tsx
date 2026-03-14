@@ -5,8 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { env } from "@/shared/config/env";
-import type { AuthView } from "../types";
 import { useSocialLogin } from "../hooks/use-social-login";
+import type { AuthView } from "../types";
 
 interface Props {
 	onNavigate?: (view: AuthView, payload?: string) => void;
@@ -24,9 +24,6 @@ export function SocialAuthButtons({ onNavigate }: Props) {
 		env.LINKEDIN_REDIRECT_URI || `${window.location.origin}/linkedin`;
 	const linkedInPopupRef = useRef<Window | null>(null);
 	const linkedInPopupPollRef = useRef<number | null>(null);
-	const linkedInRedirectUriRef = useRef(linkedInRedirectUri);
-
-	linkedInRedirectUriRef.current = linkedInRedirectUri;
 
 	const socialLogin = useSocialLogin({
 		onSuccess: async (result) => {
@@ -109,7 +106,7 @@ export function SocialAuthButtons({ onNavigate }: Props) {
 			socialLogin.mutate({
 				provider: "LINKEDIN",
 				code: data.code,
-				redirectUri: linkedInRedirectUriRef.current,
+				redirectUri: linkedInRedirectUri,
 			});
 		};
 
@@ -121,13 +118,14 @@ export function SocialAuthButtons({ onNavigate }: Props) {
 				clearLinkedInPopupState();
 			}
 		};
-	}, [socialLogin.mutate]);
+	}, [linkedInRedirectUri, socialLogin.mutate]);
 
 	const googleLogin = useGoogleLogin({
-		onSuccess: (tokenResponse) => {
+		flow: "auth-code",
+		onSuccess: (codeResponse) => {
 			socialLogin.mutate({
 				provider: "GOOGLE",
-				accessToken: tokenResponse.access_token,
+				code: codeResponse.code,
 			});
 		},
 		onError: () => {
@@ -205,7 +203,7 @@ export function SocialAuthButtons({ onNavigate }: Props) {
 					<Loader2 className="h-4 w-4 animate-spin" />
 				) : (
 					<svg
-						className="h-4 w-4 flex-shrink-0"
+						className="h-4 w-4 shrink-0"
 						viewBox="0 0 24 24"
 						aria-labelledby="googleIconTitle"
 					>
