@@ -53,6 +53,7 @@ export default function AdminSidebar() {
 			to: "/catalog-management",
 			label: "Catalog Management",
 			icon: Library,
+			search: { tab: "interests" },
 		},
 	];
 
@@ -76,6 +77,7 @@ export default function AdminSidebar() {
 						<Link
 							key={item.to}
 							to={item.to}
+							search={item.search as any}
 							className={cn(
 								"flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all group",
 								isActive

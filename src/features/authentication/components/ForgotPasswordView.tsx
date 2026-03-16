@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useRequestPasswordReset } from "../hooks/use-request-password-reset";
 import type { AuthView } from "../types";
 import { forgotPasswordSchema } from "../validators";
+import type { ApiError } from "@/api/apiError";
 
 interface Props {
 	onNavigate: (view: AuthView, email?: string) => void;
@@ -20,10 +21,9 @@ export function ForgotPasswordView({ onNavigate }: Props) {
 		onSuccess: () => {
 			onNavigate("forgot-password-otp", form.state.values.email);
 		},
-		onError: (error) => {
-			const errorData = error as { response?: { data?: { message?: string } } };
+		onError: (error: ApiError) => {
 			const message =
-				errorData.response?.data?.message ||
+				error.response?.data?.message ||
 				"Something went wrong. Please try again.";
 			setApiError(message);
 		},

@@ -4,6 +4,7 @@ import type { UserRole } from "@/shared/types/user";
 import { authService } from "../services/auth.service";
 import type { SocialLoginInput, SocialLoginResponse } from "../types";
 import { setAuthSession } from "../utils/set-auth-session";
+import type { ApiError } from "@/api/apiError";
 
 export function useSocialLogin(options?: {
 	onSuccess?: (
@@ -11,9 +12,7 @@ export function useSocialLogin(options?: {
 			| { type: "login"; user: { role: UserRole } }
 			| { type: "onboarding"; setupToken: string },
 	) => void;
-	onError?: (
-		error: Error | { response?: { data?: { message?: string } } },
-	) => void;
+	onError?: (error: ApiError) => void;
 }) {
 	const router = useRouter();
 

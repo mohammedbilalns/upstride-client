@@ -2,12 +2,11 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { authService } from "../services/auth.service";
 import type { ChangePasswordInput } from "../types";
+import type { ApiError } from "@/api/apiError";
 
 interface UseResetPasswordOptions {
 	onSuccess?: () => void;
-	onError?: (
-		error: Error | { response?: { data?: { message?: string } } },
-	) => void;
+	onError?: (error: ApiError) => void;
 }
 
 export const useResetPassword = ({
@@ -20,7 +19,7 @@ export const useResetPassword = ({
 			toast.success(response.message || "Password reset successfully!");
 			onSuccess?.();
 		},
-		onError: (error) => {
+		onError: (error: ApiError) => {
 			console.error("Reset password error:", error);
 			onError?.(error);
 		},

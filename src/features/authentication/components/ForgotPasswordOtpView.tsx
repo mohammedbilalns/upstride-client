@@ -4,6 +4,7 @@ import { useResendPasswordResetOtp } from "../hooks/use-resend-password-reset-ot
 import { useVerifyPasswordResetOtp } from "../hooks/use-verify-password-reset-otp";
 import type { AuthView } from "../types";
 import { OtpVerificationPanel } from "./OtpVerificationPanel";
+import type { ApiError } from "@/api/apiError";
 
 const OTP_TIMEOUT_SECONDS = 120;
 const OTP_LENGTH = 6;
@@ -41,9 +42,9 @@ export function ForgotPasswordOtpView({ email, onNavigate }: Props) {
 		try {
 			await verifyMutation.mutateAsync({ email, otp });
 		} catch (err) {
-			const errorData = err as { response?: { data?: { message?: string } } };
+			const error = err as ApiError;
 			setError(
-				errorData.response?.data?.message ||
+				error.response?.data?.message ||
 					"Invalid or expired OTP. Please try again.",
 			);
 		}
@@ -57,8 +58,8 @@ export function ForgotPasswordOtpView({ email, onNavigate }: Props) {
 			setOtp("");
 			resetTimers();
 		} catch (err) {
-			const errorData = err as { response?: { data?: { message?: string } } };
-			setError(errorData.response?.data?.message || "Failed to resend OTP.");
+			const error = err as ApiError;
+			setError(error.response?.data?.message || "Failed to resend OTP.");
 		}
 	}, [canResend, email, resetTimers, resendMutation, setError, setOtp]);
 

@@ -17,8 +17,6 @@ export const ROUTES = {
 		REVOKE_SESSION: "/revoke-session",
 		REVOKE_ALL_OTHER_SESSIONS: "/revoke-all-other-sessions",
 		ACTIVE_SESSIONS: "/active-sessions",
-		ME: "/me",
-		PROFILE: "/profile",
 	},
 	PROFILE: {
 		BASE: "/profile",
@@ -32,12 +30,24 @@ export const ROUTES = {
 		BASE: "/catalog",
 		ONBOARDING: "/onboarding",
 		PROFESSIONS: "/professions",
+		FETCH: "/fetch",
+		ADD_INTEREST: "/interests",
+		DISABLE_INTEREST: (id: string) => `/interests/${id}/disable`,
+		ADD_SKILL: "/skills",
+		DISABLE_SKILL: (id: string) => `/skills/${id}/disable`,
+		ADD_PROFESSION: "/professions",
+		DISABLE_PROFESSION: (id: string) => `/professions/${id}/disable`,
 	},
 	USER_MANAGEMENT: {
 		BASE: "/user-management",
 		FETCH_USERS: "/fetch-users",
 		BLOCK: (id: string) => `/${id}/block`,
 		UNBLOCK: (id: string) => `/${id}/unblock`,
+	},
+	STORAGE: {
+		BASE: "/storage",
+		GET_PRESIGNED_URL: "/presigned-upload-url",
+		DELETE: "/delete",
 	},
 	MENTOR: {
 		BASE: "/mentor",
@@ -47,10 +57,5 @@ export const ROUTES = {
 		APPLICATIONS: "/applications",
 		APPROVE: (id: string) => `/applications/${id}/approve`,
 		REJECT: (id: string) => `/applications/${id}/reject`,
-	},
-	STORAGE: {
-		BASE: "/storage",
-		GET_PRESIGNED_URL: "/presigned-upload-url",
-		DELETE_FILE: "/delete",
 	},
 };

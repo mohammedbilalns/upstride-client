@@ -11,6 +11,7 @@ import type { AuthView } from "../types";
 import { registerSchema } from "../validators";
 import { PasswordField } from "./PasswordField";
 import { SocialAuthButtons } from "./SocialAuthButtons";
+import type { ApiError } from "@/api/apiError";
 
 interface Props {
 	onNavigate: (view: AuthView, email?: string) => void;
@@ -23,12 +24,9 @@ export function RegisterView({ onNavigate }: Props) {
 		onSuccess: (email) => {
 			onNavigate("register-otp", email);
 		},
-		onError: (
-			error: Error | { response?: { data?: { message?: string } } },
-		) => {
-			const errorData = error as { response?: { data?: { message?: string } } };
+		onError: (error: ApiError) => {
 			const message =
-				errorData.response?.data?.message ||
+				error.response?.data?.message ||
 				"Registration failed. Please try again.";
 			setApiError(message);
 		},
