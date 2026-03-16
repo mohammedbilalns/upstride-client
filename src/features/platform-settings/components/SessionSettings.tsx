@@ -1,0 +1,262 @@
+import { useForm } from "@tanstack/react-form";
+import { CalendarClock, Percent, Save, ShieldCheck } from "lucide-react";
+import { useState } from "react";
+import type { ZodError } from "zod";
+import { ConfirmModal } from "@/components/common/ConfirmModal";
+import FieldError from "@/components/common/Field-Error";
+import { buildEmptyStringErrors } from "@/shared/utils/form-validation";
+import { Button } from "@/components/ui/button";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import type { SessionSettingsConfig } from "../types";
+import { sessionSettingsSchema } from "../validators/platform-settings.schema";
+
+type SessionSettingsFormValues = Omit<
+	SessionSettingsConfig,
+	| "cancellationWindowHours"
+	| "rescheduleWindowHours"
+	| "maxSessionsPerDayPerMentor"
+	| "platformFeePercentage"
+> & {
+	cancellationWindowHours: number | "";
+	rescheduleWindowHours: number | "";
+	maxSessionsPerDayPerMentor: number | "";
+	platformFeePercentage: number | "";
+};
+
+interface SessionSettingsProps {
+	settings: SessionSettingsConfig;
+	onUpdate: (data: SessionSettingsConfig) => Promise<void>;
+	isLoading: boolean;
+}
+
+export function SessionSettings({
+	settings,
+	onUpdate,
+	isLoading,
+}: SessionSettingsProps) {
+	const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+	const [pendingData, setPendingData] = useState<SessionSettingsConfig | null>(
+		null,
+	);
+
+	const buildFieldErrors = (error: ZodError) => {
+		const fieldErrors: Record<string, string> = {};
+		for (const issue of error.issues) {
+			const path = issue.path.join(".");
+			if (!path || fieldErrors[path]) continue;
+			fieldErrors[path] = issue.message;
+		}
+		return fieldErrors;
+	};
+
+	const validateForm = (value: SessionSettingsFormValues) => {
+		const emptyErrors = buildEmptyStringErrors(value);
+		if (Object.keys(emptyErrors).length > 0) {
+			return { fields: emptyErrors };
+		}
+
+		const parsed = sessionSettingsSchema.safeParse(value);
+		return parsed.success
+			? undefined
+			: {
+					fields: buildFieldErrors(parsed.error),
+				};
+	};
+
+	const form = useForm({
+		defaultValues: settings as SessionSettingsFormValues,
+		validators: {
+			onChange: ({ value }) => validateForm(value),
+		},
+		onSubmit: async ({ value }) => {
+			const parsed = sessionSettingsSchema.safeParse(value);
+			if (!parsed.success) return;
+			setPendingData(parsed.data);
+			setIsConfirmOpen(true);
+		},
+	});
+
+	const handleConfirmUpdate = async () => {
+		if (pendingData) {
+			await onUpdate(pendingData);
+			setIsConfirmOpen(false);
+			setPendingData(null);
+		}
+	};
+
+	const parseNumberInput = (value: string): number | "" =>
+		value === "" ? "" : Number(value);
+	const getErrorMessage = (errors: unknown) => {
+		if (!errors) return undefined;
+		if (Array.isArray(errors)) {
+			const first = errors[0] as { message?: string } | undefined;
+			return first?.message || first?.toString() || undefined;
+		}
+		if (typeof errors === "string") return errors;
+		if (typeof errors === "object") {
+			const message = (errors as { message?: string }).message;
+			return message || String(errors);
+		}
+		return String(errors);
+	};
+
+	return (
+		<div className="space-y-6">
+			<form
+				onSubmit={(e) => {
+					e.preventDefault();
+					e.stopPropagation();
+					form.handleSubmit();
+				}}
+				className="space-y-6"
+			>
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					<Card className="border-border/60 shadow-sm">
+						<CardHeader className="bg-muted/20">
+							<CardTitle className="flex items-center gap-2 text-lg">
+								<CalendarClock className="w-5 h-5 text-primary" />
+								Windows
+							</CardTitle>
+							<CardDescription>
+								Time limits for session actions.
+							</CardDescription>
+						</CardHeader>
+						<CardContent className="pt-6 space-y-4">
+							<form.Field name="cancellationWindowHours">
+								{(field) => (
+									<div className="space-y-2">
+										<Label className="text-sm">Cancellation Window (Hrs)</Label>
+										<Input
+											type="number"
+											value={field.state.value ?? ""}
+											onChange={(e) =>
+												field.handleChange(parseNumberInput(e.target.value))
+											}
+											onBlur={field.handleBlur}
+										/>
+										<FieldError
+											message={getErrorMessage(field.state.meta.errors)}
+										/>
+									</div>
+								)}
+							</form.Field>
+							<form.Field name="rescheduleWindowHours">
+								{(field) => (
+									<div className="space-y-2">
+										<Label className="text-sm">Reschedule Window (Hrs)</Label>
+										<Input
+											type="number"
+											value={field.state.value ?? ""}
+											onChange={(e) =>
+												field.handleChange(parseNumberInput(e.target.value))
+											}
+											onBlur={field.handleBlur}
+										/>
+										<FieldError
+											message={getErrorMessage(field.state.meta.errors)}
+										/>
+									</div>
+								)}
+							</form.Field>
+						</CardContent>
+					</Card>
+
+					<Card className="border-border/60 shadow-sm">
+						<CardHeader className="bg-muted/20">
+							<CardTitle className="flex items-center gap-2 text-lg">
+								<ShieldCheck className="w-5 h-5 text-primary" />
+								Availability
+							</CardTitle>
+							<CardDescription>Rules for session distribution.</CardDescription>
+						</CardHeader>
+						<CardContent className="pt-6 space-y-4">
+							<form.Field name="maxSessionsPerDayPerMentor">
+								{(field) => (
+									<div className="space-y-2">
+										<Label className="text-sm">
+											Max Sessions/Day per Mentor
+										</Label>
+										<Input
+											type="number"
+											value={field.state.value ?? ""}
+											onChange={(e) =>
+												field.handleChange(parseNumberInput(e.target.value))
+											}
+											onBlur={field.handleBlur}
+										/>
+										<FieldError
+											message={getErrorMessage(field.state.meta.errors)}
+										/>
+									</div>
+								)}
+							</form.Field>
+						</CardContent>
+					</Card>
+
+					<Card className="border-border/60 shadow-sm">
+						<CardHeader className="bg-muted/20">
+							<CardTitle className="flex items-center gap-2 text-lg">
+								<div className="w-5 h-5 flex items-center justify-center bg-primary/10 rounded-lg text-primary">
+									<Percent className="w-3.5 h-3.5" />
+								</div>
+								Financials
+							</CardTitle>
+							<CardDescription>Processing fees and deductions.</CardDescription>
+						</CardHeader>
+						<CardContent className="pt-6 space-y-4">
+							<form.Field name="platformFeePercentage">
+								{(field) => (
+									<div className="space-y-2">
+										<Label className="text-sm">Session Platform Fee (%)</Label>
+										<Input
+											type="number"
+											value={field.state.value ?? ""}
+											onChange={(e) =>
+												field.handleChange(parseNumberInput(e.target.value))
+											}
+											onBlur={field.handleBlur}
+										/>
+										<FieldError
+											message={getErrorMessage(field.state.meta.errors)}
+										/>
+									</div>
+								)}
+							</form.Field>
+						</CardContent>
+					</Card>
+				</div>
+
+				<div className="flex justify-end pt-4">
+					<Button
+						type="submit"
+						size="lg"
+						disabled={isLoading}
+						className="px-8 shadow-md"
+					>
+						<Save className="w-4 h-4 mr-2" />
+						Update Session Rules
+					</Button>
+				</div>
+			</form>
+
+			<ConfirmModal
+				isOpen={isConfirmOpen}
+				onClose={() => setIsConfirmOpen(false)}
+				onConfirm={handleConfirmUpdate}
+				title="Confirm Session Settings Change"
+				message="Adjusting session windows and fees will affect all upcoming bookings and mentor payouts. Are you sure you wish to proceed?"
+				variant="destructive"
+				isLoading={isLoading}
+				confirmText="Yes, Update Session Rules"
+			/>
+		</div>
+	);
+}
