@@ -12,7 +12,7 @@ export const catalogInterestSchema = z.object({
 
 export const catalogSkillSchema = z.object({
 	name: catalogItemNameSchema,
-	interestId: z.string().uuid("Invalid interest ID"),
+	interestId: z.string("Invalid interest ID"),
 });
 
 export const catalogProfessionSchema = z.object({
