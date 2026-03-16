@@ -5,6 +5,7 @@ import {
 	LayoutDashboard,
 	Library,
 	LogOut,
+	Settings2,
 	Users,
 	Zap,
 } from "lucide-react";
@@ -55,6 +56,11 @@ export default function AdminSidebar() {
 			icon: Library,
 			search: { tab: "interests" },
 		},
+		{
+			to: "/platform-settings",
+			label: "Platform Settings",
+			icon: Settings2,
+		},
 	];
 
 	return (
@@ -77,7 +83,6 @@ export default function AdminSidebar() {
 						<Link
 							key={item.to}
 							to={item.to}
-							search={item.search as any}
 							className={cn(
 								"flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all group",
 								isActive
