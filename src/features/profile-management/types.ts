@@ -1,7 +1,7 @@
 export type UserRole = "USER" | "MENTOR" | "ADMIN" | "SUPER_ADMIN";
 export type SkillLevel = "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
 
-export interface UserProfileDTO {
+export interface UserProfile {
 	id: string;
 	name: string;
 	email: string;
@@ -22,7 +22,7 @@ export interface UserProfileDTO {
 }
 
 export interface GetProfileOutput {
-	profile: UserProfileDTO;
+	profile: UserProfile;
 }
 
 export interface UpdateProfileInput {

@@ -1,32 +1,32 @@
-export interface PurchaseRateDto {
+export interface PurchaseRate {
 	price: number;
 	coinsCount: number;
+	revenuePercentage?: number;
 }
 
-export interface PayoutRateDto {
+export interface PayoutRate {
 	coinsCountFrom: number;
 	coinsCountTo: number;
 	payoutPerCoinRate: number;
 }
 
-export interface SubscriptionPlanDto {
+export interface SubscriptionPlan {
 	id: string;
 	coinsCost: number;
 	type: "monthly" | "quarterly" | "yearly";
 }
 
-export interface EconomySettingsDto {
-	purchaseRates: PurchaseRateDto[];
-	payoutRates: PayoutRateDto[];
-	subscriptions: SubscriptionPlanDto[];
+export interface EconomySettingsConfig {
+	purchaseRates: PurchaseRate[];
+	payoutRates: PayoutRate[];
+	subscriptions: SubscriptionPlan[];
 	userJoinRewardCoinCount: number;
 	maxCoinsEarnablePerDay: number;
 	maxCoinsFromReadingPerDay: number;
 	maxCoinsFromEngagementPerDay: number;
-	platformCommissionPercentage: number;
 }
 
-export interface MentorTierDto {
+export interface MentorTier {
 	id: string;
 	name: string;
 	rateForThirtyMinSession: number;
@@ -37,28 +37,28 @@ export interface MentorTierDto {
 	minArticlesPublished: number;
 }
 
-export interface MentorSettingsDto {
-	tiers: MentorTierDto[];
+export interface MentorSettingsConfig {
+	tiers: MentorTier[];
 }
 
-export interface PremiumArticleRequirementDto {
+export interface PremiumArticleRequirement {
 	minFreeArticlesNewUserShouldHave: number;
 	minArticleViews: number;
 	minLikes: number;
 }
 
-export interface FeedSettingsDto {
+export interface FeedSettingsConfig {
 	trendingWindowHours: number;
 	minimumEngagementForTrending: number;
 	articleDecayRate: number;
 }
 
-export interface ContentSettingsDto {
-	premiumArticleRequirement: PremiumArticleRequirementDto;
-	feed: FeedSettingsDto;
+export interface ContentSettingsConfig {
+	premiumArticleRequirement: PremiumArticleRequirement;
+	feed: FeedSettingsConfig;
 }
 
-export interface SessionSettingsDto {
+export interface SessionSettingsConfig {
 	cancellationWindowHours: number;
 	rescheduleWindowHours: number;
 	maxSessionsPerDayPerMentor: number;
@@ -68,53 +68,53 @@ export interface SessionSettingsDto {
 export interface FetchPlatformSettingsResponse {
 	message: string;
 	data: {
-		economy: EconomySettingsDto;
-		mentors: MentorSettingsDto;
-		content: ContentSettingsDto;
-		sessions: SessionSettingsDto;
+		economy: EconomySettingsConfig;
+		mentors: MentorSettingsConfig;
+		content: ContentSettingsConfig;
+		sessions: SessionSettingsConfig;
 	};
 }
 
 export interface UpdateEconomySettingsInput {
-	economy: EconomySettingsDto;
+	economy: EconomySettingsConfig;
 }
 
 export interface UpdateEconomySettingsResponse {
 	message: string;
 	data: {
-		economy: EconomySettingsDto;
+		economy: EconomySettingsConfig;
 	};
 }
 
 export interface UpdateMentorSettingsInput {
-	mentors: MentorSettingsDto;
+	mentors: MentorSettingsConfig;
 }
 
 export interface UpdateMentorSettingsResponse {
 	message: string;
 	data: {
-		mentors: MentorSettingsDto;
+		mentors: MentorSettingsConfig;
 	};
 }
 
 export interface UpdateContentSettingsInput {
-	content: ContentSettingsDto;
+	content: ContentSettingsConfig;
 }
 
 export interface UpdateContentSettingsResponse {
 	message: string;
 	data: {
-		content: ContentSettingsDto;
+		content: ContentSettingsConfig;
 	};
 }
 
 export interface UpdateSessionSettingsInput {
-	sessions: SessionSettingsDto;
+	sessions: SessionSettingsConfig;
 }
 
 export interface UpdateSessionSettingsResponse {
 	message: string;
 	data: {
-		sessions: SessionSettingsDto;
+		sessions: SessionSettingsConfig;
 	};
 }

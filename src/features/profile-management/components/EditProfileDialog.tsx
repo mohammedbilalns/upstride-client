@@ -17,11 +17,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { fileService } from "@/shared/services/file.service";
 import { useUpdateProfile } from "../hooks/use-update-profile";
-import type { UserProfileDTO } from "../types";
+import type { UserProfile } from "../types";
 import { profileUpdateSchema } from "../validators";
 
 interface Props {
-	profile: UserProfileDTO;
+	profile: UserProfile;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 }
