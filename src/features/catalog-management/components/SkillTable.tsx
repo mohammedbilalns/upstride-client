@@ -1,4 +1,4 @@
-import { Trash2 } from "lucide-react";
+import { Trash2, RotateCcw } from "lucide-react";
 import {
 	Table,
 	TableBody,
@@ -16,12 +16,14 @@ interface SkillTableProps {
 	skills: CatalogSkill[];
 	parentActive: boolean;
 	onDisableSkill: (id: string) => void;
+	onEnableSkill: (id: string) => void;
 }
 
 export function SkillTable({
 	skills,
 	parentActive,
 	onDisableSkill,
+	onEnableSkill,
 }: SkillTableProps) {
 	return (
 		<Table>
@@ -73,20 +75,42 @@ export function SkillTable({
 								</span>
 							</TableCell>
 							<TableCell className="text-right pr-6">
-								<Button
-									size="sm"
-									variant="ghost"
-									className={cn(
-										"h-8 w-8 p-0 text-muted-foreground transition-all hover:text-destructive hover:bg-destructive/10",
-										skill.isActive && parentActive
-											? "opacity-0 group-hover:opacity-100"
-											: "opacity-0 cursor-not-allowed",
-									)}
-									disabled={!skill.isActive || !parentActive}
-									onClick={() => onDisableSkill(skill.id)}
-								>
-									<Trash2 className="w-3.5 h-3.5" />
-								</Button>
+								{skill.isActive ? (
+									<Button
+										size="sm"
+										variant="ghost"
+										className={cn(
+											"h-8 w-8 p-0 text-muted-foreground transition-all hover:text-destructive hover:bg-destructive/10",
+											parentActive
+												? "opacity-0 group-hover:opacity-100"
+												: "opacity-0 cursor-not-allowed",
+										)}
+										disabled={!parentActive}
+										onClick={() => onDisableSkill(skill.id)}
+									>
+										<Trash2 className="w-3.5 h-3.5" />
+									</Button>
+								) : (
+									<Button
+										size="sm"
+										variant="ghost"
+										className={cn(
+											"h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10",
+											parentActive
+												? "opacity-0 group-hover:opacity-100"
+												: "opacity-50 cursor-not-allowed",
+										)}
+										disabled={!parentActive}
+										onClick={() => onEnableSkill(skill.id)}
+										title={
+											!parentActive
+												? "Parent interest must be enabled first"
+												: "Enable Skill"
+										}
+									>
+										<RotateCcw className="w-3.5 h-3.5" />
+									</Button>
+								)}
 							</TableCell>
 						</TableRow>
 					))

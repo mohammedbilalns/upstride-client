@@ -1,6 +1,6 @@
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { InterestCard } from "./InterestCard";
+import { InterestTable } from "./InterestTable";
 import type { CatalogInterest } from "../types";
 
 interface InterestListProps {
@@ -8,7 +8,9 @@ interface InterestListProps {
 	onAddInterest: () => void;
 	onAddSkill: (interestId: string) => void;
 	onDisableInterest: (id: string) => void;
+	onEnableInterest: (id: string) => void;
 	onDisableSkill: (id: string) => void;
+	onEnableSkill: (id: string) => void;
 }
 
 export function InterestList({
@@ -16,7 +18,9 @@ export function InterestList({
 	onAddInterest,
 	onAddSkill,
 	onDisableInterest,
+	onEnableInterest,
 	onDisableSkill,
+	onEnableSkill,
 }: InterestListProps) {
 	return (
 		<div className="space-y-4">
@@ -27,17 +31,14 @@ export function InterestList({
 				</Button>
 			</div>
 
-			<div className="grid gap-6">
-				{interests.map((interest) => (
-					<InterestCard
-						key={interest.id}
-						interest={interest}
-						onAddSkill={onAddSkill}
-						onDisableInterest={onDisableInterest}
-						onDisableSkill={onDisableSkill}
-					/>
-				))}
-			</div>
+			<InterestTable
+				interests={interests}
+				onAddSkill={onAddSkill}
+				onDisableInterest={onDisableInterest}
+				onEnableInterest={onEnableInterest}
+				onDisableSkill={onDisableSkill}
+				onEnableSkill={onEnableSkill}
+			/>
 		</div>
 	);
 }

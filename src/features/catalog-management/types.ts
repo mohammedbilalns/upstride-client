@@ -70,3 +70,15 @@ export interface DisableProfessionInput {
 export interface DisableSkillInput {
 	skillId: string;
 }
+
+export interface EnableInterestInput {
+	interestId: string;
+}
+
+export interface EnableProfessionInput {
+	professionId: string;
+}
+
+export interface EnableSkillInput {
+	skillId: string;
+}

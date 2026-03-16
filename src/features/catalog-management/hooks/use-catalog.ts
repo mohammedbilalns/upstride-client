@@ -96,12 +96,48 @@ export function useCatalogMutations() {
 		},
 	});
 
+	const enableInterest = useMutation({
+		mutationFn: (id: string) => catalogService.enableInterest(id),
+		onSuccess: (res) => {
+			toast.success(res.message);
+			queryClient.invalidateQueries({ queryKey: ["catalog"] });
+		},
+		onError: (error: ApiError) => {
+			toast.error(getErrorMessage(error, "Failed to enable interest"));
+		},
+	});
+
+	const enableProfession = useMutation({
+		mutationFn: (id: string) => catalogService.enableProfession(id),
+		onSuccess: (res) => {
+			toast.success(res.message);
+			queryClient.invalidateQueries({ queryKey: ["catalog"] });
+		},
+		onError: (error: ApiError) => {
+			toast.error(getErrorMessage(error, "Failed to enable profession"));
+		},
+	});
+
+	const enableSkill = useMutation({
+		mutationFn: (id: string) => catalogService.enableSkill(id),
+		onSuccess: (res) => {
+			toast.success(res.message);
+			queryClient.invalidateQueries({ queryKey: ["catalog"] });
+		},
+		onError: (error: ApiError) => {
+			toast.error(getErrorMessage(error, "Failed to enable skill"));
+		},
+	});
+
 	return {
 		addInterest,
 		disableInterest,
+		enableInterest,
 		addProfession,
 		disableProfession,
+		enableProfession,
 		addSkill,
 		disableSkill,
+		enableSkill,
 	};
 }

@@ -18,3 +18,7 @@ export const catalogSkillSchema = z.object({
 export const catalogProfessionSchema = z.object({
 	name: catalogItemNameSchema,
 });
+
+export const catalogSearchSchema = z.object({
+	tab: z.enum(["interests", "professions"]).catch("interests").optional(),
+});

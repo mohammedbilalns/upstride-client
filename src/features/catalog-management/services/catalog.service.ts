@@ -80,4 +80,25 @@ export const catalogService = {
 		);
 		return response.data;
 	},
+
+	enableInterest: async (id: string): Promise<CatalogActionResponse> => {
+		const response = await api.patch<CatalogActionResponse>(
+			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ENABLE_INTEREST(id)}`,
+		);
+		return response.data;
+	},
+
+	enableSkill: async (id: string): Promise<CatalogActionResponse> => {
+		const response = await api.patch<CatalogActionResponse>(
+			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ENABLE_SKILL(id)}`,
+		);
+		return response.data;
+	},
+
+	enableProfession: async (id: string): Promise<CatalogActionResponse> => {
+		const response = await api.patch<CatalogActionResponse>(
+			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ENABLE_PROFESSION(id)}`,
+		);
+		return response.data;
+	},
 };

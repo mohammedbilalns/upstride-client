@@ -17,21 +17,25 @@ export function CatalogManagementPage() {
 	const {
 		addInterest,
 		disableInterest,
+		enableInterest,
 		addProfession,
 		disableProfession,
+		enableProfession,
 		addSkill,
 		disableSkill,
+		enableSkill,
 	} = useCatalogMutations();
 
 	const [isInterestDialogOpen, setIsInterestDialogOpen] = useState(false);
 	const [isProfessionDialogOpen, setIsProfessionDialogOpen] = useState(false);
 	const [isSkillDialogOpen, setIsSkillDialogOpen] = useState(false);
-	const [isConfirmDisableOpen, setIsConfirmDisableOpen] = useState(false);
+	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
 	const [selectedInterestId, setSelectedInterestId] = useState("");
-	const [itemToDisable, setItemToDisable] = useState<{
+	const [itemToConfirm, setItemToConfirm] = useState<{
 		id: string;
 		type: "interest" | "skill" | "profession";
+		action: "disable" | "enable";
 	} | null>(null);
 
 	if (isLoading) {
@@ -59,16 +63,23 @@ export function CatalogManagementPage() {
 		setSelectedInterestId("");
 	};
 
-	const handleConfirmDisable = async () => {
-		if (!itemToDisable) return;
+	const handleConfirmAction = async () => {
+		if (!itemToConfirm) return;
 
-		const { id, type } = itemToDisable;
-		if (type === "interest") await disableInterest.mutateAsync(id);
-		else if (type === "skill") await disableSkill.mutateAsync(id);
-		else if (type === "profession") await disableProfession.mutateAsync(id);
+		const { id, type, action } = itemToConfirm;
 
-		setIsConfirmDisableOpen(false);
-		setItemToDisable(null);
+		if (action === "disable") {
+			if (type === "interest") await disableInterest.mutateAsync(id);
+			else if (type === "skill") await disableSkill.mutateAsync(id);
+			else if (type === "profession") await disableProfession.mutateAsync(id);
+		} else {
+			if (type === "interest") await enableInterest.mutateAsync(id);
+			else if (type === "skill") await enableSkill.mutateAsync(id);
+			else if (type === "profession") await enableProfession.mutateAsync(id);
+		}
+
+		setIsConfirmModalOpen(false);
+		setItemToConfirm(null);
 	};
 
 	return (
@@ -101,12 +112,20 @@ export function CatalogManagementPage() {
 							setIsSkillDialogOpen(true);
 						}}
 						onDisableInterest={(id) => {
-							setItemToDisable({ id, type: "interest" });
-							setIsConfirmDisableOpen(true);
+							setItemToConfirm({ id, type: "interest", action: "disable" });
+							setIsConfirmModalOpen(true);
+						}}
+						onEnableInterest={(id) => {
+							setItemToConfirm({ id, type: "interest", action: "enable" });
+							setIsConfirmModalOpen(true);
 						}}
 						onDisableSkill={(id) => {
-							setItemToDisable({ id, type: "skill" });
-							setIsConfirmDisableOpen(true);
+							setItemToConfirm({ id, type: "skill", action: "disable" });
+							setIsConfirmModalOpen(true);
+						}}
+						onEnableSkill={(id) => {
+							setItemToConfirm({ id, type: "skill", action: "enable" });
+							setIsConfirmModalOpen(true);
 						}}
 					/>
 				</TabsContent>
@@ -116,8 +135,12 @@ export function CatalogManagementPage() {
 						professions={catalog?.data.professions || []}
 						onAddProfession={() => setIsProfessionDialogOpen(true)}
 						onDisableProfession={(id) => {
-							setItemToDisable({ id, type: "profession" });
-							setIsConfirmDisableOpen(true);
+							setItemToConfirm({ id, type: "profession", action: "disable" });
+							setIsConfirmModalOpen(true);
+						}}
+						onEnableProfession={(id) => {
+							setItemToConfirm({ id, type: "profession", action: "enable" });
+							setIsConfirmModalOpen(true);
 						}}
 					/>
 				</TabsContent>
@@ -164,19 +187,34 @@ export function CatalogManagementPage() {
 			/>
 
 			<ConfirmModal
-				isOpen={isConfirmDisableOpen}
-				onClose={() => setIsConfirmDisableOpen(false)}
-				onConfirm={handleConfirmDisable}
-				title="Confirm Action"
-				message={`Are you sure you want to disable this ${itemToDisable?.type}? This action will hide it from users but won't delete existing data.`}
-				variant="destructive"
+				isOpen={isConfirmModalOpen}
+				onClose={() => setIsConfirmModalOpen(false)}
+				onConfirm={handleConfirmAction}
+				title={
+					itemToConfirm?.action === "disable"
+						? "Confirm Disable"
+						: "Confirm Enable"
+				}
+				message={
+					itemToConfirm?.action === "disable"
+						? `Are you sure you want to disable this ${itemToConfirm?.type}? This action will hide it from users but won't delete existing data.`
+						: `Are you sure you want to re-enable this ${itemToConfirm?.type}? This will make it visible to users again.`
+				}
+				variant={
+					itemToConfirm?.action === "disable" ? "destructive" : "default"
+				}
 				isLoading={
 					disableInterest.isPending ||
 					disableSkill.isPending ||
-					disableProfession.isPending
+					disableProfession.isPending ||
+					enableInterest.isPending ||
+					enableSkill.isPending ||
+					enableProfession.isPending
 				}
-				confirmText="Yes, Disable"
-				cancelText="Keep It"
+				confirmText={
+					itemToConfirm?.action === "disable" ? "Yes, Disable" : "Yes, Enable"
+				}
+				cancelText="Cancel"
 			/>
 		</div>
 	);
