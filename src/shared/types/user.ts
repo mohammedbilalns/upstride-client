@@ -15,6 +15,7 @@ export interface User {
 	authType: AuthType;
 	profilePictureId: string | null;
 	role: UserRole;
+	coinBalance: number;
 	isBlocked: boolean;
 	isVerified: boolean;
 	createdAt: Date;
