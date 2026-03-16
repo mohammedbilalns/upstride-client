@@ -1,10 +1,12 @@
 import { useForm } from "@tanstack/react-form";
 import { CalendarClock, Percent, Save, ShieldCheck } from "lucide-react";
 import { useState } from "react";
-import type { ZodError } from "zod";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import FieldError from "@/components/common/Field-Error";
-import { buildEmptyStringErrors } from "@/shared/utils/form-validation";
+import {
+	buildEmptyStringErrors,
+	buildFieldErrorsFromIssues,
+} from "@/shared/utils/form-validation";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -47,16 +49,6 @@ export function SessionSettings({
 		null,
 	);
 
-	const buildFieldErrors = (error: ZodError) => {
-		const fieldErrors: Record<string, string> = {};
-		for (const issue of error.issues) {
-			const path = issue.path.join(".");
-			if (!path || fieldErrors[path]) continue;
-			fieldErrors[path] = issue.message;
-		}
-		return fieldErrors;
-	};
-
 	const validateForm = (value: SessionSettingsFormValues) => {
 		const emptyErrors = buildEmptyStringErrors(value);
 		if (Object.keys(emptyErrors).length > 0) {
@@ -67,7 +59,7 @@ export function SessionSettings({
 		return parsed.success
 			? undefined
 			: {
-					fields: buildFieldErrors(parsed.error),
+					fields: buildFieldErrorsFromIssues(parsed.error.issues),
 				};
 	};
 

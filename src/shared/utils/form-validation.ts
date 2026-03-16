@@ -1,26 +1,48 @@
+type IssueLike = { path: Array<string | number>; message: string };
+
+export const pathToKey = (path: Array<string | number>) =>
+	path.reduce((acc, segment) => {
+		if (typeof segment === "number") {
+			return `${acc}[${segment}]`;
+		}
+		if (!acc) return segment;
+		return `${acc}.${segment}`;
+	}, "");
+
+export const buildFieldErrorsFromIssues = (issues: IssueLike[]) => {
+	const fieldErrors: Record<string, string> = {};
+	for (const issue of issues) {
+		const key = pathToKey(issue.path);
+		if (!key || fieldErrors[key]) continue;
+		fieldErrors[key] = issue.message;
+	}
+	return fieldErrors;
+};
+
 export const buildEmptyStringErrors = (
 	value: unknown,
-	path: string[] = [],
+	path = "",
 	errors: Record<string, string> = {},
 ): Record<string, string> => {
 	if (value === "") {
-		const key = path.join(".");
-		if (key) {
-			errors[key] = "This field is required";
+		if (path) {
+			errors[path] = "This field is required";
 		}
 		return errors;
 	}
 
 	if (Array.isArray(value)) {
 		value.forEach((item, index) => {
-			buildEmptyStringErrors(item, [...path, String(index)], errors);
+			const nextPath = `${path}[${index}]`;
+			buildEmptyStringErrors(item, nextPath, errors);
 		});
 		return errors;
 	}
 
 	if (value && typeof value === "object") {
 		Object.entries(value).forEach(([key, val]) => {
-			buildEmptyStringErrors(val, [...path, key], errors);
+			const nextPath = path ? `${path}.${key}` : key;
+			buildEmptyStringErrors(val, nextPath, errors);
 		});
 	}
 
