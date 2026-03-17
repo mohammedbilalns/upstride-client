@@ -15,6 +15,7 @@ import { Route as PublicLayoutRouteImport } from './routes/_public-layout'
 import { Route as AdminLayoutRouteImport } from './routes/_admin-layout'
 import { Route as PublicLayoutIndexRouteImport } from './routes/_public-layout/index'
 import { Route as UserLayoutProfileRouteImport } from './routes/_user-layout/profile'
+import { Route as UserLayoutMentorsRouteImport } from './routes/_user-layout/mentors'
 import { Route as UserLayoutHomeRouteImport } from './routes/_user-layout/home'
 import { Route as UserLayoutCoinsRouteImport } from './routes/_user-layout/coins'
 import { Route as PublicLayoutAuthRouteImport } from './routes/_public-layout/auth'
@@ -23,7 +24,10 @@ import { Route as AdminLayoutPlatformSettingsRouteImport } from './routes/_admin
 import { Route as AdminLayoutMentorManagementRouteImport } from './routes/_admin-layout/mentor-management'
 import { Route as AdminLayoutDashboardRouteImport } from './routes/_admin-layout/dashboard'
 import { Route as AdminLayoutCatalogManagementRouteImport } from './routes/_admin-layout/catalog-management'
+import { Route as UserLayoutProfileIndexRouteImport } from './routes/_user-layout/profile/index'
 import { Route as UserLayoutMentorRegisterRouteImport } from './routes/_user-layout/mentor.register'
+import { Route as UserLayoutProfileBookmarkedMentorsIndexRouteImport } from './routes/_user-layout/profile/bookmarked-mentors/index'
+import { Route as UserLayoutProfileBookmarkedMentorsListIdRouteImport } from './routes/_user-layout/profile/bookmarked-mentors/$listId'
 
 const LinkedinRoute = LinkedinRouteImport.update({
   id: '/linkedin',
@@ -50,6 +54,11 @@ const PublicLayoutIndexRoute = PublicLayoutIndexRouteImport.update({
 const UserLayoutProfileRoute = UserLayoutProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => UserLayoutRoute,
+} as any)
+const UserLayoutMentorsRoute = UserLayoutMentorsRouteImport.update({
+  id: '/mentors',
+  path: '/mentors',
   getParentRoute: () => UserLayoutRoute,
 } as any)
 const UserLayoutHomeRoute = UserLayoutHomeRouteImport.update({
@@ -96,11 +105,28 @@ const AdminLayoutCatalogManagementRoute =
     path: '/catalog-management',
     getParentRoute: () => AdminLayoutRoute,
   } as any)
+const UserLayoutProfileIndexRoute = UserLayoutProfileIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => UserLayoutProfileRoute,
+} as any)
 const UserLayoutMentorRegisterRoute =
   UserLayoutMentorRegisterRouteImport.update({
     id: '/mentor/register',
     path: '/mentor/register',
     getParentRoute: () => UserLayoutRoute,
+  } as any)
+const UserLayoutProfileBookmarkedMentorsIndexRoute =
+  UserLayoutProfileBookmarkedMentorsIndexRouteImport.update({
+    id: '/bookmarked-mentors/',
+    path: '/bookmarked-mentors/',
+    getParentRoute: () => UserLayoutProfileRoute,
+  } as any)
+const UserLayoutProfileBookmarkedMentorsListIdRoute =
+  UserLayoutProfileBookmarkedMentorsListIdRouteImport.update({
+    id: '/bookmarked-mentors/$listId',
+    path: '/bookmarked-mentors/$listId',
+    getParentRoute: () => UserLayoutProfileRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -114,8 +140,12 @@ export interface FileRoutesByFullPath {
   '/auth': typeof PublicLayoutAuthRoute
   '/coins': typeof UserLayoutCoinsRoute
   '/home': typeof UserLayoutHomeRoute
-  '/profile': typeof UserLayoutProfileRoute
+  '/mentors': typeof UserLayoutMentorsRoute
+  '/profile': typeof UserLayoutProfileRouteWithChildren
   '/mentor/register': typeof UserLayoutMentorRegisterRoute
+  '/profile/': typeof UserLayoutProfileIndexRoute
+  '/profile/bookmarked-mentors/$listId': typeof UserLayoutProfileBookmarkedMentorsListIdRoute
+  '/profile/bookmarked-mentors/': typeof UserLayoutProfileBookmarkedMentorsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof PublicLayoutIndexRoute
@@ -128,8 +158,11 @@ export interface FileRoutesByTo {
   '/auth': typeof PublicLayoutAuthRoute
   '/coins': typeof UserLayoutCoinsRoute
   '/home': typeof UserLayoutHomeRoute
-  '/profile': typeof UserLayoutProfileRoute
+  '/mentors': typeof UserLayoutMentorsRoute
   '/mentor/register': typeof UserLayoutMentorRegisterRoute
+  '/profile': typeof UserLayoutProfileIndexRoute
+  '/profile/bookmarked-mentors/$listId': typeof UserLayoutProfileBookmarkedMentorsListIdRoute
+  '/profile/bookmarked-mentors': typeof UserLayoutProfileBookmarkedMentorsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -145,9 +178,13 @@ export interface FileRoutesById {
   '/_public-layout/auth': typeof PublicLayoutAuthRoute
   '/_user-layout/coins': typeof UserLayoutCoinsRoute
   '/_user-layout/home': typeof UserLayoutHomeRoute
-  '/_user-layout/profile': typeof UserLayoutProfileRoute
+  '/_user-layout/mentors': typeof UserLayoutMentorsRoute
+  '/_user-layout/profile': typeof UserLayoutProfileRouteWithChildren
   '/_public-layout/': typeof PublicLayoutIndexRoute
   '/_user-layout/mentor/register': typeof UserLayoutMentorRegisterRoute
+  '/_user-layout/profile/': typeof UserLayoutProfileIndexRoute
+  '/_user-layout/profile/bookmarked-mentors/$listId': typeof UserLayoutProfileBookmarkedMentorsListIdRoute
+  '/_user-layout/profile/bookmarked-mentors/': typeof UserLayoutProfileBookmarkedMentorsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -162,8 +199,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/coins'
     | '/home'
+    | '/mentors'
     | '/profile'
     | '/mentor/register'
+    | '/profile/'
+    | '/profile/bookmarked-mentors/$listId'
+    | '/profile/bookmarked-mentors/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -176,8 +217,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/coins'
     | '/home'
-    | '/profile'
+    | '/mentors'
     | '/mentor/register'
+    | '/profile'
+    | '/profile/bookmarked-mentors/$listId'
+    | '/profile/bookmarked-mentors'
   id:
     | '__root__'
     | '/_admin-layout'
@@ -192,9 +236,13 @@ export interface FileRouteTypes {
     | '/_public-layout/auth'
     | '/_user-layout/coins'
     | '/_user-layout/home'
+    | '/_user-layout/mentors'
     | '/_user-layout/profile'
     | '/_public-layout/'
     | '/_user-layout/mentor/register'
+    | '/_user-layout/profile/'
+    | '/_user-layout/profile/bookmarked-mentors/$listId'
+    | '/_user-layout/profile/bookmarked-mentors/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -246,6 +294,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof UserLayoutProfileRouteImport
+      parentRoute: typeof UserLayoutRoute
+    }
+    '/_user-layout/mentors': {
+      id: '/_user-layout/mentors'
+      path: '/mentors'
+      fullPath: '/mentors'
+      preLoaderRoute: typeof UserLayoutMentorsRouteImport
       parentRoute: typeof UserLayoutRoute
     }
     '/_user-layout/home': {
@@ -304,12 +359,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLayoutCatalogManagementRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
+    '/_user-layout/profile/': {
+      id: '/_user-layout/profile/'
+      path: '/'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof UserLayoutProfileIndexRouteImport
+      parentRoute: typeof UserLayoutProfileRoute
+    }
     '/_user-layout/mentor/register': {
       id: '/_user-layout/mentor/register'
       path: '/mentor/register'
       fullPath: '/mentor/register'
       preLoaderRoute: typeof UserLayoutMentorRegisterRouteImport
       parentRoute: typeof UserLayoutRoute
+    }
+    '/_user-layout/profile/bookmarked-mentors/': {
+      id: '/_user-layout/profile/bookmarked-mentors/'
+      path: '/bookmarked-mentors'
+      fullPath: '/profile/bookmarked-mentors/'
+      preLoaderRoute: typeof UserLayoutProfileBookmarkedMentorsIndexRouteImport
+      parentRoute: typeof UserLayoutProfileRoute
+    }
+    '/_user-layout/profile/bookmarked-mentors/$listId': {
+      id: '/_user-layout/profile/bookmarked-mentors/$listId'
+      path: '/bookmarked-mentors/$listId'
+      fullPath: '/profile/bookmarked-mentors/$listId'
+      preLoaderRoute: typeof UserLayoutProfileBookmarkedMentorsListIdRouteImport
+      parentRoute: typeof UserLayoutProfileRoute
     }
   }
 }
@@ -348,17 +424,36 @@ const PublicLayoutRouteWithChildren = PublicLayoutRoute._addFileChildren(
   PublicLayoutRouteChildren,
 )
 
+interface UserLayoutProfileRouteChildren {
+  UserLayoutProfileIndexRoute: typeof UserLayoutProfileIndexRoute
+  UserLayoutProfileBookmarkedMentorsListIdRoute: typeof UserLayoutProfileBookmarkedMentorsListIdRoute
+  UserLayoutProfileBookmarkedMentorsIndexRoute: typeof UserLayoutProfileBookmarkedMentorsIndexRoute
+}
+
+const UserLayoutProfileRouteChildren: UserLayoutProfileRouteChildren = {
+  UserLayoutProfileIndexRoute: UserLayoutProfileIndexRoute,
+  UserLayoutProfileBookmarkedMentorsListIdRoute:
+    UserLayoutProfileBookmarkedMentorsListIdRoute,
+  UserLayoutProfileBookmarkedMentorsIndexRoute:
+    UserLayoutProfileBookmarkedMentorsIndexRoute,
+}
+
+const UserLayoutProfileRouteWithChildren =
+  UserLayoutProfileRoute._addFileChildren(UserLayoutProfileRouteChildren)
+
 interface UserLayoutRouteChildren {
   UserLayoutCoinsRoute: typeof UserLayoutCoinsRoute
   UserLayoutHomeRoute: typeof UserLayoutHomeRoute
-  UserLayoutProfileRoute: typeof UserLayoutProfileRoute
+  UserLayoutMentorsRoute: typeof UserLayoutMentorsRoute
+  UserLayoutProfileRoute: typeof UserLayoutProfileRouteWithChildren
   UserLayoutMentorRegisterRoute: typeof UserLayoutMentorRegisterRoute
 }
 
 const UserLayoutRouteChildren: UserLayoutRouteChildren = {
   UserLayoutCoinsRoute: UserLayoutCoinsRoute,
   UserLayoutHomeRoute: UserLayoutHomeRoute,
-  UserLayoutProfileRoute: UserLayoutProfileRoute,
+  UserLayoutMentorsRoute: UserLayoutMentorsRoute,
+  UserLayoutProfileRoute: UserLayoutProfileRouteWithChildren,
   UserLayoutMentorRegisterRoute: UserLayoutMentorRegisterRoute,
 }
 

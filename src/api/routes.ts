@@ -57,6 +57,7 @@ export const ROUTES = {
 		REGISTRATION_INFO: "/registration-info",
 		REGISTER: "/register",
 		RESUBMIT: "/resubmit",
+		DISCOVERY: "/discover",
 		APPLICATIONS: "/applications",
 		APPROVE: (id: string) => `/applications/${id}/approve`,
 		REJECT: (id: string) => `/applications/${id}/reject`,
@@ -68,6 +69,14 @@ export const ROUTES = {
 		MENTORS: "/mentors",
 		CONTENT: "/content",
 		SESSIONS: "/sessions",
+	},
+	MENTOR_LISTS: {
+		BASE: "/mentor-lists",
+		ROOT: "/",
+		BY_ID: (listId: string) => `/${listId}`,
+		ADD_MENTOR: (listId: string) => `/${listId}/mentors`,
+		REMOVE_MENTOR: (listId: string, mentorId: string) =>
+			`/${listId}/mentors/${mentorId}`,
 	},
 	PAYMENTS: {
 		BASE: "/payments",

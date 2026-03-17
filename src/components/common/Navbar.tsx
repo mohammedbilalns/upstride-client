@@ -1,5 +1,12 @@
 import { Link, useRouteContext } from "@tanstack/react-router";
-import { Bell, Coins, LogOut, User as UserIcon, Zap } from "lucide-react";
+import {
+	Bell,
+	Bookmark,
+	Coins,
+	LogOut,
+	User as UserIcon,
+	Zap,
+} from "lucide-react";
 import ThemeToggle from "@/components/common/Theme-Toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -134,6 +141,15 @@ export default function UserNavbar() {
 								>
 									<UserIcon className="mr-2 h-4 w-4" />
 									<span>View Profile</span>
+								</Link>
+							</DropdownMenuItem>
+							<DropdownMenuItem asChild>
+								<Link
+									to="/profile/bookmarked-mentors"
+									className="cursor-pointer w-full flex items-center"
+								>
+									<Bookmark className="mr-2 h-4 w-4" />
+									<span>Bookmarked Mentors</span>
 								</Link>
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
