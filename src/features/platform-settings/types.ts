@@ -23,24 +23,20 @@ export enum MentorTierLevel {
 	Starter = 1,
 	Rising = 2,
 	Expert = 3,
-	Elite = 4,
 }
 
 export interface MentorTier {
 	level: MentorTierLevel;
 	name: string;
-	rateForThirtyMinSession: number;
-	minFreeArticlesPercentage: number;
-	maxArticlesPerWeek: number;
-	minSessionCompleted: number;
-	minArticlesPublished: number;
+	minScore: number;
+	maxScore: number;
+	maxPricePer30Min: number;
 }
 
 export interface MentorSettingsConfig {
 	starter: MentorTier;
 	rising: MentorTier;
 	expert: MentorTier;
-	elite: MentorTier;
 }
 
 export interface PremiumArticleRequirement {

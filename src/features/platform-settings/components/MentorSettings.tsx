@@ -23,18 +23,15 @@ import {
 type MentorTierFormValues = {
 	level: number;
 	name: string;
-	rateForThirtyMinSession: number | "";
-	minFreeArticlesPercentage: number | "";
-	maxArticlesPerWeek: number | "";
-	minSessionCompleted: number | "";
-	minArticlesPublished: number | "";
+	minScore: number | "";
+	maxScore: number | "";
+	maxPricePer30Min: number | "";
 };
 
 type MentorSettingsFormValues = {
 	starter: MentorTierFormValues;
 	rising: MentorTierFormValues;
 	expert: MentorTierFormValues;
-	elite: MentorTierFormValues;
 };
 
 interface MentorSettingsProps {
@@ -47,7 +44,6 @@ const tierOrder = [
 	{ key: "starter", label: "Starter" },
 	{ key: "rising", label: "Rising" },
 	{ key: "expert", label: "Expert" },
-	{ key: "elite", label: "Elite" },
 ] as const;
 
 export function MentorSettings({
@@ -128,8 +124,8 @@ export function MentorSettings({
 							Mentor Tiers
 						</CardTitle>
 						<CardDescription>
-							Define the progression path and requirements for mentors on the
-							platform.
+							Only the max price per 30 minutes can be updated. Tier names and
+							score ranges are locked.
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="pt-6">
@@ -152,6 +148,7 @@ export function MentorSettings({
 													<Label className="text-xs">Tier Name</Label>
 													<Input
 														value={subField.state.value}
+														disabled
 														onChange={(e) =>
 															subField.handleChange(e.target.value)
 														}
@@ -165,15 +162,14 @@ export function MentorSettings({
 												</div>
 											)}
 										</form.Field>
-										<form.Field
-											name={`${tier.key}.rateForThirtyMinSession` as any}
-										>
+										<form.Field name={`${tier.key}.minScore` as any}>
 											{(subField) => (
 												<div className="space-y-2">
-													<Label className="text-xs">30 Min Rate ($)</Label>
+													<Label className="text-xs">Min Score</Label>
 													<Input
 														type="number"
 														value={subField.state.value ?? ""}
+														disabled
 														onChange={(e) =>
 															subField.handleChange(
 																parseNumberInput(e.target.value),
@@ -189,13 +185,14 @@ export function MentorSettings({
 												</div>
 											)}
 										</form.Field>
-										<form.Field name={`${tier.key}.maxArticlesPerWeek` as any}>
+										<form.Field name={`${tier.key}.maxScore` as any}>
 											{(subField) => (
 												<div className="space-y-2">
-													<Label className="text-xs">Max Articles/Week</Label>
+													<Label className="text-xs">Max Score</Label>
 													<Input
 														type="number"
 														value={subField.state.value ?? ""}
+														disabled
 														onChange={(e) =>
 															subField.handleChange(
 																parseNumberInput(e.target.value),
@@ -211,63 +208,10 @@ export function MentorSettings({
 												</div>
 											)}
 										</form.Field>
-										<form.Field
-											name={`${tier.key}.minFreeArticlesPercentage` as any}
-										>
+										<form.Field name={`${tier.key}.maxPricePer30Min` as any}>
 											{(subField) => (
 												<div className="space-y-2">
-													<Label className="text-xs">Min Free %</Label>
-													<Input
-														type="number"
-														value={subField.state.value ?? ""}
-														onChange={(e) =>
-															subField.handleChange(
-																parseNumberInput(e.target.value),
-															)
-														}
-														onBlur={subField.handleBlur}
-													/>
-													<FieldError
-														message={getErrorMessage(
-															subField.state.meta.errors,
-														)}
-													/>
-												</div>
-											)}
-										</form.Field>
-									</div>
-
-									<div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-border/40">
-										<form.Field name={`${tier.key}.minSessionCompleted` as any}>
-											{(subField) => (
-												<div className="space-y-2">
-													<Label className="text-xs">Min Sessions Done</Label>
-													<Input
-														type="number"
-														value={subField.state.value ?? ""}
-														onChange={(e) =>
-															subField.handleChange(
-																parseNumberInput(e.target.value),
-															)
-														}
-														onBlur={subField.handleBlur}
-													/>
-													<FieldError
-														message={getErrorMessage(
-															subField.state.meta.errors,
-														)}
-													/>
-												</div>
-											)}
-										</form.Field>
-										<form.Field
-											name={`${tier.key}.minArticlesPublished` as any}
-										>
-											{(subField) => (
-												<div className="space-y-2">
-													<Label className="text-xs">
-														Min Articles Published
-													</Label>
+													<Label className="text-xs">Max Price / 30 Min</Label>
 													<Input
 														type="number"
 														value={subField.state.value ?? ""}
@@ -311,7 +255,7 @@ export function MentorSettings({
 				onClose={() => setIsConfirmOpen(false)}
 				onConfirm={handleConfirmUpdate}
 				title="Confirm Mentor Settings Change"
-				message="Changing mentor tiers and session rates will affect current mentor progression and future session bookings. Are you sure you want to continue?"
+				message="Changing mentor tiers, score ranges, and pricing caps will affect current mentor progression and future session bookings. Are you sure you want to continue?"
 				variant="destructive"
 				isLoading={isLoading}
 				confirmText="Yes, Update Mentor Settings"
