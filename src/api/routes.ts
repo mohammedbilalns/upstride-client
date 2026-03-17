@@ -101,6 +101,14 @@ export const ROUTES = {
 		CANCEL: (slotId: string) => `/${slotId}/cancel`,
 		ENABLE: (slotId: string) => `/${slotId}/enable`,
 	},
+	SESSION_BOOKINGS: {
+		BASE: "/session-bookings",
+		BOOK: "/book",
+		CANCEL: (bookingId: string) => `/${bookingId}/cancel`,
+		REQUEST_RESCHEDULE: (bookingId: string) =>
+			`/${bookingId}/request-reschedule`,
+		HANDLE_RESCHEDULE: (bookingId: string) => `/${bookingId}/handle-reschedule`,
+	},
 	PAYMENTS: {
 		BASE: "/payments",
 		CHECKOUT_SESSION: "/checkout-session",
