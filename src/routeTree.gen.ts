@@ -15,6 +15,7 @@ import { Route as PublicLayoutRouteImport } from './routes/_public-layout'
 import { Route as AdminLayoutRouteImport } from './routes/_admin-layout'
 import { Route as PublicLayoutIndexRouteImport } from './routes/_public-layout/index'
 import { Route as UserLayoutProfileRouteImport } from './routes/_user-layout/profile'
+import { Route as UserLayoutMentorsRouteImport } from './routes/_user-layout/mentors'
 import { Route as UserLayoutHomeRouteImport } from './routes/_user-layout/home'
 import { Route as UserLayoutCoinsRouteImport } from './routes/_user-layout/coins'
 import { Route as PublicLayoutAuthRouteImport } from './routes/_public-layout/auth'
@@ -50,6 +51,11 @@ const PublicLayoutIndexRoute = PublicLayoutIndexRouteImport.update({
 const UserLayoutProfileRoute = UserLayoutProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => UserLayoutRoute,
+} as any)
+const UserLayoutMentorsRoute = UserLayoutMentorsRouteImport.update({
+  id: '/mentors',
+  path: '/mentors',
   getParentRoute: () => UserLayoutRoute,
 } as any)
 const UserLayoutHomeRoute = UserLayoutHomeRouteImport.update({
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof PublicLayoutAuthRoute
   '/coins': typeof UserLayoutCoinsRoute
   '/home': typeof UserLayoutHomeRoute
+  '/mentors': typeof UserLayoutMentorsRoute
   '/profile': typeof UserLayoutProfileRoute
   '/mentor/register': typeof UserLayoutMentorRegisterRoute
 }
@@ -128,6 +135,7 @@ export interface FileRoutesByTo {
   '/auth': typeof PublicLayoutAuthRoute
   '/coins': typeof UserLayoutCoinsRoute
   '/home': typeof UserLayoutHomeRoute
+  '/mentors': typeof UserLayoutMentorsRoute
   '/profile': typeof UserLayoutProfileRoute
   '/mentor/register': typeof UserLayoutMentorRegisterRoute
 }
@@ -145,6 +153,7 @@ export interface FileRoutesById {
   '/_public-layout/auth': typeof PublicLayoutAuthRoute
   '/_user-layout/coins': typeof UserLayoutCoinsRoute
   '/_user-layout/home': typeof UserLayoutHomeRoute
+  '/_user-layout/mentors': typeof UserLayoutMentorsRoute
   '/_user-layout/profile': typeof UserLayoutProfileRoute
   '/_public-layout/': typeof PublicLayoutIndexRoute
   '/_user-layout/mentor/register': typeof UserLayoutMentorRegisterRoute
@@ -162,6 +171,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/coins'
     | '/home'
+    | '/mentors'
     | '/profile'
     | '/mentor/register'
   fileRoutesByTo: FileRoutesByTo
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/coins'
     | '/home'
+    | '/mentors'
     | '/profile'
     | '/mentor/register'
   id:
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/_public-layout/auth'
     | '/_user-layout/coins'
     | '/_user-layout/home'
+    | '/_user-layout/mentors'
     | '/_user-layout/profile'
     | '/_public-layout/'
     | '/_user-layout/mentor/register'
@@ -246,6 +258,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof UserLayoutProfileRouteImport
+      parentRoute: typeof UserLayoutRoute
+    }
+    '/_user-layout/mentors': {
+      id: '/_user-layout/mentors'
+      path: '/mentors'
+      fullPath: '/mentors'
+      preLoaderRoute: typeof UserLayoutMentorsRouteImport
       parentRoute: typeof UserLayoutRoute
     }
     '/_user-layout/home': {
@@ -351,6 +370,7 @@ const PublicLayoutRouteWithChildren = PublicLayoutRoute._addFileChildren(
 interface UserLayoutRouteChildren {
   UserLayoutCoinsRoute: typeof UserLayoutCoinsRoute
   UserLayoutHomeRoute: typeof UserLayoutHomeRoute
+  UserLayoutMentorsRoute: typeof UserLayoutMentorsRoute
   UserLayoutProfileRoute: typeof UserLayoutProfileRoute
   UserLayoutMentorRegisterRoute: typeof UserLayoutMentorRegisterRoute
 }
@@ -358,6 +378,7 @@ interface UserLayoutRouteChildren {
 const UserLayoutRouteChildren: UserLayoutRouteChildren = {
   UserLayoutCoinsRoute: UserLayoutCoinsRoute,
   UserLayoutHomeRoute: UserLayoutHomeRoute,
+  UserLayoutMentorsRoute: UserLayoutMentorsRoute,
   UserLayoutProfileRoute: UserLayoutProfileRoute,
   UserLayoutMentorRegisterRoute: UserLayoutMentorRegisterRoute,
 }
