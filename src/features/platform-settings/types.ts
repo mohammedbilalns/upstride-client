@@ -1,13 +1,6 @@
-export interface PurchaseRate {
-	price: number;
-	coinsCount: number;
-	revenuePercentage?: number;
-}
-
-export interface PayoutRate {
-	coinsCountFrom: number;
-	coinsCountTo: number;
-	payoutPerCoinRate: number;
+export interface PlatformCommissions {
+	sessionPercentage: number;
+	userTipRewardPercentage: number;
 }
 
 export interface SubscriptionPlan {
@@ -17,8 +10,8 @@ export interface SubscriptionPlan {
 }
 
 export interface EconomySettingsConfig {
-	purchaseRates: PurchaseRate[];
-	payoutRates: PayoutRate[];
+	coinValue: number;
+	platformCommissions: PlatformCommissions;
 	subscriptions: SubscriptionPlan[];
 	userJoinRewardCoinCount: number;
 	maxCoinsEarnablePerDay: number;
@@ -26,11 +19,17 @@ export interface EconomySettingsConfig {
 	maxCoinsFromEngagementPerDay: number;
 }
 
+export enum MentorTierLevel {
+	Starter = 1,
+	Rising = 2,
+	Expert = 3,
+	Elite = 4,
+}
+
 export interface MentorTier {
-	id: string;
+	level: MentorTierLevel;
 	name: string;
 	rateForThirtyMinSession: number;
-	rateForSixtyMinSession: number;
 	minFreeArticlesPercentage: number;
 	maxArticlesPerWeek: number;
 	minSessionCompleted: number;
@@ -38,7 +37,10 @@ export interface MentorTier {
 }
 
 export interface MentorSettingsConfig {
-	tiers: MentorTier[];
+	starter: MentorTier;
+	rising: MentorTier;
+	expert: MentorTier;
+	elite: MentorTier;
 }
 
 export interface PremiumArticleRequirement {
@@ -62,7 +64,6 @@ export interface SessionSettingsConfig {
 	cancellationWindowHours: number;
 	rescheduleWindowHours: number;
 	maxSessionsPerDayPerMentor: number;
-	platformFeePercentage: number;
 }
 
 export interface FetchPlatformSettingsResponse {

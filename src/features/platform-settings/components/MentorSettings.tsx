@@ -1,5 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-import { GraduationCap, Plus, Save, Trash2 } from "lucide-react";
+import { GraduationCap, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -20,25 +20,21 @@ import {
 	buildFieldErrorsFromIssues,
 } from "@/shared/utils/form-validation";
 
-type MentorSettingsFormValues = Omit<MentorSettingsConfig, "tiers"> & {
-	tiers: Array<
-		Omit<
-			MentorSettingsConfig["tiers"][number],
-			| "rateForThirtyMinSession"
-			| "rateForSixtyMinSession"
-			| "minFreeArticlesPercentage"
-			| "maxArticlesPerWeek"
-			| "minSessionCompleted"
-			| "minArticlesPublished"
-		> & {
-			rateForThirtyMinSession: number | "";
-			rateForSixtyMinSession: number | "";
-			minFreeArticlesPercentage: number | "";
-			maxArticlesPerWeek: number | "";
-			minSessionCompleted: number | "";
-			minArticlesPublished: number | "";
-		}
-	>;
+type MentorTierFormValues = {
+	level: number;
+	name: string;
+	rateForThirtyMinSession: number | "";
+	minFreeArticlesPercentage: number | "";
+	maxArticlesPerWeek: number | "";
+	minSessionCompleted: number | "";
+	minArticlesPublished: number | "";
+};
+
+type MentorSettingsFormValues = {
+	starter: MentorTierFormValues;
+	rising: MentorTierFormValues;
+	expert: MentorTierFormValues;
+	elite: MentorTierFormValues;
 };
 
 interface MentorSettingsProps {
@@ -46,6 +42,13 @@ interface MentorSettingsProps {
 	onUpdate: (data: MentorSettingsConfig) => Promise<void>;
 	isLoading: boolean;
 }
+
+const tierOrder = [
+	{ key: "starter", label: "Starter" },
+	{ key: "rising", label: "Rising" },
+	{ key: "expert", label: "Expert" },
+	{ key: "elite", label: "Elite" },
+] as const;
 
 export function MentorSettings({
 	settings,
@@ -130,235 +133,163 @@ export function MentorSettings({
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="pt-6">
-						<form.Field name="tiers" mode="array">
-							{(field) => (
-								<div className="space-y-6">
-									{field.state.value.map((tier, i) => (
-										<div
-											key={tier.id}
-											className="relative p-6 rounded-xl border border-border/60 bg-muted/5 space-y-4"
+						<div className="space-y-6">
+							{tierOrder.map((tier) => (
+								<div
+									key={tier.key}
+									className="relative p-6 rounded-xl border border-border/60 bg-muted/5 space-y-4"
+								>
+									<div className="flex items-center justify-between">
+										<h4 className="font-bold text-sm uppercase tracking-wider text-primary">
+											{tier.label} Tier
+										</h4>
+									</div>
+
+									<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+										<form.Field name={`${tier.key}.name` as any}>
+											{(subField) => (
+												<div className="space-y-2">
+													<Label className="text-xs">Tier Name</Label>
+													<Input
+														value={subField.state.value}
+														onChange={(e) =>
+															subField.handleChange(e.target.value)
+														}
+														onBlur={subField.handleBlur}
+													/>
+													<FieldError
+														message={getErrorMessage(
+															subField.state.meta.errors,
+														)}
+													/>
+												</div>
+											)}
+										</form.Field>
+										<form.Field
+											name={`${tier.key}.rateForThirtyMinSession` as any}
 										>
-											<div className="flex items-center justify-between">
-												<h4 className="font-bold text-sm uppercase tracking-wider text-primary">
-													Tier {i + 1}: {tier.name}
-												</h4>
-												<Button
-													variant="ghost"
-													size="icon"
-													className="text-destructive hover:bg-destructive/10 h-8 w-8"
-													type="button"
-													onClick={() => {
-														const newVal = field.state.value.filter(
-															(_, index) => index !== i,
-														);
-														field.handleChange(newVal);
-													}}
-												>
-													<Trash2 className="w-4 h-4" />
-												</Button>
-											</div>
+											{(subField) => (
+												<div className="space-y-2">
+													<Label className="text-xs">30 Min Rate ($)</Label>
+													<Input
+														type="number"
+														value={subField.state.value ?? ""}
+														onChange={(e) =>
+															subField.handleChange(
+																parseNumberInput(e.target.value),
+															)
+														}
+														onBlur={subField.handleBlur}
+													/>
+													<FieldError
+														message={getErrorMessage(
+															subField.state.meta.errors,
+														)}
+													/>
+												</div>
+											)}
+										</form.Field>
+										<form.Field name={`${tier.key}.maxArticlesPerWeek` as any}>
+											{(subField) => (
+												<div className="space-y-2">
+													<Label className="text-xs">Max Articles/Week</Label>
+													<Input
+														type="number"
+														value={subField.state.value ?? ""}
+														onChange={(e) =>
+															subField.handleChange(
+																parseNumberInput(e.target.value),
+															)
+														}
+														onBlur={subField.handleBlur}
+													/>
+													<FieldError
+														message={getErrorMessage(
+															subField.state.meta.errors,
+														)}
+													/>
+												</div>
+											)}
+										</form.Field>
+										<form.Field
+											name={`${tier.key}.minFreeArticlesPercentage` as any}
+										>
+											{(subField) => (
+												<div className="space-y-2">
+													<Label className="text-xs">Min Free %</Label>
+													<Input
+														type="number"
+														value={subField.state.value ?? ""}
+														onChange={(e) =>
+															subField.handleChange(
+																parseNumberInput(e.target.value),
+															)
+														}
+														onBlur={subField.handleBlur}
+													/>
+													<FieldError
+														message={getErrorMessage(
+															subField.state.meta.errors,
+														)}
+													/>
+												</div>
+											)}
+										</form.Field>
+									</div>
 
-											<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-												<form.Field name={`tiers[${i}].name` as const}>
-													{(subField) => (
-														<div className="space-y-2">
-															<Label className="text-xs">Tier Name</Label>
-															<Input
-																value={subField.state.value}
-																onChange={(e) =>
-																	subField.handleChange(e.target.value)
-																}
-																onBlur={subField.handleBlur}
-															/>
-															<FieldError
-																message={getErrorMessage(
-																	subField.state.meta.errors,
-																)}
-															/>
-														</div>
-													)}
-												</form.Field>
-												<form.Field
-													name={`tiers[${i}].rateForThirtyMinSession` as const}
-												>
-													{(subField) => (
-														<div className="space-y-2">
-															<Label className="text-xs">30 Min Rate ($)</Label>
-															<Input
-																type="number"
-																value={subField.state.value ?? ""}
-																onChange={(e) =>
-																	subField.handleChange(
-																		parseNumberInput(e.target.value),
-																	)
-																}
-																onBlur={subField.handleBlur}
-															/>
-															<FieldError
-																message={getErrorMessage(
-																	subField.state.meta.errors,
-																)}
-															/>
-														</div>
-													)}
-												</form.Field>
-												<form.Field
-													name={`tiers[${i}].rateForSixtyMinSession` as const}
-												>
-													{(subField) => (
-														<div className="space-y-2">
-															<Label className="text-xs">60 Min Rate ($)</Label>
-															<Input
-																type="number"
-																value={subField.state.value ?? ""}
-																onChange={(e) =>
-																	subField.handleChange(
-																		parseNumberInput(e.target.value),
-																	)
-																}
-																onBlur={subField.handleBlur}
-															/>
-															<FieldError
-																message={getErrorMessage(
-																	subField.state.meta.errors,
-																)}
-															/>
-														</div>
-													)}
-												</form.Field>
-												<form.Field
-													name={`tiers[${i}].maxArticlesPerWeek` as const}
-												>
-													{(subField) => (
-														<div className="space-y-2">
-															<Label className="text-xs">
-																Max Articles/Week
-															</Label>
-															<Input
-																type="number"
-																value={subField.state.value ?? ""}
-																onChange={(e) =>
-																	subField.handleChange(
-																		parseNumberInput(e.target.value),
-																	)
-																}
-																onBlur={subField.handleBlur}
-															/>
-															<FieldError
-																message={getErrorMessage(
-																	subField.state.meta.errors,
-																)}
-															/>
-														</div>
-													)}
-												</form.Field>
-											</div>
-
-											<div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-border/40">
-												<form.Field
-													name={`tiers[${i}].minSessionCompleted` as const}
-												>
-													{(subField) => (
-														<div className="space-y-2">
-															<Label className="text-xs">
-																Min Sessions Done
-															</Label>
-															<Input
-																type="number"
-																value={subField.state.value ?? ""}
-																onChange={(e) =>
-																	subField.handleChange(
-																		parseNumberInput(e.target.value),
-																	)
-																}
-																onBlur={subField.handleBlur}
-															/>
-															<FieldError
-																message={getErrorMessage(
-																	subField.state.meta.errors,
-																)}
-															/>
-														</div>
-													)}
-												</form.Field>
-												<form.Field
-													name={`tiers[${i}].minArticlesPublished` as const}
-												>
-													{(subField) => (
-														<div className="space-y-2">
-															<Label className="text-xs">
-																Min Articles Published
-															</Label>
-															<Input
-																type="number"
-																value={subField.state.value ?? ""}
-																onChange={(e) =>
-																	subField.handleChange(
-																		parseNumberInput(e.target.value),
-																	)
-																}
-																onBlur={subField.handleBlur}
-															/>
-															<FieldError
-																message={getErrorMessage(
-																	subField.state.meta.errors,
-																)}
-															/>
-														</div>
-													)}
-												</form.Field>
-												<form.Field
-													name={
-														`tiers[${i}].minFreeArticlesPercentage` as const
-													}
-												>
-													{(subField) => (
-														<div className="space-y-2">
-															<Label className="text-xs">Min Free %</Label>
-															<Input
-																type="number"
-																value={subField.state.value ?? ""}
-																onChange={(e) =>
-																	subField.handleChange(
-																		parseNumberInput(e.target.value),
-																	)
-																}
-																onBlur={subField.handleBlur}
-															/>
-															<FieldError
-																message={getErrorMessage(
-																	subField.state.meta.errors,
-																)}
-															/>
-														</div>
-													)}
-												</form.Field>
-											</div>
-										</div>
-									))}
-									<Button
-										type="button"
-										variant="outline"
-										className="w-full border-2 border-dashed h-12 hover:bg-muted/50"
-										onClick={() =>
-											field.pushValue({
-												id: Math.random().toString(36).substr(2, 9),
-												name: "New Tier",
-												rateForThirtyMinSession: 0,
-												rateForSixtyMinSession: 0,
-												minFreeArticlesPercentage: 100,
-												maxArticlesPerWeek: 0,
-												minSessionCompleted: 0,
-												minArticlesPublished: 0,
-											})
-										}
-									>
-										<Plus className="w-4 h-4 mr-2" />
-										Add Achievement Tier
-									</Button>
+									<div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-border/40">
+										<form.Field name={`${tier.key}.minSessionCompleted` as any}>
+											{(subField) => (
+												<div className="space-y-2">
+													<Label className="text-xs">Min Sessions Done</Label>
+													<Input
+														type="number"
+														value={subField.state.value ?? ""}
+														onChange={(e) =>
+															subField.handleChange(
+																parseNumberInput(e.target.value),
+															)
+														}
+														onBlur={subField.handleBlur}
+													/>
+													<FieldError
+														message={getErrorMessage(
+															subField.state.meta.errors,
+														)}
+													/>
+												</div>
+											)}
+										</form.Field>
+										<form.Field
+											name={`${tier.key}.minArticlesPublished` as any}
+										>
+											{(subField) => (
+												<div className="space-y-2">
+													<Label className="text-xs">
+														Min Articles Published
+													</Label>
+													<Input
+														type="number"
+														value={subField.state.value ?? ""}
+														onChange={(e) =>
+															subField.handleChange(
+																parseNumberInput(e.target.value),
+															)
+														}
+														onBlur={subField.handleBlur}
+													/>
+													<FieldError
+														message={getErrorMessage(
+															subField.state.meta.errors,
+														)}
+													/>
+												</div>
+											)}
+										</form.Field>
+									</div>
 								</div>
-							)}
-						</form.Field>
+							))}
+						</div>
 					</CardContent>
 				</Card>
 

@@ -1,5 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-import { CalendarClock, Percent, Save, ShieldCheck } from "lucide-react";
+import { CalendarClock, Save, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import FieldError from "@/components/common/Field-Error";
@@ -25,12 +25,10 @@ type SessionSettingsFormValues = Omit<
 	| "cancellationWindowHours"
 	| "rescheduleWindowHours"
 	| "maxSessionsPerDayPerMentor"
-	| "platformFeePercentage"
 > & {
 	cancellationWindowHours: number | "";
 	rescheduleWindowHours: number | "";
 	maxSessionsPerDayPerMentor: number | "";
-	platformFeePercentage: number | "";
 };
 
 interface SessionSettingsProps {
@@ -110,7 +108,7 @@ export function SessionSettings({
 				}}
 				className="space-y-6"
 			>
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 					<Card className="border-border/60 shadow-sm">
 						<CardHeader className="bg-muted/20">
 							<CardTitle className="flex items-center gap-2 text-lg">
@@ -192,38 +190,6 @@ export function SessionSettings({
 							</form.Field>
 						</CardContent>
 					</Card>
-
-					<Card className="border-border/60 shadow-sm">
-						<CardHeader className="bg-muted/20">
-							<CardTitle className="flex items-center gap-2 text-lg">
-								<div className="w-5 h-5 flex items-center justify-center bg-primary/10 rounded-lg text-primary">
-									<Percent className="w-3.5 h-3.5" />
-								</div>
-								Financials
-							</CardTitle>
-							<CardDescription>Processing fees and deductions.</CardDescription>
-						</CardHeader>
-						<CardContent className="pt-6 space-y-4">
-							<form.Field name="platformFeePercentage">
-								{(field) => (
-									<div className="space-y-2">
-										<Label className="text-sm">Session Platform Fee (%)</Label>
-										<Input
-											type="number"
-											value={field.state.value ?? ""}
-											onChange={(e) =>
-												field.handleChange(parseNumberInput(e.target.value))
-											}
-											onBlur={field.handleBlur}
-										/>
-										<FieldError
-											message={getErrorMessage(field.state.meta.errors)}
-										/>
-									</div>
-								)}
-							</form.Field>
-						</CardContent>
-					</Card>
 				</div>
 
 				<div className="flex justify-end pt-4">
@@ -244,7 +210,7 @@ export function SessionSettings({
 				onClose={() => setIsConfirmOpen(false)}
 				onConfirm={handleConfirmUpdate}
 				title="Confirm Session Settings Change"
-				message="Adjusting session windows and fees will affect all upcoming bookings and mentor payouts. Are you sure you wish to proceed?"
+				message="Adjusting session windows and limits will affect all upcoming bookings. Are you sure you wish to proceed?"
 				variant="destructive"
 				isLoading={isLoading}
 				confirmText="Yes, Update Session Rules"

@@ -1,5 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-import { Coins, Plus, Save, Trash2 } from "lucide-react";
+import { Coins, Save } from "lucide-react";
 import { useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import FieldError from "@/components/common/Field-Error";
@@ -22,22 +22,19 @@ import { economySettingsSchema } from "../validators/platform-settings.schema";
 
 type EconomySettingsFormValues = Omit<
 	EconomySettingsConfig,
-	| "purchaseRates"
+	| "coinValue"
+	| "platformCommissions"
 	| "userJoinRewardCoinCount"
 	| "maxCoinsEarnablePerDay"
 	| "maxCoinsFromReadingPerDay"
 	| "maxCoinsFromEngagementPerDay"
 	| "subscriptions"
 > & {
-	purchaseRates: Array<
-		Omit<
-			EconomySettingsConfig["purchaseRates"][number],
-			"price" | "coinsCount"
-		> & {
-			price: number | "";
-			coinsCount: number | "";
-		}
-	>;
+	coinValue: number | "";
+	platformCommissions: {
+		sessionPercentage: number | "";
+		userTipRewardPercentage: number | "";
+	};
 	subscriptions: Array<
 		Omit<EconomySettingsConfig["subscriptions"][number], "coinsCost"> & {
 			coinsCost: number | "";
@@ -115,34 +112,6 @@ export function EconomySettings({
 		return String(errors);
 	};
 
-	const getPayoutRateForCoins = (
-		coinsCount: number,
-		payoutRates: EconomySettingsConfig["payoutRates"],
-	) => {
-		return (
-			payoutRates.find(
-				(rate) =>
-					coinsCount >= rate.coinsCountFrom && coinsCount <= rate.coinsCountTo,
-			) ?? payoutRates.at(-1)
-		);
-	};
-
-	const calculateRevenuePercentage = (
-		price: number | "",
-		coinsCount: number | "",
-		payoutRates: EconomySettingsConfig["payoutRates"],
-	) => {
-		if (price === "" || coinsCount === "") return null;
-		if (price <= 0 || coinsCount <= 0) return null;
-		const payoutRate = getPayoutRateForCoins(coinsCount, payoutRates);
-		if (!payoutRate) return null;
-		const coinValue = price / coinsCount;
-		if (coinValue <= 0) return null;
-		const revenuePercentage =
-			(1 - payoutRate.payoutPerCoinRate / coinValue) * 100;
-		return Math.max(0, Number(revenuePercentage.toFixed(2)));
-	};
-
 	return (
 		<div className="space-y-6">
 			<form
@@ -153,121 +122,98 @@ export function EconomySettings({
 				}}
 				className="space-y-6"
 			>
-				{/* Purchase Rates */}
 				<Card className="border-border/60 shadow-sm">
 					<CardHeader className="bg-muted/30 pt-6">
 						<CardTitle className="flex items-center gap-2 text-xl">
 							<Coins className="w-5 h-5 text-primary" />
-							Purchase Rates
+							Coin Value
 						</CardTitle>
 						<CardDescription>
-							Configure how many coins users get for different price points.
+							Define how many coins equal 1 INR for both purchase and
+							withdrawals.
 						</CardDescription>
 					</CardHeader>
-					<CardContent className="pt-6 space-y-4">
-						<form.Field name="purchaseRates" mode="array">
+					<CardContent className="pt-6">
+						<form.Field name="coinValue">
 							{(field) => (
-								<div className="space-y-3">
-									{field.state.value.map((_, i) => (
-										<div
-											key={i}
-											className="flex items-end gap-4 p-3 rounded-lg border border-border/40 bg-muted/10"
-										>
-											<form.Field name={`purchaseRates[${i}].price` as any}>
-												{(subField) => (
-													<div className="flex-1 space-y-2">
-														<Label className="text-xs uppercase font-bold text-muted-foreground">
-															Price (INR)
-														</Label>
-														<Input
-															type="number"
-															value={subField.state.value ?? ""}
-															onChange={(e) =>
-																(subField.handleChange as any)(
-																	parseNumberInput(e.target.value),
-																)
-															}
-															onBlur={subField.handleBlur}
-														/>
-														<FieldError
-															message={getErrorMessage(
-																subField.state.meta.errors,
-															)}
-														/>
-													</div>
-												)}
-											</form.Field>
-											<form.Field
-												name={`purchaseRates[${i}].coinsCount` as any}
-											>
-												{(subField) => (
-													<div className="flex-1 space-y-2">
-														<Label className="text-xs uppercase font-bold text-muted-foreground">
-															Coins
-														</Label>
-														<Input
-															type="number"
-															value={subField.state.value ?? ""}
-															onChange={(e) =>
-																(subField.handleChange as any)(
-																	parseNumberInput(e.target.value),
-																)
-															}
-															onBlur={subField.handleBlur}
-														/>
-														<FieldError
-															message={getErrorMessage(
-																subField.state.meta.errors,
-															)}
-														/>
-													</div>
-												)}
-											</form.Field>
-											<div className="w-32 space-y-2">
-												<Label className="text-xs uppercase font-bold text-muted-foreground">
-													Revenue %
-												</Label>
-												<div className="h-9 px-3 rounded-md border border-border/40 bg-muted/40 flex items-center text-sm font-semibold">
-													{calculateRevenuePercentage(
-														field.state.value[i].price,
-														field.state.value[i].coinsCount,
-														form.state.values.payoutRates,
-													) ?? "—"}
-												</div>
-											</div>
-											<Button
-												variant="ghost"
-												size="icon"
-												className="text-destructive hover:bg-destructive/10"
-												type="button"
-												onClick={() => {
-													const newVal = field.state.value.filter(
-														(_, index) => index !== i,
-													);
-													field.handleChange(newVal);
-												}}
-											>
-												<Trash2 className="w-4 h-4" />
-											</Button>
-										</div>
-									))}
-									<Button
-										type="button"
-										variant="outline"
-										size="sm"
-										className="w-full dashed border-2 border-dashed"
-										onClick={() => field.pushValue({ price: 0, coinsCount: 0 })}
-									>
-										<Plus className="w-4 h-4 mr-2" />
-										Add Rate
-									</Button>
+								<div className="space-y-2">
+									<Label>Coins per INR</Label>
+									<Input
+										type="number"
+										value={field.state.value ?? ""}
+										onChange={(e) =>
+											(field.handleChange as any)(
+												parseNumberInput(e.target.value),
+											)
+										}
+										onBlur={field.handleBlur}
+									/>
+									<FieldError
+										message={getErrorMessage(field.state.meta.errors)}
+									/>
 								</div>
 							)}
 						</form.Field>
 					</CardContent>
 				</Card>
 
-				{/* Subscriptions */}
+				<Card className="border-border/60 shadow-sm">
+					<CardHeader className="bg-muted/30 pt-6">
+						<CardTitle className="flex items-center gap-2 text-xl">
+							<Coins className="w-5 h-5 text-primary" />
+							Platform Commissions
+						</CardTitle>
+						<CardDescription>
+							Configure the platform commission applied to sessions and
+							tips/rewards.
+						</CardDescription>
+					</CardHeader>
+					<CardContent className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+						<form.Field name={"platformCommissions.sessionPercentage" as any}>
+							{(field) => (
+								<div className="space-y-2">
+									<Label>Session Commission %</Label>
+									<Input
+										type="number"
+										value={field.state.value ?? ""}
+										onChange={(e) =>
+											(field.handleChange as any)(
+												parseNumberInput(e.target.value),
+											)
+										}
+										onBlur={field.handleBlur}
+									/>
+									<FieldError
+										message={getErrorMessage(field.state.meta.errors)}
+									/>
+								</div>
+							)}
+						</form.Field>
+						<form.Field
+							name={"platformCommissions.userTipRewardPercentage" as any}
+						>
+							{(field) => (
+								<div className="space-y-2">
+									<Label>Tip/Reward Commission %</Label>
+									<Input
+										type="number"
+										value={field.state.value ?? ""}
+										onChange={(e) =>
+											(field.handleChange as any)(
+												parseNumberInput(e.target.value),
+											)
+										}
+										onBlur={field.handleBlur}
+									/>
+									<FieldError
+										message={getErrorMessage(field.state.meta.errors)}
+									/>
+								</div>
+							)}
+						</form.Field>
+					</CardContent>
+				</Card>
+
 				<Card className="border-border/60 shadow-sm">
 					<CardHeader className="bg-muted/30 pt-6">
 						<CardTitle className="flex items-center gap-2 text-xl">
@@ -324,7 +270,6 @@ export function EconomySettings({
 					</CardContent>
 				</Card>
 
-				{/* Global Coin Settings */}
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 					<Card>
 						<CardHeader>
