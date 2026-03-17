@@ -9,7 +9,10 @@ export type AuthView =
 
 import type { User } from "@/shared/types/user";
 
-export type AuthenticatedUser = Pick<User, "id" | "name" | "role"> & {
+export type AuthenticatedUser = Pick<
+	User,
+	"id" | "name" | "role" | "coinBalance"
+> & {
 	profilePictureUrl: string | null;
 	isLocalAuth: boolean;
 };

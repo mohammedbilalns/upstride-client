@@ -20,15 +20,15 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { useBlockUser, useUnblockUser } from "../hooks/use-user-actions";
-import type { UserListDTO } from "../types";
+import type { UserListItem } from "../types";
 
 interface UserTableProps {
-	users: UserListDTO[];
+	users: UserListItem[];
 	total: number;
 }
 
 export function UserTable({ users }: UserTableProps) {
-	const [selectedUser, setSelectedUser] = useState<UserListDTO | null>(null);
+	const [selectedUser, setSelectedUser] = useState<UserListItem | null>(null);
 	const [actionType, setActionType] = useState<"block" | "unblock" | null>(
 		null,
 	);

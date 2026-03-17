@@ -1,5 +1,5 @@
 import { Link, useRouteContext } from "@tanstack/react-router";
-import { Bell, LogOut, User as UserIcon, Zap } from "lucide-react";
+import { Bell, Coins, LogOut, User as UserIcon, Zap } from "lucide-react";
 import ThemeToggle from "@/components/common/Theme-Toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +18,7 @@ export default function UserNavbar() {
 	const { auth } = useRouteContext({ from: "/_user-layout" });
 	const user = auth.user;
 	const logoutMutation = useLogout();
+	const coinBalance = user?.coinBalance ?? 0;
 
 	const handleLogout = () => {
 		logoutMutation.mutate();
@@ -39,7 +40,7 @@ export default function UserNavbar() {
 	];
 
 	return (
-		<header className="sticky top-0 z-50 border-b border-border/60 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+		<header className="sticky top-0 z-50 border-b border-border/60 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
 			<div className="container mx-auto px-6 h-16 flex justify-between items-center">
 				{/* Left Side: Logo and Navigation */}
 				<div className="flex items-center gap-8">
@@ -71,6 +72,10 @@ export default function UserNavbar() {
 
 				{/* Right Side: Actions */}
 				<div className="flex items-center gap-4">
+					<div className="flex items-center gap-2 rounded-full border border-border/60 bg-card/40 px-3 py-1.5 text-sm font-semibold text-foreground">
+						<Coins className="h-4 w-4 text-primary" />
+						<span className="tabular-nums">{coinBalance}</span>
+					</div>
 					<div className="relative">
 						<Button
 							variant="ghost"

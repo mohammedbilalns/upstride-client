@@ -5,6 +5,7 @@ import {
 	LayoutDashboard,
 	Library,
 	LogOut,
+	Settings2,
 	Users,
 	Zap,
 } from "lucide-react";
@@ -53,6 +54,12 @@ export default function AdminSidebar() {
 			to: "/catalog-management",
 			label: "Catalog Management",
 			icon: Library,
+			search: { tab: "interests" },
+		},
+		{
+			to: "/platform-settings",
+			label: "Platform Settings",
+			icon: Settings2,
 		},
 	];
 

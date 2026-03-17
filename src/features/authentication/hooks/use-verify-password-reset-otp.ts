@@ -2,12 +2,11 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { authService } from "../services/auth.service";
 import type { VerifyResetOtpResponse } from "../types";
+import type { ApiError } from "@/api/apiError";
 
 interface UseVerifyPasswordResetOtpOptions {
 	onSuccess?: (data: VerifyResetOtpResponse) => void;
-	onError?: (
-		error: Error | { response?: { data?: { message?: string } } },
-	) => void;
+	onError?: (error: ApiError) => void;
 }
 
 export const useVerifyPasswordResetOtp = ({
@@ -21,7 +20,7 @@ export const useVerifyPasswordResetOtp = ({
 			toast.success(response.message || "OTP verified successfully!");
 			onSuccess?.(response.data);
 		},
-		onError: (error) => {
+		onError: (error: ApiError) => {
 			console.error("Verify password reset OTP error:", error);
 			onError?.(error);
 		},

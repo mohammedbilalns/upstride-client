@@ -18,6 +18,7 @@ import { Route as UserLayoutProfileRouteImport } from './routes/_user-layout/pro
 import { Route as UserLayoutHomeRouteImport } from './routes/_user-layout/home'
 import { Route as PublicLayoutAuthRouteImport } from './routes/_public-layout/auth'
 import { Route as AdminLayoutUserManagementRouteImport } from './routes/_admin-layout/user-management'
+import { Route as AdminLayoutPlatformSettingsRouteImport } from './routes/_admin-layout/platform-settings'
 import { Route as AdminLayoutMentorManagementRouteImport } from './routes/_admin-layout/mentor-management'
 import { Route as AdminLayoutDashboardRouteImport } from './routes/_admin-layout/dashboard'
 import { Route as AdminLayoutCatalogManagementRouteImport } from './routes/_admin-layout/catalog-management'
@@ -66,6 +67,12 @@ const AdminLayoutUserManagementRoute =
     path: '/user-management',
     getParentRoute: () => AdminLayoutRoute,
   } as any)
+const AdminLayoutPlatformSettingsRoute =
+  AdminLayoutPlatformSettingsRouteImport.update({
+    id: '/platform-settings',
+    path: '/platform-settings',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
 const AdminLayoutMentorManagementRoute =
   AdminLayoutMentorManagementRouteImport.update({
     id: '/mentor-management',
@@ -96,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/catalog-management': typeof AdminLayoutCatalogManagementRoute
   '/dashboard': typeof AdminLayoutDashboardRoute
   '/mentor-management': typeof AdminLayoutMentorManagementRoute
+  '/platform-settings': typeof AdminLayoutPlatformSettingsRoute
   '/user-management': typeof AdminLayoutUserManagementRoute
   '/auth': typeof PublicLayoutAuthRoute
   '/home': typeof UserLayoutHomeRoute
@@ -108,6 +116,7 @@ export interface FileRoutesByTo {
   '/catalog-management': typeof AdminLayoutCatalogManagementRoute
   '/dashboard': typeof AdminLayoutDashboardRoute
   '/mentor-management': typeof AdminLayoutMentorManagementRoute
+  '/platform-settings': typeof AdminLayoutPlatformSettingsRoute
   '/user-management': typeof AdminLayoutUserManagementRoute
   '/auth': typeof PublicLayoutAuthRoute
   '/home': typeof UserLayoutHomeRoute
@@ -123,6 +132,7 @@ export interface FileRoutesById {
   '/_admin-layout/catalog-management': typeof AdminLayoutCatalogManagementRoute
   '/_admin-layout/dashboard': typeof AdminLayoutDashboardRoute
   '/_admin-layout/mentor-management': typeof AdminLayoutMentorManagementRoute
+  '/_admin-layout/platform-settings': typeof AdminLayoutPlatformSettingsRoute
   '/_admin-layout/user-management': typeof AdminLayoutUserManagementRoute
   '/_public-layout/auth': typeof PublicLayoutAuthRoute
   '/_user-layout/home': typeof UserLayoutHomeRoute
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/catalog-management'
     | '/dashboard'
     | '/mentor-management'
+    | '/platform-settings'
     | '/user-management'
     | '/auth'
     | '/home'
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/catalog-management'
     | '/dashboard'
     | '/mentor-management'
+    | '/platform-settings'
     | '/user-management'
     | '/auth'
     | '/home'
@@ -164,6 +176,7 @@ export interface FileRouteTypes {
     | '/_admin-layout/catalog-management'
     | '/_admin-layout/dashboard'
     | '/_admin-layout/mentor-management'
+    | '/_admin-layout/platform-settings'
     | '/_admin-layout/user-management'
     | '/_public-layout/auth'
     | '/_user-layout/home'
@@ -244,6 +257,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLayoutUserManagementRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
+    '/_admin-layout/platform-settings': {
+      id: '/_admin-layout/platform-settings'
+      path: '/platform-settings'
+      fullPath: '/platform-settings'
+      preLoaderRoute: typeof AdminLayoutPlatformSettingsRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
     '/_admin-layout/mentor-management': {
       id: '/_admin-layout/mentor-management'
       path: '/mentor-management'
@@ -279,6 +299,7 @@ interface AdminLayoutRouteChildren {
   AdminLayoutCatalogManagementRoute: typeof AdminLayoutCatalogManagementRoute
   AdminLayoutDashboardRoute: typeof AdminLayoutDashboardRoute
   AdminLayoutMentorManagementRoute: typeof AdminLayoutMentorManagementRoute
+  AdminLayoutPlatformSettingsRoute: typeof AdminLayoutPlatformSettingsRoute
   AdminLayoutUserManagementRoute: typeof AdminLayoutUserManagementRoute
 }
 
@@ -286,6 +307,7 @@ const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
   AdminLayoutCatalogManagementRoute: AdminLayoutCatalogManagementRoute,
   AdminLayoutDashboardRoute: AdminLayoutDashboardRoute,
   AdminLayoutMentorManagementRoute: AdminLayoutMentorManagementRoute,
+  AdminLayoutPlatformSettingsRoute: AdminLayoutPlatformSettingsRoute,
   AdminLayoutUserManagementRoute: AdminLayoutUserManagementRoute,
 }
 

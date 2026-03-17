@@ -5,6 +5,7 @@ import { useResendOtp } from "../hooks/use-resend-otp";
 import { useVerifyOtp } from "../hooks/use-verify-otp";
 import type { AuthView } from "../types";
 import { OtpVerificationPanel } from "./OtpVerificationPanel";
+import type { ApiError } from "@/api/apiError";
 
 const OTP_RESEND_COOLDOWN = 60;
 const OTP_EXPIRY_SECONDS = 300;
@@ -41,16 +42,9 @@ export function OtpView({ email, onNavigate }: Props) {
 
 	const resendMutation = useResendOtp();
 
-	const getErrorMessage = useCallback(
-		(
-			err: Error | { response?: { data?: { message?: string } } },
-			fallback: string,
-		) => {
-			const errorData = err as { response?: { data?: { message?: string } } };
-			return errorData.response?.data?.message || fallback;
-		},
-		[],
-	);
+	const getErrorMessage = useCallback((err: ApiError, fallback: string) => {
+		return err.response?.data?.message || fallback;
+	}, []);
 
 	const shouldRedirectToRegister = useCallback(
 		(message: string) =>
@@ -67,7 +61,7 @@ export function OtpView({ email, onNavigate }: Props) {
 			await verifyMutation.mutateAsync({ email, otp });
 		} catch (err) {
 			const message = getErrorMessage(
-				err as Error | { response?: { data?: { message?: string } } },
+				err as ApiError,
 				"Invalid or expired OTP. Please try again.",
 			);
 			if (shouldRedirectToRegister(message)) {
@@ -98,7 +92,7 @@ export function OtpView({ email, onNavigate }: Props) {
 			resetTimers();
 		} catch (err) {
 			const message = getErrorMessage(
-				err as Error | { response?: { data?: { message?: string } } },
+				err as ApiError,
 				"Failed to resend OTP. Please try again later.",
 			);
 			if (shouldRedirectToRegister(message)) {

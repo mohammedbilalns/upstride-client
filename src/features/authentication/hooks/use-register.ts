@@ -2,12 +2,11 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { authService } from "../services/auth.service";
 import type { RegisterPayload } from "../validators/register.schema";
+import type { ApiError } from "@/api/apiError";
 
 interface UseRegisterOptions {
 	onSuccess: (email: string) => void;
-	onError?: (
-		error: Error | { response?: { data?: { message?: string } } },
-	) => void;
+	onError?: (error: ApiError) => void;
 }
 
 export const useRegister = ({ onSuccess, onError }: UseRegisterOptions) => {
@@ -20,7 +19,7 @@ export const useRegister = ({ onSuccess, onError }: UseRegisterOptions) => {
 			);
 			onSuccess(variables.email);
 		},
-		onError: (error) => {
+		onError: (error: ApiError) => {
 			console.error("Registration error:", error);
 			onError?.(error);
 		},

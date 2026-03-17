@@ -9,7 +9,7 @@ export interface GetUsersInput {
 	sort?: "recent" | "old";
 }
 
-export interface UserListDTO {
+export interface UserListItem {
 	id: string;
 	name: string;
 	email: string;
@@ -19,7 +19,7 @@ export interface UserListDTO {
 }
 
 export interface GetUsersResponse {
-	users: UserListDTO[];
+	users: UserListItem[];
 	total: number;
 	page: number;
 	limit: number;

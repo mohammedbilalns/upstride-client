@@ -1,6 +1,8 @@
 import { useForm } from "@tanstack/react-form";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import type { ApiError } from "@/api/apiError";
 import { useResetPassword } from "../hooks/use-reset-password";
 import type { AuthView } from "../types";
 import { changePasswordSchema } from "../validators";
@@ -13,9 +15,14 @@ interface Props {
 }
 
 export function ChangePasswordView({ email, resetToken, onNavigate }: Props) {
+	const [apiError, setApiError] = useState<string | null>(null);
+
 	const resetPasswordMutation = useResetPassword({
 		onSuccess: () => {
 			onNavigate("login");
+		},
+		onError: (error: ApiError) => {
+			setApiError(error.response?.data?.message || "Failed to reset password");
 		},
 	});
 
@@ -41,6 +48,12 @@ export function ChangePasswordView({ email, resetToken, onNavigate }: Props) {
 					Choose a strong password for your account.
 				</p>
 			</div>
+
+			{apiError && (
+				<div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm font-medium animate-in fade-in slide-in-from-top-1">
+					{apiError}
+				</div>
+			)}
 
 			<form
 				onSubmit={(e) => {

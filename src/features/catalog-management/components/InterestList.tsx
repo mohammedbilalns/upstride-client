@@ -1,0 +1,44 @@
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { InterestTable } from "./InterestTable";
+import type { CatalogInterest } from "../types";
+
+interface InterestListProps {
+	interests: CatalogInterest[];
+	onAddInterest: () => void;
+	onAddSkill: (interestId: string) => void;
+	onDisableInterest: (id: string) => void;
+	onEnableInterest: (id: string) => void;
+	onDisableSkill: (id: string) => void;
+	onEnableSkill: (id: string) => void;
+}
+
+export function InterestList({
+	interests,
+	onAddInterest,
+	onAddSkill,
+	onDisableInterest,
+	onEnableInterest,
+	onDisableSkill,
+	onEnableSkill,
+}: InterestListProps) {
+	return (
+		<div className="space-y-4">
+			<div className="flex justify-end">
+				<Button className="shadow-sm" onClick={onAddInterest}>
+					<Plus className="w-4 h-4 mr-2" />
+					Add Interest
+				</Button>
+			</div>
+
+			<InterestTable
+				interests={interests}
+				onAddSkill={onAddSkill}
+				onDisableInterest={onDisableInterest}
+				onEnableInterest={onEnableInterest}
+				onDisableSkill={onDisableSkill}
+				onEnableSkill={onEnableSkill}
+			/>
+		</div>
+	);
+}

@@ -1,3 +1,4 @@
+// Social login buttons (Google, LinkedIn)
 import { useGoogleLogin } from "@react-oauth/google";
 import { useRouter } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";

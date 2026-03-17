@@ -17,8 +17,6 @@ export const ROUTES = {
 		REVOKE_SESSION: "/revoke-session",
 		REVOKE_ALL_OTHER_SESSIONS: "/revoke-all-other-sessions",
 		ACTIVE_SESSIONS: "/active-sessions",
-		ME: "/me",
-		PROFILE: "/profile",
 	},
 	PROFILE: {
 		BASE: "/profile",
@@ -32,12 +30,27 @@ export const ROUTES = {
 		BASE: "/catalog",
 		ONBOARDING: "/onboarding",
 		PROFESSIONS: "/professions",
+		FETCH: "/fetch",
+		ADD_INTEREST: "/interests",
+		DISABLE_INTEREST: (id: string) => `/interests/${id}/disable`,
+		ENABLE_INTEREST: (id: string) => `/interests/${id}/enable`,
+		ADD_SKILL: "/skills",
+		DISABLE_SKILL: (id: string) => `/skills/${id}/disable`,
+		ENABLE_SKILL: (id: string) => `/skills/${id}/enable`,
+		ADD_PROFESSION: "/professions",
+		DISABLE_PROFESSION: (id: string) => `/professions/${id}/disable`,
+		ENABLE_PROFESSION: (id: string) => `/professions/${id}/enable`,
 	},
 	USER_MANAGEMENT: {
 		BASE: "/user-management",
 		FETCH_USERS: "/fetch-users",
 		BLOCK: (id: string) => `/${id}/block`,
 		UNBLOCK: (id: string) => `/${id}/unblock`,
+	},
+	STORAGE: {
+		BASE: "/storage",
+		GET_PRESIGNED_URL: "/presigned-upload-url",
+		DELETE: "/delete",
 	},
 	MENTOR: {
 		BASE: "/mentor",
@@ -48,9 +61,12 @@ export const ROUTES = {
 		APPROVE: (id: string) => `/applications/${id}/approve`,
 		REJECT: (id: string) => `/applications/${id}/reject`,
 	},
-	STORAGE: {
-		BASE: "/storage",
-		GET_PRESIGNED_URL: "/presigned-upload-url",
-		DELETE_FILE: "/delete",
+	PLATFORM_SETTINGS: {
+		BASE: "/platform-settings",
+		FETCH: "/fetch",
+		ECONOMY: "/economy",
+		MENTORS: "/mentors",
+		CONTENT: "/content",
+		SESSIONS: "/sessions",
 	},
 };

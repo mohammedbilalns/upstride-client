@@ -2,12 +2,11 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { authService } from "../services/auth.service";
 import type { VerifyRegisterOtpResponse } from "../types";
+import type { ApiError } from "@/api/apiError";
 
 interface UseVerifyOtpOptions {
 	onSuccess: (data: VerifyRegisterOtpResponse) => void;
-	onError?: (
-		error: Error | { response?: { data?: { message?: string } } },
-	) => void;
+	onError?: (error: ApiError) => void;
 }
 
 export const useVerifyOtp = ({ onSuccess, onError }: UseVerifyOtpOptions) => {
@@ -18,7 +17,7 @@ export const useVerifyOtp = ({ onSuccess, onError }: UseVerifyOtpOptions) => {
 			toast.success(response.message || "Email verified successfully!");
 			onSuccess(response.data);
 		},
-		onError: (error) => {
+		onError: (error: ApiError) => {
 			console.error("OTP verification error:", error);
 			onError?.(error);
 		},

@@ -1,11 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { authService } from "../services/auth.service";
+import type { ApiError } from "@/api/apiError";
 
 interface UseResendOtpOptions {
 	onSuccess?: () => void;
-	onError?: (
-		error: Error | { response?: { data?: { message?: string } } },
-	) => void;
+	onError?: (error: ApiError) => void;
 }
 
 export const useResendOtp = ({
@@ -17,7 +16,7 @@ export const useResendOtp = ({
 		onSuccess: () => {
 			onSuccess?.();
 		},
-		onError: (error) => {
+		onError: (error: ApiError) => {
 			console.error("Resend OTP error:", error);
 			onError?.(error);
 		},
