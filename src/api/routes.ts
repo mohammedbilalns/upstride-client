@@ -69,6 +69,14 @@ export const ROUTES = {
 		CONTENT: "/content",
 		SESSIONS: "/sessions",
 	},
+	MENTOR_LISTS: {
+		BASE: "/mentor-lists",
+		ROOT: "/",
+		BY_ID: (listId: string) => `/${listId}`,
+		ADD_MENTOR: (listId: string) => `/${listId}/mentors`,
+		REMOVE_MENTOR: (listId: string, mentorId: string) =>
+			`/${listId}/mentors/${mentorId}`,
+	},
 	PAYMENTS: {
 		BASE: "/payments",
 		CHECKOUT_SESSION: "/checkout-session",
