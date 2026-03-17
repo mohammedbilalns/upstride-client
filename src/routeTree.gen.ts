@@ -16,6 +16,7 @@ import { Route as AdminLayoutRouteImport } from './routes/_admin-layout'
 import { Route as PublicLayoutIndexRouteImport } from './routes/_public-layout/index'
 import { Route as UserLayoutProfileRouteImport } from './routes/_user-layout/profile'
 import { Route as UserLayoutHomeRouteImport } from './routes/_user-layout/home'
+import { Route as UserLayoutCoinsRouteImport } from './routes/_user-layout/coins'
 import { Route as PublicLayoutAuthRouteImport } from './routes/_public-layout/auth'
 import { Route as AdminLayoutUserManagementRouteImport } from './routes/_admin-layout/user-management'
 import { Route as AdminLayoutPlatformSettingsRouteImport } from './routes/_admin-layout/platform-settings'
@@ -54,6 +55,11 @@ const UserLayoutProfileRoute = UserLayoutProfileRouteImport.update({
 const UserLayoutHomeRoute = UserLayoutHomeRouteImport.update({
   id: '/home',
   path: '/home',
+  getParentRoute: () => UserLayoutRoute,
+} as any)
+const UserLayoutCoinsRoute = UserLayoutCoinsRouteImport.update({
+  id: '/coins',
+  path: '/coins',
   getParentRoute: () => UserLayoutRoute,
 } as any)
 const PublicLayoutAuthRoute = PublicLayoutAuthRouteImport.update({
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/platform-settings': typeof AdminLayoutPlatformSettingsRoute
   '/user-management': typeof AdminLayoutUserManagementRoute
   '/auth': typeof PublicLayoutAuthRoute
+  '/coins': typeof UserLayoutCoinsRoute
   '/home': typeof UserLayoutHomeRoute
   '/profile': typeof UserLayoutProfileRoute
   '/mentor/register': typeof UserLayoutMentorRegisterRoute
@@ -119,6 +126,7 @@ export interface FileRoutesByTo {
   '/platform-settings': typeof AdminLayoutPlatformSettingsRoute
   '/user-management': typeof AdminLayoutUserManagementRoute
   '/auth': typeof PublicLayoutAuthRoute
+  '/coins': typeof UserLayoutCoinsRoute
   '/home': typeof UserLayoutHomeRoute
   '/profile': typeof UserLayoutProfileRoute
   '/mentor/register': typeof UserLayoutMentorRegisterRoute
@@ -135,6 +143,7 @@ export interface FileRoutesById {
   '/_admin-layout/platform-settings': typeof AdminLayoutPlatformSettingsRoute
   '/_admin-layout/user-management': typeof AdminLayoutUserManagementRoute
   '/_public-layout/auth': typeof PublicLayoutAuthRoute
+  '/_user-layout/coins': typeof UserLayoutCoinsRoute
   '/_user-layout/home': typeof UserLayoutHomeRoute
   '/_user-layout/profile': typeof UserLayoutProfileRoute
   '/_public-layout/': typeof PublicLayoutIndexRoute
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/platform-settings'
     | '/user-management'
     | '/auth'
+    | '/coins'
     | '/home'
     | '/profile'
     | '/mentor/register'
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
     | '/platform-settings'
     | '/user-management'
     | '/auth'
+    | '/coins'
     | '/home'
     | '/profile'
     | '/mentor/register'
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '/_admin-layout/platform-settings'
     | '/_admin-layout/user-management'
     | '/_public-layout/auth'
+    | '/_user-layout/coins'
     | '/_user-layout/home'
     | '/_user-layout/profile'
     | '/_public-layout/'
@@ -241,6 +253,13 @@ declare module '@tanstack/react-router' {
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof UserLayoutHomeRouteImport
+      parentRoute: typeof UserLayoutRoute
+    }
+    '/_user-layout/coins': {
+      id: '/_user-layout/coins'
+      path: '/coins'
+      fullPath: '/coins'
+      preLoaderRoute: typeof UserLayoutCoinsRouteImport
       parentRoute: typeof UserLayoutRoute
     }
     '/_public-layout/auth': {
@@ -330,12 +349,14 @@ const PublicLayoutRouteWithChildren = PublicLayoutRoute._addFileChildren(
 )
 
 interface UserLayoutRouteChildren {
+  UserLayoutCoinsRoute: typeof UserLayoutCoinsRoute
   UserLayoutHomeRoute: typeof UserLayoutHomeRoute
   UserLayoutProfileRoute: typeof UserLayoutProfileRoute
   UserLayoutMentorRegisterRoute: typeof UserLayoutMentorRegisterRoute
 }
 
 const UserLayoutRouteChildren: UserLayoutRouteChildren = {
+  UserLayoutCoinsRoute: UserLayoutCoinsRoute,
   UserLayoutHomeRoute: UserLayoutHomeRoute,
   UserLayoutProfileRoute: UserLayoutProfileRoute,
   UserLayoutMentorRegisterRoute: UserLayoutMentorRegisterRoute,

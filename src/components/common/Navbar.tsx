@@ -72,10 +72,13 @@ export default function UserNavbar() {
 
 				{/* Right Side: Actions */}
 				<div className="flex items-center gap-4">
-					<div className="flex items-center gap-2 rounded-full border border-border/60 bg-card/40 px-3 py-1.5 text-sm font-semibold text-foreground">
+					<Link
+						to="/coins"
+						className="flex items-center gap-2 rounded-full border border-border/60 bg-card/40 px-3 py-1.5 text-sm font-semibold text-foreground hover:border-primary/40 hover:text-primary transition-colors"
+					>
 						<Coins className="h-4 w-4 text-primary" />
 						<span className="tabular-nums">{coinBalance}</span>
-					</div>
+					</Link>
 					<div className="relative">
 						<Button
 							variant="ghost"
