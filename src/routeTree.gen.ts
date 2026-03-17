@@ -24,6 +24,7 @@ import { Route as AdminLayoutPlatformSettingsRouteImport } from './routes/_admin
 import { Route as AdminLayoutMentorManagementRouteImport } from './routes/_admin-layout/mentor-management'
 import { Route as AdminLayoutDashboardRouteImport } from './routes/_admin-layout/dashboard'
 import { Route as AdminLayoutCatalogManagementRouteImport } from './routes/_admin-layout/catalog-management'
+import { Route as AdminLayoutAdminManagementRouteImport } from './routes/_admin-layout/admin-management'
 import { Route as UserLayoutProfileIndexRouteImport } from './routes/_user-layout/profile/index'
 import { Route as UserLayoutMentorRegisterRouteImport } from './routes/_user-layout/mentor.register'
 import { Route as UserLayoutProfileBookmarkedMentorsIndexRouteImport } from './routes/_user-layout/profile/bookmarked-mentors/index'
@@ -105,6 +106,12 @@ const AdminLayoutCatalogManagementRoute =
     path: '/catalog-management',
     getParentRoute: () => AdminLayoutRoute,
   } as any)
+const AdminLayoutAdminManagementRoute =
+  AdminLayoutAdminManagementRouteImport.update({
+    id: '/admin-management',
+    path: '/admin-management',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
 const UserLayoutProfileIndexRoute = UserLayoutProfileIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -132,6 +139,7 @@ const UserLayoutProfileBookmarkedMentorsListIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof PublicLayoutIndexRoute
   '/linkedin': typeof LinkedinRoute
+  '/admin-management': typeof AdminLayoutAdminManagementRoute
   '/catalog-management': typeof AdminLayoutCatalogManagementRoute
   '/dashboard': typeof AdminLayoutDashboardRoute
   '/mentor-management': typeof AdminLayoutMentorManagementRoute
@@ -150,6 +158,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof PublicLayoutIndexRoute
   '/linkedin': typeof LinkedinRoute
+  '/admin-management': typeof AdminLayoutAdminManagementRoute
   '/catalog-management': typeof AdminLayoutCatalogManagementRoute
   '/dashboard': typeof AdminLayoutDashboardRoute
   '/mentor-management': typeof AdminLayoutMentorManagementRoute
@@ -170,6 +179,7 @@ export interface FileRoutesById {
   '/_public-layout': typeof PublicLayoutRouteWithChildren
   '/_user-layout': typeof UserLayoutRouteWithChildren
   '/linkedin': typeof LinkedinRoute
+  '/_admin-layout/admin-management': typeof AdminLayoutAdminManagementRoute
   '/_admin-layout/catalog-management': typeof AdminLayoutCatalogManagementRoute
   '/_admin-layout/dashboard': typeof AdminLayoutDashboardRoute
   '/_admin-layout/mentor-management': typeof AdminLayoutMentorManagementRoute
@@ -191,6 +201,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/linkedin'
+    | '/admin-management'
     | '/catalog-management'
     | '/dashboard'
     | '/mentor-management'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/linkedin'
+    | '/admin-management'
     | '/catalog-management'
     | '/dashboard'
     | '/mentor-management'
@@ -228,6 +240,7 @@ export interface FileRouteTypes {
     | '/_public-layout'
     | '/_user-layout'
     | '/linkedin'
+    | '/_admin-layout/admin-management'
     | '/_admin-layout/catalog-management'
     | '/_admin-layout/dashboard'
     | '/_admin-layout/mentor-management'
@@ -359,6 +372,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLayoutCatalogManagementRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
+    '/_admin-layout/admin-management': {
+      id: '/_admin-layout/admin-management'
+      path: '/admin-management'
+      fullPath: '/admin-management'
+      preLoaderRoute: typeof AdminLayoutAdminManagementRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
     '/_user-layout/profile/': {
       id: '/_user-layout/profile/'
       path: '/'
@@ -391,6 +411,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminLayoutRouteChildren {
+  AdminLayoutAdminManagementRoute: typeof AdminLayoutAdminManagementRoute
   AdminLayoutCatalogManagementRoute: typeof AdminLayoutCatalogManagementRoute
   AdminLayoutDashboardRoute: typeof AdminLayoutDashboardRoute
   AdminLayoutMentorManagementRoute: typeof AdminLayoutMentorManagementRoute
@@ -399,6 +420,7 @@ interface AdminLayoutRouteChildren {
 }
 
 const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
+  AdminLayoutAdminManagementRoute: AdminLayoutAdminManagementRoute,
   AdminLayoutCatalogManagementRoute: AdminLayoutCatalogManagementRoute,
   AdminLayoutDashboardRoute: AdminLayoutDashboardRoute,
   AdminLayoutMentorManagementRoute: AdminLayoutMentorManagementRoute,
