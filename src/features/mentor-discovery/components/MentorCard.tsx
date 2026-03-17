@@ -16,22 +16,25 @@ import { MentorListDialog } from "./MentorListDialog";
 
 interface MentorCardProps {
 	mentor: MentorDiscoveryItem;
+	showBookmark?: boolean;
 }
 
-export function MentorCard({ mentor }: MentorCardProps) {
+export function MentorCard({ mentor, showBookmark = true }: MentorCardProps) {
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 
 	return (
 		<Card className="flex flex-col h-full bg-white dark:bg-zinc-950/50 hover:border-zinc-300 dark:hover:border-zinc-800 transition-colors">
 			<CardHeader className="relative flex flex-row gap-4 items-start pb-4">
-				<Button
-					variant="outline"
-					size="icon"
-					className="absolute right-4 top-4 shrink-0 text-zinc-500 h-9 w-9"
-					onClick={() => setIsDialogOpen(true)}
-				>
-					<Bookmark className="h-4 w-4" />
-				</Button>
+				{showBookmark && (
+					<Button
+						variant="outline"
+						size="icon"
+						className="absolute right-4 top-4 shrink-0 text-zinc-500 h-9 w-9"
+						onClick={() => setIsDialogOpen(true)}
+					>
+						<Bookmark className="h-4 w-4" />
+					</Button>
+				)}
 				<Avatar className="h-16 w-16 rounded-xl border object-cover">
 					<AvatarImage
 						src={mentor.avatar || ""}
@@ -106,11 +109,13 @@ export function MentorCard({ mentor }: MentorCardProps) {
 				</Button>
 			</CardFooter>
 
-			<MentorListDialog
-				open={isDialogOpen}
-				onOpenChange={setIsDialogOpen}
-				mentorId={mentor.id}
-			/>
+			{showBookmark && (
+				<MentorListDialog
+					open={isDialogOpen}
+					onOpenChange={setIsDialogOpen}
+					mentorId={mentor.id}
+				/>
+			)}
 		</Card>
 	);
 }

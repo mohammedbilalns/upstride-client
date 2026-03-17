@@ -2,6 +2,7 @@ export interface MentorList {
 	id: string;
 	name: string;
 	description: string | null;
+	mentorCount?: number;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -11,7 +12,7 @@ export interface GetMentorListsResponse {
 }
 
 export interface GetMentorListResponse {
-	list: MentorList;
+	list: MentorListDetails;
 }
 
 export interface CreateMentorListInput {
@@ -35,6 +36,10 @@ export interface RemoveMentorFromListInput {
 
 export interface DeleteMentorListInput {
 	listId: string;
+}
+
+export interface MentorListDetails extends MentorList {
+	mentors: MentorDiscoveryItem[];
 }
 
 export interface GetMentorsDiscoveryInput {
