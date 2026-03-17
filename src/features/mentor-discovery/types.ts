@@ -62,6 +62,10 @@ export interface MentorDiscoveryItem {
 		id: string;
 		name?: string;
 	}[];
+	skills: {
+		id: string;
+		name?: string;
+	}[];
 	createdAt: string;
 }
 

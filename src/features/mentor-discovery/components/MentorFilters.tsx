@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
 	Select,
 	SelectContent,
@@ -7,7 +6,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { SlidersHorizontal, Search, X } from "lucide-react";
+import { SlidersHorizontal, X } from "lucide-react";
+import type { CatalogInterest } from "@/features/onboarding/types";
 import type { MentorDiscoverySearch } from "../validators/mentor-discovery-params";
 
 const EXPERIENCE_RANGES = [
@@ -34,27 +34,19 @@ function parseExpRange(val: string): { min?: number; max?: number } {
 
 interface MentorFiltersProps {
 	search: MentorDiscoverySearch;
-	searchInput: string;
-	onSearchInputChange: (value: string) => void;
+	categories: CatalogInterest[];
+	isLoadingCategories: boolean;
 	onUpdate: (updates: Partial<MentorDiscoverySearch>) => void;
 	onClear: () => void;
 }
 
 export function MentorFilters({
 	search,
-	searchInput,
-	onSearchInputChange,
+	categories,
+	isLoadingCategories,
 	onUpdate,
 	onClear,
 }: MentorFiltersProps) {
-	const handleSearchSubmit = () => {
-		onUpdate({ search: searchInput || undefined });
-	};
-
-	const handleSearchKeyDown = (e: React.KeyboardEvent) => {
-		if (e.key === "Enter") handleSearchSubmit();
-	};
-
 	const hasFilters =
 		search.search ||
 		search.categoryId ||
@@ -62,71 +54,107 @@ export function MentorFilters({
 		search.maxExperience !== undefined;
 
 	return (
-		<div className="flex flex-col gap-3">
-			{/* Search + Sort row */}
-			<div className="flex gap-2 flex-wrap">
-				<div className="relative flex-none w-56 md:w-64">
-					<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400 pointer-events-none" />
-					<Input
-						id="mentor-search"
-						placeholder="Search mentors by name..."
-						className="pl-9 h-9"
-						value={searchInput}
-						onChange={(e) => onSearchInputChange(e.target.value)}
-						onKeyDown={handleSearchKeyDown}
-					/>
-				</div>
-				<Select
-					value={search.sort}
-					onValueChange={(val) =>
-						onUpdate({ sort: val as "rating" | "recent" })
-					}
-				>
-					<SelectTrigger className="h-9 w-36">
-						<SelectValue placeholder="Sort by" />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectItem value="rating">Top Rated</SelectItem>
-						<SelectItem value="recent">Recently Joined</SelectItem>
-					</SelectContent>
-				</Select>
+		<aside className="rounded-2xl border border-zinc-200/70 bg-white/60 backdrop-blur-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40">
+			<div className="p-4">
+				<p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">
+					FILTERS
+				</p>
+			</div>
 
-				{/* Experience range */}
-				<Select
-					value={expRangeValue(search.minExperience, search.maxExperience)}
-					onValueChange={(val) => {
-						const { min, max } = parseExpRange(val);
-						onUpdate({ minExperience: min, maxExperience: max });
-					}}
-				>
-					<SelectTrigger className="h-9 w-44">
-						<SlidersHorizontal className="h-3.5 w-3.5 mr-1.5 text-zinc-500" />
-						<SelectValue placeholder="Experience" />
-					</SelectTrigger>
-					<SelectContent>
-						{EXPERIENCE_RANGES.map((r) => (
-							<SelectItem
-								key={expRangeValue(r.min, r.max)}
-								value={expRangeValue(r.min, r.max)}
-							>
-								{r.label}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
+			<div className="px-4 pb-4 space-y-6">
+				<div className="space-y-2">
+					<p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">
+						SORT BY
+					</p>
+					<Select
+						value={search.sort}
+						onValueChange={(val) =>
+							onUpdate({ sort: val as "rating" | "recent" })
+						}
+					>
+						<SelectTrigger className="h-10 w-full justify-between bg-white/60 dark:bg-zinc-950/40">
+							<SelectValue placeholder="Recommended" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="rating">Recommended</SelectItem>
+							<SelectItem value="recent">Recently Joined</SelectItem>
+						</SelectContent>
+					</Select>
+				</div>
+
+				<div className="space-y-2">
+					<p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">
+						CATEGORY
+					</p>
+					<Select
+						value={search.categoryId ?? "all"}
+						onValueChange={(val) =>
+							onUpdate({ categoryId: val === "all" ? undefined : val })
+						}
+						disabled={isLoadingCategories}
+					>
+						<SelectTrigger className="h-10 w-full justify-between bg-white/60 dark:bg-zinc-950/40">
+							<SelectValue
+								placeholder={
+									isLoadingCategories
+										? "Loading categories..."
+										: "All categories"
+								}
+							/>
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="all">All categories</SelectItem>
+							{categories.map((category) => (
+								<SelectItem key={category.id} value={category.id}>
+									{category.name}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</div>
+
+				<div className="space-y-2">
+					<p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">
+						EXPERIENCE
+					</p>
+					<Select
+						value={expRangeValue(search.minExperience, search.maxExperience)}
+						onValueChange={(val) => {
+							const { min, max } = parseExpRange(val);
+							onUpdate({ minExperience: min, maxExperience: max });
+						}}
+					>
+						<SelectTrigger className="h-10 w-full justify-between bg-white/60 dark:bg-zinc-950/40">
+							<span className="flex items-center gap-2">
+								<SlidersHorizontal className="h-4 w-4 text-zinc-500" />
+								<SelectValue placeholder="Any experience" />
+							</span>
+						</SelectTrigger>
+						<SelectContent>
+							{EXPERIENCE_RANGES.map((r) => (
+								<SelectItem
+									key={expRangeValue(r.min, r.max)}
+									value={expRangeValue(r.min, r.max)}
+								>
+									{r.label}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</div>
 
 				{hasFilters && (
 					<Button
 						variant="ghost"
 						size="sm"
 						onClick={onClear}
-						className="h-9 text-zinc-500 hover:text-zinc-700 gap-1"
+						className="h-9 w-full justify-start text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 gap-2"
 					>
-						<X className="h-3.5 w-3.5" />
-						Clear
+						<X className="h-4 w-4" />
+						Clear filters
 					</Button>
 				)}
 			</div>
-		</div>
+		</aside>
 	);
 }

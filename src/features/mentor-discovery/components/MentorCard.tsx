@@ -43,20 +43,18 @@ export function MentorCard({ mentor }: MentorCardProps) {
 					</AvatarFallback>
 				</Avatar>
 				<div className="flex-1 space-y-1">
-					<CardTitle className="flex justify-between items-start text-lg">
+					<CardTitle className="flex items-start text-lg">
 						<span className="line-clamp-1 pr-8">{mentor.name}</span>
-						{mentor.avgRating > 0 && (
-							<div className="flex items-center gap-1 text-sm bg-zinc-100 dark:bg-zinc-900 px-2 py-0.5 rounded-full font-medium text-amber-600 dark:text-amber-500">
-								<Star className="h-3.5 w-3.5 fill-current" />
-								<span>{mentor.avgRating.toFixed(1)}</span>
-							</div>
-						)}
 					</CardTitle>
 					<CardDescription className="line-clamp-1 text-zinc-600 dark:text-zinc-400">
 						{mentor.designation || "Mentor"}
 					</CardDescription>
 					<div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-500">
 						<span>{mentor.yearsOfExperience} years exp.</span>
+					</div>
+					<div className="flex items-center gap-1 text-xs font-medium text-amber-600 dark:text-amber-500">
+						<Star className="h-3.5 w-3.5 fill-current" />
+						<span>{mentor.avgRating.toFixed(1)}</span>
 					</div>
 				</div>
 			</CardHeader>
@@ -65,24 +63,39 @@ export function MentorCard({ mentor }: MentorCardProps) {
 				<p className="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-3 mb-4">
 					{mentor.bio}
 				</p>
-				<div className="flex flex-wrap gap-1.5">
-					{mentor.categories.slice(0, 3).map((category) => (
-						<Badge
-							key={category.id}
-							variant="secondary"
-							className="font-normal bg-zinc-100 dark:bg-zinc-900/50 text-zinc-600 dark:text-zinc-300 pointer-events-none"
-						>
-							{category.name}
-						</Badge>
-					))}
-					{mentor.categories.length > 3 && (
-						<Badge
-							variant="secondary"
-							className="font-normal bg-zinc-100 dark:bg-zinc-900/50 text-zinc-600 dark:text-zinc-300"
-						>
-							+{mentor.categories.length - 3} more
-						</Badge>
+				<div className="space-y-3">
+					{mentor.skills.length > 0 && (
+						<div className="flex flex-wrap gap-1.5">
+							{mentor.skills.map((skill) => (
+								<Badge
+									key={skill.id}
+									variant="secondary"
+									className="font-normal bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 pointer-events-none"
+								>
+									{skill.name}
+								</Badge>
+							))}
+						</div>
 					)}
+					<div className="flex flex-wrap gap-1.5">
+						{mentor.categories.slice(0, 3).map((category) => (
+							<Badge
+								key={category.id}
+								variant="secondary"
+								className="font-normal bg-zinc-100 dark:bg-zinc-900/50 text-zinc-600 dark:text-zinc-300 pointer-events-none"
+							>
+								{category.name}
+							</Badge>
+						))}
+						{mentor.categories.length > 3 && (
+							<Badge
+								variant="secondary"
+								className="font-normal bg-zinc-100 dark:bg-zinc-900/50 text-zinc-600 dark:text-zinc-300"
+							>
+								+{mentor.categories.length - 3} more
+							</Badge>
+						)}
+					</div>
 				</div>
 			</CardContent>
 
