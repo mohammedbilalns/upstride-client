@@ -13,6 +13,7 @@ export type PaymentProvider = "stripe";
 
 export interface GetCoinBalanceResponse {
 	coinBalance: number;
+	coinValue: number;
 }
 
 export interface PaginationInput {
@@ -29,8 +30,6 @@ export interface CoinTransaction {
 	id: string;
 	amount: number;
 	type: CoinTransactionType;
-	referenceType?: string;
-	referenceId?: string;
 	createdAt: string;
 }
 
@@ -48,11 +47,10 @@ export interface GetPaymentTransactionsInput extends PaginationInput {
 
 export interface PaymentTransaction {
 	id: string;
+	paymentId: string;
 	provider: PaymentProvider;
-	providerPaymentId: string;
 	amount: number;
 	currency: string;
-	status: PaymentStatus;
 	coinsGranted: number;
 	createdAt: string;
 }
@@ -70,7 +68,7 @@ export interface CreateCheckoutSessionInput {
 }
 
 export interface CreateCheckoutSessionResponse {
-	sessionId: string;
+	paymentId: string;
 	url: string | null;
 	amount: number;
 	currency: string;
