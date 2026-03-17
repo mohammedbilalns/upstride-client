@@ -10,13 +10,17 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Bookmark, Star, User } from "lucide-react";
+import { useState } from "react";
 import type { MentorDiscoveryItem } from "../types";
+import { MentorListDialog } from "./MentorListDialog";
 
 interface MentorCardProps {
 	mentor: MentorDiscoveryItem;
 }
 
 export function MentorCard({ mentor }: MentorCardProps) {
+	const [isDialogOpen, setIsDialogOpen] = useState(false);
+
 	return (
 		<Card className="flex flex-col h-full bg-white dark:bg-zinc-950/50 hover:border-zinc-300 dark:hover:border-zinc-800 transition-colors">
 			<CardHeader className="relative flex flex-row gap-4 items-start pb-4">
@@ -24,6 +28,7 @@ export function MentorCard({ mentor }: MentorCardProps) {
 					variant="outline"
 					size="icon"
 					className="absolute right-4 top-4 shrink-0 text-zinc-500 h-9 w-9"
+					onClick={() => setIsDialogOpen(true)}
 				>
 					<Bookmark className="h-4 w-4" />
 				</Button>
@@ -87,6 +92,12 @@ export function MentorCard({ mentor }: MentorCardProps) {
 					View Profile
 				</Button>
 			</CardFooter>
+
+			<MentorListDialog
+				open={isDialogOpen}
+				onOpenChange={setIsDialogOpen}
+				mentorId={mentor.id}
+			/>
 		</Card>
 	);
 }
