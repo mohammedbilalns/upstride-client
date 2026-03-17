@@ -1,26 +1,48 @@
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "@tanstack/react-router";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { GraduationCap } from "lucide-react";
-import { getMentorsInfiniteQueryOptions } from "../queries";
+import { useEffect, useState } from "react";
+import { Route } from "@/routes/_user-layout/mentors";
+import { useDebounce } from "@/shared/hooks/use-debounce";
+import { getMentorsInfiniteQueryOptions } from "../hooks/queries";
 import type { MentorDiscoverySearch } from "../validators/mentor-discovery-params";
 import { MentorCard } from "../components/MentorCard";
 import { MentorFilters } from "../components/MentorFilters";
 
-interface MentorDiscoveryPageProps {
-	search: MentorDiscoverySearch;
-	searchInput: string;
-	onSearchInputChange: (value: string) => void;
-	onUpdate: (updates: Partial<MentorDiscoverySearch>) => void;
-	onClear: () => void;
-}
+export function MentorDiscoveryPage() {
+	const navigate = useNavigate({ from: Route.fullPath });
+	const search = Route.useSearch();
+	const [searchInput, setSearchInput] = useState(search.search ?? "");
+	const debouncedSearch = useDebounce(searchInput, 400);
 
-export function MentorDiscoveryPage({
-	search,
-	searchInput,
-	onSearchInputChange,
-	onUpdate,
-	onClear,
-}: MentorDiscoveryPageProps) {
+	const updateSearch = (updates: Partial<MentorDiscoverySearch>) => {
+		navigate({
+			search: (prev) => ({
+				...prev,
+				...updates,
+			}),
+		});
+	};
+
+	const clearFilters = () => {
+		navigate({
+			search: {
+				sort: "rating",
+			},
+		});
+	};
+
+	useEffect(() => {
+		setSearchInput(search.search ?? "");
+	}, [search.search]);
+
+	useEffect(() => {
+		if ((search.search ?? "") !== debouncedSearch) {
+			updateSearch({ search: debouncedSearch || undefined });
+		}
+	}, [debouncedSearch, search.search]);
+
 	const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
 		useInfiniteQuery(
 			getMentorsInfiniteQueryOptions({
@@ -53,9 +75,9 @@ export function MentorDiscoveryPage({
 			<MentorFilters
 				search={search}
 				searchInput={searchInput}
-				onSearchInputChange={onSearchInputChange}
-				onUpdate={onUpdate}
-				onClear={onClear}
+				onSearchInputChange={setSearchInput}
+				onUpdate={updateSearch}
+				onClear={clearFilters}
 			/>
 
 			{/* Results summary */}

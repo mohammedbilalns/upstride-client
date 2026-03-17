@@ -65,7 +65,7 @@ export function MentorFilters({
 		<div className="flex flex-col gap-3">
 			{/* Search + Sort row */}
 			<div className="flex gap-2 flex-wrap">
-				<div className="relative flex-1 min-w-52">
+				<div className="relative flex-none w-56 md:w-64">
 					<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400 pointer-events-none" />
 					<Input
 						id="mentor-search"

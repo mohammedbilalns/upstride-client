@@ -1,6 +1,6 @@
 import { infiniteQueryOptions } from "@tanstack/react-query";
-import { mentorDiscoveryService } from "./services/mentor-discovery.service";
-import type { GetMentorsDiscoveryInput } from "./types";
+import { mentorDiscoveryService } from "../services/mentor-discovery.service";
+import type { GetMentorsDiscoveryInput } from "../types";
 
 export const mentorDiscoveryKeys = {
 	all: ["mentor-discovery"] as const,
