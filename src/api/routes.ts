@@ -85,6 +85,22 @@ export const ROUTES = {
 		REMOVE_MENTOR: (listId: string, mentorId: string) =>
 			`/${listId}/mentors/${mentorId}`,
 	},
+	RECURRING_RULES: {
+		BASE: "/recurring-rules",
+		ROOT: "/",
+		BY_ID: (ruleId: string) => `/${ruleId}`,
+		ENABLE: (ruleId: string) => `/${ruleId}/enable`,
+		DISABLE: (ruleId: string) => `/${ruleId}/disable`,
+	},
+	SESSION_SLOTS: {
+		BASE: "/session-slots",
+		ROOT: "/",
+		CUSTOM: "/custom",
+		GENERATE: "/generate",
+		BY_ID: (slotId: string) => `/${slotId}`,
+		CANCEL: (slotId: string) => `/${slotId}/cancel`,
+		ENABLE: (slotId: string) => `/${slotId}/enable`,
+	},
 	PAYMENTS: {
 		BASE: "/payments",
 		CHECKOUT_SESSION: "/checkout-session",
