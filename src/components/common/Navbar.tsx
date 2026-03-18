@@ -44,6 +44,9 @@ export default function UserNavbar() {
 		{ to: "/mentors", label: "Find Mentors" },
 		{ to: "/articles", label: "Read Articles" },
 		{ to: "/sessions", label: "Sessions" },
+		...(user?.role === "MENTOR"
+			? [{ to: "/mentor-dashboard", label: "Mentor Dashboard" }]
+			: []),
 	];
 
 	return (

@@ -62,6 +62,8 @@ export const ROUTES = {
 	MENTOR: {
 		BASE: "/mentor",
 		REGISTRATION_INFO: "/registration-info",
+		PROFILE: "/profile",
+		PUBLIC_PROFILE: (id: string) => `/public/${id}`,
 		REGISTER: "/register",
 		RESUBMIT: "/resubmit",
 		DISCOVERY: "/discover",
@@ -100,6 +102,7 @@ export const ROUTES = {
 		BY_ID: (slotId: string) => `/${slotId}`,
 		CANCEL: (slotId: string) => `/${slotId}/cancel`,
 		ENABLE: (slotId: string) => `/${slotId}/enable`,
+		PUBLIC_AVAILABLE: (mentorId: string) => `/public/${mentorId}/available`,
 	},
 	SESSION_BOOKINGS: {
 		BASE: "/session-bookings",
