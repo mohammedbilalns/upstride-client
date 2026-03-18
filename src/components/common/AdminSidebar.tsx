@@ -1,4 +1,4 @@
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link, useLocation, useRouteContext } from "@tanstack/react-router";
 import {
 	ChevronRight,
 	GraduationCap,
@@ -9,7 +9,6 @@ import {
 	Users,
 	Zap,
 } from "lucide-react";
-import { useAuth } from "@/app/contexts/AuthContext";
 import ThemeToggle from "@/components/common/Theme-Toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -17,7 +16,8 @@ import { useLogout } from "@/features/authentication/hooks/use-logout";
 import { cn } from "@/shared/utils/cn";
 
 export default function AdminSidebar() {
-	const { user } = useAuth();
+	const { auth } = useRouteContext({ from: "/_admin-layout" });
+	const user = auth.user;
 	const location = useLocation();
 	const logoutMutation = useLogout();
 

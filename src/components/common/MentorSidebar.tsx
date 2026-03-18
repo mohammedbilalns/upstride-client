@@ -1,4 +1,4 @@
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link, useLocation, useRouteContext } from "@tanstack/react-router";
 import {
 	CalendarClock,
 	LayoutDashboard,
@@ -7,7 +7,6 @@ import {
 	Undo2,
 	Zap,
 } from "lucide-react";
-import { useAuth } from "@/app/contexts/AuthContext";
 import ThemeToggle from "@/components/common/Theme-Toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,8 @@ import { useLogout } from "@/features/authentication/hooks/use-logout";
 import { cn } from "@/shared/utils/cn";
 
 export default function MentorSidebar() {
-	const { user } = useAuth();
+	const { auth } = useRouteContext({ from: "/_mentor-layout" });
+	const user = auth.user;
 	const location = useLocation();
 	const logoutMutation = useLogout();
 
