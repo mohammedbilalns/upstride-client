@@ -11,6 +11,7 @@ export interface BookSessionResponse {
 
 export interface CancelBookingInput {
 	bookingId: string;
+	reason: string;
 }
 
 export interface CancelBookingResponse {
@@ -67,6 +68,8 @@ export interface BookingListItem {
 	attendanceStatus: "attended" | "not_attended" | null;
 	meetingId: string | null;
 	meetingUrl: string | null;
+	cancellationReason: string | null;
+	cancelledBy: "user" | "mentor" | null;
 	createdAt: string;
 	updatedAt: string;
 }

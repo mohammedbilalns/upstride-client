@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
+import { Textarea } from "@/components/ui/textarea";
 import { Route } from "@/routes/_mentor-layout/mentor-sessions";
 import { useMentorSessions } from "../hooks/use-mentor-sessions";
 import { sessionBookingService } from "@/features/session-booking-management";
@@ -28,6 +29,7 @@ export function MentorSessionsPage() {
 	const queryClient = useQueryClient();
 	const search = Route.useSearch();
 	const [pendingCancelId, setPendingCancelId] = useState<string | null>(null);
+	const [cancelReason, setCancelReason] = useState("");
 
 	const params = useMemo(
 		() => ({
@@ -43,14 +45,19 @@ export function MentorSessionsPage() {
 
 	const cancelMutation = useMutation({
 		mutationFn: (bookingId: string) =>
-			sessionBookingService.cancelBookingByMentor({ bookingId }),
+			sessionBookingService.cancelBookingByMentor({
+				bookingId,
+				reason: cancelReason,
+			}),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["sessions", "mentor"] });
 			queryClient.invalidateQueries({ queryKey: ["wallet", "balance"] });
 			setPendingCancelId(null);
+			setCancelReason("");
 		},
 		onError: () => {
 			setPendingCancelId(null);
+			setCancelReason("");
 		},
 	});
 
@@ -147,6 +154,9 @@ export function MentorSessionsPage() {
 				isOpen={Boolean(pendingCancelId)}
 				onClose={() => setPendingCancelId(null)}
 				onConfirm={() => {
+					if (!cancelReason.trim()) {
+						return;
+					}
 					if (pendingCancelId) {
 						cancelMutation.mutate(pendingCancelId);
 					}
@@ -156,7 +166,16 @@ export function MentorSessionsPage() {
 				confirmText="Confirm Cancel"
 				variant="destructive"
 				isLoading={cancelMutation.isPending}
-			/>
+			>
+				<div className="mt-4 space-y-2">
+					<label className="text-sm font-medium">Cancellation reason</label>
+					<Textarea
+						value={cancelReason}
+						onChange={(e) => setCancelReason(e.target.value)}
+						placeholder="Share a short reason..."
+					/>
+				</div>
+			</ConfirmModal>
 		</div>
 	);
 }
@@ -194,6 +213,14 @@ function MentorSessionCard({
 			<div className="flex items-center gap-3">
 				{booking.status === "cancelled" && (
 					<Badge variant="destructive">Cancelled</Badge>
+				)}
+				{booking.status === "cancelled" && booking.cancellationReason && (
+					<div className="text-xs text-muted-foreground">
+						Cancelled by {booking.cancelledBy ?? "mentor"}:{" "}
+						<span className="text-foreground">
+							{booking.cancellationReason}
+						</span>
+					</div>
 				)}
 				{canCancel && (
 					<Button

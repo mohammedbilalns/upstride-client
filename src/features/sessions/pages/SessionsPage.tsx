@@ -8,6 +8,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
+import { Textarea } from "@/components/ui/textarea";
 import {
 	Select,
 	SelectContent,
@@ -29,6 +30,7 @@ export function SessionsPage() {
 	const queryClient = useQueryClient();
 	const search = Route.useSearch();
 	const [pendingCancelId, setPendingCancelId] = useState<string | null>(null);
+	const [cancelReason, setCancelReason] = useState("");
 
 	const filter = search.tab === "past" ? "past" : search.upcomingFilter;
 	const params = useMemo(
@@ -43,14 +45,16 @@ export function SessionsPage() {
 	const { data, isLoading } = useUserSessions(params);
 	const cancelMutation = useMutation({
 		mutationFn: (bookingId: string) =>
-			sessionBookingService.cancelBooking({ bookingId }),
+			sessionBookingService.cancelBooking({ bookingId, reason: cancelReason }),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["sessions", "user"] });
 			queryClient.invalidateQueries({ queryKey: ["wallet", "balance"] });
 			setPendingCancelId(null);
+			setCancelReason("");
 		},
 		onError: () => {
 			setPendingCancelId(null);
+			setCancelReason("");
 		},
 	});
 
@@ -169,6 +173,9 @@ export function SessionsPage() {
 				isOpen={Boolean(pendingCancelId)}
 				onClose={() => setPendingCancelId(null)}
 				onConfirm={() => {
+					if (!cancelReason.trim()) {
+						return;
+					}
 					if (pendingCancelId) {
 						cancelMutation.mutate(pendingCancelId);
 					}
@@ -178,7 +185,16 @@ export function SessionsPage() {
 				confirmText="Confirm Cancel"
 				variant="destructive"
 				isLoading={cancelMutation.isPending}
-			/>
+			>
+				<div className="mt-4 space-y-2">
+					<label className="text-sm font-medium">Cancellation reason</label>
+					<Textarea
+						value={cancelReason}
+						onChange={(e) => setCancelReason(e.target.value)}
+						placeholder="Share a short reason..."
+					/>
+				</div>
+			</ConfirmModal>
 		</div>
 	);
 }
@@ -252,6 +268,14 @@ function SessionCard({
 							? "Attended"
 							: "Not Attended"}
 					</Badge>
+				)}
+				{booking.status === "cancelled" && booking.cancellationReason && (
+					<div className="text-xs text-muted-foreground">
+						Cancelled by {booking.cancelledBy ?? "user"}:{" "}
+						<span className="text-foreground">
+							{booking.cancellationReason}
+						</span>
+					</div>
 				)}
 				{canCancel && (
 					<Button

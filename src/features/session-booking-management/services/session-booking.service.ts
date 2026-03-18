@@ -29,6 +29,7 @@ export const sessionBookingService = {
 			`${ROUTES.SESSION_BOOKINGS.BASE}${ROUTES.SESSION_BOOKINGS.CANCEL(
 				data.bookingId,
 			)}`,
+			{ reason: data.reason },
 		);
 		return response.data;
 	},
@@ -40,6 +41,7 @@ export const sessionBookingService = {
 			`${ROUTES.SESSION_BOOKINGS.BASE}${ROUTES.SESSION_BOOKINGS.MENTOR_CANCEL(
 				data.bookingId,
 			)}`,
+			{ reason: data.reason },
 		);
 		return response.data;
 	},
