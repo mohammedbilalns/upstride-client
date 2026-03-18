@@ -58,11 +58,15 @@ export interface BookingListItem {
 	id: string;
 	userId: string;
 	mentorId: string;
+	mentorName: string | null;
 	slotId: string;
 	startTime: string;
 	endTime: string;
 	price: number;
 	status: "pending" | "confirmed" | "cancelled" | "completed" | "refunded";
+	attendanceStatus: "attended" | "not_attended" | null;
+	meetingId: string | null;
+	meetingUrl: string | null;
 	createdAt: string;
 	updatedAt: string;
 }

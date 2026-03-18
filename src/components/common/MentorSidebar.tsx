@@ -39,6 +39,11 @@ export default function MentorSidebar() {
 			icon: LayoutDashboard,
 		},
 		{
+			to: "/mentor-sessions",
+			label: "Upcoming Sessions",
+			icon: CalendarClock,
+		},
+		{
 			to: "/mentor-rule-management",
 			label: "Rule Management",
 			icon: Repeat,

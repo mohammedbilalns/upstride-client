@@ -2,7 +2,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClientProvider } from "@tanstack/react-query";
 import ReactDOM from "react-dom/client";
 import App from "./app/app";
-import { AuthProvider } from "./app/contexts/AuthContext";
+import { AuthProvider } from "@/app/contexts/AuthContext";
 import { ThemeProvider } from "./app/contexts/ThemeContext";
 import { queryClient, type router } from "./app/router/routerConfig";
 import { Toaster } from "./components/ui/sonner";

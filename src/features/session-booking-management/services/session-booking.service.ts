@@ -33,6 +33,17 @@ export const sessionBookingService = {
 		return response.data;
 	},
 
+	cancelBookingByMentor: async (
+		data: CancelBookingInput,
+	): Promise<CancelBookingResponse> => {
+		const response = await api.patch<CancelBookingResponse>(
+			`${ROUTES.SESSION_BOOKINGS.BASE}${ROUTES.SESSION_BOOKINGS.MENTOR_CANCEL(
+				data.bookingId,
+			)}`,
+		);
+		return response.data;
+	},
+
 	requestReschedule: async (
 		data: RequestRescheduleInput,
 	): Promise<RequestRescheduleResponse> => {
