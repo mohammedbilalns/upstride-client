@@ -30,6 +30,8 @@ export interface CoinTransaction {
 	id: string;
 	amount: number;
 	type: CoinTransactionType;
+	transactionOwner: "platform" | "user";
+	direction: "credit" | "debit";
 	createdAt: string;
 }
 
@@ -52,6 +54,7 @@ export interface PaymentTransaction {
 	amount: number;
 	currency: string;
 	coinsGranted: number;
+	direction: "credit" | "debit";
 	createdAt: string;
 }
 

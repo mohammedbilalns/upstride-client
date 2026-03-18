@@ -36,6 +36,7 @@ function MentorSlotManagement() {
 		type: "disable" | "delete";
 		slotId: string;
 	} | null>(null);
+	const [isCreateConfirmOpen, setIsCreateConfirmOpen] = useState(false);
 
 	const nowForInput = useMemo(() => {
 		const now = new Date();
@@ -211,6 +212,10 @@ function MentorSlotManagement() {
 		}
 		setConfirmAction(null);
 	};
+	const confirmCreateSlot = () => {
+		setIsCreateConfirmOpen(false);
+		createMutation.mutate();
+	};
 
 	return (
 		<div className="p-8 space-y-6">
@@ -266,7 +271,15 @@ function MentorSlotManagement() {
 						</div>
 					</div>
 					<Button
-						onClick={() => createMutation.mutate()}
+						onClick={() => {
+							const start = parseDateTime(newSlot.startTime);
+							const end = parseDateTime(newSlot.endTime);
+							if (!start || !end) {
+								toast.error("Please select both start and end time.");
+								return;
+							}
+							setIsCreateConfirmOpen(true);
+						}}
 						disabled={createMutation.isPending}
 					>
 						Create Slot
@@ -389,6 +402,15 @@ function MentorSlotManagement() {
 				confirmText={
 					confirmAction?.type === "delete" ? "Yes, Delete" : "Yes, Disable"
 				}
+			/>
+			<ConfirmModal
+				isOpen={isCreateConfirmOpen}
+				onClose={() => setIsCreateConfirmOpen(false)}
+				onConfirm={confirmCreateSlot}
+				title="Create custom slot"
+				message="Are you sure you want to create this slot?"
+				confirmText="Create Slot"
+				isLoading={createMutation.isPending}
 			/>
 		</div>
 	);

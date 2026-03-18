@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -19,6 +19,8 @@ import { AddBalanceForm } from "@/components/common/AddBalanceForm";
 import { CoinWalletHeader } from "../components/CoinWalletHeader";
 import { CoinTransactionsTable } from "../components/CoinTransactionsTable";
 import { PaymentTransactionsTable } from "../components/PaymentTransactionsTable";
+
+const PENDING_BOOKING_STORAGE_KEY = "pending-booking-slot";
 
 export function CoinManagementPage() {
 	const navigate = useNavigate({ from: Route.fullPath });
@@ -54,6 +56,28 @@ export function CoinManagementPage() {
 		useCoinTransactions(coinParams);
 	const { data: paymentTransactions, isLoading: paymentLoading } =
 		usePaymentTransactions(paymentParams);
+
+	useEffect(() => {
+		if (!balance) return;
+		try {
+			const raw = localStorage.getItem(PENDING_BOOKING_STORAGE_KEY);
+			if (!raw) return;
+			const parsed = JSON.parse(raw) as {
+				mentorId: string;
+				slot: { price: number };
+				source?: string;
+			};
+			if (!parsed?.mentorId || !parsed?.slot) return;
+			if (parsed.source !== "mentor") return;
+			localStorage.removeItem(PENDING_BOOKING_STORAGE_KEY);
+			navigate({
+				to: "/mentors/$mentorId",
+				params: { mentorId: parsed.mentorId },
+			});
+		} catch {
+			// Ignore storage failures.
+		}
+	}, [balance, navigate]);
 
 	const handleTabChange = (value: string) => {
 		navigate({
@@ -104,7 +128,7 @@ export function CoinManagementPage() {
 	};
 
 	return (
-		<div className="p-4 md:p-6 space-y-5 max-w-7xl mx-auto animate-in fade-in duration-500">
+		<div className="p-4 md:p-6 space-y-5 max-w-[90rem] mx-auto animate-in fade-in duration-500">
 			<div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6">
 				<CoinWalletHeader />
 

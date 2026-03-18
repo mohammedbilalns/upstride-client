@@ -1,7 +1,5 @@
 export interface BookSessionInput {
 	slotId: string;
-	coinsDebited: number;
-	transactionId: string;
 }
 
 export interface BookSessionResponse {
