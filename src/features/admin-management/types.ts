@@ -12,9 +12,7 @@ export interface AdminListItem {
 	id: string;
 	name: string;
 	email: string;
-	role: UserRole;
-	coinBalance: number;
-	joinedAt: string;
+	addedAt: string;
 	status: "active" | "blocked";
 }
 
