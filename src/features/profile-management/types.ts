@@ -1,6 +1,4 @@
-export type UserRole = "USER" | "MENTOR" | "ADMIN" | "SUPER_ADMIN";
-export type AuthType = "LOCAL" | "GOOGLE" | "LINKEDIN";
-export type SkillLevel = "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+import type { AuthType, SkillLevel, UserRole } from "@/shared/types/user";
 
 export interface UserProfile {
 	id: string;

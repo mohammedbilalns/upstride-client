@@ -1,12 +1,9 @@
 import { z } from "zod";
+import { limitSchema, pageSchema } from "@/shared/validators/pagination.schema";
 
 export const MentorManagementSearchSchema = z.object({
-	page: z.number().int().positive().catch(1),
-	limit: z
-		.number()
-		.int()
-		.refine((val) => [10, 20, 50].includes(val))
-		.catch(10),
+	page: pageSchema,
+	limit: limitSchema,
 	status: z
 		.enum(["approved", "rejected", "pending"])
 		.optional()

@@ -1,10 +1,10 @@
-export type UserRole = "USER" | "MENTOR" | "ADMIN" | "SUPER_ADMIN";
+import type { UserStatus } from "@/shared/types/user";
 
 export interface GetAdminsInput {
 	page: number;
 	limit: number;
 	search?: string;
-	status?: "active" | "blocked";
+	status?: UserStatus;
 	sort?: "recent" | "old";
 }
 
@@ -13,7 +13,7 @@ export interface AdminListItem {
 	name: string;
 	email: string;
 	addedAt: string;
-	status: "active" | "blocked";
+	status: UserStatus;
 }
 
 export interface GetAdminsResponse {

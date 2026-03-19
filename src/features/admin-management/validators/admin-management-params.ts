@@ -1,13 +1,14 @@
 import { z } from "zod";
+import {
+	limitSchema,
+	pageSchema,
+	searchSchema,
+} from "@/shared/validators/pagination.schema";
 
 export const AdminManagementSearchSchema = z.object({
-	page: z.number().int().positive().catch(1),
-	limit: z
-		.number()
-		.int()
-		.refine((val) => [10, 20, 50].includes(val))
-		.catch(10),
-	search: z.string().optional().catch(""),
+	page: pageSchema,
+	limit: limitSchema,
+	search: searchSchema,
 	status: z.enum(["active", "blocked"]).optional().catch(undefined),
 	sort: z.enum(["recent", "old"]).catch("recent"),
 });

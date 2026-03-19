@@ -1,5 +1,8 @@
 import { z } from "zod";
-import { passwordSchema } from "@/shared/validators/password.schema";
+import {
+	isPasswordEqual,
+	passwordSchema,
+} from "@/shared/validators/password.schema";
 import { phoneSchema } from "@/shared/validators/phone.schema";
 
 export const registerSchema = z
@@ -10,7 +13,7 @@ export const registerSchema = z
 		password: passwordSchema,
 		confirmPassword: z.string(),
 	})
-	.refine((d) => d.password === d.confirmPassword, {
+	.refine(isPasswordEqual, {
 		message: "Passwords do not match",
 		path: ["confirmPassword"],
 	});

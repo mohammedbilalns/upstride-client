@@ -11,3 +11,8 @@ export const passwordSchema = z
 		/[^a-zA-Z0-9]/,
 		"Password must contain at least one special character (e.g. @, !, #)",
 	);
+
+export const isPasswordEqual = (data: {
+	password: string;
+	confirmPassword: string;
+}) => data.password === data.confirmPassword;

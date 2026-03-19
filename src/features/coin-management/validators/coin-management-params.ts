@@ -1,14 +1,9 @@
 import { z } from "zod";
-
-const limitSchema = z
-	.number()
-	.int()
-	.refine((val) => [10, 20, 50].includes(val))
-	.catch(10);
+import { limitSchema, pageSchema } from "@/shared/validators/pagination.schema";
 
 export const CoinManagementSearchSchema = z.object({
 	tab: z.enum(["coins", "payments"]).catch("coins"),
-	coinPage: z.number().int().positive().catch(1),
+	coinPage: pageSchema,
 	coinLimit: limitSchema,
 	coinSort: z.enum(["recent", "old"]).catch("recent"),
 	coinType: z
@@ -24,7 +19,7 @@ export const CoinManagementSearchSchema = z.object({
 		])
 		.optional()
 		.catch(undefined),
-	paymentPage: z.number().int().positive().catch(1),
+	paymentPage: pageSchema,
 	paymentLimit: limitSchema,
 	paymentSort: z.enum(["recent", "old"]).catch("recent"),
 	paymentStatus: z
