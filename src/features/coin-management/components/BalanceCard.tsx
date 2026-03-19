@@ -1,6 +1,6 @@
 import { Wallet } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AddBalanceForm } from "@/components/common/AddBalanceForm";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface BalanceCardProps {
 	coinBalance: number;

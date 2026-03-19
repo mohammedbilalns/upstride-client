@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import type { ApiError } from "@/api/apiError";
 import { authService } from "../services/auth.service";
 import type { RegisterPayload } from "../validators/register.schema";
-import type { ApiError } from "@/api/apiError";
 
 interface UseRegisterOptions {
 	onSuccess: (email: string) => void;

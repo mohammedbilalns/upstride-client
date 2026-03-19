@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { InterestTable } from "./InterestTable";
 import type { CatalogInterest } from "../types";
+import { InterestTable } from "./InterestTable";
 
 interface InterestListProps {
 	interests: CatalogInterest[];

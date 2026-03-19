@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-import { authService } from "../services/auth.service";
 import type { ApiError } from "@/api/apiError";
+import { authService } from "../services/auth.service";
 
 interface UseResendOtpOptions {
 	onSuccess?: () => void;

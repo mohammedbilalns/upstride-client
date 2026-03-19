@@ -11,11 +11,16 @@ export function setAuthSession(
 	user: AuthenticatedUser,
 	accessToken: string,
 ): void {
-	if (appRouter.options.context) {
-		appRouter.options.context.auth = {
-			isAuthenticated: true,
-			user,
-			accessToken,
-		};
-	}
+	if (!appRouter.options.context) return;
+
+	appRouter.update({
+		context: {
+			...appRouter.options.context,
+			auth: {
+				isAuthenticated: true,
+				user,
+				accessToken,
+			},
+		},
+	});
 }

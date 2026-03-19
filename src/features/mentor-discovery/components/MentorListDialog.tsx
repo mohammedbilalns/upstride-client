@@ -8,12 +8,12 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { MentorList } from "../types";
 import {
 	useAddMentorToList,
 	useCreateMentorList,
 	useFetchMentorLists,
 } from "../hooks/use-mentor-list-mutations";
+import type { MentorList } from "../types";
 
 interface MentorListDialogProps {
 	open: boolean;

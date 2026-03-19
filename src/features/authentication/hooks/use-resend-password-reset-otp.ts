@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { authService } from "../services/auth.service";
 import type { ApiError } from "@/api/apiError";
+import { authService } from "../services/auth.service";
 
 interface UseResendPasswordResetOtpOptions {
 	onSuccess?: () => void;

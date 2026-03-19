@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
+import { AddItemDialog } from "@/components/common/AddItemDialog";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { useCatalog, useCatalogMutations } from "../hooks/use-catalog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { InterestList } from "../components/InterestList";
 import { ProfessionTable } from "../components/ProfessionTable";
-import { AddItemDialog } from "@/components/common/AddItemDialog";
-import { useNavigate, useSearch } from "@tanstack/react-router";
+import { useCatalog, useCatalogMutations } from "../hooks/use-catalog";
 import { catalogItemNameSchema } from "../validators/catalog.schema";
 
 export function CatalogManagementPage() {

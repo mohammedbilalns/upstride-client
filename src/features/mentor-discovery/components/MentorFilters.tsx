@@ -1,3 +1,4 @@
+import { SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
 	Select,
@@ -6,7 +7,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { SlidersHorizontal, X } from "lucide-react";
 import type { CatalogInterest } from "@/features/onboarding/types";
 import type { MentorDiscoverySearch } from "../validators/mentor-discovery-params";
 

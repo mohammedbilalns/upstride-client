@@ -1,6 +1,7 @@
 import { useForm } from "@tanstack/react-form";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
+import type { ApiError } from "@/api/apiError";
 import FieldError from "@/components/common/Field-Error";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +12,6 @@ import type { AuthView } from "../types";
 import { registerSchema } from "../validators";
 import { PasswordField } from "./PasswordField";
 import { SocialAuthButtons } from "./SocialAuthButtons";
-import type { ApiError } from "@/api/apiError";
 
 interface Props {
 	onNavigate: (view: AuthView, email?: string) => void;

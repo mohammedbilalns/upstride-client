@@ -1,8 +1,8 @@
 import { useForm } from "@tanstack/react-form";
 import { Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import type { ApiError } from "@/api/apiError";
+import { Button } from "@/components/ui/button";
 import { useResetPassword } from "../hooks/use-reset-password";
 import type { AuthView } from "../types";
 import { changePasswordSchema } from "../validators";

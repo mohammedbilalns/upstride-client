@@ -1,4 +1,6 @@
-import { Trash2, RotateCcw } from "lucide-react";
+import { RotateCcw, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
 	Table,
 	TableBody,
@@ -7,8 +9,6 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/shared/utils/cn";
 import type { CatalogSkill } from "../types";
 

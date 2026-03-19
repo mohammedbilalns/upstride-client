@@ -1,6 +1,7 @@
 import { useForm } from "@tanstack/react-form";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useState } from "react";
+import type { ApiError } from "@/api/apiError";
 import FieldError from "@/components/common/Field-Error";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +9,6 @@ import { Label } from "@/components/ui/label";
 import { useRequestPasswordReset } from "../hooks/use-request-password-reset";
 import type { AuthView } from "../types";
 import { forgotPasswordSchema } from "../validators";
-import type { ApiError } from "@/api/apiError";
 
 interface Props {
 	onNavigate: (view: AuthView, email?: string) => void;

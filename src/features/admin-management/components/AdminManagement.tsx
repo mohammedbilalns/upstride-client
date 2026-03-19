@@ -1,8 +1,8 @@
+import { useNavigate } from "@tanstack/react-router";
 import { Plus, Search, SortAsc, SortDesc } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
 	Select,
 	SelectContent,
@@ -10,9 +10,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { Pagination } from "@/features/user-management/components/Pagination";
 import { Route } from "@/routes/_admin-layout/admin-management";
 import { useDebounce } from "@/shared/hooks/use-debounce";
-import { Pagination } from "@/features/user-management/components/Pagination";
 import { useAdmins } from "../hooks/use-admins";
 import { AdminTable } from "./AdminTable";
 import { CreateAdminDialog } from "./CreateAdminDialog";

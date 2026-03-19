@@ -1,18 +1,18 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useNavigate } from "@tanstack/react-router";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { GraduationCap, Search } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Route } from "@/routes/_user-layout/mentors";
 import { useDebounce } from "@/shared/hooks/use-debounce";
+import { MentorCard } from "../components/MentorCard";
+import { MentorFilters } from "../components/MentorFilters";
 import {
 	getMentorCategoriesQueryOptions,
 	getMentorsInfiniteQueryOptions,
 } from "../hooks/queries";
 import type { MentorDiscoverySearch } from "../validators/mentor-discovery-params";
-import { MentorCard } from "../components/MentorCard";
-import { MentorFilters } from "../components/MentorFilters";
 
 export function MentorDiscoveryPage() {
 	const navigate = useNavigate({ from: Route.fullPath });

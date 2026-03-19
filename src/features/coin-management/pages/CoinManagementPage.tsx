@@ -1,6 +1,6 @@
-import { useEffect, useMemo } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useEffect, useMemo } from "react";
+import { AddBalanceForm } from "@/components/common/AddBalanceForm";
 import {
 	Select,
 	SelectContent,
@@ -8,17 +8,17 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Route } from "@/routes/_user-layout/coins";
+import { CoinTransactionsTable } from "../components/CoinTransactionsTable";
+import { CoinWalletHeader } from "../components/CoinWalletHeader";
+import { PaymentTransactionsTable } from "../components/PaymentTransactionsTable";
 import {
 	useCoinBalance,
 	useCoinTransactions,
 	usePaymentTransactions,
 } from "../hooks/use-coin-management";
 import { coinManagementService } from "../services/coin-management.service";
-import { AddBalanceForm } from "@/components/common/AddBalanceForm";
-import { CoinWalletHeader } from "../components/CoinWalletHeader";
-import { CoinTransactionsTable } from "../components/CoinTransactionsTable";
-import { PaymentTransactionsTable } from "../components/PaymentTransactionsTable";
 
 const PENDING_BOOKING_STORAGE_KEY = "pending-booking-slot";
 

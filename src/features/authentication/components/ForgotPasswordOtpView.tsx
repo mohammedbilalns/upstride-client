@@ -1,10 +1,10 @@
 import { useCallback } from "react";
+import type { ApiError } from "@/api/apiError";
 import { useOtpFlow } from "../hooks/use-otp-flow";
 import { useResendPasswordResetOtp } from "../hooks/use-resend-password-reset-otp";
 import { useVerifyPasswordResetOtp } from "../hooks/use-verify-password-reset-otp";
 import type { AuthView } from "../types";
 import { OtpVerificationPanel } from "./OtpVerificationPanel";
-import type { ApiError } from "@/api/apiError";
 
 const OTP_TIMEOUT_SECONDS = 120;
 const OTP_LENGTH = 6;

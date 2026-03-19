@@ -1,11 +1,11 @@
 import { useCallback } from "react";
 import { toast } from "sonner";
+import type { ApiError } from "@/api/apiError";
 import { useOtpFlow } from "../hooks/use-otp-flow";
 import { useResendOtp } from "../hooks/use-resend-otp";
 import { useVerifyOtp } from "../hooks/use-verify-otp";
 import type { AuthView } from "../types";
 import { OtpVerificationPanel } from "./OtpVerificationPanel";
-import type { ApiError } from "@/api/apiError";
 
 const OTP_RESEND_COOLDOWN = 60;
 const OTP_EXPIRY_SECONDS = 300;

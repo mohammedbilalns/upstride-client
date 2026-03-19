@@ -1,5 +1,8 @@
 import { useForm } from "@tanstack/react-form";
 import { GraduationCap, Save } from "lucide-react";
+import { useState } from "react";
+import { ConfirmModal } from "@/components/common/ConfirmModal";
+import FieldError from "@/components/common/Field-Error";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -10,15 +13,12 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import FieldError from "@/components/common/Field-Error";
-import { mentorSettingsSchema } from "../validators/platform-settings.schema";
-import type { MentorSettingsConfig } from "../types";
-import { useState } from "react";
-import { ConfirmModal } from "@/components/common/ConfirmModal";
 import {
 	buildEmptyStringErrors,
 	buildFieldErrorsFromIssues,
 } from "@/shared/utils/form-validation";
+import type { MentorSettingsConfig } from "../types";
+import { mentorSettingsSchema } from "../validators/platform-settings.schema";
 
 type MentorTierFormValues = {
 	level: number;

@@ -1,9 +1,9 @@
+import { z } from "zod";
 import {
 	nonNegativeIntSchema,
 	percentageSchema,
 	positiveIntSchema,
 } from "@/shared/validators/number.schema";
-import { z } from "zod";
 
 const positiveNumberSchema = z.coerce
 	.number("Please enter a valid number")

@@ -1,17 +1,17 @@
 import {
 	queryOptions,
-	useQuery,
 	useMutation,
+	useQuery,
 	useQueryClient,
 } from "@tanstack/react-query";
+import { toast } from "sonner";
+import type { ApiError } from "@/api/apiError";
 import { catalogService } from "../services/catalog.service";
 import type {
 	AddInterestInput,
 	AddProfessionInput,
 	AddSkillInput,
 } from "../types";
-import { toast } from "sonner";
-import type { ApiError } from "@/api/apiError";
 
 const getErrorMessage = (error: ApiError, defaultMessage: string) => {
 	return error.response?.data?.message || defaultMessage;

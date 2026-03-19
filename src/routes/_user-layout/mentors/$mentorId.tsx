@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PublicMentorProfilePage } from "@/features/mentor-public-profile/pages/PublicMentorProfilePage";
-import { publicMentorProfileService } from "@/features/mentor-public-profile";
 import type { ApiError } from "@/api/apiError";
-import NotFoundComponent from "@/components/common/Not-Found";
 import ErrorComponent from "@/components/common/Error-Component";
+import NotFoundComponent from "@/components/common/Not-Found";
+import { publicMentorProfileService } from "@/features/mentor-public-profile";
+import { PublicMentorProfilePage } from "@/features/mentor-public-profile/pages/PublicMentorProfilePage";
 
 export const Route = createFileRoute("/_user-layout/mentors/$mentorId")({
 	loader: async ({ context: { queryClient }, params }) => {

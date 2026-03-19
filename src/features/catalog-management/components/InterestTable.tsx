@@ -1,11 +1,13 @@
-import { useState, Fragment } from "react";
 import {
 	ChevronDown,
 	ChevronRight,
 	Plus,
-	Trash2,
 	RotateCcw,
+	Trash2,
 } from "lucide-react";
+import { Fragment, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
 	Table,
 	TableBody,
@@ -14,11 +16,9 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/shared/utils/cn";
-import { SkillTable } from "./SkillTable";
 import type { CatalogInterest } from "../types";
+import { SkillTable } from "./SkillTable";
 
 interface InterestTableProps {
 	interests: CatalogInterest[];

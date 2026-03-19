@@ -3,10 +3,6 @@ import { Coins, Save } from "lucide-react";
 import { useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import FieldError from "@/components/common/Field-Error";
-import {
-	buildEmptyStringErrors,
-	buildFieldErrorsFromIssues,
-} from "@/shared/utils/form-validation";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -17,6 +13,10 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+	buildEmptyStringErrors,
+	buildFieldErrorsFromIssues,
+} from "@/shared/utils/form-validation";
 import type { EconomySettingsConfig } from "../types";
 import { economySettingsSchema } from "../validators/platform-settings.schema";
 

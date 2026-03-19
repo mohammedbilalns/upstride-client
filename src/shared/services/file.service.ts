@@ -60,7 +60,7 @@ export const fileService = {
 	 */
 	deleteFile: async (key: string): Promise<void> => {
 		const response = await api.delete(
-			`${ROUTES.STORAGE.BASE}${ROUTES.STORAGE.DELETE_FILE}`,
+			`${ROUTES.STORAGE.BASE}${ROUTES.STORAGE.DELETE}`,
 			{
 				data: { key },
 			},
