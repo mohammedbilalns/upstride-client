@@ -1,4 +1,5 @@
 import { Loader2 } from "lucide-react";
+import { useId } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { Textarea } from "@/components/ui/textarea";
 import type { Mentor } from "@/shared/types/mentor";
@@ -23,6 +24,7 @@ export function MentorActionModals({
 	onReasonChange,
 }: MentorActionModalsProps) {
 	if (!selectedMentor) return null;
+	const rejectionReasonId = useId();
 
 	return (
 		<>
@@ -66,10 +68,14 @@ export function MentorActionModals({
 				isLoading={isProcessing}
 			>
 				<div className="w-full mt-4 space-y-2">
-					<label className="text-sm font-semibold text-muted-foreground">
+					<label
+						htmlFor={rejectionReasonId}
+						className="text-sm font-semibold text-muted-foreground"
+					>
 						Rejection Reason
 					</label>
 					<Textarea
+						id={rejectionReasonId}
 						placeholder="e.g., Insufficient experience in mentioned skills, missing portfolio details..."
 						className="min-h-[100px] bg-background"
 						value={rejectionReason}

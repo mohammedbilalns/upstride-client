@@ -2,7 +2,7 @@
 import { useGoogleLogin } from "@react-oauth/google";
 import { useRouter } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { env } from "@/shared/config/env";
@@ -51,7 +51,7 @@ export function SocialAuthButtons({ onNavigate }: Props) {
 		},
 	});
 
-	const clearLinkedInPopupState = () => {
+	const clearLinkedInPopupState = useCallback(() => {
 		if (linkedInPopupPollRef.current) {
 			window.clearInterval(linkedInPopupPollRef.current);
 			linkedInPopupPollRef.current = null;
@@ -62,7 +62,7 @@ export function SocialAuthButtons({ onNavigate }: Props) {
 		}
 
 		linkedInPopupRef.current = null;
-	};
+	}, []);
 
 	useEffect(() => {
 		const handleLinkedInMessage = (event: MessageEvent) => {
@@ -119,7 +119,7 @@ export function SocialAuthButtons({ onNavigate }: Props) {
 				clearLinkedInPopupState();
 			}
 		};
-	}, [linkedInRedirectUri, socialLogin.mutate]);
+	}, [linkedInRedirectUri, socialLogin.mutate, clearLinkedInPopupState]);
 
 	const googleLogin = useGoogleLogin({
 		flow: "auth-code",

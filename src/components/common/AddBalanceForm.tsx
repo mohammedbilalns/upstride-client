@@ -1,5 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { CreditCard } from "lucide-react";
+import { useId } from "react";
 import { z } from "zod";
 import FieldError from "@/components/common/Field-Error";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,7 @@ export function AddBalanceForm({
 	placeholder = "Enter coin amount",
 	coinValue,
 }: AddBalanceFormProps) {
+	const inputId = useId();
 	const form = useForm({
 		defaultValues: {
 			coins: 0,
@@ -45,7 +47,10 @@ export function AddBalanceForm({
 			}}
 		>
 			<div className="flex flex-col gap-2">
-				<label className="text-sm font-medium text-muted-foreground">
+				<label
+					htmlFor={inputId}
+					className="text-sm font-medium text-muted-foreground"
+				>
 					{label}
 				</label>
 				<div className="flex items-start gap-3">
@@ -54,6 +59,7 @@ export function AddBalanceForm({
 							{(field) => (
 								<div className="space-y-1">
 									<Input
+										id={inputId}
 										type="number"
 										value={field.state.value || ""}
 										onBlur={field.handleBlur}
