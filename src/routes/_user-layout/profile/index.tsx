@@ -9,7 +9,6 @@ import {
 	User as UserIcon,
 } from "lucide-react";
 import { useState } from "react";
-import { useAuth } from "@/app/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -209,7 +208,7 @@ function ProfileSection() {
 }
 
 function RouteComponent() {
-	const { user } = useAuth();
+	const { data: profile } = useProfile();
 	const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
 
 	return (
@@ -249,7 +248,7 @@ function RouteComponent() {
 						</h2>
 					</div>
 					<div className="rounded-3xl border bg-card/50 backdrop-blur-sm shadow-xl overflow-hidden p-6 space-y-6">
-						{user?.isLocalAuth && (
+						{profile?.authType === "LOCAL" && (
 							<div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-primary/5 border border-primary/10">
 								<div className="flex items-center gap-3">
 									<div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">

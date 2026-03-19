@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Bookmark, Star, User } from "lucide-react";
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import type { MentorDiscoveryItem } from "../types";
 import { MentorListDialog } from "./MentorListDialog";
 
@@ -103,9 +104,14 @@ export function MentorCard({ mentor, showBookmark = true }: MentorCardProps) {
 			</CardContent>
 
 			<CardFooter className="pt-0">
-				<Button className="w-full h-9 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-zinc-50 dark:text-zinc-900">
-					<User className="h-4 w-4 mr-2" />
-					View Profile
+				<Button
+					asChild
+					className="w-full h-9 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-zinc-50 dark:text-zinc-900"
+				>
+					<Link to="/mentors/$mentorId" params={{ mentorId: mentor.id }}>
+						<User className="h-4 w-4 mr-2" />
+						View Profile
+					</Link>
 				</Button>
 			</CardFooter>
 

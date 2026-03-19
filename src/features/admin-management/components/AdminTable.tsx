@@ -61,9 +61,8 @@ export function AdminTable({ admins }: AdminTableProps) {
 				<TableHeader className="bg-muted/50">
 					<TableRow>
 						<TableHead className="w-[320px] py-4">Admin Details</TableHead>
-						<TableHead>Role</TableHead>
 						<TableHead>Status</TableHead>
-						<TableHead>Joined Date</TableHead>
+						<TableHead>Added Date</TableHead>
 						<TableHead className="text-right">Actions</TableHead>
 					</TableRow>
 				</TableHeader>
@@ -99,18 +98,6 @@ export function AdminTable({ admins }: AdminTableProps) {
 								</TableCell>
 								<TableCell>
 									<Badge
-										variant="outline"
-										className={`font-medium px-2 py-0.5 rounded-md ${
-											admin.role === "SUPER_ADMIN"
-												? "border-violet-200 bg-violet-50 text-violet-700 dark:bg-violet-900/20 dark:text-violet-300"
-												: "border-blue-200 bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400"
-										}`}
-									>
-										{admin.role}
-									</Badge>
-								</TableCell>
-								<TableCell>
-									<Badge
 										className={
 											admin.status === "active"
 												? "bg-emerald-500/15 text-emerald-600 border-emerald-500/30 hover:bg-emerald-500/20"
@@ -133,7 +120,7 @@ export function AdminTable({ admins }: AdminTableProps) {
 								<TableCell>
 									<span className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
 										<Calendar className="w-3.5 h-3.5" />
-										{format(new Date(admin.joinedAt), "MMM dd, yyyy")}
+										{format(new Date(admin.addedAt), "MMM dd, yyyy")}
 									</span>
 								</TableCell>
 								<TableCell className="text-right">

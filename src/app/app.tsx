@@ -1,6 +1,6 @@
 import { RouterProvider } from "@tanstack/react-router";
 import PendingComponent from "@/components/common/Pending-Component";
-import { useAuth } from "./contexts/AuthContext";
+import { useAuth } from "@/app/contexts/AuthContext";
 import { router } from "./router/routerConfig";
 
 const App = () => {

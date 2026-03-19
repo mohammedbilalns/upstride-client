@@ -1,4 +1,5 @@
 export type UserRole = "USER" | "MENTOR" | "ADMIN" | "SUPER_ADMIN";
+export type AuthType = "LOCAL" | "GOOGLE" | "LINKEDIN";
 export type SkillLevel = "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
 
 export interface UserProfile {
@@ -7,6 +8,7 @@ export interface UserProfile {
 	email: string;
 	phone: string;
 	role: UserRole;
+	authType: AuthType;
 	profilePictureUrl: string | null;
 	preferences?: {
 		interests: {

@@ -20,12 +20,14 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLogout } from "@/features/authentication/hooks/use-logout";
+import { useCoinBalance } from "@/features/coin-management";
 
 export default function UserNavbar() {
 	const { auth } = useRouteContext({ from: "/_user-layout" });
 	const user = auth.user;
 	const logoutMutation = useLogout();
-	const coinBalance = user?.coinBalance ?? 0;
+	const { data: balance } = useCoinBalance();
+	const coinBalance = balance?.coinBalance ?? 0;
 
 	const handleLogout = () => {
 		logoutMutation.mutate();
@@ -44,6 +46,9 @@ export default function UserNavbar() {
 		{ to: "/mentors", label: "Find Mentors" },
 		{ to: "/articles", label: "Read Articles" },
 		{ to: "/sessions", label: "Sessions" },
+		...(user?.role === "MENTOR"
+			? [{ to: "/mentor-dashboard", label: "Mentor Dashboard" }]
+			: []),
 	];
 
 	return (
