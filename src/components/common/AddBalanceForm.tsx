@@ -4,6 +4,7 @@ import { z } from "zod";
 import FieldError from "@/components/common/Field-Error";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getErrorMessage } from "@/shared/utils/form-validation";
 
 interface AddBalanceFormProps {
 	onSubmit: (coins: number) => Promise<void>;
@@ -65,7 +66,7 @@ export function AddBalanceForm({
 										className="h-10"
 									/>
 									<FieldError
-										message={(field.state.meta.errors?.[0] as any)?.message}
+										message={getErrorMessage(field.state.meta.errors?.[0])}
 									/>
 									<div className="min-h-[40px]">
 										{coinValue && (field.state.value || 0) > 0 ? (

@@ -1,17 +1,18 @@
-import { useNavigate, useSearch } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { AddItemDialog } from "@/components/common/AddItemDialog";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Route } from "@/routes/_admin-layout/catalog-management";
 import { InterestList } from "../components/InterestList";
 import { ProfessionTable } from "../components/ProfessionTable";
 import { useCatalog, useCatalogMutations } from "../hooks/use-catalog";
 import { catalogItemNameSchema } from "../validators/catalog.schema";
 
 export function CatalogManagementPage() {
-	const navigate = useNavigate();
-	const { tab = "interests" } = useSearch({ strict: false }) as any;
+	const navigate = useNavigate({ from: Route.fullPath });
+	const { tab = "interests" } = Route.useSearch();
 
 	const { data: catalog, isLoading } = useCatalog();
 	const {
@@ -95,10 +96,13 @@ export function CatalogManagementPage() {
 
 			<Tabs
 				value={tab}
-				onValueChange={(value) => (navigate as any)({ search: { tab: value } })}
+				onValueChange={(value) => {
+					const nextTab = value === "professions" ? "professions" : "interests";
+					navigate({ search: { tab: nextTab } });
+				}}
 				className="space-y-4"
 			>
-				<TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
+				<TabsList className="grid w-full grid-cols-2 lg:w-100">
 					<TabsTrigger value="interests">Interests & Skills</TabsTrigger>
 					<TabsTrigger value="professions">Professions</TabsTrigger>
 				</TabsList>

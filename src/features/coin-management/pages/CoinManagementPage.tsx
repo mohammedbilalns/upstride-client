@@ -19,6 +19,7 @@ import {
 	usePaymentTransactions,
 } from "../hooks/use-coin-management";
 import { coinManagementService } from "../services/coin-management.service";
+import type { CoinManagementSearch } from "../validators/coin-management-params";
 
 const PENDING_BOOKING_STORAGE_KEY = "pending-booking-slot";
 
@@ -80,24 +81,28 @@ export function CoinManagementPage() {
 	}, [balance, navigate]);
 
 	const handleTabChange = (value: string) => {
+		const nextTab = value === "payments" ? "payments" : "coins";
 		navigate({
-			search: (prev: any) => ({
+			search: (prev) => ({
 				...prev,
-				tab: value as "coins" | "payments",
+				tab: nextTab,
 			}),
 		});
 	};
 
+	const parseSortValue = (value: string): CoinManagementSearch["coinSort"] =>
+		value === "old" ? "old" : "recent";
+
 	const buildCoinSearch =
 		(
 			overrides: Partial<{
-				coinPage: number;
-				coinLimit: number;
-				coinSort: "recent" | "old";
-				coinType?: any;
+				coinPage: CoinManagementSearch["coinPage"];
+				coinLimit: CoinManagementSearch["coinLimit"];
+				coinSort: CoinManagementSearch["coinSort"];
+				coinType?: CoinManagementSearch["coinType"];
 			}>,
 		) =>
-		(prev: any) => ({
+		(prev: CoinManagementSearch): CoinManagementSearch => ({
 			...prev,
 			tab: "coins" as const,
 			...overrides,
@@ -106,13 +111,13 @@ export function CoinManagementPage() {
 	const buildPaymentSearch =
 		(
 			overrides: Partial<{
-				paymentPage: number;
-				paymentLimit: number;
-				paymentSort: "recent" | "old";
-				paymentStatus?: any;
+				paymentPage: CoinManagementSearch["paymentPage"];
+				paymentLimit: CoinManagementSearch["paymentLimit"];
+				paymentSort: CoinManagementSearch["paymentSort"];
+				paymentStatus?: CoinManagementSearch["paymentStatus"];
 			}>,
 		) =>
-		(prev: any) => ({
+		(prev: CoinManagementSearch): CoinManagementSearch => ({
 			...prev,
 			tab: "payments" as const,
 			...overrides,
@@ -128,12 +133,12 @@ export function CoinManagementPage() {
 	};
 
 	return (
-		<div className="p-4 md:p-6 space-y-5 max-w-[90rem] mx-auto animate-in fade-in duration-500">
+		<div className="p-4 md:p-6 space-y-5 max-w-360 mx-auto animate-in fade-in duration-500">
 			<div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6">
 				<CoinWalletHeader />
 
 				<div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-card p-3 md:p-4 rounded-xl border shadow-sm w-full xl:w-auto">
-					<div className="flex sm:flex-col items-center sm:items-start gap-3 sm:gap-0 px-2 flex-shrink-0">
+					<div className="flex sm:flex-col items-center sm:items-start gap-3 sm:gap-0 px-2 shrink-0">
 						<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
 							Balance
 						</span>
@@ -184,13 +189,13 @@ export function CoinManagementPage() {
 								onValueChange={(value) =>
 									navigate({
 										search: buildCoinSearch({
-											coinSort: value as "recent" | "old",
+											coinSort: parseSortValue(value),
 											coinPage: 1,
 										}),
 									})
 								}
 							>
-								<SelectTrigger className="w-[140px] h-9">
+								<SelectTrigger className="w-35 h-9">
 									<SelectValue placeholder="Sort By" />
 								</SelectTrigger>
 								<SelectContent>
@@ -204,13 +209,13 @@ export function CoinManagementPage() {
 								onValueChange={(value) =>
 									navigate({
 										search: buildPaymentSearch({
-											paymentSort: value as "recent" | "old",
+											paymentSort: parseSortValue(value),
 											paymentPage: 1,
 										}),
 									})
 								}
 							>
-								<SelectTrigger className="w-[140px] h-9">
+								<SelectTrigger className="w-35 h-9">
 									<SelectValue placeholder="Sort By" />
 								</SelectTrigger>
 								<SelectContent>

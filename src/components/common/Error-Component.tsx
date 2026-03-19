@@ -1,4 +1,4 @@
-import { Link, useRouter } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { AlertCircle, Home, RefreshCw } from "lucide-react";
 
 interface ErrorComponentProps {
@@ -6,8 +6,6 @@ interface ErrorComponentProps {
 }
 
 export default function ErrorComponent({ error }: ErrorComponentProps) {
-	const router = useRouter();
-
 	return (
 		<div className="relative min-h-[92vh] flex flex-col justify-center items-center p-6 overflow-hidden bg-background text-foreground">
 			<div className="absolute inset-0 z-0 opacity-30">

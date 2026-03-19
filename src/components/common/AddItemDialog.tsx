@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getErrorMessage } from "@/shared/utils/form-validation";
 import FieldError from "./Field-Error";
 
 interface AddItemDialogProps {
@@ -25,7 +26,7 @@ interface AddItemDialogProps {
 	placeholder: string;
 	isLoading?: boolean;
 	confirmText: string;
-	schema?: z.ZodTypeAny;
+	schema?: z.ZodType<string>;
 }
 
 export function AddItemDialog({
@@ -45,7 +46,7 @@ export function AddItemDialog({
 			name: "",
 		},
 		validators: {
-			onSubmit: schema ? (z.object({ name: schema }) as any) : undefined,
+			onSubmit: schema ? z.object({ name: schema }) : undefined,
 		},
 		onSubmit: async ({ value }) => {
 			if (schema) {
@@ -96,7 +97,7 @@ export function AddItemDialog({
 										}}
 									/>
 									<FieldError
-										message={(field.state.meta.errors?.[0] as any)?.message}
+										message={getErrorMessage(field.state.meta.errors?.[0])}
 									/>
 								</div>
 							)}

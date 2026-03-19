@@ -14,6 +14,7 @@ import { Pagination } from "@/features/user-management/components/Pagination";
 import { Route } from "@/routes/_admin-layout/admin-management";
 import { useDebounce } from "@/shared/hooks/use-debounce";
 import { useAdmins } from "../hooks/use-admins";
+import type { AdminManagementSearch } from "../validators/admin-management-params";
 import { AdminTable } from "./AdminTable";
 import { CreateAdminDialog } from "./CreateAdminDialog";
 
@@ -42,14 +43,30 @@ export function AdminManagement() {
 		}
 	}, [debouncedSearch, navigate, searchParams.search]);
 
-	const handleFilterChange = <K extends keyof typeof searchParams>(
-		key: K,
-		value: (typeof searchParams)[K] | "all",
-	) => {
+	type StatusValue = NonNullable<AdminManagementSearch["status"]> | "all";
+	type SortValue = AdminManagementSearch["sort"];
+
+	const parseStatusValue = (value: string): StatusValue =>
+		value === "active" || value === "blocked" ? value : "all";
+
+	const parseSortValue = (value: string): SortValue =>
+		value === "old" ? "old" : "recent";
+
+	const handleStatusChange = (value: StatusValue) => {
 		navigate({
 			search: (prev) => ({
 				...prev,
-				[key]: value === "all" ? undefined : value,
+				status: value === "all" ? undefined : value,
+				page: 1,
+			}),
+		});
+	};
+
+	const handleSortChange = (value: SortValue) => {
+		navigate({
+			search: (prev) => ({
+				...prev,
+				sort: value,
 				page: 1,
 			}),
 		});
@@ -92,7 +109,7 @@ export function AdminManagement() {
 						</span>
 						<Select
 							value={searchParams.status || "all"}
-							onValueChange={(v) => handleFilterChange("status", v as any)}
+							onValueChange={(v) => handleStatusChange(parseStatusValue(v))}
 						>
 							<SelectTrigger className="w-[140px] h-10">
 								<SelectValue placeholder="All Status" />
@@ -111,7 +128,7 @@ export function AdminManagement() {
 						</span>
 						<Select
 							value={searchParams.sort || "recent"}
-							onValueChange={(v) => handleFilterChange("sort", v as any)}
+							onValueChange={(v) => handleSortChange(parseSortValue(v))}
 						>
 							<SelectTrigger className="w-[140px] h-10">
 								<SelectValue placeholder="Sort By" />
