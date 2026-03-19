@@ -1,10 +1,10 @@
 import { AlertCircle, CheckCircle2, Info, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useMentorRegistrationInfo } from "@/features/mentor-registration/hooks/use-mentor-registration";
-import { MentorForm } from "./MentorForm";
-import { StatusView } from "./StatusView";
+import { MentorForm } from "../components/MentorForm";
+import { StatusView } from "../components/StatusView";
 
-export function MentorRegistrationView() {
+export function MentorRegistrationPage() {
 	const {
 		data: registrationInfo,
 		isLoading,
@@ -91,7 +91,7 @@ export function MentorRegistrationView() {
 	return (
 		<div className="container mx-auto max-w-4xl py-12">
 			<div className="mb-8 text-center sm:text-left">
-				<h1 className="text-3xl font-bold tracking-tight bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
+				<h1 className="text-3xl font-bold tracking-tight bg-linear-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
 					{existingProfile ? "Update Your Application" : "Mentor Registration"}
 				</h1>
 				<p className="text-muted-foreground mt-2">

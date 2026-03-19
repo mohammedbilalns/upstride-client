@@ -121,7 +121,7 @@ export function ProfessionalSummarySection({
 							<Label htmlFor={field.name}>Professional Bio</Label>
 							<textarea
 								id={field.name}
-								className="flex min-h-[120px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+								className="flex min-h-30 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
 								placeholder="Briefly describe your professional background and why you want to mentor."
 								value={field.state.value}
 								onChange={(e) => field.handleChange(e.target.value)}

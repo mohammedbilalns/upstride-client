@@ -1,24 +1,10 @@
 import { TanStackDevtools } from "@tanstack/react-devtools";
-import type { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import "../styles.css";
+import type { RouterContext } from "@/app/router/routerConfig";
 import ErrorComponent from "@/components/common/Error-Component";
 import NotFoundComponent from "@/components/common/Not-Found";
-
-import type { AuthenticatedUser } from "@/features/authentication/types";
-
-/**
- * Context interface for the router.
- */
-export interface RouterContext {
-	queryClient: QueryClient;
-	auth: {
-		user: AuthenticatedUser | null;
-		isAuthenticated: boolean;
-		accessToken: string | null;
-	};
-}
+import "../styles.css";
 
 /**
  * Root route configuration.

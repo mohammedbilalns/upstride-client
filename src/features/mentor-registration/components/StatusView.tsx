@@ -28,7 +28,7 @@ export function StatusView({
 	onResubmit,
 }: StatusViewProps) {
 	return (
-		<Card className="mx-auto max-w-2xl border-none shadow-xl bg-gradient-to-b from-card to-card/50">
+		<Card className="mx-auto max-w-2xl border-none shadow-xl bg-linear-to-b from-card to-card/50">
 			<CardHeader className="text-center pt-10">
 				<div className="flex justify-center mb-4">{icon}</div>
 				<CardTitle className="text-3xl font-bold">{title}</CardTitle>
@@ -41,7 +41,7 @@ export function StatusView({
 					<Button
 						onClick={onEdit}
 						variant="outline"
-						className="min-w-[140px] rounded-full"
+						className="min-w-35 rounded-full"
 					>
 						Edit Application
 					</Button>
@@ -49,7 +49,7 @@ export function StatusView({
 				{showResubmitButton && (
 					<Button
 						onClick={onResubmit}
-						className="min-w-[140px] rounded-full shadow-lg shadow-primary/25"
+						className="min-w-35 rounded-full shadow-lg shadow-primary/25"
 					>
 						Resubmit Application
 					</Button>
