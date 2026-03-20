@@ -4,9 +4,12 @@ import {
 	Bookmark,
 	Coins,
 	LogOut,
+	Menu,
 	User as UserIcon,
+	X,
 	Zap,
 } from "lucide-react";
+import { useState } from "react";
 import ThemeToggle from "@/components/common/Theme-Toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +31,7 @@ export default function UserNavbar() {
 	const logoutMutation = useLogout();
 	const { data: balance } = useCoinBalance();
 	const coinBalance = balance?.coinBalance ?? 0;
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 	const handleLogout = () => {
 		logoutMutation.mutate();
@@ -52,18 +56,22 @@ export default function UserNavbar() {
 	];
 
 	return (
-		<header className="sticky top-0 z-50 border-b border-border/60 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-			<div className="container mx-auto px-6 h-16 flex justify-between items-center">
+		<header className="fixed top-3 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-6xl rounded-xl glass animate-soft-in">
+			<div className="mx-auto px-5 h-12 flex justify-between items-center">
 				{/* Left Side: Logo and Navigation */}
-				<div className="flex items-center gap-8">
-					<Link to="/home" className="flex items-center gap-2.5 group">
-						<div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-sm shadow-primary/30 group-hover:shadow-primary/50 transition-all">
-							<Zap className="h-4 w-4 text-primary-foreground" />
+				<div className="flex items-center gap-6">
+					<Link
+						to="/home"
+						className="flex items-center gap-2 group"
+						onClick={() => setIsMenuOpen(false)}
+					>
+						<div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center shadow-sm shadow-primary/30 group-hover:shadow-primary/50 transition-all">
+							<Zap className="h-3.5 w-3.5 text-primary-foreground" />
 						</div>
-						<span className="text-xl font-bold tracking-tight">UpStride</span>
+						<span className="text-lg font-bold tracking-tight">UpStride</span>
 					</Link>
 
-					<nav className="hidden md:flex items-center gap-6">
+					<nav className="hidden md:flex items-center gap-5">
 						{navLinks.map((link) => (
 							<Link
 								key={link.to}
@@ -83,23 +91,33 @@ export default function UserNavbar() {
 				</div>
 
 				{/* Right Side: Actions */}
-				<div className="flex items-center gap-4">
+				<div className="flex items-center gap-2 md:gap-4">
 					<Link
 						to="/coins"
-						className="flex items-center gap-2 rounded-full border border-border/60 bg-card/40 px-3 py-1.5 text-sm font-semibold text-foreground hover:border-primary/40 hover:text-primary transition-colors"
+						search={{
+							tab: "coins",
+							coinPage: 1,
+							coinLimit: 10,
+							coinSort: "recent",
+							paymentPage: 1,
+							paymentLimit: 10,
+							paymentSort: "recent",
+						}}
+						className="hidden sm:flex items-center gap-2 rounded-full border border-border/60 bg-card/40 px-3 py-1 text-xs md:text-sm font-semibold text-foreground hover:border-primary/40 hover:text-primary transition-colors"
 					>
-						<Coins className="h-4 w-4 text-primary" />
+						<Coins className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary" />
 						<span className="tabular-nums">{coinBalance}</span>
 					</Link>
-					<div className="relative">
+
+					<div className="hidden sm:block relative">
 						<Button
 							variant="ghost"
 							size="icon"
-							className="rounded-full relative"
+							className="rounded-full relative h-8 w-8 md:h-9 md:w-9"
 						>
-							<Bell className="h-5 w-5 text-muted-foreground" />
+							<Bell className="h-4.5 w-4.5 md:h-5 md:w-5 text-muted-foreground" />
 							<Badge
-								className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0 text-[10px] bg-primary"
+								className="absolute -top-1 -right-1 h-3.5 w-3.5 md:h-4 md:w-4 flex items-center justify-center p-0 text-[9px] md:text-[10px] bg-primary"
 								variant="default"
 							>
 								3
@@ -107,68 +125,180 @@ export default function UserNavbar() {
 						</Button>
 					</div>
 
-					<ThemeToggle />
+					<div className="hidden sm:block">
+						<ThemeToggle />
+					</div>
 
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button variant="ghost" className="relative h-9 w-9 rounded-full">
-								<Avatar className="h-9 w-9 border border-border/50">
+					<div className="hidden md:block">
+						<DropdownMenu modal={false}>
+							<DropdownMenuTrigger asChild>
+								<Button
+									variant="ghost"
+									className="relative h-8 w-8 md:h-9 md:w-9 rounded-full"
+								>
+									<Avatar className="h-8 w-8 md:h-9 md:w-9 border border-border/50">
+										<AvatarImage
+											src={user?.profilePictureUrl || ""}
+											alt={user?.name || "User"}
+										/>
+										<AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs text-[10px] md:text-xs">
+											{user?.name ? (
+												getInitials(user.name)
+											) : (
+												<UserIcon className="h-3.5 w-3.5 md:h-4 md:w-4" />
+											)}
+										</AvatarFallback>
+									</Avatar>
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent className="w-56" align="end" forceMount>
+								<DropdownMenuLabel className="font-normal">
+									<div className="flex flex-col space-y-1">
+										<p className="text-sm font-medium leading-none">
+											{user?.name}
+										</p>
+										<p className="text-xs leading-none text-muted-foreground">
+											{user?.role}
+										</p>
+									</div>
+								</DropdownMenuLabel>
+								<DropdownMenuSeparator />
+								<DropdownMenuItem asChild>
+									<Link
+										to="/profile"
+										className="cursor-pointer w-full flex items-center"
+									>
+										<UserIcon className="mr-2 h-4 w-4" />
+										<span>View Profile</span>
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem asChild>
+									<Link
+										to="/profile/bookmarked-mentors"
+										className="cursor-pointer w-full flex items-center"
+									>
+										<Bookmark className="mr-2 h-4 w-4" />
+										<span>Bookmarked Mentors</span>
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuSeparator />
+								<DropdownMenuItem
+									className="cursor-pointer text-destructive focus:text-destructive"
+									onClick={handleLogout}
+								>
+									<LogOut className="mr-2 h-4 w-4" />
+									<span>Logout</span>
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
+
+					{/* Mobile Menu Toggle */}
+					<div className="flex items-center gap-2 md:hidden">
+						<div className="sm:hidden">
+							<ThemeToggle />
+						</div>
+						<Button
+							variant="ghost"
+							size="icon"
+							onClick={() => setIsMenuOpen(!isMenuOpen)}
+							className="h-8 w-8 rounded-lg"
+						>
+							{isMenuOpen ? (
+								<X className="h-5 w-5" />
+							) : (
+								<Menu className="h-5 w-5" />
+							)}
+						</Button>
+					</div>
+				</div>
+			</div>
+
+			{/* Mobile Navigation Dropdown */}
+			{isMenuOpen && (
+				<div className="md:hidden absolute top-[calc(100%+0.5rem)] left-0 w-full bg-background border border-border/80 rounded-xl py-4 px-5 space-y-4 animate-soft-in overflow-hidden shadow-2xl">
+					<nav className="flex flex-col gap-3">
+						{navLinks.map((link) => (
+							<Link
+								key={link.to}
+								to={link.to}
+								onClick={() => setIsMenuOpen(false)}
+								className="text-sm font-medium text-muted-foreground hover:text-foreground transition-all px-2 py-1.5 rounded-lg hover:bg-primary/5"
+							>
+								{link.label}
+							</Link>
+						))}
+					</nav>
+
+					<div className="h-px bg-border/40 my-2" />
+
+					<div className="flex flex-col gap-3">
+						<div className="flex items-center justify-between px-2">
+							<div className="flex items-center gap-3">
+								<Avatar className="h-8 w-8 border border-border/50">
 									<AvatarImage
 										src={user?.profilePictureUrl || ""}
 										alt={user?.name || "User"}
 									/>
-									<AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs">
+									<AvatarFallback className="bg-primary/10 text-primary font-semibold text-[10px]">
 										{user?.name ? (
 											getInitials(user.name)
 										) : (
-											<UserIcon className="h-4 w-4" />
+											<UserIcon className="h-3.5 w-3.5" />
 										)}
 									</AvatarFallback>
 								</Avatar>
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent className="w-56" align="end" forceMount>
-							<DropdownMenuLabel className="font-normal">
-								<div className="flex flex-col space-y-1">
-									<p className="text-sm font-medium leading-none">
-										{user?.name}
-									</p>
-									<p className="text-xs leading-none text-muted-foreground">
+								<div className="flex flex-col">
+									<span className="text-sm font-medium">{user?.name}</span>
+									<span className="text-[10px] text-muted-foreground">
 										{user?.role}
-									</p>
+									</span>
 								</div>
-							</DropdownMenuLabel>
-							<DropdownMenuSeparator />
-							<DropdownMenuItem asChild>
-								<Link
-									to="/profile"
-									className="cursor-pointer w-full flex items-center"
-								>
-									<UserIcon className="mr-2 h-4 w-4" />
-									<span>View Profile</span>
+							</div>
+							<Link
+								to="/coins"
+								search={{
+									tab: "coins",
+									coinPage: 1,
+									coinLimit: 10,
+									coinSort: "recent",
+									paymentPage: 1,
+									paymentLimit: 10,
+									paymentSort: "recent",
+								}}
+								onClick={() => setIsMenuOpen(false)}
+								className="flex items-center gap-1.5 rounded-full border border-border/60 bg-card/40 px-2.5 py-1 text-xs font-semibold text-foreground"
+							>
+								<Coins className="h-3.5 w-3.5 text-primary" />
+								<span>{coinBalance}</span>
+							</Link>
+						</div>
+
+						<div className="grid grid-cols-2 gap-2 mt-2">
+							<Button
+								variant="outline"
+								size="sm"
+								className="w-full justify-start text-xs h-9 rounded-lg"
+								asChild
+							>
+								<Link to="/profile" onClick={() => setIsMenuOpen(false)}>
+									<UserIcon className="mr-2 h-3.5 w-3.5" />
+									Profile
 								</Link>
-							</DropdownMenuItem>
-							<DropdownMenuItem asChild>
-								<Link
-									to="/profile/bookmarked-mentors"
-									className="cursor-pointer w-full flex items-center"
-								>
-									<Bookmark className="mr-2 h-4 w-4" />
-									<span>Bookmarked Mentors</span>
-								</Link>
-							</DropdownMenuItem>
-							<DropdownMenuSeparator />
-							<DropdownMenuItem
-								className="cursor-pointer text-destructive focus:text-destructive"
+							</Button>
+							<Button
+								variant="outline"
+								size="sm"
+								className="w-full justify-start text-xs h-9 rounded-lg"
 								onClick={handleLogout}
 							>
-								<LogOut className="mr-2 h-4 w-4" />
-								<span>Logout</span>
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
+								<LogOut className="mr-2 h-3.5 w-3.5 text-destructive" />
+								Logout
+							</Button>
+						</div>
+					</div>
 				</div>
-			</div>
+			)}
 		</header>
 	);
 }

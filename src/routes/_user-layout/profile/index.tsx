@@ -212,25 +212,23 @@ function RouteComponent() {
 	const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
 
 	return (
-		<main className="container mx-auto px-6 py-10 space-y-10">
+		<main className="container mx-auto px-4 md:px-6 py-8 space-y-8">
 			{/* Header */}
-			<div className="space-y-2">
-				<h1 className="text-3xl font-extrabold tracking-tight lg:text-4xl">
-					Account Settings
-				</h1>
-				<p className="text-muted-foreground">
+			<div className="space-y-1">
+				<h1 className="text-3xl font-bold tracking-tight">Account Settings</h1>
+				<p className="text-sm text-muted-foreground">
 					Manage your personal information and security preferences.
 				</p>
 			</div>
 
-			<div className="space-y-16">
+			<div className="space-y-12">
 				{/* Account Info Section */}
-				<section className="space-y-8">
-					<div className="flex items-center gap-3">
-						<div className="h-10 w-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
-							<UserIcon className="h-5 w-5" />
+				<section className="space-y-6">
+					<div className="flex items-center gap-2.5">
+						<div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
+							<UserIcon className="h-4.5 w-4.5" />
 						</div>
-						<h2 className="text-2xl font-bold tracking-tight">
+						<h2 className="text-xl font-semibold tracking-tight">
 							Personal Profile
 						</h2>
 					</div>
@@ -238,16 +236,16 @@ function RouteComponent() {
 				</section>
 
 				{/* Security Section */}
-				<section className="space-y-8">
-					<div className="flex items-center gap-3">
-						<div className="h-10 w-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
-							<ShieldCheck className="h-5 w-5" />
+				<section className="space-y-6">
+					<div className="flex items-center gap-2.5">
+						<div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
+							<ShieldCheck className="h-4.5 w-4.5" />
 						</div>
-						<h2 className="text-2xl font-bold tracking-tight">
+						<h2 className="text-xl font-semibold tracking-tight">
 							Security & Sessions
 						</h2>
 					</div>
-					<div className="rounded-3xl border bg-card/50 backdrop-blur-sm shadow-xl overflow-hidden p-6 space-y-6">
+					<div className="rounded-2xl border bg-card/50 backdrop-blur-sm shadow-xl overflow-hidden p-6 space-y-6">
 						{profile?.authType === "LOCAL" && (
 							<div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-primary/5 border border-primary/10">
 								<div className="flex items-center gap-3">

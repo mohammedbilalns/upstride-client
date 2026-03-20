@@ -1,6 +1,6 @@
 import { useRouter } from "@tanstack/react-router";
 import { CheckCircle, ChevronRight, Heart, Zap } from "lucide-react";
-import ThemeToggle from "@/components/common/Theme-Toggle";
+import PublicNavbar from "@/components/common/PublicNavbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import FeaturesSection from "@/features/landing/components/FeaturesSection";
@@ -17,46 +17,7 @@ export default function LandingPage() {
 			<div className="absolute bottom-0 right-[10%] w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
 
 			{/*  Header  */}
-			<header className="sticky top-0 z-50 border-b border-border/60 bg-background/95">
-				<div className="container mx-auto px-6 h-16 flex justify-between items-center">
-					{/* Logo */}
-					<div className="flex items-center gap-2.5">
-						<div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-sm shadow-primary/30">
-							<Zap className="h-4 w-4 text-primary-foreground" />
-						</div>
-						<span className="text-xl font-bold tracking-tight">UpStride</span>
-					</div>
-
-					{/* Nav */}
-					<nav className="hidden md:flex items-center gap-8">
-						{[
-							{ href: "#features", label: "Features" },
-							{ href: "#mentors", label: "Find Mentors" },
-							{ href: "#testimonials", label: "Reviews" },
-						].map(({ href, label }) => (
-							<a
-								key={href}
-								href={href}
-								className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-							>
-								{label}
-							</a>
-						))}
-					</nav>
-
-					{/* Actions */}
-					<div className="flex items-center gap-3">
-						<ThemeToggle />
-						<Button
-							onClick={() => router.navigate({ to: "/auth" })}
-							className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-semibold
-								shadow-sm shadow-primary/20 hover:shadow-primary/30 transition-all hover:-translate-y-px"
-						>
-							Get Started
-						</Button>
-					</div>
-				</div>
-			</header>
+			<PublicNavbar />
 
 			{/* Hero  */}
 			<HeroSection />

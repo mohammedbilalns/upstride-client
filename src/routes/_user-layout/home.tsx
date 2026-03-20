@@ -22,10 +22,10 @@ function RouteComponent() {
 								<GraduationCap className="h-4 w-4" />
 								<span>Grow your career</span>
 							</div>
-							<h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground leading-tight">
+							<h1 className="text-3xl font-bold tracking-tight text-foreground leading-tight">
 								Become a <span className="text-primary">Mentor</span> today.
 							</h1>
-							<p className="text-base text-muted-foreground leading-relaxed max-w-md mx-auto md:mx-0">
+							<p className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto md:mx-0">
 								Share your journey, empower others, and build a lasting legacy.
 								Join our community of elite mentors.
 							</p>

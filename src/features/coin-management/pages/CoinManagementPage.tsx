@@ -133,7 +133,7 @@ export function CoinManagementPage() {
 	};
 
 	return (
-		<div className="p-4 md:p-6 space-y-5 max-w-360 mx-auto animate-in fade-in duration-500">
+		<main className="container mx-auto px-4 md:px-6 py-8 space-y-8 animate-in fade-in duration-500">
 			<div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6">
 				<CoinWalletHeader />
 
@@ -266,6 +266,6 @@ export function CoinManagementPage() {
 					/>
 				</TabsContent>
 			</Tabs>
-		</div>
+		</main>
 	);
 }

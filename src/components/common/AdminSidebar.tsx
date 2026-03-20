@@ -73,7 +73,7 @@ export default function AdminSidebar() {
 	];
 
 	return (
-		<aside className="w-72 h-screen sticky top-0 border-r border-border/60 bg-background/95 backdrop-blur flex flex-col pt-6 pb-4">
+		<aside className="w-72 h-[calc(100vh-1.5rem)] sticky top-3 m-3 rounded-xl glass-dark shadow-soft flex flex-col pt-6 pb-4 animate-soft-in">
 			{/* Brand Logo */}
 			<div className="px-6 mb-10">
 				<Link to="/dashboard" className="flex items-center gap-2.5 group">

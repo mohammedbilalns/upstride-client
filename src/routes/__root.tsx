@@ -10,6 +10,20 @@ import "../styles.css";
  * Root route configuration.
  */
 export const Route = createRootRouteWithContext<RouterContext>()({
+	head: () => ({
+		meta: [
+			{
+				charSet: "utf-8",
+			},
+			{
+				name: "viewport",
+				content: "width=device-width, initial-scale=1",
+			},
+			{
+				title: "Upstride",
+			},
+		],
+	}),
 	component: RootComponent,
 	notFoundComponent: NotFoundComponent,
 	errorComponent: ErrorComponent,

@@ -7,9 +7,9 @@ import { stats } from "../data";
 export default function HeroSection() {
 	const router = useRouter();
 	return (
-		<section className="relative z-10 container mx-auto px-6 pt-28 pb-24 text-center">
+		<section className="relative z-10 container mx-auto px-6 pt-28 pb-24 text-center animate-soft-in">
 			{/* Subtle noise/grid overlay */}
-			<div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,hsl(var(--primary)/0.12),transparent)] -z-10" />
+			<div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,hsl(var(--primary)/0.15),transparent)] -z-10" />
 
 			<Badge
 				className="mb-8 px-4 py-1.5 text-sm font-medium bg-primary/10 text-primary border border-primary/20 rounded-full

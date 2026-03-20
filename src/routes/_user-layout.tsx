@@ -32,7 +32,7 @@ function UserLayout() {
 		<div className="min-h-screen bg-background text-foreground flex flex-col">
 			{/*  Top navigation bar for user pages */}
 			<UserNavbar />
-			<main className="flex-1">
+			<main className="flex-1 pt-20">
 				<Outlet />
 			</main>
 		</div>
