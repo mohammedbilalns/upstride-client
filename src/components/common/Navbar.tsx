@@ -3,6 +3,7 @@ import {
 	Bell,
 	Bookmark,
 	Coins,
+	LayoutDashboard,
 	LogOut,
 	Menu,
 	User as UserIcon,
@@ -50,9 +51,6 @@ export default function UserNavbar() {
 		{ to: "/mentors", label: "Find Mentors" },
 		{ to: "/articles", label: "Read Articles" },
 		{ to: "/sessions", label: "Sessions" },
-		...(user?.role === "MENTOR"
-			? [{ to: "/mentor-dashboard", label: "Mentor Dashboard" }]
-			: []),
 	];
 
 	return (
@@ -181,6 +179,17 @@ export default function UserNavbar() {
 										<span>Bookmarked Mentors</span>
 									</Link>
 								</DropdownMenuItem>
+								{user?.role === "MENTOR" && (
+									<DropdownMenuItem asChild>
+										<Link
+											to="/mentor-dashboard"
+											className="cursor-pointer w-full flex items-center"
+										>
+											<LayoutDashboard className="mr-2 h-4 w-4" />
+											<span>Mentor Dashboard</span>
+										</Link>
+									</DropdownMenuItem>
+								)}
 								<DropdownMenuSeparator />
 								<DropdownMenuItem
 									className="cursor-pointer text-destructive focus:text-destructive"
@@ -286,6 +295,22 @@ export default function UserNavbar() {
 									Profile
 								</Link>
 							</Button>
+							{user?.role === "MENTOR" && (
+								<Button
+									variant="outline"
+									size="sm"
+									className="w-full justify-start text-xs h-9 rounded-lg"
+									asChild
+								>
+									<Link
+										to="/mentor-dashboard"
+										onClick={() => setIsMenuOpen(false)}
+									>
+										<LayoutDashboard className="mr-2 h-3.5 w-3.5" />
+										Mentor Dashboard
+									</Link>
+								</Button>
+							)}
 							<Button
 								variant="outline"
 								size="sm"
