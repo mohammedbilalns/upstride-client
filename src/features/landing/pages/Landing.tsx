@@ -13,8 +13,8 @@ export default function LandingPage() {
 
 	return (
 		<div className="min-h-screen bg-background relative overflow-hidden">
-			<div className="absolute top-[-10%] left-[15%] w-[500px] h-[500px] bg-primary/6 rounded-full blur-[120px] pointer-events-none" />
-			<div className="absolute bottom-0 right-[10%] w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+			<div className="absolute top-[-10%] left-[15%] w-125 h-125 bg-primary/6 rounded-full blur-[120px] pointer-events-none" />
+			<div className="absolute bottom-0 right-[10%] w-100 h-100 bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
 
 			{/*  Header  */}
 			<PublicNavbar />
@@ -26,14 +26,14 @@ export default function LandingPage() {
 			<FeaturesSection />
 
 			{/*  Mentor CTA  */}
-			<section className="relative z-10 container mx-auto px-6 py-8">
+			<section className="relative z-10 container mx-auto px-6 py-28">
 				<Card className="border border-primary/20 bg-primary/5 rounded-3xl overflow-hidden relative">
 					<div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_150%,hsl(var(--primary)/0.10),transparent)] pointer-events-none" />
 					<CardContent className="relative z-10 p-12 md:p-16 text-center">
 						<div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 text-primary mb-6">
 							<Heart className="h-7 w-7" />
 						</div>
-						<h2 className="text-4xl md:text-5xl font-extrabold mb-5 tracking-tight bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">
+						<h2 className="text-4xl md:text-5xl font-bold mb-5 tracking-tight text-foreground">
 							Share Your Expertise
 						</h2>
 						<p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto leading-relaxed">
@@ -62,7 +62,7 @@ export default function LandingPage() {
 							size="lg"
 							className="cursor-pointer bg-primary hover:bg-primary/90 text-primary-foreground font-semibold
 								text-base px-10 h-12 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/30
-								transition-all duration-200 hover:-translate-y-0.5"
+								transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98]"
 						>
 							Register as a Mentor
 							<ChevronRight className="ml-2 h-4 w-4" />

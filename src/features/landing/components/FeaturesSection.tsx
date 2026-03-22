@@ -9,17 +9,16 @@ import {
 import { features } from "../data";
 
 export default function FeaturesSection() {
-	const baseId = useId();
 	return (
 		<section
-			id={`features-${baseId}`}
+			id="features"
 			className="relative z-10 container mx-auto px-6 py-24"
 		>
 			<div className="text-center mb-16">
-				<p className="text-sm font-semibold uppercase tracking-widest text-primary mb-3">
+				<p className="text-sm font-medium uppercase tracking-widest text-primary mb-3">
 					Why UpStride
 				</p>
-				<h2 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">
+				<h2 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight text-foreground">
 					Everything You Need to Grow
 				</h2>
 				<p className="text-lg text-muted-foreground max-w-xl mx-auto">
@@ -32,8 +31,8 @@ export default function FeaturesSection() {
 				{features.map((feature) => (
 					<Card
 						key={feature.title}
-						className="group relative border border-border/60 bg-card hover:border-primary/40
-							transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1.5
+						className="group relative border border-border/60 bg-gradient-to-b from-card to-muted/40 backdrop-blur-sm hover:border-primary/40
+							transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1.5
 							rounded-2xl overflow-hidden"
 					>
 						{/* Top accent bar */}
@@ -46,7 +45,7 @@ export default function FeaturesSection() {
 							>
 								{feature.icon}
 							</div>
-							<CardTitle className="text-lg font-bold">
+							<CardTitle className="text-lg font-semibold">
 								{feature.title}
 							</CardTitle>
 						</CardHeader>

@@ -15,7 +15,7 @@ export default function PublicNavbar() {
 	];
 
 	return (
-		<header className="fixed top-3 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-6xl rounded-xl glass animate-soft-in">
+		<header className="fixed top-3 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-6xl rounded-xl glass bg-background/80 border border-border/60 shadow-lg backdrop-blur-xl animate-soft-in">
 			<div className="mx-auto px-5 h-12 flex justify-between items-center">
 				{/* Left Side: Logo and Navigation */}
 				<div className="flex items-center gap-6">
@@ -35,7 +35,7 @@ export default function PublicNavbar() {
 							<a
 								key={link.href}
 								href={link.href}
-								className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+								className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
 							>
 								{link.label}
 							</a>
@@ -51,7 +51,7 @@ export default function PublicNavbar() {
 					<Button
 						onClick={() => router.navigate({ to: "/auth" })}
 						className="hidden sm:flex bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-semibold h-9 px-4 text-xs md:text-sm
-							shadow-sm shadow-primary/20 hover:shadow-primary/30 transition-all hover:-translate-y-px"
+							shadow-sm shadow-primary/20 hover:shadow-primary/30 transition-all hover:-translate-y-px active:scale-[0.98]"
 					>
 						Get Started
 					</Button>
@@ -101,7 +101,7 @@ export default function PublicNavbar() {
 							router.navigate({ to: "/auth" });
 						}}
 						className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-semibold py-5
-							shadow-sm shadow-primary/20 hover:shadow-primary/30 transition-all"
+							shadow-sm shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-[0.98]"
 					>
 						Get Started
 					</Button>

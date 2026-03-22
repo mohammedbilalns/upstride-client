@@ -5,17 +5,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { testimonials } from "../data";
 
 export default function TestimonialsSection() {
-	const baseId = useId();
 	return (
 		<section
-			id={`testimonials-${baseId}`}
+			id="testimonials"
 			className="relative z-10 container mx-auto px-6 py-24"
 		>
 			<div className="text-center mb-16">
-				<p className="text-sm font-semibold uppercase tracking-widest text-primary mb-3">
+				<p className="text-sm font-medium uppercase tracking-widest text-primary mb-3">
 					Testimonials
 				</p>
-				<h2 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">
+				<h2 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight text-foreground">
 					What Our Community Says
 				</h2>
 				<p className="text-lg text-muted-foreground max-w-xl mx-auto">
@@ -27,8 +26,8 @@ export default function TestimonialsSection() {
 				{testimonials.map((testimonial) => (
 					<Card
 						key={testimonial.name}
-						className="group border border-border/60 bg-card hover:border-primary/30
-							transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1
+						className="group border border-border/60 bg-card/70 backdrop-blur-md hover:border-primary/30
+							transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1
 							rounded-2xl overflow-hidden"
 					>
 						<CardContent className="p-7 flex flex-col h-full">
@@ -44,7 +43,7 @@ export default function TestimonialsSection() {
 								{[...Array(testimonial.rating)].map((_, i) => (
 									<Star
 										key={`${testimonial.name}-star-${i}`}
-										className="h-4 w-4 text-yellow-400 fill-yellow-400"
+										className="h-4 w-4 text-[var(--rating)] fill-[var(--rating)]"
 									/>
 								))}
 							</div>

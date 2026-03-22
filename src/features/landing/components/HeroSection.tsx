@@ -7,7 +7,7 @@ import { stats } from "../data";
 export default function HeroSection() {
 	const router = useRouter();
 	return (
-		<section className="relative z-10 container mx-auto px-6 pt-28 pb-24 text-center animate-soft-in">
+		<section className="relative z-10 container mx-auto px-6 pt-28 pb-28 text-center animate-soft-in">
 			{/* Subtle noise/grid overlay */}
 			<div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,hsl(var(--primary)/0.15),transparent)] -z-10" />
 
@@ -18,10 +18,7 @@ export default function HeroSection() {
 				🚀 Join 10,000+ learners growing their skills
 			</Badge>
 
-			<h1
-				className="text-5xl md:text-7xl font-extrabold mb-7 tracking-tight leading-[1.1]
-					bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent"
-			>
+			<h1 className="text-5xl md:text-7xl font-extrabold mb-5 tracking-tight leading-[1.1] text-foreground">
 				Connect with Expert
 				<br />
 				<span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
@@ -29,11 +26,22 @@ export default function HeroSection() {
 				</span>
 			</h1>
 
+			<div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-5">
+				<span className="text-[color:var(--rating)]">★</span>
+				<span className="font-medium text-foreground">4.9</span>
+				<span>rating from 2000+ users</span>
+			</div>
+
 			<p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-xl mx-auto leading-relaxed">
 				Accelerate your career with personalized mentorship from industry
 				experts. Learn, grow, and achieve your goals with those who've been
 				there.
 			</p>
+
+			<div className="flex justify-center items-center gap-2 text-sm text-muted-foreground mb-6">
+				<span>⭐ 4.9</span>
+				<span>Trusted by 10,000+ learners</span>
+			</div>
 
 			<div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
 				<Button
@@ -41,7 +49,7 @@ export default function HeroSection() {
 					size="lg"
 					className="cursor-pointer bg-primary hover:bg-primary/90 text-primary-foreground font-semibold
 						text-base px-8 h-12 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/30
-						transition-all duration-200 hover:-translate-y-0.5"
+						transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98]"
 				>
 					Find Your Mentor
 					<ArrowRight className="ml-2 h-4 w-4" />
@@ -52,11 +60,15 @@ export default function HeroSection() {
 					variant="outline"
 					onClick={() => router.navigate({ to: "/auth" })}
 					className="cursor-pointer border-2 border-primary/25 hover:border-primary/50 text-base px-8 h-12 rounded-xl
-						font-semibold hover:bg-primary/5 transition-all duration-200 hover:-translate-y-0.5"
+						font-semibold hover:bg-primary/5 transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98]"
 				>
 					<Users className="mr-2 h-4 w-4" />
 					Become a Mentor
 				</Button>
+			</div>
+
+			<div className="mt-16 flex justify-center">
+				<div className="glass rounded-2xl p-5 shadow-soft-xl border border-border/40" />
 			</div>
 
 			{/* Stats Row */}

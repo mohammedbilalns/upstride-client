@@ -3,25 +3,34 @@ import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/linkedin")({
+	validateSearch: (
+		search: Record<string, unknown>,
+	): {
+		code?: string;
+		state?: string;
+		error?: string;
+		error_description?: string;
+	} => ({
+		code: search.code as string | undefined,
+		state: search.state as string | undefined,
+		error: search.error as string | undefined,
+		error_description: search.error_description as string | undefined,
+	}),
 	component: LinkedInCallbackWrapper,
 });
 
 function LinkedInCallbackWrapper() {
-	useEffect(() => {
-		const params = new URLSearchParams(window.location.search);
-		const code = params.get("code");
-		const state = params.get("state");
-		const error = params.get("error");
-		const errorDescription = params.get("error_description");
+	const search = Route.useSearch();
 
+	useEffect(() => {
 		if (window.opener) {
 			window.opener.postMessage(
 				{
 					from: "linkedin-oauth",
-					code: code ?? undefined,
-					state: state ?? undefined,
-					error: error ?? undefined,
-					errorMessage: errorDescription ?? undefined,
+					code: search.code,
+					state: search.state,
+					error: search.error,
+					errorMessage: search.error_description,
 				},
 				window.location.origin,
 			);
@@ -29,7 +38,7 @@ function LinkedInCallbackWrapper() {
 			window.close();
 			return;
 		}
-	}, []);
+	}, [search.code, search.error, search.error_description, search.state]);
 
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-background text-foreground">
