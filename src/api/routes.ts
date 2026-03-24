@@ -34,6 +34,13 @@ export const ROUTES = {
 		READ_ALL: "/read-all",
 		MARK_READ: (notificationId: string) => `/${notificationId}/read`,
 	},
+	CHATS: {
+		BASE: "/chats",
+		ROOT: "/",
+		BY_USER: (otherUserId: string) => `/user/${otherUserId}`,
+		MESSAGES: (chatId: string) => `/${chatId}/messages`,
+		READ: (chatId: string) => `/${chatId}/read`,
+	},
 	CATALOG: {
 		BASE: "/catalog",
 		ONBOARDING: "/onboarding",
