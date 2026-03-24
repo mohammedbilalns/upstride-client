@@ -1,8 +1,8 @@
 import { Link, useLocation, useRouteContext } from "@tanstack/react-router";
-import { useCallback, useRef } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGetChats } from "@/features/chat/hooks";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 
 function formatTime(dateStr: string): string {
 	const date = new Date(dateStr);
@@ -30,23 +30,6 @@ export function ChatList() {
 
 	// Flatten pages into a single array
 	const chats = data?.pages.flatMap((page) => page.chats) ?? [];
-
-	const observer = useRef<IntersectionObserver | null>(null);
-	const sentinelRef = useCallback(
-		(node: HTMLDivElement | null) => {
-			if (isFetchingNextPage) return;
-			if (observer.current) observer.current.disconnect();
-			if (node) {
-				observer.current = new IntersectionObserver((entries) => {
-					if (entries[0].isIntersecting && hasNextPage) {
-						fetchNextPage();
-					}
-				});
-				observer.current.observe(node);
-			}
-		},
-		[isFetchingNextPage, hasNextPage, fetchNextPage],
-	);
 
 	return (
 		<div className="flex flex-col h-full bg-background border-r">
@@ -141,12 +124,17 @@ export function ChatList() {
 						);
 					})}
 
-					{/* Infinite scroll sentinel */}
-					<div ref={sentinelRef} className="h-px" />
-
-					{isFetchingNextPage && (
-						<div className="p-3 text-xs text-center text-muted-foreground">
-							Loading more…
+					{hasNextPage && (
+						<div className="p-4 border-t flex justify-center">
+							<Button
+								variant="ghost"
+								size="sm"
+								className="text-xs text-muted-foreground hover:text-foreground"
+								onClick={() => fetchNextPage()}
+								disabled={isFetchingNextPage}
+							>
+								{isFetchingNextPage ? "Loading more..." : "Load more chats"}
+							</Button>
 						</div>
 					)}
 				</div>

@@ -66,7 +66,7 @@ export const useSendMessage = (chatId: string, otherUserId: string) => {
 
 			return { previousChatData };
 		},
-		onError: (err, newMessage, context: any) => {
+		onError: (_err, _newMessage, context: any) => {
 			if (context?.previousChatData) {
 				queryClient.setQueryData(
 					chatKeys.detail(otherUserId),
