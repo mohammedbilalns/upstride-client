@@ -5,18 +5,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChatMessage } from "@/features/chat/components/ChatMessage";
+import { fileService } from "@/shared/services/file.service";
 import {
 	useGetChat,
 	useSendMessage,
 	useMarkChatRead,
 } from "@/features/chat/hooks";
 import { getChatInfiniteQueryOptions } from "@/features/chat/hooks/queries";
-import { ArrowLeft, Send, Paperclip, Image as ImageIcon } from "lucide-react";
+import {
+	ArrowLeft,
+	Send,
+	Paperclip,
+	Image as ImageIcon,
+	Loader2,
+} from "lucide-react";
+import { toast } from "sonner";
 import type { ChatMessageDto } from "@/features/chat/types";
 
 export const Route = createFileRoute("/_user-layout/chats/$chatId")({
 	loader: async ({ context: { queryClient }, params }) => {
-		// Pre-fetch the first page of messages before the component mounts
 		await queryClient.ensureInfiniteQueryData(
 			getChatInfiniteQueryOptions(params.chatId),
 		);
@@ -34,6 +41,19 @@ function ChatDetail() {
 	const scrollRef = useRef<HTMLDivElement>(null);
 	const pendingRestoreRef = useRef(false);
 	const prevScrollHeightRef = useRef(0);
+	const [localMediaPreviews, setLocalMediaPreviews] = useState<
+		Record<string, string>
+	>({});
+	const [isUploadingMedia, setIsUploadingMedia] = useState(false);
+
+	// Cleanup blob URLs on unmount
+	useEffect(() => {
+		return () => {
+			Object.values(localMediaPreviews).forEach((url) =>
+				URL.revokeObjectURL(url),
+			);
+		};
+	}, [localMediaPreviews]);
 
 	const imageInputRef = useRef<HTMLInputElement>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
@@ -47,7 +67,6 @@ function ChatDetail() {
 		isError,
 	} = useGetChat(chatId);
 
-	// Flatten all pages and sort oldest-first for the chat view
 	const allMessages: ChatMessageDto[] =
 		data?.pages
 			.flatMap((page) => page.messages)
@@ -71,7 +90,6 @@ function ChatDetail() {
 	const sendMessage = useSendMessage(chat?.id ?? chatId, chatId);
 	const markRead = useMarkChatRead();
 
-	// Scroll to bottom when new messages arrive (only if user is near bottom)
 	useEffect(() => {
 		if (!scrollRef.current) return;
 		if (pendingRestoreRef.current) return;
@@ -104,25 +122,69 @@ function ChatDetail() {
 	const handleSend = (e?: React.FormEvent) => {
 		e?.preventDefault();
 		if (!newMessage.trim()) return;
-		sendMessage.mutate({ content: newMessage.trim() });
+		sendMessage.mutate({ content: newMessage.trim(), messageType: "TEXT" });
 		setNewMessage("");
 	};
 
-	const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
 		if (!file) return;
-		// TODO: upload file to storage, then send with mediaId
-		// For now, shows the file name as text
-		sendMessage.mutate({ content: `[Image: ${file.name}]` });
-		e.target.value = "";
+		if (file.size > 5 * 1024 * 1024) {
+			toast.error("Image size must be less than 5MB");
+			e.target.value = "";
+			return;
+		}
+
+		setIsUploadingMedia(true);
+		const previewUrl = URL.createObjectURL(file);
+		setLocalMediaPreviews((prev) => ({ ...prev, [file.name]: previewUrl }));
+
+		try {
+			const key = await fileService.handleFileUpload(file, "chat-media");
+			sendMessage.mutate({
+				content: file.name,
+				mediaId: key,
+				messageType: "IMAGE",
+			});
+		} catch {
+			toast.error("Failed to upload image");
+		} finally {
+			setIsUploadingMedia(false);
+			e.target.value = "";
+		}
 	};
 
-	const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
 		if (!file) return;
-		// TODO: upload file to storage, then send with mediaId
-		sendMessage.mutate({ content: `[File: ${file.name}]` });
-		e.target.value = "";
+		if (file.type !== "application/pdf") {
+			toast.error("Only PDF files are supported");
+			e.target.value = "";
+			return;
+		}
+		if (file.size > 10 * 1024 * 1024) {
+			toast.error("PDF size must be less than 10MB");
+			e.target.value = "";
+			return;
+		}
+
+		setIsUploadingMedia(true);
+		const previewUrl = URL.createObjectURL(file);
+		setLocalMediaPreviews((prev) => ({ ...prev, [file.name]: previewUrl }));
+
+		try {
+			const key = await fileService.handleFileUpload(file, "chat-media");
+			sendMessage.mutate({
+				content: file.name,
+				mediaId: key,
+				messageType: "FILE",
+			});
+		} catch {
+			toast.error("Failed to upload document");
+		} finally {
+			setIsUploadingMedia(false);
+			e.target.value = "";
+		}
 	};
 
 	if (isLoading) {
@@ -214,6 +276,7 @@ function ChatDetail() {
 									key={msg.id}
 									message={msg}
 									isMe={msg.senderId === currentUserId}
+									localMediaPreviews={localMediaPreviews}
 								/>
 							))}
 						</div>
@@ -222,7 +285,16 @@ function ChatDetail() {
 			</ScrollArea>
 
 			{/* Input Area */}
-			<div className="p-4 border-t bg-background">
+			<div className="p-4 border-t bg-background relative">
+				{isUploadingMedia && (
+					<div className="absolute -top-10 left-0 right-0 flex justify-center pb-2">
+						<div className="bg-background/80 backdrop-blur-sm px-3 py-1 rounded-full border shadow-sm flex items-center gap-2 text-xs text-muted-foreground animate-in fade-in slide-in-from-bottom-2">
+							<Loader2 className="w-3 h-3 animate-spin" />
+							<span>Uploading media...</span>
+						</div>
+					</div>
+				)}
+
 				<form onSubmit={handleSend} className="flex items-center gap-2">
 					<input
 						type="file"
@@ -233,7 +305,7 @@ function ChatDetail() {
 					/>
 					<input
 						type="file"
-						accept=".pdf,.doc,.docx,.txt"
+						accept=".pdf,application/pdf"
 						className="hidden"
 						ref={fileInputRef}
 						onChange={handleFileUpload}
@@ -245,6 +317,7 @@ function ChatDetail() {
 						size="icon"
 						className="shrink-0 text-muted-foreground"
 						onClick={() => imageInputRef.current?.click()}
+						disabled={isUploadingMedia || sendMessage.isPending}
 					>
 						<ImageIcon className="w-5 h-5" />
 					</Button>
@@ -254,6 +327,7 @@ function ChatDetail() {
 						size="icon"
 						className="shrink-0 text-muted-foreground -ml-2"
 						onClick={() => fileInputRef.current?.click()}
+						disabled={isUploadingMedia || sendMessage.isPending}
 					>
 						<Paperclip className="w-5 h-5" />
 					</Button>
@@ -261,17 +335,26 @@ function ChatDetail() {
 					<Input
 						value={newMessage}
 						onChange={(e) => setNewMessage(e.target.value)}
-						placeholder="Type a message…"
+						placeholder={
+							isUploadingMedia ? "Please wait..." : "Type a message…"
+						}
 						className="flex-1 rounded-full px-4"
+						disabled={isUploadingMedia || sendMessage.isPending}
 					/>
 
 					<Button
 						type="submit"
 						size="icon"
-						disabled={!newMessage.trim() || sendMessage.isPending}
+						disabled={
+							!newMessage.trim() || sendMessage.isPending || isUploadingMedia
+						}
 						className="shrink-0 rounded-full"
 					>
-						<Send className="w-4 h-4" />
+						{sendMessage.isPending ? (
+							<Loader2 className="w-4 h-4 animate-spin" />
+						) : (
+							<Send className="w-4 h-4" />
+						)}
 					</Button>
 				</form>
 			</div>

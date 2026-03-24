@@ -17,7 +17,7 @@ export const fileService = {
 	getPresignedUrl: async (
 		fileName: string,
 		mimetype: string,
-		category: "resume" | "profile-picture",
+		category: "resume" | "profile-picture" | "chat-media",
 	): Promise<PresignedUrlResponse> => {
 		const response = await api.post(
 			`${ROUTES.STORAGE.BASE}${ROUTES.STORAGE.GET_PRESIGNED_URL}`,
@@ -79,7 +79,7 @@ export const fileService = {
 	 */
 	handleFileUpload: async (
 		file: File,
-		category: "resume" | "profile-picture",
+		category: "resume" | "profile-picture" | "chat-media",
 	): Promise<string> => {
 		const { data } = await fileService.getPresignedUrl(
 			file.name,

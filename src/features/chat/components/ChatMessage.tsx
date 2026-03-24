@@ -1,9 +1,10 @@
-import { FileIcon } from "lucide-react";
+import { FileIcon, FileText } from "lucide-react";
 import type { ChatMessageDto } from "@/features/chat/types";
 
 interface ChatMessageProps {
 	message: ChatMessageDto;
 	isMe: boolean;
+	localMediaPreviews?: Record<string, string>;
 }
 
 function formatTime(dateStr: string): string {
@@ -13,10 +14,18 @@ function formatTime(dateStr: string): string {
 	});
 }
 
-export function ChatMessage({ message, isMe }: ChatMessageProps) {
+export function ChatMessage({
+	message,
+	isMe,
+	localMediaPreviews,
+}: ChatMessageProps) {
 	const bubbleClass = isMe
 		? "bg-primary text-primary-foreground rounded-br-sm"
 		: "bg-muted text-foreground rounded-bl-sm";
+
+	const previewUrl =
+		message.mediaUrl ||
+		(message.content ? localMediaPreviews?.[message.content] : null);
 
 	return (
 		<div
@@ -32,21 +41,47 @@ export function ChatMessage({ message, isMe }: ChatMessageProps) {
 
 					{message.messageType === "IMAGE" && (
 						<div className="flex flex-col gap-1">
-							<div className="flex items-center gap-2 px-1 py-1 rounded-md bg-white/10">
-								<FileIcon className="w-5 h-5 opacity-70" />
-								<span className="text-sm">{message.content ?? "Image"}</span>
-							</div>
+							{previewUrl ? (
+								<a
+									href={previewUrl}
+									target="_blank"
+									rel="noreferrer"
+									className="block overflow-hidden rounded-lg group mt-1"
+								>
+									<img
+										src={previewUrl}
+										alt={message.content ?? "Image"}
+										className="max-w-full sm:max-w-[300px] rounded-lg border border-white/10 hover:scale-105 transition-transform duration-200"
+									/>
+								</a>
+							) : (
+								<div className="flex items-center gap-2 px-1 py-1 rounded-md bg-white/10">
+									<FileIcon className="w-5 h-5 opacity-70" />
+									<span className="text-sm">{message.content ?? "Image"}</span>
+								</div>
+							)}
 						</div>
 					)}
 
 					{message.messageType === "FILE" && (
 						<div
-							className={`flex items-center gap-2 p-2 rounded-md ${isMe ? "bg-primary-foreground/10" : "bg-background"}`}
+							className={`flex items-center gap-2 p-2 rounded-md mt-1 ${isMe ? "bg-primary-foreground/10" : "bg-background"}`}
 						>
-							<FileIcon className="w-8 h-8 opacity-80 shrink-0" />
-							<span className="text-sm truncate">
-								{message.content ?? "File"}
-							</span>
+							<FileText className="w-8 h-8 opacity-80 shrink-0" />
+							{previewUrl ? (
+								<a
+									href={previewUrl}
+									target="_blank"
+									rel="noreferrer"
+									className="text-sm truncate underline underline-offset-2 hover:opacity-80 transition-opacity"
+								>
+									{message.content ?? "Document"}
+								</a>
+							) : (
+								<span className="text-sm truncate">
+									{message.content ?? "Document"}
+								</span>
+							)}
 						</div>
 					)}
 				</div>

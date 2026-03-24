@@ -26,7 +26,6 @@ function ChatsLayout() {
 					<ChatList />
 				</div>
 
-				{/* On mobile: hide chat right panel on /chats, show on /chats/$chatId */}
 				<div
 					className={`flex-1 flex flex-col bg-muted/10 ${
 						isRootChats ? "hidden md:flex" : "flex"

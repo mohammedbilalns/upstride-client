@@ -36,6 +36,7 @@ export interface ChatMessageDto {
 	messageType: MessageType;
 	content: string | null;
 	attachementId: string | null;
+	mediaUrl: string | null;
 	repliedTo: string | null;
 	status: MessageStatus;
 	createdAt: string;
@@ -73,6 +74,7 @@ export interface GetChatOutput {
 export interface SendMessageInput {
 	content?: string | null;
 	mediaId?: string | null;
+	messageType?: "TEXT" | "IMAGE" | "FILE";
 	repliedTo?: string | null;
 }
 

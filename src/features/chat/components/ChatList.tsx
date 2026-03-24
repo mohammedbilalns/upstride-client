@@ -31,7 +31,6 @@ export function ChatList() {
 	// Flatten pages into a single array
 	const chats = data?.pages.flatMap((page) => page.chats) ?? [];
 
-	// Infinite scroll sentinel
 	const observer = useRef<IntersectionObserver | null>(null);
 	const sentinelRef = useCallback(
 		(node: HTMLDivElement | null) => {
