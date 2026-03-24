@@ -1,5 +1,5 @@
 export type MessageType = "TEXT" | "IMAGE" | "FILE";
-export type MessageStatus = "send" | "read";
+export type MessageStatus = "sending" | "send" | "read";
 
 export interface ChatDto {
 	id: string;
@@ -76,6 +76,7 @@ export interface SendMessageInput {
 	mediaId?: string | null;
 	messageType?: "TEXT" | "IMAGE" | "FILE";
 	repliedTo?: string | null;
+	senderId?: string;
 }
 
 export interface SendMessageOutput {

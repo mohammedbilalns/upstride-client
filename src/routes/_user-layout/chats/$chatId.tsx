@@ -90,18 +90,26 @@ function ChatDetail() {
 	const sendMessage = useSendMessage(chat?.id ?? chatId, chatId);
 	const markRead = useMarkChatRead();
 
-	useEffect(() => {
-		if (!scrollRef.current) return;
-		if (pendingRestoreRef.current) return;
-		const el = scrollRef.current;
-		const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
-		const isNearBottom = distanceFromBottom < 80;
-		if (isNearBottom) {
-			el.scrollTo(0, el.scrollHeight);
-		}
-	}, [allMessages.length]);
+	useLayoutEffect(() => {
+		if (!scrollRef.current || pendingRestoreRef.current) return;
 
-	// Maintain scroll position when loading older messages
+		const el = scrollRef.current;
+		const lastMessage = allMessages[allMessages.length - 1];
+		const isMe = lastMessage?.senderId === currentUserId;
+
+		const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+		const isNearBottom = distanceFromBottom < 150; // Increased threshold for better UX
+
+		if (isMe || isNearBottom) {
+			requestAnimationFrame(() => {
+				el.scrollTo({
+					top: el.scrollHeight,
+					behavior: isMe ? "smooth" : "auto",
+				});
+			});
+		}
+	}, [allMessages.length, currentUserId]);
+
 	useLayoutEffect(() => {
 		if (!pendingRestoreRef.current || !scrollRef.current) return;
 		const el = scrollRef.current;
@@ -111,19 +119,29 @@ function ChatDetail() {
 		pendingRestoreRef.current = false;
 	}, [data]);
 
-	// Mark messages as read when the chat opens
 	useEffect(() => {
 		if (chat?.id) {
 			markRead.mutate(chat.id);
 		}
 	}, [chat?.id]);
 
-	// Infinite scroll – load older messages when the user scrolls to the top sentinel
+	const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
+		if (scrollRef.current) {
+			const el = scrollRef.current;
+			el.scrollTo({ top: el.scrollHeight, behavior });
+		}
+	};
+
 	const handleSend = (e?: React.FormEvent) => {
 		e?.preventDefault();
 		if (!newMessage.trim()) return;
-		sendMessage.mutate({ content: newMessage.trim(), messageType: "TEXT" });
+		sendMessage.mutate({
+			content: newMessage.trim(),
+			messageType: "TEXT",
+			senderId: currentUserId,
+		});
 		setNewMessage("");
+		requestAnimationFrame(() => scrollToBottom("smooth"));
 	};
 
 	const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -138,6 +156,7 @@ function ChatDetail() {
 		setIsUploadingMedia(true);
 		const previewUrl = URL.createObjectURL(file);
 		setLocalMediaPreviews((prev) => ({ ...prev, [file.name]: previewUrl }));
+		requestAnimationFrame(() => scrollToBottom("smooth"));
 
 		try {
 			const key = await fileService.handleFileUpload(file, "chat-media");
@@ -145,6 +164,7 @@ function ChatDetail() {
 				content: file.name,
 				mediaId: key,
 				messageType: "IMAGE",
+				senderId: currentUserId,
 			});
 		} catch {
 			toast.error("Failed to upload image");
@@ -171,6 +191,7 @@ function ChatDetail() {
 		setIsUploadingMedia(true);
 		const previewUrl = URL.createObjectURL(file);
 		setLocalMediaPreviews((prev) => ({ ...prev, [file.name]: previewUrl }));
+		requestAnimationFrame(() => scrollToBottom("smooth"));
 
 		try {
 			const key = await fileService.handleFileUpload(file, "chat-media");
@@ -178,6 +199,7 @@ function ChatDetail() {
 				content: file.name,
 				mediaId: key,
 				messageType: "FILE",
+				senderId: currentUserId,
 			});
 		} catch {
 			toast.error("Failed to upload document");

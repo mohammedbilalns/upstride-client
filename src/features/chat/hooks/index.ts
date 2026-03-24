@@ -9,7 +9,7 @@ import {
 	getChatsInfiniteQueryOptions,
 	getChatInfiniteQueryOptions,
 } from "./queries";
-import type { GetChatsInput, SendMessageInput } from "../types";
+import type { GetChatsInput, SendMessageInput, ChatMessageDto } from "../types";
 
 /**
  * Hook to get the paginated list of all chats.
@@ -34,16 +34,53 @@ export const useSendMessage = (chatId: string, otherUserId: string) => {
 	return useMutation({
 		mutationFn: (payload: SendMessageInput) =>
 			chatService.sendMessage(chatId, payload),
-		onSuccess: () => {
+		onMutate: async (newMessagePayload) => {
+			await queryClient.cancelQueries({
+				queryKey: chatKeys.detail(otherUserId),
+			});
+
+			const previousChatData = queryClient.getQueryData(
+				chatKeys.detail(otherUserId),
+			);
+
+			const optimisticMessage: ChatMessageDto = {
+				id: `optimistic-${Date.now()}`,
+				chatId,
+				senderId: newMessagePayload.senderId || "",
+				messageType: newMessagePayload.messageType || "TEXT",
+				content: newMessagePayload.content || null,
+				attachementId: null,
+				mediaUrl: null,
+				repliedTo: newMessagePayload.repliedTo || null,
+				status: "sending",
+				createdAt: new Date().toISOString(),
+				updatedAt: new Date().toISOString(),
+			};
+
+			queryClient.setQueryData(chatKeys.detail(otherUserId), (old: any) => {
+				if (!old) return old;
+				const pages = [...old.pages];
+				pages[0].messages = [optimisticMessage, ...pages[0].messages];
+				return { ...old, pages };
+			});
+
+			return { previousChatData };
+		},
+		onError: (err, newMessage, context: any) => {
+			if (context?.previousChatData) {
+				queryClient.setQueryData(
+					chatKeys.detail(otherUserId),
+					context.previousChatData,
+				);
+			}
+		},
+		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: chatKeys.detail(otherUserId) });
 			queryClient.invalidateQueries({ queryKey: chatKeys.lists() });
 		},
 	});
 };
 
-/**
- * Hook to mark all messages in a chat as read.
- */
 export const useMarkChatRead = () => {
 	const queryClient = useQueryClient();
 

@@ -1,4 +1,4 @@
-import { FileIcon, FileText } from "lucide-react";
+import { FileIcon, FileText, Clock } from "lucide-react";
 import type { ChatMessageDto } from "@/features/chat/types";
 
 interface ChatMessageProps {
@@ -86,9 +86,14 @@ export function ChatMessage({
 					)}
 				</div>
 
-				<span className="text-[10px] text-muted-foreground mt-0.5 mx-1">
-					{formatTime(message.createdAt)}
-				</span>
+				<div className="flex items-center gap-1 mt-0.5 mx-1">
+					<span className="text-[10px] text-muted-foreground ">
+						{formatTime(message.createdAt)}
+					</span>
+					{message.status === "sending" && (
+						<Clock className="w-2.5 h-2.5 text-muted-foreground animate-pulse" />
+					)}
+				</div>
 			</div>
 		</div>
 	);
