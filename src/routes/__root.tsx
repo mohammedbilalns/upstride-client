@@ -36,18 +36,18 @@ function RootComponent() {
 	return (
 		<>
 			<Outlet />
-			<TanStackDevtools
-				config={{
-					position: "bottom-right",
-					openHotkey: ["control", "shift", "d"],
-				}}
-				plugins={[
-					{
-						name: "TanStack Router",
-						render: <TanStackRouterDevtoolsPanel />,
-					},
-				]}
-			/>
+			{/* <TanStackDevtools */}
+			{/* 	config={{ */}
+			{/* 		position: "bottom-left", */}
+			{/* 		openHotkey: ["control", "shift", "d"], */}
+			{/* 	}} */}
+			{/* 	plugins={[ */}
+			{/* 		{ */}
+			{/* 			name: "TanStack Router", */}
+			{/* 			render: <TanStackRouterDevtoolsPanel />, */}
+			{/* 		}, */}
+			{/* 	]} */}
+			{/* /> */}
 		</>
 	);
 }

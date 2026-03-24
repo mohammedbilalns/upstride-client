@@ -19,7 +19,8 @@ export function useSocialLogin(options?: {
 	return useMutation({
 		mutationFn: (data: SocialLoginInput) => authService.socialLogin(data),
 		onSuccess: (response) => {
-			const payload = response.data as SocialLoginResponse;
+			const payload = response.data as SocialLoginResponse | undefined;
+			if (!payload) return;
 			if ("setupToken" in payload) {
 				options?.onSuccess?.({
 					type: "onboarding",
@@ -34,7 +35,9 @@ export function useSocialLogin(options?: {
 			if (user && accessToken && csrfToken) {
 				setAuthSession(router, user, accessToken, csrfToken);
 			}
-			options?.onSuccess?.({ type: "login", user });
+			if (user) {
+				options?.onSuccess?.({ type: "login", user });
+			}
 		},
 		onError: options?.onError,
 	});

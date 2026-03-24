@@ -18,14 +18,17 @@ export function useLogin(options?: {
 	return useMutation({
 		mutationFn: (data: LoginPayload) => authService.login(data),
 		onSuccess: (response) => {
-			const user = response.data?.user;
-			const accessToken = response.data?.accessToken;
-			const csrfToken = response.data?.csrfToken;
+			const payload = response.data;
+			const user = payload?.user;
+			const accessToken = payload?.accessToken;
+			const csrfToken = payload?.csrfToken;
 			// set Auth session
 			if (user && accessToken && csrfToken) {
 				setAuthSession(router, user, accessToken, csrfToken);
 			}
-			options?.onSuccess?.({ user: response.data?.user });
+			if (user) {
+				options?.onSuccess?.({ user });
+			}
 		},
 		onError: options?.onError,
 	});
