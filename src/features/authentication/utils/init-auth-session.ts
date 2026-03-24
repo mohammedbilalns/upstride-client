@@ -9,6 +9,18 @@ type AppRouter = typeof router;
  */
 export async function initAuthSession(appRouter: AppRouter): Promise<void> {
 	try {
+		const csrfResponse = await authService.getCsrfToken();
+		const csrfToken = csrfResponse.data.csrfToken;
+		appRouter.update({
+			context: {
+				...appRouter.options.context,
+				auth: {
+					...appRouter.options.context.auth,
+					csrfToken,
+				},
+			},
+		});
+
 		const refreshResponse = await authService.refreshToken();
 		const token = refreshResponse.data.accessToken;
 
@@ -19,6 +31,7 @@ export async function initAuthSession(appRouter: AppRouter): Promise<void> {
 					user: null,
 					isAuthenticated: true,
 					accessToken: token,
+					csrfToken,
 				},
 			},
 		});
@@ -33,6 +46,7 @@ export async function initAuthSession(appRouter: AppRouter): Promise<void> {
 					user: userData,
 					isAuthenticated: true,
 					accessToken: token,
+					csrfToken,
 				},
 			},
 		});
@@ -45,6 +59,7 @@ export async function initAuthSession(appRouter: AppRouter): Promise<void> {
 					user: null,
 					isAuthenticated: false,
 					accessToken: null,
+					csrfToken: null,
 				},
 			},
 		});

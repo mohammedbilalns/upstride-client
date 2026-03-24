@@ -20,6 +20,7 @@ export type AuthenticatedUser = Pick<
 export interface LoginResponse {
 	user: AuthenticatedUser;
 	accessToken: string;
+	csrfToken?: string;
 }
 
 export interface SocialOnboardingResponse {

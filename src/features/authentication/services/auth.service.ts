@@ -73,6 +73,12 @@ export const authService = {
 		);
 		return response.data;
 	},
+	getCsrfToken: async (): Promise<{
+		data: { csrfToken: string };
+	}> => {
+		const response = await api.get(`${ROUTES.AUTH.BASE}${ROUTES.AUTH.CSRF}`);
+		return response.data;
+	},
 
 	requestPasswordReset: async (
 		data: RequestPasswordResetInput,

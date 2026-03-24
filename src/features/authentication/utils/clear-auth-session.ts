@@ -14,6 +14,7 @@ export function clearAuthSession(appRouter: AppRouter): void {
 					isAuthenticated: false,
 					user: null,
 					accessToken: null,
+					csrfToken: null,
 				},
 			},
 		});

@@ -23,9 +23,13 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
 	const auth = router.options.context?.auth;
 	const token = auth?.accessToken;
+	const csrfToken = auth?.csrfToken;
 
 	if (token) {
 		config.headers.Authorization = `Bearer ${token}`;
+	}
+	if (csrfToken && config.url?.includes("/auth/refresh")) {
+		config.headers["x-csrf-token"] = csrfToken;
 	}
 	return config;
 });

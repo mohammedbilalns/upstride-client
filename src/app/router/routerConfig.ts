@@ -15,6 +15,7 @@ export interface RouterContext {
 		user: AuthenticatedUser | null;
 		isAuthenticated: boolean;
 		accessToken: string | null;
+		csrfToken: string | null;
 	};
 }
 
@@ -26,6 +27,7 @@ export const router = createRouter({
 			user: null,
 			isAuthenticated: false,
 			accessToken: null,
+			csrfToken: null,
 		},
 	} as RouterContext,
 	defaultPreload: "intent",

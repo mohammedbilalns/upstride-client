@@ -10,6 +10,7 @@ export function setAuthSession(
 	appRouter: AppRouter,
 	user: AuthenticatedUser,
 	accessToken: string,
+	csrfToken: string,
 ): void {
 	if (!appRouter.options.context) return;
 
@@ -20,6 +21,7 @@ export function setAuthSession(
 				isAuthenticated: true,
 				user,
 				accessToken,
+				csrfToken,
 			},
 		},
 	});

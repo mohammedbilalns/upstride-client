@@ -30,8 +30,9 @@ export function useSocialLogin(options?: {
 
 			const user = payload.user;
 			const accessToken = payload.accessToken;
-			if (user && accessToken) {
-				setAuthSession(router, user, accessToken);
+			const csrfToken = payload.csrfToken;
+			if (user && accessToken && csrfToken) {
+				setAuthSession(router, user, accessToken, csrfToken);
 			}
 			options?.onSuccess?.({ type: "login", user });
 		},

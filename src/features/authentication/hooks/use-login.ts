@@ -20,9 +20,10 @@ export function useLogin(options?: {
 		onSuccess: (response) => {
 			const user = response.data?.user;
 			const accessToken = response.data?.accessToken;
+			const csrfToken = response.data?.csrfToken;
 			// set Auth session
-			if (user && accessToken) {
-				setAuthSession(router, user, accessToken);
+			if (user && accessToken && csrfToken) {
+				setAuthSession(router, user, accessToken, csrfToken);
 			}
 			options?.onSuccess?.({ user: response.data?.user });
 		},
