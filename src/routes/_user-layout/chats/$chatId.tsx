@@ -65,6 +65,7 @@ function ChatDetail() {
 		isFetchingNextPage,
 		isLoading,
 		isError,
+		error,
 	} = useGetChat(chatId);
 
 	const allMessages: ChatMessageDto[] =
@@ -76,6 +77,7 @@ function ChatDetail() {
 			) ?? [];
 
 	const chat = data?.pages[0]?.chat;
+	const receiverFromApi = data?.pages[0]?.receiver;
 	const locationState = location.state as
 		| {
 				receiver?: {
@@ -85,7 +87,8 @@ function ChatDetail() {
 				};
 		  }
 		| undefined;
-	const otherUser = chat?.receiver ?? locationState?.receiver ?? null;
+	const otherUser =
+		chat?.receiver ?? receiverFromApi ?? locationState?.receiver ?? null;
 
 	const sendMessage = useSendMessage(chat?.id ?? chatId, chatId);
 	const markRead = useMarkChatRead();
@@ -218,6 +221,20 @@ function ChatDetail() {
 	}
 
 	if (isError) {
+		const status = (error as { response?: { status?: number } })?.response
+			?.status;
+		if (status === 404) {
+			return (
+				<div className="flex flex-1 flex-col items-center justify-center p-8 text-center gap-4">
+					<p className="text-sm text-muted-foreground">
+						Conversation not found.
+					</p>
+					<Button asChild variant="outline">
+						<Link to="/chats">Back to chats</Link>
+					</Button>
+				</div>
+			);
+		}
 		return (
 			<div className="flex flex-1 flex-col items-center justify-center p-8 text-center gap-4">
 				<p className="text-sm text-destructive">Failed to load conversation.</p>

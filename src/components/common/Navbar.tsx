@@ -117,7 +117,11 @@ export default function UserNavbar() {
 					</Link>
 
 					<div className="hidden sm:block">
-						<DropdownMenu onOpenChange={setIsNotificationsOpen} modal={false}>
+						<DropdownMenu
+							open={isNotificationsOpen}
+							onOpenChange={setIsNotificationsOpen}
+							modal={false}
+						>
 							<DropdownMenuTrigger asChild>
 								<Button
 									variant="ghost"
@@ -143,7 +147,9 @@ export default function UserNavbar() {
 								align="end"
 								sideOffset={8}
 							>
-								<NotificationDropdown />
+								<NotificationDropdown
+									onClose={() => setIsNotificationsOpen(false)}
+								/>
 							</DropdownMenuContent>
 						</DropdownMenu>
 					</div>

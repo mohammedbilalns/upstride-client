@@ -1,9 +1,8 @@
-import { TanStackDevtools } from "@tanstack/react-devtools";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import type { RouterContext } from "@/app/router/routerConfig";
 import ErrorComponent from "@/components/common/Error-Component";
 import NotFoundComponent from "@/components/common/Not-Found";
+import { SocketProvider } from "@/app/contexts/SocketContext";
 import "../styles.css";
 
 /**
@@ -34,20 +33,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
  */
 function RootComponent() {
 	return (
-		<>
+		<SocketProvider>
 			<Outlet />
-			{/* <TanStackDevtools */}
-			{/* 	config={{ */}
-			{/* 		position: "bottom-left", */}
-			{/* 		openHotkey: ["control", "shift", "d"], */}
-			{/* 	}} */}
-			{/* 	plugins={[ */}
-			{/* 		{ */}
-			{/* 			name: "TanStack Router", */}
-			{/* 			render: <TanStackRouterDevtoolsPanel />, */}
-			{/* 		}, */}
-			{/* 	]} */}
-			{/* /> */}
-		</>
+		</SocketProvider>
 	);
 }

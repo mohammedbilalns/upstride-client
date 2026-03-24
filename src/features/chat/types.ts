@@ -64,6 +64,7 @@ export interface GetChatInput {
 
 export interface GetChatOutput {
 	chat: ChatDto | null;
+	receiver: ChatUserDto | null;
 	messages: ChatMessageDto[];
 	total: number;
 	page: number;

@@ -2,9 +2,6 @@ import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import { chatService } from "../services/chat.service";
 import type { GetChatsInput, GetChatInput } from "../types";
 
-/**
- * Hierarchical query key factory for chats.
- */
 export const chatKeys = {
 	all: ["chats"] as const,
 	lists: () => [...chatKeys.all, "list"] as const,
@@ -13,9 +10,6 @@ export const chatKeys = {
 		[...chatKeys.all, "detail", otherUserId] as const,
 };
 
-/**
- * Infinite query options for the chats list .
- */
 export const getChatsInfiniteQueryOptions = (
 	filters: Omit<GetChatsInput, "page"> = {},
 ) =>
@@ -28,9 +22,6 @@ export const getChatsInfiniteQueryOptions = (
 			lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
 	});
 
-/**
- * Infinite query options for a single chat's messages .
- */
 export const getChatInfiniteQueryOptions = (
 	otherUserId: string,
 	filters: Omit<GetChatInput, "page"> = {},
@@ -47,9 +38,6 @@ export const getChatInfiniteQueryOptions = (
 			lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
 	});
 
-/**
- * non-infinite query options for a single chat
- */
 export const getChatQueryOptions = (otherUserId: string) =>
 	queryOptions({
 		queryKey: chatKeys.detail(otherUserId),

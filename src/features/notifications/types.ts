@@ -28,6 +28,7 @@ export interface NotificationDto {
 		email?: boolean;
 	};
 	actorId?: string;
+	relatedEntityId?: string;
 	createdAt: string;
 	updatedAt?: string;
 }

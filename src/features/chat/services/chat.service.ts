@@ -22,11 +22,24 @@ export const chatService = {
 		otherUserId: string,
 		params: GetChatInput = {},
 	): Promise<GetChatOutput> => {
-		const response = await api.get<{ data: GetChatOutput }>(
-			`${ROUTES.CHATS.BASE}${ROUTES.CHATS.BY_USER(otherUserId)}`,
-			{ params },
-		);
-		return response.data.data;
+		try {
+			const response = await api.get<{ data: GetChatOutput }>(
+				`${ROUTES.CHATS.BASE}${ROUTES.CHATS.BY_USER(otherUserId)}`,
+				{ params },
+			);
+			return response.data.data;
+		} catch (error) {
+			const status = (error as { response?: { status?: number } })?.response
+				?.status;
+			if (status === 400) {
+				const notFound = new Error("Not Found") as Error & {
+					response?: { status?: number };
+				};
+				notFound.response = { status: 404 };
+				throw notFound;
+			}
+			throw error;
+		}
 	},
 	sendMessage: async (
 		chatId: string,
