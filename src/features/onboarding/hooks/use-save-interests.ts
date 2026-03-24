@@ -27,7 +27,10 @@ export function useSaveInterests({
 		mutationFn: (payload: SaveInterestsPayload) =>
 			authService.saveInterests(payload),
 		onSuccess: (response) => {
-			const { user, accessToken, csrfToken } = response.data;
+			const payload = response.data;
+			const user = payload?.user;
+			const accessToken = payload?.accessToken;
+			const csrfToken = payload?.csrfToken;
 			if (user && accessToken && csrfToken) {
 				setAuthSession(router, user, accessToken, csrfToken);
 			}

@@ -3,12 +3,30 @@ export type MessageStatus = "send" | "read";
 
 export interface ChatDto {
 	id: string;
-	user1Id: string;
-	user2Id: string;
+	senderId: string;
+	receiverId: string;
+	sender: ChatUserDto;
+	receiver: ChatUserDto;
 	lastMessageId: string | null;
+	lastMessage: ChatLastMessageDto | null;
 	unreadCount: Record<string, number>;
 	createdAt: string;
 	updatedAt: string;
+}
+
+export interface ChatUserDto {
+	id: string;
+	name: string;
+	profilePictureUrl?: string | null;
+}
+
+export interface ChatLastMessageDto {
+	id: string;
+	senderId: string;
+	messageType: "TEXT" | "IMAGE" | "FILE";
+	content: string | null;
+	mediaId: string | null;
+	createdAt: string;
 }
 
 export interface ChatMessageDto {
@@ -39,8 +57,17 @@ export interface GetChatsOutput {
 	totalPages: number;
 }
 
+export interface GetChatInput {
+	page?: number;
+}
+
 export interface GetChatOutput {
-	chat: ChatDto;
+	chat: ChatDto | null;
+	messages: ChatMessageDto[];
+	total: number;
+	page: number;
+	limit: number;
+	totalPages: number;
 }
 
 export interface SendMessageInput {

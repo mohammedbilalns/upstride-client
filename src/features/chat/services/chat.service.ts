@@ -4,6 +4,7 @@ import type {
 	GetChatOutput,
 	GetChatsInput,
 	GetChatsOutput,
+	GetChatInput,
 	MarkMessagesReadOutput,
 	SendMessageInput,
 	SendMessageOutput,
@@ -17,9 +18,13 @@ export const chatService = {
 		);
 		return response.data.data;
 	},
-	getChat: async (otherUserId: string): Promise<GetChatOutput> => {
+	getChat: async (
+		otherUserId: string,
+		params: GetChatInput = {},
+	): Promise<GetChatOutput> => {
 		const response = await api.get<{ data: GetChatOutput }>(
 			`${ROUTES.CHATS.BASE}${ROUTES.CHATS.BY_USER(otherUserId)}`,
+			{ params },
 		);
 		return response.data.data;
 	},

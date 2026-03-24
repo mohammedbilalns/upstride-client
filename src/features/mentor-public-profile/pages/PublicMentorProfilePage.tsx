@@ -219,7 +219,7 @@ export function PublicMentorProfilePage({
 	}
 
 	return (
-		<div className="px-6 py-8 space-y-8">
+		<div className="container mx-auto px-6 py-8 space-y-8">
 			<div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-6">
 				<Card className="border-border/60 shadow-sm">
 					<CardHeader className="space-y-4">
@@ -249,7 +249,17 @@ export function PublicMentorProfilePage({
 							</div>
 							<div className="flex items-center gap-3">
 								<Button asChild className="px-6">
-									<Link to="/chat/$mentorId" params={{ mentorId }}>
+									<Link
+										to="/chats/$chatId"
+										params={{ chatId: profile.user.id }}
+										state={{
+											receiver: {
+												id: profile.user.id,
+												name: profile.user.name,
+												profilePictureUrl: profile.user.avatar ?? null,
+											},
+										}}
+									>
 										Chat
 									</Link>
 								</Button>
