@@ -102,6 +102,16 @@ export const ROUTES = {
 		REMOVE_MENTOR: (listId: string, mentorId: string) =>
 			`/${listId}/mentors/${mentorId}`,
 	},
+	ARTICLES: {
+		BASE: "/articles",
+		ROOT: "/",
+		BY_SLUG: (slug: string) => `/${slug}`,
+		BY_ID: (articleId: string) => `/${articleId}`,
+		COMMENTS: (articleId: string) => `/${articleId}/comments`,
+		COMMENT_BY_ID: (commentId: string) => `/comments/${commentId}`,
+		ARTICLE_REACTIONS: (articleId: string) => `/${articleId}/reactions`,
+		COMMENT_REACTIONS: (commentId: string) => `/comments/${commentId}/reactions`,
+	},
 	RECURRING_RULES: {
 		BASE: "/recurring-rules",
 		ROOT: "/",
