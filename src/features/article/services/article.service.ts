@@ -17,6 +17,8 @@ import type {
 	ReactToArticleResponse,
 	ReactToCommentInput,
 	ReactToCommentResponse,
+	ReportInput,
+	ReportResponse,
 	UpdateArticleInput,
 	UpdateArticleResponse,
 	UpdateCommentInput,
@@ -36,6 +38,17 @@ export const articleService = {
 					interest: category,
 				},
 			},
+		);
+		return response.data.data;
+	},
+
+	getMentorArticles: async (params: {
+		page: number;
+		search?: string;
+	}): Promise<GetArticlesResponse> => {
+		const response = await api.get<{ data: GetArticlesResponse }>(
+			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.MENTOR}`,
+			{ params },
 		);
 		return response.data.data;
 	},
@@ -137,6 +150,28 @@ export const articleService = {
 		const response = await api.post<{ data: ReactToCommentResponse }>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.COMMENT_REACTIONS(input.commentId)}`,
 			{ reactionType: input.reactionType },
+		);
+		return response.data.data;
+	},
+
+	reportArticle: async (
+		articleId: string,
+		input: ReportInput,
+	): Promise<ReportResponse> => {
+		const response = await api.post<{ data: ReportResponse }>(
+			`${ROUTES.REPORTS.BASE}${ROUTES.REPORTS.REPORT_ARTICLE(articleId)}`,
+			input,
+		);
+		return response.data.data;
+	},
+
+	reportUser: async (
+		userId: string,
+		input: ReportInput,
+	): Promise<ReportResponse> => {
+		const response = await api.post<{ data: ReportResponse }>(
+			`${ROUTES.REPORTS.BASE}${ROUTES.REPORTS.REPORT_USER(userId)}`,
+			input,
 		);
 		return response.data.data;
 	},

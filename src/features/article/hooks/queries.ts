@@ -22,6 +22,18 @@ export const articleQueries = {
 			getNextPageParam: (lastPage) =>
 				lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
 		}),
+	mentorListInfinite: (params: { search?: string } = {}) =>
+		infiniteQueryOptions({
+			queryKey: [...articleQueries.lists(), "mentor-infinite", params],
+			queryFn: ({ pageParam }) =>
+				articleService.getMentorArticles({
+					page: pageParam as number,
+					...params,
+				}),
+			initialPageParam: 1,
+			getNextPageParam: (lastPage) =>
+				lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
+		}),
 	topTags: () =>
 		queryOptions({
 			queryKey: [...articleQueries.all, "top-tags"],
@@ -32,5 +44,31 @@ export const articleQueries = {
 		queryOptions({
 			queryKey: [...articleQueries.details(), slug],
 			queryFn: () => articleService.getArticle(slug),
+		}),
+	comments: (params: {
+		articleId: string;
+		page: number;
+		parentId?: string | null;
+	}) =>
+		queryOptions({
+			queryKey: [...articleQueries.all, params.articleId, "comments", params],
+			queryFn: () => articleService.getComments(params),
+		}),
+	commentsInfinite: (params: { articleId: string; parentId?: string | null }) =>
+		infiniteQueryOptions({
+			queryKey: [
+				...articleQueries.all,
+				params.articleId,
+				"comments-infinite",
+				params,
+			],
+			queryFn: ({ pageParam }) =>
+				articleService.getComments({
+					...params,
+					page: pageParam as number,
+				}),
+			initialPageParam: 1,
+			getNextPageParam: (lastPage) =>
+				lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
 		}),
 };

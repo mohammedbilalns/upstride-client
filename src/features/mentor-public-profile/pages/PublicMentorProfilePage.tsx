@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
+import { Flag } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { ReportDialog } from "@/components/common/ReportDialog";
+import { useProfile } from "@/features/profile-management/hooks/use-profile";
 import { toast } from "sonner";
 import type { ApiError } from "@/api/apiError";
 import { AddBalanceForm } from "@/components/common/AddBalanceForm";
@@ -35,6 +38,7 @@ const PENDING_BOOKING_STORAGE_KEY = "pending-booking-slot";
 export function PublicMentorProfilePage({
 	mentorId,
 }: PublicMentorProfilePageProps) {
+	const { data: currentUser } = useProfile();
 	const queryClient = useQueryClient();
 	const [selectedDate, setSelectedDate] = useState<Date | undefined>(
 		new Date(),
@@ -273,6 +277,17 @@ export function PublicMentorProfilePage({
 											Website
 										</a>
 									</Button>
+								)}
+								{currentUser?.id !== mentorId && (
+									<ReportDialog
+										targetId={mentorId}
+										targetType="USER"
+										trigger={
+											<Button variant="outline" className="px-4">
+												<Flag className="h-4 w-4" />
+											</Button>
+										}
+									/>
 								)}
 							</div>
 						</div>

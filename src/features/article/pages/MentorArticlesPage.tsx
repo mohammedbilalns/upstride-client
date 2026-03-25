@@ -9,7 +9,7 @@ import type { ArticleDto } from "../types";
 export function MentorArticlesPage() {
 	const navigate = useNavigate();
 	const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-		useInfiniteQuery(articleQueries.listInfinite({}));
+		useInfiniteQuery(articleQueries.mentorListInfinite());
 
 	const items = data?.pages.flatMap((page) => page.items) ?? [];
 

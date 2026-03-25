@@ -3,6 +3,7 @@ import {
 	Bell,
 	Bookmark,
 	Coins,
+	FileText,
 	LayoutDashboard,
 	LogOut,
 	Menu,
@@ -211,15 +212,26 @@ export default function UserNavbar() {
 									</Link>
 								</DropdownMenuItem>
 								{user?.role === "MENTOR" && (
-									<DropdownMenuItem asChild>
-										<Link
-											to="/mentor-dashboard"
-											className="cursor-pointer w-full flex items-center"
-										>
-											<LayoutDashboard className="mr-2 h-4 w-4" />
-											<span>Mentor Dashboard</span>
-										</Link>
-									</DropdownMenuItem>
+									<>
+										<DropdownMenuItem asChild>
+											<Link
+												to="/mentor/articles"
+												className="cursor-pointer w-full flex items-center"
+											>
+												<FileText className="mr-2 h-4 w-4" />
+												<span>My Articles</span>
+											</Link>
+										</DropdownMenuItem>
+										<DropdownMenuItem asChild>
+											<Link
+												to="/mentor-dashboard"
+												className="cursor-pointer w-full flex items-center"
+											>
+												<LayoutDashboard className="mr-2 h-4 w-4" />
+												<span>Mentor Dashboard</span>
+											</Link>
+										</DropdownMenuItem>
+									</>
 								)}
 								<DropdownMenuSeparator />
 								<DropdownMenuItem
@@ -363,20 +375,36 @@ export default function UserNavbar() {
 								</Link>
 							</Button>
 							{user?.role === "MENTOR" && (
-								<Button
-									variant="outline"
-									size="sm"
-									className="w-full justify-start text-xs h-9 rounded-lg"
-									asChild
-								>
-									<Link
-										to="/mentor-dashboard"
-										onClick={() => setIsMenuOpen(false)}
+								<>
+									<Button
+										variant="outline"
+										size="sm"
+										className="w-full justify-start text-xs h-9 rounded-lg"
+										asChild
 									>
-										<LayoutDashboard className="mr-2 h-3.5 w-3.5" />
-										Mentor Dashboard
-									</Link>
-								</Button>
+										<Link
+											to="/mentor/articles"
+											onClick={() => setIsMenuOpen(false)}
+										>
+											<FileText className="mr-2 h-3.5 w-3.5" />
+											My Articles
+										</Link>
+									</Button>
+									<Button
+										variant="outline"
+										size="sm"
+										className="w-full justify-start text-xs h-9 rounded-lg"
+										asChild
+									>
+										<Link
+											to="/mentor-dashboard"
+											onClick={() => setIsMenuOpen(false)}
+										>
+											<LayoutDashboard className="mr-2 h-3.5 w-3.5" />
+											Mentor Dashboard
+										</Link>
+									</Button>
+								</>
 							)}
 							<Button
 								variant="outline"

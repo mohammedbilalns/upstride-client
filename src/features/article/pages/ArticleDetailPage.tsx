@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Eye, Share2 } from "lucide-react";
+import { ArrowLeft, Eye } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,18 +7,38 @@ import { Separator } from "@/components/ui/separator";
 import { articleQueries } from "../hooks/queries";
 import { ArticleManagement } from "../components/ArticleManagement";
 import { format } from "date-fns";
+import { Link } from "@tanstack/react-router";
 import { Route } from "@/routes/_user-layout/articles/$articleId/index";
+import { ReactionButtons } from "../components/ReactionButtons";
+import { ReportDialog } from "@/components/common/ReportDialog";
+import { CommentsSection } from "../components/CommentsSection";
+import { useProfile } from "@/features/profile-management/hooks/use-profile";
 
 export function ArticleDetailPage() {
 	const { articleId } = Route.useParams();
+	const { data: profile } = useProfile();
 	const { data } = useQuery(articleQueries.detail(articleId));
 
 	if (!data) return null;
 
-	const { article, isAuthor } = data;
+	const { article, isAuthor, userReaction } = data;
 
 	return (
-		<div className="container mx-auto px-4 md:px-6 py-12 max-w-4xl">
+		<div className="container mx-auto px-4 md:px-6 py-12 max-w-5xl">
+			<div className="mb-8">
+				<Button
+					variant="ghost"
+					size="sm"
+					asChild
+					className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50 -ml-2"
+				>
+					<Link to="/articles" search={{ page: 1 }}>
+						<ArrowLeft className="h-4 w-4 mr-2" />
+						Back to Articles
+					</Link>
+				</Button>
+			</div>
+
 			<article className="space-y-8">
 				<div className="space-y-6">
 					<div className="flex flex-wrap items-center justify-between gap-4">
@@ -33,11 +53,16 @@ export function ArticleDetailPage() {
 								</Badge>
 							))}
 						</div>
-						<ArticleManagement
-							articleId={article.id}
-							slug={article.slug}
-							isAuthor={!!isAuthor}
-						/>
+						<div className="flex items-center gap-2">
+							{!isAuthor && (
+								<ReportDialog targetId={article.id} targetType="ARTICLE" />
+							)}
+							<ArticleManagement
+								articleId={article.id}
+								slug={article.slug}
+								isAuthor={!!isAuthor}
+							/>
+						</div>
 					</div>
 
 					<h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50 leading-tight">
@@ -72,17 +97,6 @@ export function ArticleDetailPage() {
 									{article.views}
 								</span>
 							</div>
-							<Separator
-								orientation="vertical"
-								className="h-8 hidden sm:block"
-							/>
-							<Button
-								variant="outline"
-								size="icon"
-								className="rounded-full h-10 w-10"
-							>
-								<Share2 className="h-4 w-4" />
-							</Button>
 						</div>
 					</div>
 				</div>
@@ -103,6 +117,23 @@ export function ArticleDetailPage() {
 				</div>
 
 				<Separator className="my-12" />
+
+				<div className="flex items-center justify-between py-6 border-b border-zinc-100 dark:border-zinc-800">
+					<ReactionButtons
+						articleId={article.id}
+						slug={article.slug}
+						likesCount={article.likesCount}
+						dislikesCount={article.dislikesCount}
+						userReaction={userReaction}
+					/>
+					<div className="text-sm text-zinc-500 font-medium">
+						{article.commentsCount} Comments
+					</div>
+				</div>
+
+				<div className="pt-8">
+					<CommentsSection articleId={article.id} currentUserId={profile?.id} />
+				</div>
 			</article>
 		</div>
 	);

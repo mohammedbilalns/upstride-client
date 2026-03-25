@@ -1,6 +1,14 @@
 import { format } from "date-fns";
-import { Calendar, FileX2, Loader2, ShieldAlert, UserX } from "lucide-react";
+import {
+	Calendar,
+	ExternalLink,
+	FileX2,
+	Loader2,
+	ShieldAlert,
+	UserX,
+} from "lucide-react";
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -187,6 +195,16 @@ export function ReportTable({ reports }: ReportTableProps) {
 										<span className="text-xs text-muted-foreground">
 											ID: {report.targetId}
 										</span>
+										{report.targetType === "ARTICLE" && report.targetSlug && (
+											<Link
+												to="/articles/$articleId"
+												params={{ articleId: report.targetSlug }}
+												className="text-xs text-primary hover:underline flex items-center gap-1 w-fit mt-1 font-medium"
+											>
+												<ExternalLink className="w-3 h-3" />
+												View Article
+											</Link>
+										)}
 									</div>
 								</TableCell>
 								<TableCell>
@@ -233,34 +251,38 @@ export function ReportTable({ reports }: ReportTableProps) {
 											<ShieldAlert className="w-4 h-4 mr-2" />
 											Resolve
 										</Button>
-										{report.targetType === "USER" ? (
-											<Button
-												variant="ghost"
-												size="sm"
-												className="text-rose-600 hover:text-rose-700 hover:bg-rose-50/50 dark:hover:bg-rose-900/20 transition-all font-semibold"
-												onClick={() => {
-													setSelectedReport(report);
-													setActionType("block-user");
-												}}
-												disabled={isProcessing}
-											>
-												<UserX className="w-4 h-4 mr-2" />
-												Block User
-											</Button>
-										) : (
-											<Button
-												variant="ghost"
-												size="sm"
-												className="text-rose-600 hover:text-rose-700 hover:bg-rose-50/50 dark:hover:bg-rose-900/20 transition-all font-semibold"
-												onClick={() => {
-													setSelectedReport(report);
-													setActionType("block-article");
-												}}
-												disabled={isProcessing}
-											>
-												<FileX2 className="w-4 h-4 mr-2" />
-												Block Article
-											</Button>
+										{report.status === "PENDING" && (
+											<>
+												{report.targetType === "USER" ? (
+													<Button
+														variant="ghost"
+														size="sm"
+														className="text-rose-600 hover:text-rose-700 hover:bg-rose-50/50 dark:hover:bg-rose-900/20 transition-all font-semibold"
+														onClick={() => {
+															setSelectedReport(report);
+															setActionType("block-user");
+														}}
+														disabled={isProcessing}
+													>
+														<UserX className="w-4 h-4 mr-2" />
+														Block User
+													</Button>
+												) : (
+													<Button
+														variant="ghost"
+														size="sm"
+														className="text-rose-600 hover:text-rose-700 hover:bg-rose-50/50 dark:hover:bg-rose-900/20 transition-all font-semibold"
+														onClick={() => {
+															setSelectedReport(report);
+															setActionType("block-article");
+														}}
+														disabled={isProcessing}
+													>
+														<FileX2 className="w-4 h-4 mr-2" />
+														Block Article
+													</Button>
+												)}
+											</>
 										)}
 									</div>
 								</TableCell>

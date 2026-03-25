@@ -18,7 +18,18 @@ export interface ArticleDto {
 	tags: string[];
 	views: number;
 	commentsCount: number;
+	likesCount: number;
+	dislikesCount: number;
 	createdAt: string;
+}
+
+export interface ReportInput {
+	reason: string;
+	description: string;
+}
+
+export interface ReportResponse {
+	id: string;
 }
 
 export interface ArticleCommentDto {
@@ -26,6 +37,10 @@ export interface ArticleCommentDto {
 	articleId: string;
 	parentId: string | null;
 	userId: string;
+	authorSnapshot: {
+		name: string;
+		avatarUrl?: string;
+	};
 	likesCount: number;
 	repliesCount: number;
 	content: string;
@@ -47,6 +62,7 @@ export interface GetArticlesInput {
 	search?: string;
 	skill?: string;
 	category?: string;
+	authorId?: string;
 }
 
 export interface GetTopTagsResponse {
@@ -64,6 +80,7 @@ export interface GetArticlesResponse {
 export interface GetArticleResponse {
 	article: ArticleDto;
 	isAuthor?: boolean;
+	userReaction?: ArticleReactionType;
 }
 
 export interface CreateArticleInput {
