@@ -7,13 +7,20 @@ import { ArticleImageCropper } from "./ArticleImageCropper";
 
 interface Props {
 	value?: string;
+	previewUrl?: string;
 	onChange: (value: string) => void;
 	onRemove: () => void;
 }
 
-export function ArticleImageUpload({ value, onChange, onRemove }: Props) {
+export function ArticleImageUpload({
+	value,
+	previewUrl,
+	onChange,
+	onRemove,
+}: Props) {
 	const [isUploading, setIsUploading] = useState(false);
 	const [croppingImage, setCroppingImage] = useState<string | null>(null);
+	const [localPreviewUrl, setLocalPreviewUrl] = useState<string | null>(null);
 
 	const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
@@ -30,6 +37,9 @@ export function ArticleImageUpload({ value, onChange, onRemove }: Props) {
 		setCroppingImage(null);
 		setIsUploading(true);
 		try {
+			const localUrl = URL.createObjectURL(croppedBlob);
+			setLocalPreviewUrl(localUrl);
+
 			const file = new File([croppedBlob], "featured-image.jpg", {
 				type: "image/jpeg",
 			});
@@ -50,10 +60,10 @@ export function ArticleImageUpload({ value, onChange, onRemove }: Props) {
 	return (
 		<div className="space-y-4">
 			<div className="relative aspect-video w-full overflow-hidden rounded-2xl border-2 border-dashed border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/50 flex flex-col items-center justify-center transition-all hover:bg-zinc-100 dark:hover:bg-zinc-900 group">
-				{value ? (
+				{value || localPreviewUrl || previewUrl ? (
 					<>
 						<img
-							src={value.startsWith("http") ? value : `/api/files/${value}`}
+							src={localPreviewUrl || previewUrl || value}
 							alt="Featured"
 							className="h-full w-full object-cover"
 						/>
@@ -75,7 +85,10 @@ export function ArticleImageUpload({ value, onChange, onRemove }: Props) {
 								variant="destructive"
 								size="sm"
 								className="rounded-xl h-9 px-4"
-								onClick={onRemove}
+								onClick={() => {
+									setLocalPreviewUrl(null);
+									onRemove();
+								}}
 							>
 								<X className="h-4 w-4 mr-2" />
 								Remove

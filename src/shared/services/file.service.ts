@@ -95,6 +95,7 @@ export const fileService = {
 			category,
 		);
 		await fileService.uploadFile(data.url, data.fields, file);
+
 		return data.key;
 	},
 };

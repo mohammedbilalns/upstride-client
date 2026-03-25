@@ -25,7 +25,7 @@ const articleSchema = z.object({
 		.trim()
 		.min(200, "Content must be at least 200 characters")
 		.max(50000, "Content is too long"),
-	featuredImageUrl: z.string().optional().or(z.literal("")),
+	featuredImageUrl: z.string().optional().or(z.literal("")), // This field name in form corresponds to the ID/Key handled by handleFileUpload
 	tags: z
 		.array(z.string().trim().min(1))
 		.max(6, "Maximum 6 tags allowed")

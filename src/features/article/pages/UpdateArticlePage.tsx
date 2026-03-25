@@ -78,10 +78,10 @@ export function UpdateArticlePage() {
 				"content",
 				data.article.previewContent || data.article.description || "",
 			);
-			form.setFieldValue("featuredImageUrl", data.article.featuredImageUrl);
+			form.setFieldValue("featuredImageUrl", data.article.featuredImageId);
 			form.setFieldValue("tags", data.article.tags);
 		}
-	}, [data]);
+	}, [data, form]);
 
 	const onConfirmUpdate = () => {
 		if (!data?.article.id) return;
@@ -187,6 +187,7 @@ export function UpdateArticlePage() {
 										<Label>Featured Image</Label>
 										<ArticleImageUpload
 											value={field.state.value}
+											previewUrl={data?.article.featuredImageUrl}
 											onChange={(url) => field.handleChange(url)}
 											onRemove={() => field.handleChange("")}
 										/>

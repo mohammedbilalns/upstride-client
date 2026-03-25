@@ -11,16 +11,14 @@ export interface ArticleDto {
 	authorSnapshot: ArticleAuthorSnapshot;
 	slug: string;
 	featuredImageUrl: string;
+	featuredImageId: string;
 	title: string;
 	description: string;
 	previewContent: string;
 	tags: string[];
-	isActive: boolean;
 	views: number;
 	commentsCount: number;
-	isArchived: boolean;
 	createdAt: string;
-	updatedAt: string;
 }
 
 export interface ArticleCommentDto {
@@ -85,7 +83,6 @@ export interface UpdateArticleInput {
 	description?: string;
 	featuredImageUrl?: string;
 	tags?: string[];
-	isArchived?: boolean;
 }
 
 export interface UpdateArticleResponse {

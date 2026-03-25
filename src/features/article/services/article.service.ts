@@ -74,7 +74,6 @@ export const articleService = {
 				description: input.description,
 				featuredImageUrl: input.featuredImageUrl,
 				tags: input.tags,
-				isArchived: input.isArchived,
 			},
 		);
 		return response.data.data;

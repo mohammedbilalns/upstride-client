@@ -114,8 +114,8 @@ export function ArticlesPage() {
 
 				<section className="flex-1 min-w-0">
 					{isLoading ? (
-						<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
-							{[1, 2, 4, 5].map((i) => (
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+							{[1, 2, 3, 4, 5, 6].map((i) => (
 								<div
 									key={i}
 									className="h-[400px] rounded-2xl bg-zinc-100 dark:bg-zinc-900 animate-pulse"
@@ -137,7 +137,7 @@ export function ArticlesPage() {
 						</div>
 					) : (
 						<>
-							<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
+							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
 								{items.map((article: ArticleDto) => (
 									<ArticleCard key={article.id} article={article} />
 								))}

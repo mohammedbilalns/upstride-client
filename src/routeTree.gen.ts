@@ -28,6 +28,7 @@ import { Route as MentorLayoutMentorSessionsRouteImport } from './routes/_mentor
 import { Route as MentorLayoutMentorRuleManagementRouteImport } from './routes/_mentor-layout/mentor-rule-management'
 import { Route as MentorLayoutMentorDashboardRouteImport } from './routes/_mentor-layout/mentor-dashboard'
 import { Route as AdminLayoutUserManagementRouteImport } from './routes/_admin-layout/user-management'
+import { Route as AdminLayoutReportManagementRouteImport } from './routes/_admin-layout/report-management'
 import { Route as AdminLayoutPlatformSettingsRouteImport } from './routes/_admin-layout/platform-settings'
 import { Route as AdminLayoutMentorManagementRouteImport } from './routes/_admin-layout/mentor-management'
 import { Route as AdminLayoutDashboardRouteImport } from './routes/_admin-layout/dashboard'
@@ -142,6 +143,12 @@ const AdminLayoutUserManagementRoute =
   AdminLayoutUserManagementRouteImport.update({
     id: '/user-management',
     path: '/user-management',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
+const AdminLayoutReportManagementRoute =
+  AdminLayoutReportManagementRouteImport.update({
+    id: '/report-management',
+    path: '/report-management',
     getParentRoute: () => AdminLayoutRoute,
   } as any)
 const AdminLayoutPlatformSettingsRoute =
@@ -261,6 +268,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AdminLayoutDashboardRoute
   '/mentor-management': typeof AdminLayoutMentorManagementRoute
   '/platform-settings': typeof AdminLayoutPlatformSettingsRoute
+  '/report-management': typeof AdminLayoutReportManagementRoute
   '/user-management': typeof AdminLayoutUserManagementRoute
   '/mentor-dashboard': typeof MentorLayoutMentorDashboardRoute
   '/mentor-rule-management': typeof MentorLayoutMentorRuleManagementRoute
@@ -297,6 +305,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AdminLayoutDashboardRoute
   '/mentor-management': typeof AdminLayoutMentorManagementRoute
   '/platform-settings': typeof AdminLayoutPlatformSettingsRoute
+  '/report-management': typeof AdminLayoutReportManagementRoute
   '/user-management': typeof AdminLayoutUserManagementRoute
   '/mentor-dashboard': typeof MentorLayoutMentorDashboardRoute
   '/mentor-rule-management': typeof MentorLayoutMentorRuleManagementRoute
@@ -333,6 +342,7 @@ export interface FileRoutesById {
   '/_admin-layout/dashboard': typeof AdminLayoutDashboardRoute
   '/_admin-layout/mentor-management': typeof AdminLayoutMentorManagementRoute
   '/_admin-layout/platform-settings': typeof AdminLayoutPlatformSettingsRoute
+  '/_admin-layout/report-management': typeof AdminLayoutReportManagementRoute
   '/_admin-layout/user-management': typeof AdminLayoutUserManagementRoute
   '/_mentor-layout/mentor-dashboard': typeof MentorLayoutMentorDashboardRoute
   '/_mentor-layout/mentor-rule-management': typeof MentorLayoutMentorRuleManagementRoute
@@ -372,6 +382,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/mentor-management'
     | '/platform-settings'
+    | '/report-management'
     | '/user-management'
     | '/mentor-dashboard'
     | '/mentor-rule-management'
@@ -408,6 +419,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/mentor-management'
     | '/platform-settings'
+    | '/report-management'
     | '/user-management'
     | '/mentor-dashboard'
     | '/mentor-rule-management'
@@ -443,6 +455,7 @@ export interface FileRouteTypes {
     | '/_admin-layout/dashboard'
     | '/_admin-layout/mentor-management'
     | '/_admin-layout/platform-settings'
+    | '/_admin-layout/report-management'
     | '/_admin-layout/user-management'
     | '/_mentor-layout/mentor-dashboard'
     | '/_mentor-layout/mentor-rule-management'
@@ -616,6 +629,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLayoutUserManagementRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
+    '/_admin-layout/report-management': {
+      id: '/_admin-layout/report-management'
+      path: '/report-management'
+      fullPath: '/report-management'
+      preLoaderRoute: typeof AdminLayoutReportManagementRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
     '/_admin-layout/platform-settings': {
       id: '/_admin-layout/platform-settings'
       path: '/platform-settings'
@@ -758,6 +778,7 @@ interface AdminLayoutRouteChildren {
   AdminLayoutDashboardRoute: typeof AdminLayoutDashboardRoute
   AdminLayoutMentorManagementRoute: typeof AdminLayoutMentorManagementRoute
   AdminLayoutPlatformSettingsRoute: typeof AdminLayoutPlatformSettingsRoute
+  AdminLayoutReportManagementRoute: typeof AdminLayoutReportManagementRoute
   AdminLayoutUserManagementRoute: typeof AdminLayoutUserManagementRoute
 }
 
@@ -767,6 +788,7 @@ const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
   AdminLayoutDashboardRoute: AdminLayoutDashboardRoute,
   AdminLayoutMentorManagementRoute: AdminLayoutMentorManagementRoute,
   AdminLayoutPlatformSettingsRoute: AdminLayoutPlatformSettingsRoute,
+  AdminLayoutReportManagementRoute: AdminLayoutReportManagementRoute,
   AdminLayoutUserManagementRoute: AdminLayoutUserManagementRoute,
 }
 
