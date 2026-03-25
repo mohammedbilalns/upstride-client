@@ -23,7 +23,9 @@ import type {
 } from "../types";
 
 export const articleService = {
-	getArticles: async (input: GetArticlesInput): Promise<GetArticlesResponse> => {
+	getArticles: async (
+		input: GetArticlesInput,
+	): Promise<GetArticlesResponse> => {
 		const response = await api.get<{ data: GetArticlesResponse }>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.ROOT}`,
 			{ params: input },
@@ -70,7 +72,9 @@ export const articleService = {
 		);
 	},
 
-	getComments: async (input: GetCommentsInput): Promise<GetCommentsResponse> => {
+	getComments: async (
+		input: GetCommentsInput,
+	): Promise<GetCommentsResponse> => {
 		const response = await api.get<{ data: GetCommentsResponse }>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.COMMENTS(input.articleId)}`,
 			{ params: { page: input.page, parentId: input.parentId } },
