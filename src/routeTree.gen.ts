@@ -41,7 +41,6 @@ import { Route as UserLayoutArticlesIndexRouteImport } from './routes/_user-layo
 import { Route as UserLayoutMentorsMentorIdRouteImport } from './routes/_user-layout/mentors/$mentorId'
 import { Route as UserLayoutMentorRegisterRouteImport } from './routes/_user-layout/mentor.register'
 import { Route as UserLayoutChatsChatIdRouteImport } from './routes/_user-layout/chats/$chatId'
-import { Route as UserLayoutArticlesArticleIdRouteImport } from './routes/_user-layout/articles/$articleId'
 import { Route as UserLayoutProfileBookmarkedMentorsIndexRouteImport } from './routes/_user-layout/profile/bookmarked-mentors/index'
 import { Route as UserLayoutMentorArticlesIndexRouteImport } from './routes/_user-layout/mentor/articles/index'
 import { Route as UserLayoutArticlesArticleIdIndexRouteImport } from './routes/_user-layout/articles/$articleId/index'
@@ -217,12 +216,6 @@ const UserLayoutChatsChatIdRoute = UserLayoutChatsChatIdRouteImport.update({
   path: '/$chatId',
   getParentRoute: () => UserLayoutChatsRoute,
 } as any)
-const UserLayoutArticlesArticleIdRoute =
-  UserLayoutArticlesArticleIdRouteImport.update({
-    id: '/articles/$articleId',
-    path: '/articles/$articleId',
-    getParentRoute: () => UserLayoutRoute,
-  } as any)
 const UserLayoutProfileBookmarkedMentorsIndexRoute =
   UserLayoutProfileBookmarkedMentorsIndexRouteImport.update({
     id: '/bookmarked-mentors/',
@@ -237,9 +230,9 @@ const UserLayoutMentorArticlesIndexRoute =
   } as any)
 const UserLayoutArticlesArticleIdIndexRoute =
   UserLayoutArticlesArticleIdIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => UserLayoutArticlesArticleIdRoute,
+    id: '/articles/$articleId/',
+    path: '/articles/$articleId/',
+    getParentRoute: () => UserLayoutRoute,
   } as any)
 const UserLayoutProfileBookmarkedMentorsListIdRoute =
   UserLayoutProfileBookmarkedMentorsListIdRouteImport.update({
@@ -282,7 +275,6 @@ export interface FileRoutesByFullPath {
   '/mentors': typeof UserLayoutMentorsRouteWithChildren
   '/profile': typeof UserLayoutProfileRouteWithChildren
   '/sessions': typeof UserLayoutSessionsRoute
-  '/articles/$articleId': typeof UserLayoutArticlesArticleIdRouteWithChildren
   '/chats/$chatId': typeof UserLayoutChatsChatIdRoute
   '/mentor/register': typeof UserLayoutMentorRegisterRoute
   '/mentors/$mentorId': typeof UserLayoutMentorsMentorIdRoute
@@ -357,7 +349,6 @@ export interface FileRoutesById {
   '/_user-layout/profile': typeof UserLayoutProfileRouteWithChildren
   '/_user-layout/sessions': typeof UserLayoutSessionsRoute
   '/_public-layout/': typeof PublicLayoutIndexRoute
-  '/_user-layout/articles/$articleId': typeof UserLayoutArticlesArticleIdRouteWithChildren
   '/_user-layout/chats/$chatId': typeof UserLayoutChatsChatIdRoute
   '/_user-layout/mentor/register': typeof UserLayoutMentorRegisterRoute
   '/_user-layout/mentors/$mentorId': typeof UserLayoutMentorsMentorIdRoute
@@ -396,7 +387,6 @@ export interface FileRouteTypes {
     | '/mentors'
     | '/profile'
     | '/sessions'
-    | '/articles/$articleId'
     | '/chats/$chatId'
     | '/mentor/register'
     | '/mentors/$mentorId'
@@ -470,7 +460,6 @@ export interface FileRouteTypes {
     | '/_user-layout/profile'
     | '/_user-layout/sessions'
     | '/_public-layout/'
-    | '/_user-layout/articles/$articleId'
     | '/_user-layout/chats/$chatId'
     | '/_user-layout/mentor/register'
     | '/_user-layout/mentors/$mentorId'
@@ -720,13 +709,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserLayoutChatsChatIdRouteImport
       parentRoute: typeof UserLayoutChatsRoute
     }
-    '/_user-layout/articles/$articleId': {
-      id: '/_user-layout/articles/$articleId'
-      path: '/articles/$articleId'
-      fullPath: '/articles/$articleId'
-      preLoaderRoute: typeof UserLayoutArticlesArticleIdRouteImport
-      parentRoute: typeof UserLayoutRoute
-    }
     '/_user-layout/profile/bookmarked-mentors/': {
       id: '/_user-layout/profile/bookmarked-mentors/'
       path: '/bookmarked-mentors'
@@ -743,10 +725,10 @@ declare module '@tanstack/react-router' {
     }
     '/_user-layout/articles/$articleId/': {
       id: '/_user-layout/articles/$articleId/'
-      path: '/'
+      path: '/articles/$articleId'
       fullPath: '/articles/$articleId/'
       preLoaderRoute: typeof UserLayoutArticlesArticleIdIndexRouteImport
-      parentRoute: typeof UserLayoutArticlesArticleIdRoute
+      parentRoute: typeof UserLayoutRoute
     }
     '/_user-layout/profile/bookmarked-mentors/$listId': {
       id: '/_user-layout/profile/bookmarked-mentors/$listId'
@@ -890,21 +872,6 @@ const UserLayoutProfileRouteChildren: UserLayoutProfileRouteChildren = {
 const UserLayoutProfileRouteWithChildren =
   UserLayoutProfileRoute._addFileChildren(UserLayoutProfileRouteChildren)
 
-interface UserLayoutArticlesArticleIdRouteChildren {
-  UserLayoutArticlesArticleIdIndexRoute: typeof UserLayoutArticlesArticleIdIndexRoute
-}
-
-const UserLayoutArticlesArticleIdRouteChildren: UserLayoutArticlesArticleIdRouteChildren =
-  {
-    UserLayoutArticlesArticleIdIndexRoute:
-      UserLayoutArticlesArticleIdIndexRoute,
-  }
-
-const UserLayoutArticlesArticleIdRouteWithChildren =
-  UserLayoutArticlesArticleIdRoute._addFileChildren(
-    UserLayoutArticlesArticleIdRouteChildren,
-  )
-
 interface UserLayoutRouteChildren {
   UserLayoutChatsRoute: typeof UserLayoutChatsRouteWithChildren
   UserLayoutCoinsRoute: typeof UserLayoutCoinsRoute
@@ -913,8 +880,8 @@ interface UserLayoutRouteChildren {
   UserLayoutMentorsRoute: typeof UserLayoutMentorsRouteWithChildren
   UserLayoutProfileRoute: typeof UserLayoutProfileRouteWithChildren
   UserLayoutSessionsRoute: typeof UserLayoutSessionsRoute
-  UserLayoutArticlesArticleIdRoute: typeof UserLayoutArticlesArticleIdRouteWithChildren
   UserLayoutArticlesIndexRoute: typeof UserLayoutArticlesIndexRoute
+  UserLayoutArticlesArticleIdIndexRoute: typeof UserLayoutArticlesArticleIdIndexRoute
 }
 
 const UserLayoutRouteChildren: UserLayoutRouteChildren = {
@@ -925,9 +892,8 @@ const UserLayoutRouteChildren: UserLayoutRouteChildren = {
   UserLayoutMentorsRoute: UserLayoutMentorsRouteWithChildren,
   UserLayoutProfileRoute: UserLayoutProfileRouteWithChildren,
   UserLayoutSessionsRoute: UserLayoutSessionsRoute,
-  UserLayoutArticlesArticleIdRoute:
-    UserLayoutArticlesArticleIdRouteWithChildren,
   UserLayoutArticlesIndexRoute: UserLayoutArticlesIndexRoute,
+  UserLayoutArticlesArticleIdIndexRoute: UserLayoutArticlesArticleIdIndexRoute,
 }
 
 const UserLayoutRouteWithChildren = UserLayoutRoute._addFileChildren(

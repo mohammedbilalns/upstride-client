@@ -34,7 +34,7 @@ export function ArticleFilters({
 					<p className="text-xs font-bold tracking-widest text-zinc-500 dark:text-zinc-400 uppercase">
 						Filters
 					</p>
-					{(search.skill || search.category || search.search) && (
+					{(search.category || search.search) && (
 						<Button
 							variant="ghost"
 							size="sm"
@@ -47,30 +47,6 @@ export function ArticleFilters({
 				</div>
 
 				<div className="space-y-4">
-					<div className="space-y-2">
-						<label className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-							Skill
-						</label>
-						<Select
-							value={search.skill || "all"}
-							onValueChange={(value) =>
-								onUpdate({ skill: value === "all" ? undefined : value })
-							}
-						>
-							<SelectTrigger className="h-10 rounded-xl bg-white/60 dark:bg-zinc-950/40">
-								<SelectValue placeholder="Select Skill" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="all">All Skills</SelectItem>
-								{categories.map((lvl) => (
-									<SelectItem key={lvl.id} value={lvl.name}>
-										{lvl.name}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</div>
-
 					<div className="space-y-2">
 						<label className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
 							Category

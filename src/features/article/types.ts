@@ -2,7 +2,7 @@ export type ArticleReactionType = "LIKE" | "DISLIKE";
 
 export interface ArticleAuthorSnapshot {
 	name: string;
-	avatarUrl: string;
+	avatarUrl?: string;
 }
 
 export interface ArticleDto {

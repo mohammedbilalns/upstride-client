@@ -98,7 +98,7 @@ export function ArticleDetailPage() {
 				<div className="pt-8">
 					<div
 						className="prose prose-zinc dark:prose-invert max-w-none prose-headings:font-bold prose-p:text-zinc-600 dark:prose-p:text-zinc-400 prose-p:leading-relaxed prose-p:text-lg"
-						dangerouslySetInnerHTML={{ __html: article.previewContent }} // Assuming content is HTML for now, or I'll need to parse Lexical JSON
+						dangerouslySetInnerHTML={{ __html: article.description }}
 					/>
 				</div>
 

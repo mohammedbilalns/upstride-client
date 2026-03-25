@@ -55,19 +55,6 @@ export function ArticleCard({ article }: ArticleCardProps) {
 						</div>
 					</div>
 				</div>
-				{article.tags && article.tags.length > 0 && (
-					<div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
-						{article.tags.slice(0, 2).map((tag) => (
-							<Badge
-								key={tag}
-								variant="secondary"
-								className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm text-zinc-900 dark:text-zinc-100 text-[10px] uppercase tracking-wider font-bold border-none shadow-sm"
-							>
-								{tag}
-							</Badge>
-						))}
-					</div>
-				)}
 			</div>
 
 			<CardHeader className="p-4 pb-2">
@@ -104,7 +91,20 @@ export function ArticleCard({ article }: ArticleCardProps) {
 				</p>
 			</CardContent>
 
-			<CardFooter className="p-4 pt-3">
+			<CardFooter className="px-4 pb-4 pt-2 flex flex-col items-start gap-4">
+				{article.tags && article.tags.length > 0 && (
+					<div className="flex flex-wrap gap-1.5 w-full">
+						{article.tags.slice(0, 3).map((tag) => (
+							<Badge
+								key={tag}
+								variant="secondary"
+								className="bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 text-[10px] font-medium border-none px-2.5 py-0.5 rounded-full"
+							>
+								#{tag}
+							</Badge>
+						))}
+					</div>
+				)}
 				<Link
 					to="/articles/$articleId"
 					params={{ articleId: article.slug }}
