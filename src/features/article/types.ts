@@ -48,7 +48,11 @@ export interface GetArticlesInput {
 	page: number;
 	search?: string;
 	skill?: string;
-	interest?: string;
+	category?: string;
+}
+
+export interface GetTopTagsResponse {
+	tags: { tag: string; count: number }[];
 }
 
 export interface GetArticlesResponse {
@@ -61,6 +65,7 @@ export interface GetArticlesResponse {
 
 export interface GetArticleResponse {
 	article: ArticleDto;
+	isAuthor?: boolean;
 }
 
 export interface CreateArticleInput {

@@ -12,6 +12,7 @@ import type {
 	GetArticlesResponse,
 	GetCommentsInput,
 	GetCommentsResponse,
+	GetTopTagsResponse,
 	ReactToArticleInput,
 	ReactToArticleResponse,
 	ReactToCommentInput,
@@ -26,9 +27,22 @@ export const articleService = {
 	getArticles: async (
 		input: GetArticlesInput,
 	): Promise<GetArticlesResponse> => {
+		const { category, ...rest } = input;
 		const response = await api.get<{ data: GetArticlesResponse }>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.ROOT}`,
-			{ params: input },
+			{
+				params: {
+					...rest,
+					interest: category,
+				},
+			},
+		);
+		return response.data.data;
+	},
+
+	getTopTags: async (): Promise<GetTopTagsResponse> => {
+		const response = await api.get<{ data: GetTopTagsResponse }>(
+			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.TOP_TAGS}`,
 		);
 		return response.data.data;
 	},
