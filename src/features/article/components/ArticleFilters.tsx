@@ -39,7 +39,7 @@ export function ArticleFilters({
 							variant="ghost"
 							size="sm"
 							onClick={onClear}
-							className="h-7 px-2 text-xs text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-950/30"
+							className="h-7 px-2 text-xs text-primary hover:text-primary/90 hover:bg-primary/10"
 						>
 							Clear all
 						</Button>
@@ -73,10 +73,8 @@ export function ArticleFilters({
 				</div>
 			</div>
 
-			<div className="rounded-2xl border border-zinc-200/70 bg-indigo-50/50 dark:bg-indigo-950/20 p-5">
-				<h4 className="text-sm font-bold text-indigo-900 dark:text-indigo-100 mb-2">
-					Trending Tags
-				</h4>
+			<div className="rounded-2xl border border-zinc-200/70 bg-primary/10 dark:bg-primary/15 p-5">
+				<h4 className="text-sm font-bold text-primary mb-2">Trending Tags</h4>
 				{isLoadingTags ? (
 					<div className="flex flex-wrap gap-2 animate-pulse">
 						{[1, 2, 3, 4].map((i) => (
@@ -95,7 +93,7 @@ export function ArticleFilters({
 								key={t.tag}
 								variant="secondary"
 								onClick={() => onUpdate({ search: t.tag })}
-								className="bg-white/80 dark:bg-zinc-900/50 hover:bg-indigo-600 hover:text-white transition-colors cursor-pointer border-transparent"
+								className="bg-white/80 dark:bg-zinc-900/50 hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer border-transparent"
 							>
 								#{t.tag}
 							</Badge>

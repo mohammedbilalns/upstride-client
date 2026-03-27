@@ -114,6 +114,7 @@ export const ROUTES = {
 			`/comments/${commentId}/reactions`,
 		TOP_TAGS: "/top-tags",
 		MENTOR: "/mentor",
+		EDIT: (articleId: string) => `/${articleId}/edit`,
 	},
 	RECURRING_RULES: {
 		BASE: "/recurring-rules",

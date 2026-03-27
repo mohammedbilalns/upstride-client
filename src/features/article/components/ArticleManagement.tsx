@@ -49,7 +49,7 @@ export function ArticleManagement({
 						params: { articleId: slug } as any,
 					})
 				}
-				className="h-9 px-4 rounded-xl border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900"
+				className="h-9 px-4 rounded-xl border-primary/30 text-primary hover:bg-primary/10 dark:border-primary/40 dark:hover:bg-primary/20"
 			>
 				<Edit2 className="h-4 w-4 mr-2" />
 				Edit

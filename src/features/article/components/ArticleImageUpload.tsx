@@ -70,9 +70,9 @@ export function ArticleImageUpload({
 						<div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
 							<Button
 								type="button"
-								variant="secondary"
+								variant="default"
 								size="sm"
-								className="rounded-xl h-9 px-4 bg-white/90 dark:bg-zinc-900/90"
+								className="rounded-xl h-9 px-4 bg-primary/90 text-primary-foreground hover:bg-primary"
 								onClick={() =>
 									document.getElementById("featured-image-upload")?.click()
 								}

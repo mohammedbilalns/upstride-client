@@ -7,15 +7,8 @@ export const useArticleMutations = () => {
 	const queryClient = useQueryClient();
 
 	const react = useMutation({
-		mutationFn: async ({
-			articleId,
-			reactionType,
-		}: {
-			articleId: string;
-			slug: string;
-			reactionType: "LIKE" | "DISLIKE";
-		}) => {
-			return articleService.reactToArticle({ articleId, reactionType });
+		mutationFn: async ({ articleId }: { articleId: string; slug: string }) => {
+			return articleService.reactToArticle({ articleId });
 		},
 		onMutate: async (variables) => {
 			await queryClient.cancelQueries({
@@ -31,34 +24,13 @@ export const useArticleMutations = () => {
 				(old: any) => {
 					if (!old) return old;
 					const { article, userReaction } = old;
-					let newLikesCount = article.likesCount;
-					let newDislikesCount = article.dislikesCount;
-					let newUserReaction: "LIKE" | "DISLIKE" | undefined =
-						variables.reactionType;
-
-					// If clicking same reaction, toggle off
-					if (userReaction === variables.reactionType) {
-						newUserReaction = undefined;
-						if (variables.reactionType === "LIKE") newLikesCount--;
-						else newDislikesCount--;
-					} else {
-						// Switching or new reaction
-						if (variables.reactionType === "LIKE") {
-							newLikesCount++;
-							if (userReaction === "DISLIKE") newDislikesCount--;
-						} else {
-							newDislikesCount++;
-							if (userReaction === "LIKE") newLikesCount--;
-						}
-					}
-
+					const isLiked = userReaction === "LIKE";
 					return {
 						...old,
-						userReaction: newUserReaction,
+						userReaction: isLiked ? undefined : "LIKE",
 						article: {
 							...article,
-							likesCount: Math.max(0, newLikesCount),
-							dislikesCount: Math.max(0, newDislikesCount),
+							likesCount: Math.max(0, article.likesCount + (isLiked ? -1 : 1)),
 						},
 					};
 				},

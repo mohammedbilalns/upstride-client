@@ -139,7 +139,7 @@ export const articleService = {
 	): Promise<ReactToArticleResponse> => {
 		const response = await api.post<{ data: ReactToArticleResponse }>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.ARTICLE_REACTIONS(input.articleId)}`,
-			{ reactionType: input.reactionType },
+			{},
 		);
 		return response.data.data;
 	},

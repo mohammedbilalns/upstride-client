@@ -1,4 +1,4 @@
-export type ArticleReactionType = "LIKE" | "DISLIKE";
+export type ArticleReactionType = "LIKE";
 
 export interface ArticleAuthorSnapshot {
 	name: string;
@@ -19,7 +19,6 @@ export interface ArticleDto {
 	views: number;
 	commentsCount: number;
 	likesCount: number;
-	dislikesCount: number;
 	createdAt: string;
 }
 
@@ -149,7 +148,6 @@ export interface DeleteCommentInput {
 
 export interface ReactToArticleInput {
 	articleId: string;
-	reactionType: ArticleReactionType;
 }
 
 export interface ReactToArticleResponse {

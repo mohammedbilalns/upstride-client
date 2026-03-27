@@ -82,7 +82,11 @@ export function ArticleImageCropper({
 					/>
 				</div>
 				<DialogFooter>
-					<Button variant="outline" onClick={onCancel} className="rounded-xl">
+					<Button
+						variant="outline"
+						onClick={onCancel}
+						className="rounded-xl border-primary/30 text-primary hover:bg-primary/10 dark:border-primary/40 dark:hover:bg-primary/20"
+					>
 						Cancel
 					</Button>
 					<Button onClick={handleCrop} className="rounded-xl">

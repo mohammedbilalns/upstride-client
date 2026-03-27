@@ -74,10 +74,7 @@ export function UpdateArticlePage() {
 	useEffect(() => {
 		if (data?.article) {
 			form.setFieldValue("title", data.article.title);
-			form.setFieldValue(
-				"content",
-				data.article.previewContent || data.article.description || "",
-			);
+			form.setFieldValue("content", data.article.description || "");
 			form.setFieldValue("featuredImageUrl", data.article.featuredImageId);
 			form.setFieldValue("tags", data.article.tags);
 		}
@@ -106,7 +103,7 @@ export function UpdateArticlePage() {
 					onClick={() =>
 						navigate({ to: "/articles/$articleId", params: { articleId } })
 					}
-					className="rounded-full"
+					className="rounded-full text-primary hover:text-primary/90 hover:bg-primary/10"
 				>
 					<ChevronLeft className="h-5 w-5" />
 				</Button>
@@ -214,7 +211,7 @@ export function UpdateArticlePage() {
 												<Badge
 													key={tag}
 													variant="secondary"
-													className="pl-2 pr-1 py-0.5 flex items-center gap-1 bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-300 border-indigo-100 dark:border-indigo-900"
+													className="pl-2 pr-1 py-0.5 flex items-center gap-1 bg-primary/10 dark:bg-primary/20 text-primary border-primary/20 dark:border-primary/30"
 												>
 													{tag}
 													<button
@@ -225,7 +222,7 @@ export function UpdateArticlePage() {
 																	[],
 															)
 														}
-														className="hover:bg-indigo-200 dark:hover:bg-indigo-800 rounded-full p-0.5"
+														className="hover:bg-primary/20 dark:hover:bg-primary/30 rounded-full p-0.5"
 													>
 														<Plus className="h-3 w-3 rotate-45" />
 													</button>
@@ -281,7 +278,7 @@ export function UpdateArticlePage() {
 								disabled={
 									!canSubmit || isSubmitting || updateMutation.isPending
 								}
-								className="rounded-full px-8 h-14 bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 shadow-2xl hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100"
+								className="rounded-full px-8 h-14 bg-primary text-primary-foreground shadow-2xl shadow-primary/25 hover:bg-primary/90 hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100"
 							>
 								{isSubmitting || updateMutation.isPending ? (
 									<Loader2 className="h-5 w-5 mr-2 animate-spin" />

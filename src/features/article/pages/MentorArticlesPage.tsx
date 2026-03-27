@@ -26,7 +26,7 @@ export function MentorArticlesPage() {
 				</div>
 				<Button
 					onClick={() => navigate({ to: "/mentor/articles/create" })}
-					className="rounded-xl bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 shadow-lg"
+					className="rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary/90"
 				>
 					<Plus className="h-4 w-4 mr-2" />
 					Create Article
@@ -57,7 +57,7 @@ export function MentorArticlesPage() {
 									variant="outline"
 									onClick={() => fetchNextPage()}
 									disabled={isFetchingNextPage}
-									className="rounded-xl px-12 h-11"
+									className="rounded-xl px-12 h-11 border-primary/30 text-primary hover:bg-primary/10 dark:border-primary/40 dark:hover:bg-primary/20"
 								>
 									{isFetchingNextPage ? (
 										<>

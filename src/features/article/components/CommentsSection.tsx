@@ -222,7 +222,7 @@ export function CommentsSection({
 						variant="outline"
 						onClick={() => fetchNextPage()}
 						disabled={isFetchingNextPage}
-						className="rounded-full px-8 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900"
+						className="rounded-full px-8 border-primary/30 text-primary hover:bg-primary/10 dark:border-primary/40 dark:hover:bg-primary/20"
 					>
 						{isFetchingNextPage ? "Loading..." : "View more comments"}
 					</Button>

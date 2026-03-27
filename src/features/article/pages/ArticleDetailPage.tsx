@@ -30,7 +30,7 @@ export function ArticleDetailPage() {
 					variant="ghost"
 					size="sm"
 					asChild
-					className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50 -ml-2"
+					className="text-primary hover:text-primary/90 hover:bg-primary/10 -ml-2"
 				>
 					<Link to="/articles" search={{ page: 1 }}>
 						<ArrowLeft className="h-4 w-4 mr-2" />
@@ -123,7 +123,6 @@ export function ArticleDetailPage() {
 						articleId={article.id}
 						slug={article.slug}
 						likesCount={article.likesCount}
-						dislikesCount={article.dislikesCount}
 						userReaction={userReaction}
 					/>
 					<div className="text-sm text-zinc-500 font-medium">

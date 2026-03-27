@@ -7,6 +7,7 @@ export const Route = createFileRoute("/_user-layout/home")({
 
 function RouteComponent() {
 	const { auth } = Route.useRouteContext();
+	console.debug("Router auth context: auth");
 	const userRole = auth.user?.role;
 
 	return (

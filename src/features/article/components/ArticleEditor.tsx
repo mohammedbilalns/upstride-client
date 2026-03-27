@@ -31,7 +31,9 @@ const MenuBar = ({ editor }: { editor: any }) => {
 				size="sm"
 				onClick={() => editor.chain().focus().toggleBold().run()}
 				className={
-					editor.isActive("bold") ? "bg-zinc-200 dark:bg-zinc-800" : ""
+					editor.isActive("bold")
+						? "bg-primary/15 text-primary dark:bg-primary/25"
+						: ""
 				}
 				type="button"
 			>
@@ -42,7 +44,9 @@ const MenuBar = ({ editor }: { editor: any }) => {
 				size="sm"
 				onClick={() => editor.chain().focus().toggleItalic().run()}
 				className={
-					editor.isActive("italic") ? "bg-zinc-200 dark:bg-zinc-800" : ""
+					editor.isActive("italic")
+						? "bg-primary/15 text-primary dark:bg-primary/25"
+						: ""
 				}
 				type="button"
 			>
@@ -54,7 +58,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
 				onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
 				className={
 					editor.isActive("heading", { level: 1 })
-						? "bg-zinc-200 dark:bg-zinc-800"
+						? "bg-primary/15 text-primary dark:bg-primary/25"
 						: ""
 				}
 				type="button"
@@ -67,7 +71,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
 				onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
 				className={
 					editor.isActive("heading", { level: 2 })
-						? "bg-zinc-200 dark:bg-zinc-800"
+						? "bg-primary/15 text-primary dark:bg-primary/25"
 						: ""
 				}
 				type="button"
@@ -79,7 +83,9 @@ const MenuBar = ({ editor }: { editor: any }) => {
 				size="sm"
 				onClick={() => editor.chain().focus().toggleBulletList().run()}
 				className={
-					editor.isActive("bulletList") ? "bg-zinc-200 dark:bg-zinc-800" : ""
+					editor.isActive("bulletList")
+						? "bg-primary/15 text-primary dark:bg-primary/25"
+						: ""
 				}
 				type="button"
 			>
@@ -90,7 +96,9 @@ const MenuBar = ({ editor }: { editor: any }) => {
 				size="sm"
 				onClick={() => editor.chain().focus().toggleOrderedList().run()}
 				className={
-					editor.isActive("orderedList") ? "bg-zinc-200 dark:bg-zinc-800" : ""
+					editor.isActive("orderedList")
+						? "bg-primary/15 text-primary dark:bg-primary/25"
+						: ""
 				}
 				type="button"
 			>
@@ -101,7 +109,9 @@ const MenuBar = ({ editor }: { editor: any }) => {
 				size="sm"
 				onClick={() => editor.chain().focus().toggleBlockquote().run()}
 				className={
-					editor.isActive("blockquote") ? "bg-zinc-200 dark:bg-zinc-800" : ""
+					editor.isActive("blockquote")
+						? "bg-primary/15 text-primary dark:bg-primary/25"
+						: ""
 				}
 				type="button"
 			>

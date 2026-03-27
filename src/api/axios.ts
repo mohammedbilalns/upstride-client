@@ -1,6 +1,7 @@
 import type { InternalAxiosRequestConfig } from "axios";
 import axios, { type AxiosError } from "axios";
 import { router } from "@/app/router/routerConfig";
+import { authService } from "@/features/authentication/services/auth.service";
 import { clearAuthSession } from "@/features/authentication/utils/clear-auth-session";
 import { env } from "@/shared/config/env";
 
@@ -24,6 +25,10 @@ api.interceptors.request.use((config) => {
 	const auth = router.options.context?.auth;
 	const token = auth?.accessToken;
 	const csrfToken = auth?.csrfToken;
+	console.debug(
+		"AXIOS INTERCEPTOR: csrf token from the router context: ",
+		csrfToken,
+	);
 
 	if (token) {
 		config.headers.Authorization = `Bearer ${token}`;
@@ -41,6 +46,36 @@ api.interceptors.response.use(
 	(response) => response,
 	async (error: AxiosError) => {
 		const originalRequest = error.config as CustomAxiosRequestConfig;
+
+		if (
+			error.response?.status === 403 &&
+			originalRequest.url?.includes("/auth/refresh") &&
+			!originalRequest._csrfRetry
+		) {
+			const data = error.response.data as { message?: string } | undefined;
+			const message = data?.message?.toLowerCase() ?? "";
+
+			if (message.includes("csrf")) {
+				originalRequest._csrfRetry = true;
+
+				const csrfResponse = await authService.getCsrfToken();
+				const csrfToken = csrfResponse.data.csrfToken;
+
+				router.update({
+					context: {
+						...router.options.context,
+						auth: {
+							...router.options.context.auth,
+							csrfToken,
+						},
+					},
+				});
+
+				originalRequest.headers = originalRequest.headers ?? {};
+				originalRequest.headers["x-csrf-token"] = csrfToken;
+				return api(originalRequest);
+			}
+		}
 
 		// Handle expired token (401 Unauthorized)
 		if (error.response?.status === 401 && !originalRequest._retry) {
