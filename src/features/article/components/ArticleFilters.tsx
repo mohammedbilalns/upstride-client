@@ -29,9 +29,9 @@ export function ArticleFilters({
 }: ArticleFiltersProps) {
 	return (
 		<div className="space-y-6">
-			<div className="rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-5 space-y-4">
+			<div className="rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-4 space-y-3">
 				<div className="flex items-center justify-between">
-					<p className="text-xs font-bold tracking-widest text-zinc-500 dark:text-zinc-400 uppercase">
+					<p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400 uppercase">
 						Filters
 					</p>
 					{(search.category || search.search) && (
