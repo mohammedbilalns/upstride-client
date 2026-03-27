@@ -1,3 +1,4 @@
+import { X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,16 +35,6 @@ export function ArticleFilters({
 					<p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400 uppercase">
 						Filters
 					</p>
-					{(search.category || search.search) && (
-						<Button
-							variant="ghost"
-							size="sm"
-							onClick={onClear}
-							className="h-7 px-2 text-xs text-primary hover:text-primary/90 hover:bg-primary/10"
-						>
-							Clear all
-						</Button>
-					)}
 				</div>
 
 				<div className="space-y-4">
@@ -70,6 +61,18 @@ export function ArticleFilters({
 							</SelectContent>
 						</Select>
 					</div>
+
+					{(search.category || search.search) && (
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={onClear}
+							className="h-9 w-full justify-start text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 gap-2 mt-2"
+						>
+							<X className="h-4 w-4" />
+							Clear filters
+						</Button>
+					)}
 				</div>
 			</div>
 

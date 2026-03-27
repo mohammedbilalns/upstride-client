@@ -1,3 +1,4 @@
+import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
 	Select,
@@ -27,21 +28,12 @@ export function SessionFilters({
 
 	return (
 		<div className="space-y-6">
+			{/* Timeframe Filter */}
 			<div className="rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-4 space-y-4">
 				<div className="flex items-center justify-between">
 					<p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400 uppercase">
 						Timeframe
 					</p>
-					{hasFilters && (
-						<Button
-							variant="ghost"
-							size="sm"
-							onClick={onClear}
-							className="h-7 px-2 text-xs text-primary hover:text-primary/90 hover:bg-primary/10"
-						>
-							Reset
-						</Button>
-					)}
 				</div>
 
 				<Tabs
@@ -62,6 +54,7 @@ export function SessionFilters({
 				</Tabs>
 			</div>
 
+			{/* Status Filter (Only for Upcoming) */}
 			{search.tab === "upcoming" && (
 				<div className="rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-4 space-y-3">
 					<p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400 uppercase">
@@ -87,6 +80,19 @@ export function SessionFilters({
 						</Select>
 					</div>
 				</div>
+			)}
+
+			{/* Unified Clear Filters Button */}
+			{hasFilters && (
+				<Button
+					variant="ghost"
+					size="sm"
+					onClick={onClear}
+					className="h-9 w-full justify-start text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 gap-2 mt-2"
+				>
+					<X className="h-4 w-4" />
+					Clear filters
+				</Button>
 			)}
 		</div>
 	);
