@@ -10,6 +10,7 @@ import { env } from "@/shared/config/env";
  */
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 	_retry?: boolean;
+	_csrfRetry?: boolean;
 }
 
 const api = axios.create({
