@@ -101,13 +101,15 @@ export function ArticleDetailPage() {
 					</div>
 				</div>
 
-				<div className="relative aspect-[21/9] overflow-hidden rounded-3xl shadow-2xl">
-					<img
-						src={article.featuredImageUrl || "/placeholder-article.jpg"}
-						alt={article.title}
-						className="object-cover w-full h-full"
-					/>
-				</div>
+				{article.featuredImageUrl && (
+					<div className="relative aspect-[21/9] overflow-hidden rounded-3xl shadow-2xl">
+						<img
+							src={article.featuredImageUrl}
+							alt={article.title}
+							className="object-cover w-full h-full"
+						/>
+					</div>
+				)}
 
 				<div className="pt-8">
 					<div
