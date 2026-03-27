@@ -31,7 +31,7 @@ import { NotificationDropdown } from "@/features/notifications/components/Notifi
 import { useGetUnreadCount } from "@/features/notifications/hooks";
 
 export default function UserNavbar() {
-	const { auth } = useRouteContext({ from: "/_user-layout" });
+	const { auth } = useRouteContext({ from: "__root__" });
 	const user = auth.user;
 	const logoutMutation = useLogout();
 	const { data: balance } = useCoinBalance();

@@ -27,6 +27,7 @@ import { Route as MentorLayoutMentorSlotManagementRouteImport } from './routes/_
 import { Route as MentorLayoutMentorSessionsRouteImport } from './routes/_mentor-layout/mentor-sessions'
 import { Route as MentorLayoutMentorRuleManagementRouteImport } from './routes/_mentor-layout/mentor-rule-management'
 import { Route as MentorLayoutMentorDashboardRouteImport } from './routes/_mentor-layout/mentor-dashboard'
+import { Route as MentorLayoutMentorArticlesRouteImport } from './routes/_mentor-layout/mentor-articles'
 import { Route as AdminLayoutUserManagementRouteImport } from './routes/_admin-layout/user-management'
 import { Route as AdminLayoutReportManagementRouteImport } from './routes/_admin-layout/report-management'
 import { Route as AdminLayoutPlatformSettingsRouteImport } from './routes/_admin-layout/platform-settings'
@@ -38,11 +39,11 @@ import { Route as UserLayoutProfileIndexRouteImport } from './routes/_user-layou
 import { Route as UserLayoutMentorsIndexRouteImport } from './routes/_user-layout/mentors/index'
 import { Route as UserLayoutChatsIndexRouteImport } from './routes/_user-layout/chats/index'
 import { Route as UserLayoutArticlesIndexRouteImport } from './routes/_user-layout/articles/index'
+import { Route as UserLayoutProfileSecurityRouteImport } from './routes/_user-layout/profile/security'
 import { Route as UserLayoutMentorsMentorIdRouteImport } from './routes/_user-layout/mentors/$mentorId'
 import { Route as UserLayoutMentorRegisterRouteImport } from './routes/_user-layout/mentor.register'
 import { Route as UserLayoutChatsChatIdRouteImport } from './routes/_user-layout/chats/$chatId'
 import { Route as UserLayoutProfileBookmarkedMentorsIndexRouteImport } from './routes/_user-layout/profile/bookmarked-mentors/index'
-import { Route as UserLayoutMentorArticlesIndexRouteImport } from './routes/_user-layout/mentor/articles/index'
 import { Route as UserLayoutArticlesArticleIdIndexRouteImport } from './routes/_user-layout/articles/$articleId/index'
 import { Route as UserLayoutProfileBookmarkedMentorsListIdRouteImport } from './routes/_user-layout/profile/bookmarked-mentors/$listId'
 import { Route as UserLayoutMentorArticlesCreateRouteImport } from './routes/_user-layout/mentor/articles/create'
@@ -138,6 +139,12 @@ const MentorLayoutMentorDashboardRoute =
     path: '/mentor-dashboard',
     getParentRoute: () => MentorLayoutRoute,
   } as any)
+const MentorLayoutMentorArticlesRoute =
+  MentorLayoutMentorArticlesRouteImport.update({
+    id: '/mentor-articles',
+    path: '/mentor-articles',
+    getParentRoute: () => MentorLayoutRoute,
+  } as any)
 const AdminLayoutUserManagementRoute =
   AdminLayoutUserManagementRouteImport.update({
     id: '/user-management',
@@ -199,6 +206,12 @@ const UserLayoutArticlesIndexRoute = UserLayoutArticlesIndexRouteImport.update({
   path: '/articles/',
   getParentRoute: () => UserLayoutRoute,
 } as any)
+const UserLayoutProfileSecurityRoute =
+  UserLayoutProfileSecurityRouteImport.update({
+    id: '/security',
+    path: '/security',
+    getParentRoute: () => UserLayoutProfileRoute,
+  } as any)
 const UserLayoutMentorsMentorIdRoute =
   UserLayoutMentorsMentorIdRouteImport.update({
     id: '/$mentorId',
@@ -221,12 +234,6 @@ const UserLayoutProfileBookmarkedMentorsIndexRoute =
     id: '/bookmarked-mentors/',
     path: '/bookmarked-mentors/',
     getParentRoute: () => UserLayoutProfileRoute,
-  } as any)
-const UserLayoutMentorArticlesIndexRoute =
-  UserLayoutMentorArticlesIndexRouteImport.update({
-    id: '/articles/',
-    path: '/articles/',
-    getParentRoute: () => UserLayoutMentorRoute,
   } as any)
 const UserLayoutArticlesArticleIdIndexRoute =
   UserLayoutArticlesArticleIdIndexRouteImport.update({
@@ -263,6 +270,7 @@ export interface FileRoutesByFullPath {
   '/platform-settings': typeof AdminLayoutPlatformSettingsRoute
   '/report-management': typeof AdminLayoutReportManagementRoute
   '/user-management': typeof AdminLayoutUserManagementRoute
+  '/mentor-articles': typeof MentorLayoutMentorArticlesRoute
   '/mentor-dashboard': typeof MentorLayoutMentorDashboardRoute
   '/mentor-rule-management': typeof MentorLayoutMentorRuleManagementRoute
   '/mentor-sessions': typeof MentorLayoutMentorSessionsRoute
@@ -278,6 +286,7 @@ export interface FileRoutesByFullPath {
   '/chats/$chatId': typeof UserLayoutChatsChatIdRoute
   '/mentor/register': typeof UserLayoutMentorRegisterRoute
   '/mentors/$mentorId': typeof UserLayoutMentorsMentorIdRoute
+  '/profile/security': typeof UserLayoutProfileSecurityRoute
   '/articles/': typeof UserLayoutArticlesIndexRoute
   '/chats/': typeof UserLayoutChatsIndexRoute
   '/mentors/': typeof UserLayoutMentorsIndexRoute
@@ -285,7 +294,6 @@ export interface FileRoutesByFullPath {
   '/mentor/articles/create': typeof UserLayoutMentorArticlesCreateRoute
   '/profile/bookmarked-mentors/$listId': typeof UserLayoutProfileBookmarkedMentorsListIdRoute
   '/articles/$articleId/': typeof UserLayoutArticlesArticleIdIndexRoute
-  '/mentor/articles/': typeof UserLayoutMentorArticlesIndexRoute
   '/profile/bookmarked-mentors/': typeof UserLayoutProfileBookmarkedMentorsIndexRoute
   '/mentor/articles/$articleId/update': typeof UserLayoutMentorArticlesArticleIdUpdateRoute
 }
@@ -299,6 +307,7 @@ export interface FileRoutesByTo {
   '/platform-settings': typeof AdminLayoutPlatformSettingsRoute
   '/report-management': typeof AdminLayoutReportManagementRoute
   '/user-management': typeof AdminLayoutUserManagementRoute
+  '/mentor-articles': typeof MentorLayoutMentorArticlesRoute
   '/mentor-dashboard': typeof MentorLayoutMentorDashboardRoute
   '/mentor-rule-management': typeof MentorLayoutMentorRuleManagementRoute
   '/mentor-sessions': typeof MentorLayoutMentorSessionsRoute
@@ -311,6 +320,7 @@ export interface FileRoutesByTo {
   '/chats/$chatId': typeof UserLayoutChatsChatIdRoute
   '/mentor/register': typeof UserLayoutMentorRegisterRoute
   '/mentors/$mentorId': typeof UserLayoutMentorsMentorIdRoute
+  '/profile/security': typeof UserLayoutProfileSecurityRoute
   '/articles': typeof UserLayoutArticlesIndexRoute
   '/chats': typeof UserLayoutChatsIndexRoute
   '/mentors': typeof UserLayoutMentorsIndexRoute
@@ -318,7 +328,6 @@ export interface FileRoutesByTo {
   '/mentor/articles/create': typeof UserLayoutMentorArticlesCreateRoute
   '/profile/bookmarked-mentors/$listId': typeof UserLayoutProfileBookmarkedMentorsListIdRoute
   '/articles/$articleId': typeof UserLayoutArticlesArticleIdIndexRoute
-  '/mentor/articles': typeof UserLayoutMentorArticlesIndexRoute
   '/profile/bookmarked-mentors': typeof UserLayoutProfileBookmarkedMentorsIndexRoute
   '/mentor/articles/$articleId/update': typeof UserLayoutMentorArticlesArticleIdUpdateRoute
 }
@@ -336,6 +345,7 @@ export interface FileRoutesById {
   '/_admin-layout/platform-settings': typeof AdminLayoutPlatformSettingsRoute
   '/_admin-layout/report-management': typeof AdminLayoutReportManagementRoute
   '/_admin-layout/user-management': typeof AdminLayoutUserManagementRoute
+  '/_mentor-layout/mentor-articles': typeof MentorLayoutMentorArticlesRoute
   '/_mentor-layout/mentor-dashboard': typeof MentorLayoutMentorDashboardRoute
   '/_mentor-layout/mentor-rule-management': typeof MentorLayoutMentorRuleManagementRoute
   '/_mentor-layout/mentor-sessions': typeof MentorLayoutMentorSessionsRoute
@@ -352,6 +362,7 @@ export interface FileRoutesById {
   '/_user-layout/chats/$chatId': typeof UserLayoutChatsChatIdRoute
   '/_user-layout/mentor/register': typeof UserLayoutMentorRegisterRoute
   '/_user-layout/mentors/$mentorId': typeof UserLayoutMentorsMentorIdRoute
+  '/_user-layout/profile/security': typeof UserLayoutProfileSecurityRoute
   '/_user-layout/articles/': typeof UserLayoutArticlesIndexRoute
   '/_user-layout/chats/': typeof UserLayoutChatsIndexRoute
   '/_user-layout/mentors/': typeof UserLayoutMentorsIndexRoute
@@ -359,7 +370,6 @@ export interface FileRoutesById {
   '/_user-layout/mentor/articles/create': typeof UserLayoutMentorArticlesCreateRoute
   '/_user-layout/profile/bookmarked-mentors/$listId': typeof UserLayoutProfileBookmarkedMentorsListIdRoute
   '/_user-layout/articles/$articleId/': typeof UserLayoutArticlesArticleIdIndexRoute
-  '/_user-layout/mentor/articles/': typeof UserLayoutMentorArticlesIndexRoute
   '/_user-layout/profile/bookmarked-mentors/': typeof UserLayoutProfileBookmarkedMentorsIndexRoute
   '/_user-layout/mentor/articles/$articleId/update': typeof UserLayoutMentorArticlesArticleIdUpdateRoute
 }
@@ -375,6 +385,7 @@ export interface FileRouteTypes {
     | '/platform-settings'
     | '/report-management'
     | '/user-management'
+    | '/mentor-articles'
     | '/mentor-dashboard'
     | '/mentor-rule-management'
     | '/mentor-sessions'
@@ -390,6 +401,7 @@ export interface FileRouteTypes {
     | '/chats/$chatId'
     | '/mentor/register'
     | '/mentors/$mentorId'
+    | '/profile/security'
     | '/articles/'
     | '/chats/'
     | '/mentors/'
@@ -397,7 +409,6 @@ export interface FileRouteTypes {
     | '/mentor/articles/create'
     | '/profile/bookmarked-mentors/$listId'
     | '/articles/$articleId/'
-    | '/mentor/articles/'
     | '/profile/bookmarked-mentors/'
     | '/mentor/articles/$articleId/update'
   fileRoutesByTo: FileRoutesByTo
@@ -411,6 +422,7 @@ export interface FileRouteTypes {
     | '/platform-settings'
     | '/report-management'
     | '/user-management'
+    | '/mentor-articles'
     | '/mentor-dashboard'
     | '/mentor-rule-management'
     | '/mentor-sessions'
@@ -423,6 +435,7 @@ export interface FileRouteTypes {
     | '/chats/$chatId'
     | '/mentor/register'
     | '/mentors/$mentorId'
+    | '/profile/security'
     | '/articles'
     | '/chats'
     | '/mentors'
@@ -430,7 +443,6 @@ export interface FileRouteTypes {
     | '/mentor/articles/create'
     | '/profile/bookmarked-mentors/$listId'
     | '/articles/$articleId'
-    | '/mentor/articles'
     | '/profile/bookmarked-mentors'
     | '/mentor/articles/$articleId/update'
   id:
@@ -447,6 +459,7 @@ export interface FileRouteTypes {
     | '/_admin-layout/platform-settings'
     | '/_admin-layout/report-management'
     | '/_admin-layout/user-management'
+    | '/_mentor-layout/mentor-articles'
     | '/_mentor-layout/mentor-dashboard'
     | '/_mentor-layout/mentor-rule-management'
     | '/_mentor-layout/mentor-sessions'
@@ -463,6 +476,7 @@ export interface FileRouteTypes {
     | '/_user-layout/chats/$chatId'
     | '/_user-layout/mentor/register'
     | '/_user-layout/mentors/$mentorId'
+    | '/_user-layout/profile/security'
     | '/_user-layout/articles/'
     | '/_user-layout/chats/'
     | '/_user-layout/mentors/'
@@ -470,7 +484,6 @@ export interface FileRouteTypes {
     | '/_user-layout/mentor/articles/create'
     | '/_user-layout/profile/bookmarked-mentors/$listId'
     | '/_user-layout/articles/$articleId/'
-    | '/_user-layout/mentor/articles/'
     | '/_user-layout/profile/bookmarked-mentors/'
     | '/_user-layout/mentor/articles/$articleId/update'
   fileRoutesById: FileRoutesById
@@ -611,6 +624,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MentorLayoutMentorDashboardRouteImport
       parentRoute: typeof MentorLayoutRoute
     }
+    '/_mentor-layout/mentor-articles': {
+      id: '/_mentor-layout/mentor-articles'
+      path: '/mentor-articles'
+      fullPath: '/mentor-articles'
+      preLoaderRoute: typeof MentorLayoutMentorArticlesRouteImport
+      parentRoute: typeof MentorLayoutRoute
+    }
     '/_admin-layout/user-management': {
       id: '/_admin-layout/user-management'
       path: '/user-management'
@@ -688,6 +708,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserLayoutArticlesIndexRouteImport
       parentRoute: typeof UserLayoutRoute
     }
+    '/_user-layout/profile/security': {
+      id: '/_user-layout/profile/security'
+      path: '/security'
+      fullPath: '/profile/security'
+      preLoaderRoute: typeof UserLayoutProfileSecurityRouteImport
+      parentRoute: typeof UserLayoutProfileRoute
+    }
     '/_user-layout/mentors/$mentorId': {
       id: '/_user-layout/mentors/$mentorId'
       path: '/$mentorId'
@@ -715,13 +742,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/profile/bookmarked-mentors/'
       preLoaderRoute: typeof UserLayoutProfileBookmarkedMentorsIndexRouteImport
       parentRoute: typeof UserLayoutProfileRoute
-    }
-    '/_user-layout/mentor/articles/': {
-      id: '/_user-layout/mentor/articles/'
-      path: '/articles'
-      fullPath: '/mentor/articles/'
-      preLoaderRoute: typeof UserLayoutMentorArticlesIndexRouteImport
-      parentRoute: typeof UserLayoutMentorRoute
     }
     '/_user-layout/articles/$articleId/': {
       id: '/_user-layout/articles/$articleId/'
@@ -779,6 +799,7 @@ const AdminLayoutRouteWithChildren = AdminLayoutRoute._addFileChildren(
 )
 
 interface MentorLayoutRouteChildren {
+  MentorLayoutMentorArticlesRoute: typeof MentorLayoutMentorArticlesRoute
   MentorLayoutMentorDashboardRoute: typeof MentorLayoutMentorDashboardRoute
   MentorLayoutMentorRuleManagementRoute: typeof MentorLayoutMentorRuleManagementRoute
   MentorLayoutMentorSessionsRoute: typeof MentorLayoutMentorSessionsRoute
@@ -786,6 +807,7 @@ interface MentorLayoutRouteChildren {
 }
 
 const MentorLayoutRouteChildren: MentorLayoutRouteChildren = {
+  MentorLayoutMentorArticlesRoute: MentorLayoutMentorArticlesRoute,
   MentorLayoutMentorDashboardRoute: MentorLayoutMentorDashboardRoute,
   MentorLayoutMentorRuleManagementRoute: MentorLayoutMentorRuleManagementRoute,
   MentorLayoutMentorSessionsRoute: MentorLayoutMentorSessionsRoute,
@@ -827,14 +849,12 @@ const UserLayoutChatsRouteWithChildren = UserLayoutChatsRoute._addFileChildren(
 interface UserLayoutMentorRouteChildren {
   UserLayoutMentorRegisterRoute: typeof UserLayoutMentorRegisterRoute
   UserLayoutMentorArticlesCreateRoute: typeof UserLayoutMentorArticlesCreateRoute
-  UserLayoutMentorArticlesIndexRoute: typeof UserLayoutMentorArticlesIndexRoute
   UserLayoutMentorArticlesArticleIdUpdateRoute: typeof UserLayoutMentorArticlesArticleIdUpdateRoute
 }
 
 const UserLayoutMentorRouteChildren: UserLayoutMentorRouteChildren = {
   UserLayoutMentorRegisterRoute: UserLayoutMentorRegisterRoute,
   UserLayoutMentorArticlesCreateRoute: UserLayoutMentorArticlesCreateRoute,
-  UserLayoutMentorArticlesIndexRoute: UserLayoutMentorArticlesIndexRoute,
   UserLayoutMentorArticlesArticleIdUpdateRoute:
     UserLayoutMentorArticlesArticleIdUpdateRoute,
 }
@@ -856,12 +876,14 @@ const UserLayoutMentorsRouteWithChildren =
   UserLayoutMentorsRoute._addFileChildren(UserLayoutMentorsRouteChildren)
 
 interface UserLayoutProfileRouteChildren {
+  UserLayoutProfileSecurityRoute: typeof UserLayoutProfileSecurityRoute
   UserLayoutProfileIndexRoute: typeof UserLayoutProfileIndexRoute
   UserLayoutProfileBookmarkedMentorsListIdRoute: typeof UserLayoutProfileBookmarkedMentorsListIdRoute
   UserLayoutProfileBookmarkedMentorsIndexRoute: typeof UserLayoutProfileBookmarkedMentorsIndexRoute
 }
 
 const UserLayoutProfileRouteChildren: UserLayoutProfileRouteChildren = {
+  UserLayoutProfileSecurityRoute: UserLayoutProfileSecurityRoute,
   UserLayoutProfileIndexRoute: UserLayoutProfileIndexRoute,
   UserLayoutProfileBookmarkedMentorsListIdRoute:
     UserLayoutProfileBookmarkedMentorsListIdRoute,
