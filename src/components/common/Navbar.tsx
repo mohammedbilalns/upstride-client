@@ -71,7 +71,7 @@ export default function UserNavbar() {
 			className={cn(
 				"fixed top-3 left-1/2 -translate-x-1/2 z-50 rounded-xl animate-soft-in transition-all duration-300",
 				isScrolled
-					? "w-[calc(100%-3.5rem)] max-w-5xl glass bg-background/80 border border-primary/20 shadow-lg backdrop-blur-xl"
+					? "w-[calc(100%-4rem)] max-w-[60rem] glass bg-background/80 border border-primary/20 shadow-lg backdrop-blur-xl"
 					: "w-[calc(100%-2rem)] max-w-6xl bg-transparent border border-transparent shadow-none backdrop-blur-0",
 			)}
 		>
