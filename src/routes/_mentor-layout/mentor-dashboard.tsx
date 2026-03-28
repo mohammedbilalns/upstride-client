@@ -211,7 +211,7 @@ function MentorDashboard() {
 				</CardHeader>
 				<CardContent className="p-0">
 					{profile && (
-						<div className="p-6 space-y-4">
+						<div className="p-6 md:p-8 space-y-6">
 							<div>
 								<p className="text-sm font-medium">Bio</p>
 								<p className="text-sm text-muted-foreground">{profile.bio}</p>
@@ -403,7 +403,10 @@ function MentorDashboard() {
 											...prev,
 											{
 												skillId: newSkillId,
-												level: newSkillLevel,
+												level: newSkillLevel as
+													| "BEGINNER"
+													| "INTERMEDIATE"
+													| "ADVANCED",
 											},
 										]);
 										form.setFieldValue("newSkillId", "");

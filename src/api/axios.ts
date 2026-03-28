@@ -1,6 +1,6 @@
 import type { InternalAxiosRequestConfig } from "axios";
 import axios, { type AxiosError } from "axios";
-import { router } from "@/app/router/routerConfig";
+import type { router as AppRouter } from "@/app/router/routerConfig";
 import { authService } from "@/features/authentication/services/auth.service";
 import { clearAuthSession } from "@/features/authentication/utils/clear-auth-session";
 import { env } from "@/shared/config/env";
@@ -13,6 +13,12 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 	_csrfRetry?: boolean;
 }
 
+let routerInstance: typeof AppRouter | null = null;
+
+export const injectRouter = (router: typeof AppRouter) => {
+	routerInstance = router;
+};
+
 const api = axios.create({
 	baseURL: env.API_URL,
 	withCredentials: true,
@@ -23,7 +29,7 @@ const api = axios.create({
  * Injects the Access Token from the Router context into the Authorization header.
  */
 api.interceptors.request.use((config) => {
-	const auth = router.options.context?.auth;
+	const auth = routerInstance?.options.context?.auth;
 	const token = auth?.accessToken;
 	const csrfToken = auth?.csrfToken;
 	console.debug(
@@ -62,11 +68,11 @@ api.interceptors.response.use(
 				const csrfResponse = await authService.getCsrfToken();
 				const csrfToken = csrfResponse.data.csrfToken;
 
-				router.update({
+				routerInstance?.update({
 					context: {
-						...router.options.context,
+						...routerInstance.options.context,
 						auth: {
-							...router.options.context.auth,
+							...routerInstance.options.context.auth,
 							csrfToken,
 						},
 					},
@@ -89,7 +95,7 @@ api.interceptors.response.use(
 				!originalRequest.url.includes("/revoke-all-other-sessions");
 
 			if (isAuthEndpoint) {
-				clearAuthSession(router);
+				if (routerInstance) clearAuthSession(routerInstance);
 				return Promise.reject(error);
 			}
 
@@ -101,11 +107,11 @@ api.interceptors.response.use(
 				const newAccessToken = data.data.accessToken;
 
 				// Update the router context with the new token
-				router.update({
+				routerInstance?.update({
 					context: {
-						...router.options.context,
+						...routerInstance.options.context,
 						auth: {
-							...router.options.context.auth,
+							...routerInstance.options.context.auth,
 							accessToken: newAccessToken,
 							isAuthenticated: true,
 						},
@@ -117,8 +123,10 @@ api.interceptors.response.use(
 				return api(originalRequest);
 			} catch (refreshError) {
 				// Refresh failed then log out and clear auth state
-				clearAuthSession(router);
-				router.navigate({ to: "/auth" });
+				if (routerInstance) {
+					clearAuthSession(routerInstance);
+					routerInstance.navigate({ to: "/auth" });
+				}
 				return Promise.reject(refreshError);
 			}
 		}
@@ -127,11 +135,13 @@ api.interceptors.response.use(
 			// Handle forbidden access (403) — blocked users
 			const data = error.response.data as { message?: string };
 			if (data?.message?.toLowerCase().includes("blocked")) {
-				clearAuthSession(router);
-				router.navigate({
-					to: "/auth",
-					search: { error: "blocked" },
-				});
+				if (routerInstance) {
+					clearAuthSession(routerInstance);
+					routerInstance.navigate({
+						to: "/auth",
+						search: { error: "blocked" },
+					});
+				}
 				return Promise.reject(error);
 			}
 		}

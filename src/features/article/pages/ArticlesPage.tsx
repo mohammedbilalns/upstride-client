@@ -89,7 +89,7 @@ export function ArticlesPage() {
 									<Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400 pointer-events-none" />
 									<Input
 										placeholder="Search articles..."
-										className="h-11 pl-11 rounded-xl bg-white/60 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-800 focus:ring-primary/20"
+										className="h-11 pl-11 rounded-xl bg-white/60 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-800 transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary/20 hover:bg-white/80 dark:hover:bg-zinc-900/60"
 										value={searchInput}
 										onChange={(e) => setSearchInput(e.target.value)}
 									/>

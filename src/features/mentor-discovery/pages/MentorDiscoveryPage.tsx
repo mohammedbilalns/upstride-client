@@ -91,7 +91,7 @@ export function MentorDiscoveryPage() {
 									<Input
 										id="mentor-search"
 										placeholder="Search by name"
-										className="h-11 pl-11 rounded-xl bg-white/60 dark:bg-zinc-950/40"
+										className="h-11 pl-11 rounded-xl bg-white/60 dark:bg-zinc-950/40 transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary/20 hover:bg-white/80 dark:hover:bg-zinc-900/60"
 										value={searchInput}
 										onChange={(e) => setSearchInput(e.target.value)}
 										onKeyDown={(e) => {

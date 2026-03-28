@@ -36,13 +36,13 @@ export function MentorCard({ mentor, showBookmark = true }: MentorCardProps) {
 						<Bookmark className="h-4 w-4" />
 					</Button>
 				)}
-				<Avatar className="h-16 w-16 rounded-xl border object-cover">
+				<Avatar className="h-16 w-16 rounded-full border object-cover shadow-sm">
 					<AvatarImage
 						src={mentor.avatar || ""}
 						alt={mentor.name}
 						className="object-cover"
 					/>
-					<AvatarFallback className="rounded-xl bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
+					<AvatarFallback className="rounded-full bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
 						{mentor.name.charAt(0).toUpperCase()}
 					</AvatarFallback>
 				</Avatar>
