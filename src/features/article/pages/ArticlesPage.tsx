@@ -139,7 +139,7 @@ export function ArticlesPage() {
 							</div>
 						</div>
 
-						<div className="mt-4 min-w-0 min-h-0 space-y-6 overflow-y-auto pr-2 lg:h-[calc(100vh-260px)]">
+						<div className="mt-4 min-w-0 min-h-0 space-y-6">
 							{isLoading && (
 								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5">
 									{Array.from({ length: 9 }).map((_, i) => (

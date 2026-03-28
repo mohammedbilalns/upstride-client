@@ -103,7 +103,7 @@ export function SessionsPage() {
 						</div>
 					</aside>
 
-					<section className="flex-1 min-w-0 min-h-0 space-y-4">
+					<section className="flex-1 min-w-0 space-y-4">
 						<div className="rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40 px-4 py-3">
 							<div>
 								<p className="text-sm font-medium text-zinc-700 dark:text-zinc-200">
@@ -125,7 +125,7 @@ export function SessionsPage() {
 							</div>
 						</div>
 
-						<div className="min-w-0 min-h-0 space-y-4 overflow-y-auto pr-2 lg:h-[calc(100vh-260px)]">
+						<div className="min-w-0 space-y-4">
 							{isLoading && (
 								<div className="space-y-4">
 									{[1, 2, 3].map((i) => (
