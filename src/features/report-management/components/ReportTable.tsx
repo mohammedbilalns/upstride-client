@@ -192,24 +192,38 @@ export function ReportTable({ reports }: ReportTableProps) {
 										>
 											{report.targetType}
 										</Badge>
-										<span className="text-xs text-muted-foreground">
-											ID: {report.targetId}
+										<span className="text-sm font-medium text-foreground mt-2">
+											{report.target?.title ||
+												report.target?.name ||
+												`ID: ${report.targetId}`}
 										</span>
-										{report.targetType === "ARTICLE" && report.targetSlug && (
+										{report.targetType === "ARTICLE" &&
+											report.targetSlug &&
+											report.targetSlug !== "undefined" && (
+												<Link
+													to="/admin-articles/$articleId"
+													params={{ articleId: report.targetSlug }}
+													className="text-xs text-primary hover:underline flex items-center gap-1 w-fit mt-1 font-medium"
+												>
+													<ExternalLink className="w-3 h-3" />
+													View Article
+												</Link>
+											)}
+										{report.targetType === "USER" && (
 											<Link
-												to="/articles/$articleId"
-												params={{ articleId: report.targetSlug }}
+												to="/admin-profiles/$profileId"
+												params={{ profileId: report.targetId }}
 												className="text-xs text-primary hover:underline flex items-center gap-1 w-fit mt-1 font-medium"
 											>
 												<ExternalLink className="w-3 h-3" />
-												View Article
+												View Profile
 											</Link>
 										)}
 									</div>
 								</TableCell>
 								<TableCell>
-									<span className="text-sm text-muted-foreground">
-										{report.reporterId}
+									<span className="text-sm font-medium text-foreground">
+										{report.reporter?.name || report.reporterId}
 									</span>
 								</TableCell>
 								<TableCell>

@@ -7,6 +7,7 @@ interface ReactionButtonsProps {
 	slug: string;
 	likesCount: number;
 	userReaction?: "LIKE";
+	isReadOnly?: boolean;
 }
 
 export function ReactionButtons({
@@ -14,11 +15,24 @@ export function ReactionButtons({
 	slug,
 	likesCount,
 	userReaction,
+	isReadOnly = false,
 }: ReactionButtonsProps) {
 	const { react } = useArticleMutations();
 
 	const isLiked = userReaction === "LIKE";
 	const isPending = react.isPending;
+
+	if (isReadOnly) {
+		return (
+			<div
+				className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl text-zinc-500 select-none"
+				aria-label="Likes count"
+			>
+				<Heart className="h-5 w-5" />
+				<span className="text-sm font-semibold tabular-nums">{likesCount}</span>
+			</div>
+		);
+	}
 
 	return (
 		<button

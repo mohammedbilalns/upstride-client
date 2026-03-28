@@ -43,6 +43,8 @@ import { Route as UserLayoutProfileSecurityRouteImport } from './routes/_user-la
 import { Route as UserLayoutMentorsMentorIdRouteImport } from './routes/_user-layout/mentors/$mentorId'
 import { Route as UserLayoutMentorRegisterRouteImport } from './routes/_user-layout/mentor.register'
 import { Route as UserLayoutChatsChatIdRouteImport } from './routes/_user-layout/chats/$chatId'
+import { Route as AdminLayoutAdminProfilesProfileIdRouteImport } from './routes/_admin-layout/admin-profiles.$profileId'
+import { Route as AdminLayoutAdminArticlesArticleIdRouteImport } from './routes/_admin-layout/admin-articles.$articleId'
 import { Route as UserLayoutProfileBookmarkedMentorsIndexRouteImport } from './routes/_user-layout/profile/bookmarked-mentors/index'
 import { Route as UserLayoutArticlesArticleIdIndexRouteImport } from './routes/_user-layout/articles/$articleId/index'
 import { Route as UserLayoutProfileBookmarkedMentorsListIdRouteImport } from './routes/_user-layout/profile/bookmarked-mentors/$listId'
@@ -229,6 +231,18 @@ const UserLayoutChatsChatIdRoute = UserLayoutChatsChatIdRouteImport.update({
   path: '/$chatId',
   getParentRoute: () => UserLayoutChatsRoute,
 } as any)
+const AdminLayoutAdminProfilesProfileIdRoute =
+  AdminLayoutAdminProfilesProfileIdRouteImport.update({
+    id: '/admin-profiles/$profileId',
+    path: '/admin-profiles/$profileId',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
+const AdminLayoutAdminArticlesArticleIdRoute =
+  AdminLayoutAdminArticlesArticleIdRouteImport.update({
+    id: '/admin-articles/$articleId',
+    path: '/admin-articles/$articleId',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
 const UserLayoutProfileBookmarkedMentorsIndexRoute =
   UserLayoutProfileBookmarkedMentorsIndexRouteImport.update({
     id: '/bookmarked-mentors/',
@@ -283,6 +297,8 @@ export interface FileRoutesByFullPath {
   '/mentors': typeof UserLayoutMentorsRouteWithChildren
   '/profile': typeof UserLayoutProfileRouteWithChildren
   '/sessions': typeof UserLayoutSessionsRoute
+  '/admin-articles/$articleId': typeof AdminLayoutAdminArticlesArticleIdRoute
+  '/admin-profiles/$profileId': typeof AdminLayoutAdminProfilesProfileIdRoute
   '/chats/$chatId': typeof UserLayoutChatsChatIdRoute
   '/mentor/register': typeof UserLayoutMentorRegisterRoute
   '/mentors/$mentorId': typeof UserLayoutMentorsMentorIdRoute
@@ -317,6 +333,8 @@ export interface FileRoutesByTo {
   '/home': typeof UserLayoutHomeRoute
   '/mentor': typeof UserLayoutMentorRouteWithChildren
   '/sessions': typeof UserLayoutSessionsRoute
+  '/admin-articles/$articleId': typeof AdminLayoutAdminArticlesArticleIdRoute
+  '/admin-profiles/$profileId': typeof AdminLayoutAdminProfilesProfileIdRoute
   '/chats/$chatId': typeof UserLayoutChatsChatIdRoute
   '/mentor/register': typeof UserLayoutMentorRegisterRoute
   '/mentors/$mentorId': typeof UserLayoutMentorsMentorIdRoute
@@ -359,6 +377,8 @@ export interface FileRoutesById {
   '/_user-layout/profile': typeof UserLayoutProfileRouteWithChildren
   '/_user-layout/sessions': typeof UserLayoutSessionsRoute
   '/_public-layout/': typeof PublicLayoutIndexRoute
+  '/_admin-layout/admin-articles/$articleId': typeof AdminLayoutAdminArticlesArticleIdRoute
+  '/_admin-layout/admin-profiles/$profileId': typeof AdminLayoutAdminProfilesProfileIdRoute
   '/_user-layout/chats/$chatId': typeof UserLayoutChatsChatIdRoute
   '/_user-layout/mentor/register': typeof UserLayoutMentorRegisterRoute
   '/_user-layout/mentors/$mentorId': typeof UserLayoutMentorsMentorIdRoute
@@ -398,6 +418,8 @@ export interface FileRouteTypes {
     | '/mentors'
     | '/profile'
     | '/sessions'
+    | '/admin-articles/$articleId'
+    | '/admin-profiles/$profileId'
     | '/chats/$chatId'
     | '/mentor/register'
     | '/mentors/$mentorId'
@@ -432,6 +454,8 @@ export interface FileRouteTypes {
     | '/home'
     | '/mentor'
     | '/sessions'
+    | '/admin-articles/$articleId'
+    | '/admin-profiles/$profileId'
     | '/chats/$chatId'
     | '/mentor/register'
     | '/mentors/$mentorId'
@@ -473,6 +497,8 @@ export interface FileRouteTypes {
     | '/_user-layout/profile'
     | '/_user-layout/sessions'
     | '/_public-layout/'
+    | '/_admin-layout/admin-articles/$articleId'
+    | '/_admin-layout/admin-profiles/$profileId'
     | '/_user-layout/chats/$chatId'
     | '/_user-layout/mentor/register'
     | '/_user-layout/mentors/$mentorId'
@@ -736,6 +762,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserLayoutChatsChatIdRouteImport
       parentRoute: typeof UserLayoutChatsRoute
     }
+    '/_admin-layout/admin-profiles/$profileId': {
+      id: '/_admin-layout/admin-profiles/$profileId'
+      path: '/admin-profiles/$profileId'
+      fullPath: '/admin-profiles/$profileId'
+      preLoaderRoute: typeof AdminLayoutAdminProfilesProfileIdRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
+    '/_admin-layout/admin-articles/$articleId': {
+      id: '/_admin-layout/admin-articles/$articleId'
+      path: '/admin-articles/$articleId'
+      fullPath: '/admin-articles/$articleId'
+      preLoaderRoute: typeof AdminLayoutAdminArticlesArticleIdRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
     '/_user-layout/profile/bookmarked-mentors/': {
       id: '/_user-layout/profile/bookmarked-mentors/'
       path: '/bookmarked-mentors'
@@ -782,6 +822,8 @@ interface AdminLayoutRouteChildren {
   AdminLayoutPlatformSettingsRoute: typeof AdminLayoutPlatformSettingsRoute
   AdminLayoutReportManagementRoute: typeof AdminLayoutReportManagementRoute
   AdminLayoutUserManagementRoute: typeof AdminLayoutUserManagementRoute
+  AdminLayoutAdminArticlesArticleIdRoute: typeof AdminLayoutAdminArticlesArticleIdRoute
+  AdminLayoutAdminProfilesProfileIdRoute: typeof AdminLayoutAdminProfilesProfileIdRoute
 }
 
 const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
@@ -792,6 +834,10 @@ const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
   AdminLayoutPlatformSettingsRoute: AdminLayoutPlatformSettingsRoute,
   AdminLayoutReportManagementRoute: AdminLayoutReportManagementRoute,
   AdminLayoutUserManagementRoute: AdminLayoutUserManagementRoute,
+  AdminLayoutAdminArticlesArticleIdRoute:
+    AdminLayoutAdminArticlesArticleIdRoute,
+  AdminLayoutAdminProfilesProfileIdRoute:
+    AdminLayoutAdminProfilesProfileIdRoute,
 }
 
 const AdminLayoutRouteWithChildren = AdminLayoutRoute._addFileChildren(

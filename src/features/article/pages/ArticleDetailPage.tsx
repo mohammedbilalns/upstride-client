@@ -8,14 +8,18 @@ import { articleQueries } from "../hooks/queries";
 import { ArticleManagement } from "../components/ArticleManagement";
 import { format } from "date-fns";
 import { Link } from "@tanstack/react-router";
-import { Route } from "@/routes/_user-layout/articles/$articleId/index";
 import { ReactionButtons } from "../components/ReactionButtons";
 import { ReportDialog } from "@/components/common/ReportDialog";
 import { CommentsSection } from "../components/CommentsSection";
 import { useProfile } from "@/features/profile-management/hooks/use-profile";
 
-export function ArticleDetailPage() {
-	const { articleId } = Route.useParams();
+export function ArticleDetailPage({
+	articleId,
+	isReadOnly = false,
+}: {
+	articleId: string;
+	isReadOnly?: boolean;
+}) {
 	const { data: profile } = useProfile();
 	const { data } = useQuery(articleQueries.detail(articleId));
 
@@ -32,10 +36,17 @@ export function ArticleDetailPage() {
 					asChild
 					className="text-primary hover:text-primary/90 hover:bg-primary/10 -ml-2"
 				>
-					<Link to="/articles" search={{ page: 1 }}>
-						<ArrowLeft className="h-4 w-4 mr-2" />
-						Back to Articles
-					</Link>
+					{isReadOnly ? (
+						<Link to="/report-management" search={{ page: 1, limit: 10 }}>
+							<ArrowLeft className="h-4 w-4 mr-2" />
+							Back to Reports
+						</Link>
+					) : (
+						<Link to="/articles" search={{ page: 1 }}>
+							<ArrowLeft className="h-4 w-4 mr-2" />
+							Back to Articles
+						</Link>
+					)}
 				</Button>
 			</div>
 
@@ -54,13 +65,13 @@ export function ArticleDetailPage() {
 							))}
 						</div>
 						<div className="flex items-center gap-2">
-							{!isAuthor && (
+							{!isAuthor && !isReadOnly && (
 								<ReportDialog targetId={article.id} targetType="ARTICLE" />
 							)}
 							<ArticleManagement
 								articleId={article.id}
 								slug={article.slug}
-								isAuthor={!!isAuthor}
+								isAuthor={!!isAuthor && !isReadOnly}
 							/>
 						</div>
 					</div>
@@ -126,6 +137,7 @@ export function ArticleDetailPage() {
 						slug={article.slug}
 						likesCount={article.likesCount}
 						userReaction={userReaction}
+						isReadOnly={isReadOnly}
 					/>
 					<div className="text-sm text-zinc-500 font-medium">
 						{article.commentsCount} Comments
@@ -133,7 +145,11 @@ export function ArticleDetailPage() {
 				</div>
 
 				<div className="pt-8">
-					<CommentsSection articleId={article.id} currentUserId={profile?.id} />
+					<CommentsSection
+						articleId={article.id}
+						currentUserId={profile?.id}
+						isReadOnly={isReadOnly}
+					/>
 				</div>
 			</article>
 		</div>

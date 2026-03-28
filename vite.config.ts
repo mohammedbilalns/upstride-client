@@ -1,3 +1,4 @@
+import { ohImage } from "@lonik/oh-image/plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import viteReact from "@vitejs/plugin-react";
@@ -10,10 +11,8 @@ const config = defineConfig({
 		tailwindcss(),
 		tanstackRouter({ target: "react", autoCodeSplitting: true }),
 		viteReact(),
+		ohImage(),
 	],
-	server: {
-		port: 3000,
-	},
 });
 
 export default config;

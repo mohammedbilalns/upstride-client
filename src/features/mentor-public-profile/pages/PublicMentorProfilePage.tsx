@@ -278,9 +278,9 @@ export function PublicMentorProfilePage({
 										</a>
 									</Button>
 								)}
-								{currentUser?.id !== mentorId && (
+								{currentUser?.id !== profile.user.id && (
 									<ReportDialog
-										targetId={mentorId}
+										targetId={profile.user.id}
 										targetType="USER"
 										trigger={
 											<Button variant="outline" className="px-4">

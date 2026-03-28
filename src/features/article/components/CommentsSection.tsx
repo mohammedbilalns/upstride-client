@@ -32,11 +32,13 @@ import { CommentForm } from "./CommentForm";
 interface CommentsSectionProps {
 	articleId: string;
 	currentUserId?: string;
+	isReadOnly?: boolean;
 }
 
 export function CommentsSection({
 	articleId,
 	currentUserId,
+	isReadOnly = false,
 }: CommentsSectionProps) {
 	const {
 		data,
@@ -89,9 +91,11 @@ export function CommentsSection({
 				</h3>
 			</div>
 
-			<div className="bg-zinc-50 dark:bg-zinc-900/50 p-6 rounded-2xl border border-zinc-100 dark:border-zinc-800">
-				<CommentForm articleId={articleId} />
-			</div>
+			{!isReadOnly && (
+				<div className="bg-zinc-50 dark:bg-zinc-900/50 p-6 rounded-2xl border border-zinc-100 dark:border-zinc-800">
+					<CommentForm articleId={articleId} />
+				</div>
+			)}
 
 			<div className="space-y-6">
 				{comments.length === 0 ? (

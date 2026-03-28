@@ -6,5 +6,10 @@ export const Route = createFileRoute("/_user-layout/articles/$articleId/")({
 	loader: async ({ context: { queryClient }, params }) => {
 		await queryClient.ensureQueryData(articleQueries.detail(params.articleId));
 	},
-	component: ArticleDetailPage,
+	component: UserArticleRoute,
 });
+
+function UserArticleRoute() {
+	const { articleId } = Route.useParams();
+	return <ArticleDetailPage articleId={articleId} />;
+}
