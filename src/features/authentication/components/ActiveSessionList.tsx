@@ -53,7 +53,7 @@ export function ActiveSessionList() {
 	return (
 		<>
 			<Card className="border-border/60 bg-background/50 backdrop-blur-md shadow-lg shadow-black/5">
-				<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
+				<CardHeader className="flex flex-col md:flex-row md:items-center justify-between space-y-0 pb-6 gap-4">
 					<div className="space-y-1.5">
 						<CardTitle className="text-xl font-bold flex items-center gap-2">
 							Active Sessions

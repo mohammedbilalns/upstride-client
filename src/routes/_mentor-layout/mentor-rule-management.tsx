@@ -244,7 +244,7 @@ function MentorRuleManagement() {
 	};
 
 	return (
-		<div className="p-8 space-y-6">
+		<div className="p-4 md:p-8 space-y-6">
 			<Card className="border-border/60 shadow-sm">
 				<CardHeader>
 					<CardTitle className="text-2xl">Rule Management</CardTitle>
@@ -348,7 +348,7 @@ function MentorRuleManagement() {
 					{rules.map((rule) => (
 						<div
 							key={rule.ruleId}
-							className="flex items-center justify-between p-3 border border-border/60 rounded-lg"
+							className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-border/60 rounded-lg gap-4"
 						>
 							<div className="space-y-1">
 								<p className="font-medium">Weekday {rule.weekDay}</p>
@@ -357,7 +357,7 @@ function MentorRuleManagement() {
 									• {rule.slotDuration}m
 								</p>
 							</div>
-							<div className="flex items-center gap-2">
+							<div className="flex flex-wrap items-center gap-2">
 								<Badge
 									variant={rule.isActive === false ? "secondary" : "default"}
 								>

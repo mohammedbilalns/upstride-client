@@ -37,7 +37,10 @@ export default function UserNavbar() {
 	const { data: unreadData } = useGetUnreadCount();
 	const unreadCount = unreadData?.count ?? 0;
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+	const [isDesktopNotificationsOpen, setIsDesktopNotificationsOpen] =
+		useState(false);
+	const [isMobileNotificationsOpen, setIsMobileNotificationsOpen] =
+		useState(false);
 	const [isScrolled, setIsScrolled] = useState(false);
 
 	const handleLogout = () => {
@@ -83,7 +86,8 @@ export default function UserNavbar() {
 						className="flex items-center gap-2 group"
 						onClick={() => {
 							setIsMenuOpen(false);
-							setIsNotificationsOpen(false);
+							setIsDesktopNotificationsOpen(false);
+							setIsMobileNotificationsOpen(false);
 						}}
 					>
 						<div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center shadow-sm shadow-primary/30 group-hover:shadow-primary/50 transition-all">
@@ -132,8 +136,8 @@ export default function UserNavbar() {
 
 					<div className="hidden sm:block">
 						<DropdownMenu
-							open={isNotificationsOpen}
-							onOpenChange={setIsNotificationsOpen}
+							open={isDesktopNotificationsOpen}
+							onOpenChange={setIsDesktopNotificationsOpen}
 							modal={false}
 						>
 							<DropdownMenuTrigger asChild>
@@ -142,7 +146,8 @@ export default function UserNavbar() {
 									size="icon"
 									className={cn(
 										"rounded-full relative h-8 w-8 md:h-9 md:w-9 transition-colors",
-										isNotificationsOpen && "bg-accent text-accent-foreground",
+										isDesktopNotificationsOpen &&
+											"bg-accent text-accent-foreground",
 									)}
 								>
 									<Bell className="h-4.5 w-4.5 md:h-5 md:w-5 text-muted-foreground" />
@@ -162,7 +167,7 @@ export default function UserNavbar() {
 								sideOffset={8}
 							>
 								<NotificationDropdown
-									onClose={() => setIsNotificationsOpen(false)}
+									onClose={() => setIsDesktopNotificationsOpen(false)}
 								/>
 							</DropdownMenuContent>
 						</DropdownMenu>
@@ -236,20 +241,25 @@ export default function UserNavbar() {
 						</div>
 
 						<div>
-							<DropdownMenu onOpenChange={setIsNotificationsOpen} modal={false}>
+							<DropdownMenu
+								open={isMobileNotificationsOpen}
+								onOpenChange={setIsMobileNotificationsOpen}
+								modal={false}
+							>
 								<DropdownMenuTrigger asChild>
 									<Button
 										variant="ghost"
 										size="icon"
 										className={cn(
-											"h-8 w-8 rounded-lg",
-											isNotificationsOpen && "bg-accent text-accent-foreground",
+											"h-8 w-8 rounded-lg relative",
+											isMobileNotificationsOpen &&
+												"bg-accent text-accent-foreground",
 										)}
 									>
 										<Bell className="h-5 w-5 text-muted-foreground" />
 										{unreadCount > 0 && (
 											<Badge
-												className="absolute 0 right-0 h-3 w-3 flex items-center justify-center p-0 text-[8px] bg-primary"
+												className="absolute -top-1 -right-1 h-3.5 w-3.5 flex items-center justify-center p-0 text-[8px] bg-primary"
 												variant="default"
 											>
 												{unreadCount > 99 ? "99+" : unreadCount}
@@ -258,11 +268,13 @@ export default function UserNavbar() {
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent
-									className="w-[calc(100vw-2rem)] max-w-sm mr-4 p-0 border-border/80 shadow-2xl rounded-xl"
+									className="w-[calc(100vw-2.5rem)] max-w-sm p-0 border-border/80 shadow-2xl rounded-xl"
 									align="end"
-									sideOffset={8}
+									sideOffset={12}
 								>
-									<NotificationDropdown />
+									<NotificationDropdown
+										onClose={() => setIsMobileNotificationsOpen(false)}
+									/>
 								</DropdownMenuContent>
 							</DropdownMenu>
 						</div>
@@ -272,7 +284,8 @@ export default function UserNavbar() {
 							size="icon"
 							onClick={() => {
 								setIsMenuOpen(!isMenuOpen);
-								setIsNotificationsOpen(false);
+								setIsDesktopNotificationsOpen(false);
+								setIsMobileNotificationsOpen(false);
 							}}
 							className="h-8 w-8 rounded-lg"
 						>
