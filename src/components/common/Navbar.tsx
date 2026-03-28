@@ -1,9 +1,7 @@
 import { Link, useRouteContext } from "@tanstack/react-router";
 import {
 	Bell,
-	Bookmark,
 	Coins,
-	FileText,
 	LayoutDashboard,
 	LogOut,
 	Menu,
@@ -210,44 +208,15 @@ export default function UserNavbar() {
 								<DropdownMenuSeparator />
 								<DropdownMenuItem asChild>
 									<Link
-										to="/profile"
+										to={
+											user?.role === "MENTOR" ? "/mentor-dashboard" : "/profile"
+										}
 										className="cursor-pointer w-full flex items-center"
 									>
-										<UserIcon className="mr-2 h-4 w-4" />
-										<span>View Profile</span>
+										<LayoutDashboard className="mr-2 h-4 w-4" />
+										<span>Dashboard</span>
 									</Link>
 								</DropdownMenuItem>
-								<DropdownMenuItem asChild>
-									<Link
-										to="/profile/bookmarked-mentors"
-										className="cursor-pointer w-full flex items-center"
-									>
-										<Bookmark className="mr-2 h-4 w-4" />
-										<span>Bookmarked Mentors</span>
-									</Link>
-								</DropdownMenuItem>
-								{user?.role === "MENTOR" && (
-									<>
-										<DropdownMenuItem asChild>
-											<Link
-												to="/mentor/articles"
-												className="cursor-pointer w-full flex items-center"
-											>
-												<FileText className="mr-2 h-4 w-4" />
-												<span>My Articles</span>
-											</Link>
-										</DropdownMenuItem>
-										<DropdownMenuItem asChild>
-											<Link
-												to="/mentor-dashboard"
-												className="cursor-pointer w-full flex items-center"
-											>
-												<LayoutDashboard className="mr-2 h-4 w-4" />
-												<span>Mentor Dashboard</span>
-											</Link>
-										</DropdownMenuItem>
-									</>
-								)}
 								<DropdownMenuSeparator />
 								<DropdownMenuItem
 									className="cursor-pointer text-destructive focus:text-destructive"
@@ -377,50 +346,23 @@ export default function UserNavbar() {
 							</Link>
 						</div>
 
-						<div className="grid grid-cols-2 gap-2 mt-2">
+						<div className="flex flex-col gap-2 mt-2">
 							<Button
 								variant="outline"
 								size="sm"
 								className="w-full justify-start text-xs h-9 rounded-lg"
 								asChild
 							>
-								<Link to="/profile" onClick={() => setIsMenuOpen(false)}>
-									<UserIcon className="mr-2 h-3.5 w-3.5" />
-									Profile
+								<Link
+									to={
+										user?.role === "MENTOR" ? "/mentor-dashboard" : "/profile"
+									}
+									onClick={() => setIsMenuOpen(false)}
+								>
+									<LayoutDashboard className="mr-2 h-3.5 w-3.5" />
+									Dashboard
 								</Link>
 							</Button>
-							{user?.role === "MENTOR" && (
-								<>
-									<Button
-										variant="outline"
-										size="sm"
-										className="w-full justify-start text-xs h-9 rounded-lg"
-										asChild
-									>
-										<Link
-											to="/mentor/articles"
-											onClick={() => setIsMenuOpen(false)}
-										>
-											<FileText className="mr-2 h-3.5 w-3.5" />
-											My Articles
-										</Link>
-									</Button>
-									<Button
-										variant="outline"
-										size="sm"
-										className="w-full justify-start text-xs h-9 rounded-lg"
-										asChild
-									>
-										<Link
-											to="/mentor-dashboard"
-											onClick={() => setIsMenuOpen(false)}
-										>
-											<LayoutDashboard className="mr-2 h-3.5 w-3.5" />
-											Mentor Dashboard
-										</Link>
-									</Button>
-								</>
-							)}
 							<Button
 								variant="outline"
 								size="sm"

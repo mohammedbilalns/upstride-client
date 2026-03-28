@@ -109,7 +109,7 @@ export function AddBalanceForm({
 					<form.Subscribe selector={(s) => [s.isSubmitting]}>
 						{([isSubmitting]) => (
 							<Button
-								className="h-10 px-4 flex-shrink-0"
+								className="h-10 px-4 flex-shrink-0 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-zinc-50 dark:text-zinc-900"
 								disabled={isSubmitting}
 							>
 								<CreditCard className="h-4 w-4 mr-2" />

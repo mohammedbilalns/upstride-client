@@ -124,7 +124,7 @@ export function Pagination({
 								className={cn(
 									"h-8 w-8 text-xs font-semibold rounded-md transition-all duration-200",
 									isActive
-										? "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90"
+										? "bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-900 shadow-sm"
 										: "hover:bg-muted text-muted-foreground hover:text-foreground",
 								)}
 								onClick={() => onPageChange(page)}

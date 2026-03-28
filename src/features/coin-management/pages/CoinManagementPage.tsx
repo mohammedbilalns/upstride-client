@@ -11,7 +11,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Route } from "@/routes/_user-layout/coins";
 import { CoinTransactionsTable } from "../components/CoinTransactionsTable";
-import { CoinWalletHeader } from "../components/CoinWalletHeader";
 import { PaymentTransactionsTable } from "../components/PaymentTransactionsTable";
 import {
 	useCoinBalance,
@@ -133,139 +132,169 @@ export function CoinManagementPage() {
 	};
 
 	return (
-		<main className="container mx-auto px-4 md:px-6 py-8 space-y-8 animate-in fade-in duration-500">
-			<div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6">
-				<CoinWalletHeader />
+		<div className="relative">
+			<div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-zinc-50 to-transparent dark:from-zinc-950 dark:to-transparent" />
+			<div className="container mx-auto px-4 md:px-6 py-8 flex flex-col min-h-screen gap-6 relative">
+				<div className="flex flex-col gap-1">
+					<h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+						Coin Wallet
+					</h1>
+					<p className="text-sm text-muted-foreground">
+						Manage your balance, transaction history, and top-up your wallet.
+					</p>
+				</div>
 
-				<div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-card p-3 md:p-4 rounded-xl border shadow-sm w-full xl:w-auto">
-					<div className="flex sm:flex-col items-center sm:items-start gap-3 sm:gap-0 px-2 shrink-0">
-						<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-							Balance
-						</span>
-						<span className="text-2xl font-bold tracking-tight text-primary">
-							{balance?.coinBalance ?? 0}
-						</span>
-					</div>
-					<div className="w-px h-10 bg-border hidden sm:block"></div>
-					<div className="w-full sm:w-auto">
-						<AddBalanceForm
-							onSubmit={handleCheckout}
-							coinValue={balance?.coinValue}
-							label="Top-up Amount"
-							placeholder="Enter Coins"
-						/>
-					</div>
+				<div className="flex flex-col lg:flex-row gap-8 flex-1 min-h-0">
+					<aside className="lg:w-[350px] shrink-0">
+						<div className="lg:sticky top-6 space-y-6">
+							<div className="rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-6 space-y-4">
+								<div className="space-y-1">
+									<p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400 uppercase leading-none">
+										Current Balance
+									</p>
+									<p className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+										{balance?.coinBalance ?? 0}
+									</p>
+								</div>
+
+								<div className="pt-4 border-t border-zinc-200 dark:border-zinc-800">
+									<AddBalanceForm
+										onSubmit={handleCheckout}
+										coinValue={balance?.coinValue}
+										label="Top-up Wallet"
+										placeholder="Enter coin amount"
+									/>
+								</div>
+							</div>
+
+							<div className="rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-4">
+								<p className="text-xs text-muted-foreground italic">
+									Coins can be used to book sessions with mentors across the
+									platform.
+								</p>
+							</div>
+						</div>
+					</aside>
+
+					<section className="flex-1 min-w-0 min-h-0 space-y-4">
+						<Tabs
+							value={search.tab}
+							onValueChange={handleTabChange}
+							className="space-y-4"
+						>
+							<div className="rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+								<TabsList className="bg-transparent h-auto p-0 m-0">
+									<TabsTrigger
+										value="coins"
+										className="data-[state=active]:bg-zinc-100 dark:data-[state=active]:bg-zinc-800 rounded-lg px-4 py-2 text-sm font-medium"
+									>
+										Coin Transactions
+									</TabsTrigger>
+									<TabsTrigger
+										value="payments"
+										className="data-[state=active]:bg-zinc-100 dark:data-[state=active]:bg-zinc-800 rounded-lg px-4 py-2 text-sm font-medium"
+									>
+										Payment History
+									</TabsTrigger>
+								</TabsList>
+
+								<div className="flex items-center gap-2 px-2">
+									<span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+										Sort
+									</span>
+									{search.tab === "coins" ? (
+										<Select
+											value={search.coinSort}
+											onValueChange={(value) =>
+												navigate({
+													search: buildCoinSearch({
+														coinSort: parseSortValue(value),
+														coinPage: 1,
+													}),
+												})
+											}
+										>
+											<SelectTrigger className="w-32 h-8 text-xs rounded-lg bg-white/50 dark:bg-zinc-900/50">
+												<SelectValue placeholder="Sort" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="recent">Recent</SelectItem>
+												<SelectItem value="old">Oldest</SelectItem>
+											</SelectContent>
+										</Select>
+									) : (
+										<Select
+											value={search.paymentSort}
+											onValueChange={(value) =>
+												navigate({
+													search: buildPaymentSearch({
+														paymentSort: parseSortValue(value),
+														paymentPage: 1,
+													}),
+												})
+											}
+										>
+											<SelectTrigger className="w-32 h-8 text-xs rounded-lg bg-white/50 dark:bg-zinc-900/50">
+												<SelectValue placeholder="Sort" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="recent">Recent</SelectItem>
+												<SelectItem value="old">Oldest</SelectItem>
+											</SelectContent>
+										</Select>
+									)}
+								</div>
+							</div>
+
+							<div className="rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-1">
+								<TabsContent
+									value="coins"
+									className="mt-0 focus-visible:outline-none focus-visible:ring-0"
+								>
+									<CoinTransactionsTable
+										isLoading={coinLoading}
+										data={coinTransactions}
+										onPageChange={(page: number) =>
+											navigate({ search: buildCoinSearch({ coinPage: page }) })
+										}
+										onLimitChange={(limit: number) =>
+											navigate({
+												search: buildCoinSearch({
+													coinLimit: limit,
+													coinPage: 1,
+												}),
+											})
+										}
+									/>
+								</TabsContent>
+
+								<TabsContent
+									value="payments"
+									className="mt-0 focus-visible:outline-none focus-visible:ring-0"
+								>
+									<PaymentTransactionsTable
+										isLoading={paymentLoading}
+										data={paymentTransactions}
+										onPageChange={(page: number) =>
+											navigate({
+												search: buildPaymentSearch({ paymentPage: page }),
+											})
+										}
+										onLimitChange={(limit: number) =>
+											navigate({
+												search: buildPaymentSearch({
+													paymentLimit: limit,
+													paymentPage: 1,
+												}),
+											})
+										}
+									/>
+								</TabsContent>
+							</div>
+						</Tabs>
+					</section>
 				</div>
 			</div>
-
-			<Tabs
-				value={search.tab}
-				onValueChange={handleTabChange}
-				className="space-y-4"
-			>
-				<div className="bg-card p-2 rounded-xl border shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-					<TabsList className="bg-transparent h-auto p-0 m-0">
-						<TabsTrigger
-							value="coins"
-							className="data-[state=active]:bg-muted dark:data-[state=active]:bg-muted/50 rounded-lg px-4 py-2"
-						>
-							Coin Transactions
-						</TabsTrigger>
-						<TabsTrigger
-							value="payments"
-							className="data-[state=active]:bg-muted dark:data-[state=active]:bg-muted/50 rounded-lg px-4 py-2"
-						>
-							Payment Transactions
-						</TabsTrigger>
-					</TabsList>
-
-					<div className="flex items-center gap-2 px-2 pb-2 sm:pb-0">
-						<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-							Sort
-						</span>
-						{search.tab === "coins" ? (
-							<Select
-								value={search.coinSort}
-								onValueChange={(value) =>
-									navigate({
-										search: buildCoinSearch({
-											coinSort: parseSortValue(value),
-											coinPage: 1,
-										}),
-									})
-								}
-							>
-								<SelectTrigger className="w-35 h-9">
-									<SelectValue placeholder="Sort By" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="recent">Recent First</SelectItem>
-									<SelectItem value="old">Oldest First</SelectItem>
-								</SelectContent>
-							</Select>
-						) : (
-							<Select
-								value={search.paymentSort}
-								onValueChange={(value) =>
-									navigate({
-										search: buildPaymentSearch({
-											paymentSort: parseSortValue(value),
-											paymentPage: 1,
-										}),
-									})
-								}
-							>
-								<SelectTrigger className="w-35 h-9">
-									<SelectValue placeholder="Sort By" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="recent">Recent First</SelectItem>
-									<SelectItem value="old">Oldest First</SelectItem>
-								</SelectContent>
-							</Select>
-						)}
-					</div>
-				</div>
-
-				<TabsContent
-					value="coins"
-					className="mt-0 focus-visible:outline-none focus-visible:ring-0"
-				>
-					<CoinTransactionsTable
-						isLoading={coinLoading}
-						data={coinTransactions}
-						onPageChange={(page: number) =>
-							navigate({ search: buildCoinSearch({ coinPage: page }) })
-						}
-						onLimitChange={(limit: number) =>
-							navigate({
-								search: buildCoinSearch({ coinLimit: limit, coinPage: 1 }),
-							})
-						}
-					/>
-				</TabsContent>
-
-				<TabsContent
-					value="payments"
-					className="mt-0 focus-visible:outline-none focus-visible:ring-0"
-				>
-					<PaymentTransactionsTable
-						isLoading={paymentLoading}
-						data={paymentTransactions}
-						onPageChange={(page: number) =>
-							navigate({ search: buildPaymentSearch({ paymentPage: page }) })
-						}
-						onLimitChange={(limit: number) =>
-							navigate({
-								search: buildPaymentSearch({
-									paymentLimit: limit,
-									paymentPage: 1,
-								}),
-							})
-						}
-					/>
-				</TabsContent>
-			</Tabs>
-		</main>
+		</div>
 	);
 }
