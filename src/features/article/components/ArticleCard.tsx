@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Calendar, Eye, MessageSquare, Image as ImageIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { ProgressiveImage } from "@/components/common/ProgressiveImage";
 import {
 	Card,
 	CardContent,
@@ -23,7 +24,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
 		<Card className="group flex flex-col h-full overflow-hidden bg-white dark:bg-zinc-950/50 hover:border-zinc-300 dark:hover:border-zinc-800 border-zinc-200/70 dark:border-zinc-800/50 transition-all duration-300">
 			<div className="relative aspect-[16/10] overflow-hidden bg-zinc-100 dark:bg-zinc-900">
 				{article.featuredImageUrl && !imageError ? (
-					<img
+					<ProgressiveImage
 						src={article.featuredImageUrl}
 						alt={article.title}
 						onError={() => {
@@ -33,6 +34,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
 							);
 							setImageError(true);
 						}}
+						wrapperClassName="w-full h-full"
 						className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
 					/>
 				) : (

@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { fileService } from "@/shared/services/file.service";
 import { ArticleImageCropper } from "./ArticleImageCropper";
+import { ProgressiveImage } from "@/components/common/ProgressiveImage";
 
 interface Props {
 	value?: string;
@@ -62,9 +63,10 @@ export function ArticleImageUpload({
 			<div className="relative aspect-video w-full overflow-hidden rounded-2xl border-2 border-dashed border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/50 flex flex-col items-center justify-center transition-all hover:bg-zinc-100 dark:hover:bg-zinc-900 group">
 				{value || localPreviewUrl || previewUrl ? (
 					<>
-						<img
+						<ProgressiveImage
 							src={localPreviewUrl || previewUrl || value}
 							alt="Featured"
+							wrapperClassName="h-full w-full"
 							className="h-full w-full object-cover"
 						/>
 						<div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">

@@ -1,7 +1,14 @@
 import { Avatar as AvatarPrimitive } from "radix-ui";
-import type * as React from "react";
+import * as React from "react";
 
 import { cn } from "@/shared/utils/cn";
+
+type ImageLoadingStatus = "idle" | "loading" | "loaded" | "error";
+
+const AvatarStatusContext = React.createContext<{
+	status: ImageLoadingStatus;
+	setStatus: (status: ImageLoadingStatus) => void;
+} | null>(null);
 
 function Avatar({
 	className,
@@ -10,30 +17,43 @@ function Avatar({
 }: React.ComponentProps<typeof AvatarPrimitive.Root> & {
 	size?: "default" | "sm" | "lg";
 }) {
+	const [status, setStatus] = React.useState<ImageLoadingStatus>("idle");
+
 	return (
-		<AvatarPrimitive.Root
-			data-slot="avatar"
-			data-size={size}
-			className={cn(
-				"group/avatar relative flex size-8 shrink-0 overflow-hidden rounded-full select-none data-[size=lg]:size-10 data-[size=sm]:size-6",
-				className,
-			)}
-			{...props}
-		/>
+		<AvatarStatusContext.Provider value={{ status, setStatus }}>
+			<AvatarPrimitive.Root
+				data-slot="avatar"
+				data-size={size}
+				className={cn(
+					"group/avatar relative flex size-8 shrink-0 overflow-hidden rounded-full select-none data-[size=lg]:size-10 data-[size=sm]:size-6",
+					className,
+				)}
+				{...props}
+			/>
+		</AvatarStatusContext.Provider>
 	);
 }
 
 function AvatarImage({
 	className,
+	onLoadingStatusChange,
 	...props
 }: React.ComponentProps<typeof AvatarPrimitive.Image>) {
+	const context = React.useContext(AvatarStatusContext);
+
+	const handleLoadingStatusChange = (status: ImageLoadingStatus) => {
+		context?.setStatus(status);
+		onLoadingStatusChange?.(status);
+	};
+
 	return (
 		<AvatarPrimitive.Image
 			data-slot="avatar-image"
 			className={cn(
-				"aspect-square size-full overflow-hidden rounded-full object-cover",
+				"aspect-square size-full overflow-hidden rounded-full object-cover image-fade-in",
 				className,
 			)}
+			onLoadingStatusChange={handleLoadingStatusChange}
 			{...props}
 		/>
 	);
@@ -43,11 +63,15 @@ function AvatarFallback({
 	className,
 	...props
 }: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
+	const context = React.useContext(AvatarStatusContext);
+	const showSkeleton = context?.status === "loading";
+
 	return (
 		<AvatarPrimitive.Fallback
 			data-slot="avatar-fallback"
 			className={cn(
 				"bg-muted text-muted-foreground flex size-full items-center justify-center rounded-full text-sm group-data-[size=sm]/avatar:text-xs",
+				showSkeleton && "image-skeleton text-transparent",
 				className,
 			)}
 			{...props}

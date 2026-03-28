@@ -16,7 +16,6 @@
 	"dependencies": {
 		"@lexical/react": "^0.42.0",
 		"@lexical/rich-text": "^0.42.0",
-		"@lonik/oh-image": "^3.2.2",
 		"@react-oauth/google": "^0.13.4",
 		"@tailwindcss/typography": "^0.5.19",
 		"@tailwindcss/vite": "^4.1.18",

@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { ProgressiveImage } from "@/components/common/ProgressiveImage";
 import { articleQueries } from "../hooks/queries";
 import { ArticleManagement } from "../components/ArticleManagement";
 import { format } from "date-fns";
@@ -114,9 +115,10 @@ export function ArticleDetailPage({
 
 				{article.featuredImageUrl && (
 					<div className="relative aspect-[21/9] overflow-hidden rounded-3xl shadow-2xl">
-						<img
+						<ProgressiveImage
 							src={article.featuredImageUrl}
 							alt={article.title}
+							wrapperClassName="w-full h-full"
 							className="object-cover w-full h-full"
 						/>
 					</div>
