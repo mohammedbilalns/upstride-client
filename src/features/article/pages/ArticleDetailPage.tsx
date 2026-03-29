@@ -29,8 +29,8 @@ export function ArticleDetailPage({
 	const { article, isAuthor, userReaction } = data;
 
 	return (
-		<div className="container mx-auto px-4 md:px-6 py-12 max-w-5xl">
-			<div className="mb-8">
+		<div className="container mx-auto px-4 md:px-6 py-8 max-w-5xl">
+			<div className="mb-4">
 				<Button
 					variant="ghost"
 					size="sm"
