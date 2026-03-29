@@ -4,6 +4,7 @@ import { Flag } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { ReportDialog } from "@/components/common/ReportDialog";
 import { useProfile } from "@/features/profile-management/hooks/use-profile";
+import { MentorArticlesSection } from "../components/MentorArticlesSection";
 import { toast } from "sonner";
 import type { ApiError } from "@/api/apiError";
 import { AddBalanceForm } from "@/components/common/AddBalanceForm";
@@ -454,6 +455,18 @@ export function PublicMentorProfilePage({
 							</div>
 						))}
 					</div>
+				</CardContent>
+			</Card>
+
+			<Card className="border-border/60 shadow-sm mt-8">
+				<CardHeader>
+					<CardTitle className="text-lg">Articles</CardTitle>
+					<p className="text-sm text-muted-foreground">
+						Insights and articles published by {profile.user.name}.
+					</p>
+				</CardHeader>
+				<CardContent>
+					<MentorArticlesSection authorId={profile.user.id} />
 				</CardContent>
 			</Card>
 			<ConfirmModal

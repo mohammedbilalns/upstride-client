@@ -62,6 +62,7 @@ export interface GetArticlesInput {
 	skill?: string;
 	category?: string;
 	authorId?: string;
+	limit?: number;
 }
 
 export interface GetTopTagsResponse {
