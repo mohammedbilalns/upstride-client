@@ -75,7 +75,7 @@ export function PublicMentorProfilePage({
 				mentorId,
 				selectedDateKey,
 			),
-		enabled: Boolean(selectedDateKey),
+		enabled: Boolean(selectedDateKey) && !isAdminView,
 	});
 
 	const bookMutation = useMutation({
