@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,8 @@ import { Route } from "@/routes/_user-layout/mentor/articles/$articleId/update";
 import { ArticleImageUpload } from "../components/ArticleImageUpload";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
+import type { ApiError } from "@/api/apiError";
+import { ArticleNotFound } from "../components/ArticleNotFound";
 
 const articleSchema = z.object({
 	title: z
@@ -36,11 +38,24 @@ const articleSchema = z.object({
 
 export function UpdateArticlePage() {
 	const navigate = useNavigate({ from: Route.fullPath });
+	const router = useRouter();
 	const queryClient = useQueryClient();
 	const { articleId } = Route.useParams();
 	const { data } = useQuery(articleQueries.detail(articleId));
 
 	const [showUpdateConfirm, setShowUpdateConfirm] = useState(false);
+
+	const currentUserId = router.options.context?.auth?.user?.id;
+	if (data?.article && currentUserId) {
+		if (data.article.authorId !== currentUserId) {
+			return (
+				<ArticleNotFound
+					backTo="/mentor-articles"
+					backLabel="Back to Articles"
+				/>
+			);
+		}
+	}
 
 	const updateMutation = useMutation({
 		mutationFn: articleService.updateArticle,
@@ -49,8 +64,9 @@ export function UpdateArticlePage() {
 			queryClient.invalidateQueries({ queryKey: articleQueries.all });
 			navigate({ to: "/articles/$articleId", params: { articleId } });
 		},
-		onError: (error) => {
-			toast.error("Failed to update article");
+		onError: (error: ApiError) => {
+			const message = error.response?.data?.message;
+			toast.error(message || "Failed to update article");
 			console.error(error);
 		},
 	});
