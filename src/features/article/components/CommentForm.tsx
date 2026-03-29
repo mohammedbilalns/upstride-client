@@ -9,8 +9,9 @@ import { useArticleMutations } from "../hooks/mutations";
 const commentSchema = z.object({
 	content: z
 		.string()
-		.min(1, "Comment cannot be empty")
-		.max(2000, "Comment is too long (max 2000 characters)"),
+		.trim()
+		.min(2, "Comment must be at least 2 characters")
+		.max(500, "Comment is too long (max 500 characters)"),
 });
 
 interface CommentFormProps {
@@ -76,6 +77,7 @@ export function CommentForm({
 							placeholder="Write a comment..."
 							className="min-h-[100px] resize-none focus:ring-primary shadow-sm rounded-xl p-4"
 							value={field.state.value}
+							maxLength={500}
 							onBlur={field.handleBlur}
 							onChange={(e) => field.handleChange(e.target.value)}
 						/>

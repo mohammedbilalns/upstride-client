@@ -41,7 +41,7 @@ export function CreateArticlePage() {
 		onSuccess: () => {
 			toast.success("Article created successfully");
 			queryClient.invalidateQueries({ queryKey: articleQueries.all });
-			navigate({ to: "/mentor/articles" });
+			navigate({ to: "/mentor-articles" });
 		},
 		onError: (error) => {
 			toast.error("Failed to create article");
@@ -80,7 +80,7 @@ export function CreateArticlePage() {
 				<Button
 					variant="ghost"
 					size="icon"
-					onClick={() => navigate({ to: "/mentor/articles" })}
+					onClick={() => navigate({ to: "/mentor-articles" })}
 					className="rounded-full text-primary hover:text-primary/90 hover:bg-primary/10"
 				>
 					<ChevronLeft className="h-5 w-5" />

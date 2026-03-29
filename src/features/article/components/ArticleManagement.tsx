@@ -28,7 +28,7 @@ export function ArticleManagement({
 			setIsDeleting(true);
 			await articleService.deleteArticle({ articleId });
 			toast.success("Article deleted successfully");
-			navigate({ to: "/mentor/articles" });
+			navigate({ to: "/mentor-articles" });
 		} catch (error) {
 			toast.error("Failed to delete article");
 			console.error(error);

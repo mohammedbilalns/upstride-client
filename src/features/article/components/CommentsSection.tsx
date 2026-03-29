@@ -111,7 +111,7 @@ export function CommentsSection({
 									{comment.authorSnapshot.name.charAt(0)}
 								</AvatarFallback>
 							</Avatar>
-							<div className="flex-1 space-y-1">
+							<div className="flex-1 min-w-0 space-y-1">
 								<div className="flex items-center justify-between">
 									<div className="flex items-center gap-2">
 										<span className="font-bold text-sm text-zinc-900 dark:text-zinc-50">
@@ -161,7 +161,7 @@ export function CommentsSection({
 										/>
 									</div>
 								) : (
-									<p className="text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap">
+									<p className="text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap break-words">
 										{comment.content}
 									</p>
 								)}
