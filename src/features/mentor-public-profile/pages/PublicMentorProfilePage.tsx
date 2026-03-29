@@ -32,12 +32,14 @@ import { sessionBookingService } from "@/features/session-booking-management";
 
 interface PublicMentorProfilePageProps {
 	mentorId: string;
+	isAdminView?: boolean;
 }
 
 const PENDING_BOOKING_STORAGE_KEY = "pending-booking-slot";
 
 export function PublicMentorProfilePage({
 	mentorId,
+	isAdminView = false,
 }: PublicMentorProfilePageProps) {
 	const { data: currentUser } = useProfile();
 	const queryClient = useQueryClient();
@@ -253,55 +255,57 @@ export function PublicMentorProfilePage({
 									</p>
 								</div>
 							</div>
-							<div className="flex items-center gap-3">
-								<Button asChild className="px-6">
-									<Link
-										to="/chats/$chatId"
-										params={{ chatId: profile.user.id }}
-										state={{
-											receiver: {
-												id: profile.user.id,
-												name: profile.user.name,
-												profilePictureUrl: profile.user.avatar ?? null,
-											},
-										}}
-									>
-										Chat
-									</Link>
-								</Button>
-								{profile.personalWebsite && (
-									<Button variant="outline" className="px-6" asChild>
-										<a
-											href={profile.personalWebsite}
-											target="_blank"
-											rel="noreferrer"
+							{!isAdminView && (
+								<div className="flex items-center gap-3">
+									<Button asChild className="px-6">
+										<Link
+											to="/chats/$chatId"
+											params={{ chatId: profile.user.id }}
+											state={{
+												receiver: {
+													id: profile.user.id,
+													name: profile.user.name,
+													profilePictureUrl: profile.user.avatar ?? null,
+												},
+											}}
 										>
-											Website
-										</a>
+											Chat
+										</Link>
 									</Button>
-								)}
-								{currentUser?.id !== profile.user.id &&
-									(isReported ? (
-										<Button
-											variant="outline"
-											className="px-4 text-muted-foreground cursor-not-allowed"
-											disabled
-										>
-											<Flag className="h-4 w-4 mr-1" />
-											Report Submitted
+									{profile.personalWebsite && (
+										<Button variant="outline" className="px-6" asChild>
+											<a
+												href={profile.personalWebsite}
+												target="_blank"
+												rel="noreferrer"
+											>
+												Website
+											</a>
 										</Button>
-									) : (
-										<ReportDialog
-											targetId={profile.user.id}
-											targetType="USER"
-											trigger={
-												<Button variant="outline" className="px-4">
-													<Flag className="h-4 w-4" />
-												</Button>
-											}
-										/>
-									))}
-							</div>
+									)}
+									{currentUser?.id !== profile.user.id &&
+										(isReported ? (
+											<Button
+												variant="outline"
+												className="px-4 text-muted-foreground cursor-not-allowed"
+												disabled
+											>
+												<Flag className="h-4 w-4 mr-1" />
+												Report Submitted
+											</Button>
+										) : (
+											<ReportDialog
+												targetId={profile.user.id}
+												targetType="USER"
+												trigger={
+													<Button variant="outline" className="px-4">
+														<Flag className="h-4 w-4" />
+													</Button>
+												}
+											/>
+										))}
+								</div>
+							)}
 						</div>
 						<div className="flex flex-wrap gap-2">
 							<Badge variant="secondary">
@@ -348,115 +352,121 @@ export function PublicMentorProfilePage({
 					</CardContent>
 				</Card>
 
-				<Card className="border-border/60 shadow-sm">
-					<CardHeader>
-						<CardTitle className="text-lg">Next available sessions</CardTitle>
-					</CardHeader>
-					<CardContent className="space-y-3">
-						{nextAvailableSessions.length === 0 && (
-							<p className="text-sm text-muted-foreground">
-								No upcoming sessions yet.
-							</p>
-						)}
-						{nextAvailableSessions.map((slot) => (
-							<div
-								key={slot.id}
-								className="flex items-center justify-between rounded-lg border border-border/60 p-3"
-							>
-								<div>
-									<p className="font-medium">
-										{formatTime(slot.startTime)} - {formatTime(slot.endTime)}
-									</p>
-									<p className="text-xs text-muted-foreground">
-										{new Date(slot.startTime).toLocaleDateString()} ·{" "}
-										{slot.durationMinutes} mins · {slot.price} coins
-									</p>
+				{!isAdminView && (
+					<Card className="border-border/60 shadow-sm">
+						<CardHeader>
+							<CardTitle className="text-lg">Next available sessions</CardTitle>
+						</CardHeader>
+						<CardContent className="space-y-3">
+							{nextAvailableSessions.length === 0 && (
+								<p className="text-sm text-muted-foreground">
+									No upcoming sessions yet.
+								</p>
+							)}
+							{nextAvailableSessions.map((slot) => (
+								<div
+									key={slot.id}
+									className="flex items-center justify-between rounded-lg border border-border/60 p-3"
+								>
+									<div>
+										<p className="font-medium">
+											{formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+										</p>
+										<p className="text-xs text-muted-foreground">
+											{new Date(slot.startTime).toLocaleDateString()} ·{" "}
+											{slot.durationMinutes} mins · {slot.price} coins
+										</p>
+									</div>
+									<div className="flex items-center gap-2">
+										<Badge variant="secondary">Available</Badge>
+										<Button
+											size="sm"
+											onClick={() => handleBookClick(slot)}
+											disabled={
+												bookMutation.isPending && bookingSlotId === slot.id
+											}
+										>
+											{bookMutation.isPending && bookingSlotId === slot.id
+												? "Booking..."
+												: "Book"}
+										</Button>
+									</div>
 								</div>
-								<div className="flex items-center gap-2">
-									<Badge variant="secondary">Available</Badge>
-									<Button
-										size="sm"
-										onClick={() => handleBookClick(slot)}
-										disabled={
-											bookMutation.isPending && bookingSlotId === slot.id
-										}
-									>
-										{bookMutation.isPending && bookingSlotId === slot.id
-											? "Booking..."
-											: "Book"}
-									</Button>
-								</div>
-							</div>
-						))}
-					</CardContent>
-				</Card>
+							))}
+						</CardContent>
+					</Card>
+				)}
 			</div>
 
-			<Card className="border-border/60 shadow-sm">
-				<CardHeader className="flex flex-col gap-2">
-					<CardTitle className="text-lg">Pick a day</CardTitle>
-					<p className="text-sm text-muted-foreground">
-						Choose a date to see available slots.
-					</p>
-				</CardHeader>
-				<CardContent className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6">
-					<div className="border border-border/60 rounded-lg p-3">
-						<Calendar
-							mode="single"
-							selected={selectedDate}
-							onSelect={(date) => setSelectedDate(date ?? undefined)}
-							className="w-full"
-						/>
-					</div>
-					<div className="space-y-3">
-						<div className="flex items-center justify-between">
-							<h3 className="font-semibold">Available slots</h3>
-							{selectedDate && (
-								<span className="text-sm text-muted-foreground">
-									{formatDate(selectedDate)}
-								</span>
-							)}
+			{!isAdminView && (
+				<Card className="border-border/60 shadow-sm">
+					<CardHeader className="flex flex-col gap-2">
+						<CardTitle className="text-lg">Pick a day</CardTitle>
+						<p className="text-sm text-muted-foreground">
+							Choose a date to see available slots.
+						</p>
+					</CardHeader>
+					<CardContent className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6">
+						<div className="border border-border/60 rounded-lg p-3">
+							<Calendar
+								mode="single"
+								selected={selectedDate}
+								onSelect={(date) => setSelectedDate(date ?? undefined)}
+								className="w-full"
+							/>
 						</div>
-						{slotsQuery.isLoading && (
-							<p className="text-sm text-muted-foreground">Loading slots...</p>
-						)}
-						{!slotsQuery.isLoading && availableSlots.length === 0 && (
-							<p className="text-sm text-muted-foreground">
-								No available slots for this day.
-							</p>
-						)}
-						{availableSlots.map((slot) => (
-							<div
-								key={slot.id}
-								className="flex items-center justify-between rounded-lg border border-border/60 p-3"
-							>
-								<div>
-									<p className="font-medium">
-										{formatTime(slot.startTime)} - {formatTime(slot.endTime)}
-									</p>
-									<p className="text-xs text-muted-foreground">
-										{slot.durationMinutes} mins · {slot.price} coins
-									</p>
-								</div>
-								<div className="flex items-center gap-2">
-									<Badge variant="secondary">Available</Badge>
-									<Button
-										size="sm"
-										onClick={() => handleBookClick(slot)}
-										disabled={
-											bookMutation.isPending && bookingSlotId === slot.id
-										}
-									>
-										{bookMutation.isPending && bookingSlotId === slot.id
-											? "Booking..."
-											: "Book"}
-									</Button>
-								</div>
+						<div className="space-y-3">
+							<div className="flex items-center justify-between">
+								<h3 className="font-semibold">Available slots</h3>
+								{selectedDate && (
+									<span className="text-sm text-muted-foreground">
+										{formatDate(selectedDate)}
+									</span>
+								)}
 							</div>
-						))}
-					</div>
-				</CardContent>
-			</Card>
+							{slotsQuery.isLoading && (
+								<p className="text-sm text-muted-foreground">
+									Loading slots...
+								</p>
+							)}
+							{!slotsQuery.isLoading && availableSlots.length === 0 && (
+								<p className="text-sm text-muted-foreground">
+									No available slots for this day.
+								</p>
+							)}
+							{availableSlots.map((slot) => (
+								<div
+									key={slot.id}
+									className="flex items-center justify-between rounded-lg border border-border/60 p-3"
+								>
+									<div>
+										<p className="font-medium">
+											{formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+										</p>
+										<p className="text-xs text-muted-foreground">
+											{slot.durationMinutes} mins · {slot.price} coins
+										</p>
+									</div>
+									<div className="flex items-center gap-2">
+										<Badge variant="secondary">Available</Badge>
+										<Button
+											size="sm"
+											onClick={() => handleBookClick(slot)}
+											disabled={
+												bookMutation.isPending && bookingSlotId === slot.id
+											}
+										>
+											{bookMutation.isPending && bookingSlotId === slot.id
+												? "Booking..."
+												: "Book"}
+										</Button>
+									</div>
+								</div>
+							))}
+						</div>
+					</CardContent>
+				</Card>
+			)}
 
 			<Card className="border-border/60 shadow-sm mt-8">
 				<CardHeader>
@@ -466,7 +476,10 @@ export function PublicMentorProfilePage({
 					</p>
 				</CardHeader>
 				<CardContent>
-					<MentorArticlesSection authorId={profile.user.id} />
+					<MentorArticlesSection
+						authorId={profile.user.id}
+						isAdminView={isAdminView}
+					/>
 				</CardContent>
 			</Card>
 			<ConfirmModal

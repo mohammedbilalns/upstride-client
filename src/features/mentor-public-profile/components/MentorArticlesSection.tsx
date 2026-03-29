@@ -6,10 +6,12 @@ import { articleQueries } from "@/features/article/hooks/queries";
 
 interface MentorArticlesSectionProps {
 	authorId: string;
+	isAdminView?: boolean;
 }
 
 export function MentorArticlesSection({
 	authorId,
+	isAdminView = false,
 }: MentorArticlesSectionProps) {
 	const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
 		useInfiniteQuery({
@@ -38,7 +40,11 @@ export function MentorArticlesSection({
 		<div className="space-y-6">
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
 				{articles.map((article) => (
-					<ArticleCard key={article.id} article={article} />
+					<ArticleCard
+						key={article.id}
+						article={article}
+						isAdminView={isAdminView}
+					/>
 				))}
 			</div>
 

@@ -10,7 +10,7 @@ export const Route = createFileRoute(
 )({
 	loader: async ({ context: { queryClient }, params }) => {
 		await queryClient.ensureQueryData({
-			queryKey: ["public-mentor-profile", params.profileId],
+			queryKey: ["admin-mentor-profile", params.profileId],
 			queryFn: () =>
 				publicMentorProfileService.getPublicProfile(params.profileId),
 		});
@@ -27,5 +27,5 @@ export const Route = createFileRoute(
 
 function AdminProfileRoute() {
 	const { profileId } = Route.useParams();
-	return <PublicMentorProfilePage mentorId={profileId} />;
+	return <PublicMentorProfilePage mentorId={profileId} isAdminView={true} />;
 }

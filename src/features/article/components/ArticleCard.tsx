@@ -15,9 +15,13 @@ import type { ArticleDto } from "../types";
 
 interface ArticleCardProps {
 	article: ArticleDto;
+	isAdminView?: boolean;
 }
 
-export function ArticleCard({ article }: ArticleCardProps) {
+export function ArticleCard({
+	article,
+	isAdminView = false,
+}: ArticleCardProps) {
 	const [imageError, setImageError] = useState(false);
 
 	return (
@@ -77,7 +81,9 @@ export function ArticleCard({ article }: ArticleCardProps) {
 					</div>
 				</div>
 				<Link
-					to="/articles/$articleId"
+					to={
+						isAdminView ? "/admin-articles/$articleId" : "/articles/$articleId"
+					}
 					params={{ articleId: article.slug }}
 					className="block group-hover:text-primary transition-colors"
 				>
@@ -108,7 +114,9 @@ export function ArticleCard({ article }: ArticleCardProps) {
 					</div>
 				)}
 				<Link
-					to="/articles/$articleId"
+					to={
+						isAdminView ? "/admin-articles/$articleId" : "/articles/$articleId"
+					}
 					params={{ articleId: article.slug }}
 					className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-1 hover:gap-2 transition-all duration-300"
 				>
