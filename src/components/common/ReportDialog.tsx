@@ -53,6 +53,7 @@ export function ReportDialog({
 	trigger,
 }: ReportDialogProps) {
 	const [open, setOpen] = useState(false);
+	const [submitted, setSubmitted] = useState(false);
 	const { report } = useArticleMutations();
 
 	const form = useForm({
@@ -68,6 +69,7 @@ export function ReportDialog({
 				description: value.description,
 			});
 			setOpen(false);
+			setSubmitted(true);
 			form.reset();
 		},
 		validators: {
@@ -75,7 +77,17 @@ export function ReportDialog({
 		},
 	});
 
-	return (
+	return submitted ? (
+		<Button
+			variant="ghost"
+			size="sm"
+			className="text-muted-foreground cursor-not-allowed gap-2"
+			disabled
+		>
+			<Flag className="h-4 w-4" />
+			Report Submitted
+		</Button>
+	) : (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
 				{trigger || (

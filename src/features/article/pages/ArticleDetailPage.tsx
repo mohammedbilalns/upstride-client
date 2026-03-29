@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Eye } from "lucide-react";
+import { ArrowLeft, Eye, Flag } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,7 @@ export function ArticleDetailPage({
 
 	if (!data) return null;
 
-	const { article, isAuthor, userReaction } = data;
+	const { article, isAuthor, userReaction, isReported } = data;
 
 	return (
 		<div className="container mx-auto px-4 md:px-6 py-8 max-w-5xl">
@@ -66,9 +66,21 @@ export function ArticleDetailPage({
 							))}
 						</div>
 						<div className="flex items-center gap-2">
-							{!isAuthor && !isReadOnly && (
-								<ReportDialog targetId={article.id} targetType="ARTICLE" />
-							)}
+							{!isAuthor &&
+								!isReadOnly &&
+								(isReported ? (
+									<Button
+										variant="ghost"
+										size="sm"
+										className="text-muted-foreground cursor-not-allowed"
+										disabled
+									>
+										<Flag className="h-4 w-4 mr-1" />
+										Report Submitted
+									</Button>
+								) : (
+									<ReportDialog targetId={article.id} targetType="ARTICLE" />
+								))}
 							<ArticleManagement
 								articleId={article.id}
 								slug={article.slug}

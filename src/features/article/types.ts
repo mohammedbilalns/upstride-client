@@ -80,6 +80,7 @@ export interface GetArticleResponse {
 	article: ArticleDto;
 	isAuthor?: boolean;
 	userReaction?: ArticleReactionType;
+	isReported?: boolean;
 }
 
 export interface CreateArticleInput {

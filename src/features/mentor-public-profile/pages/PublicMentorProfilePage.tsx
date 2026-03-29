@@ -108,6 +108,7 @@ export function PublicMentorProfilePage({
 	const profile = profileQuery.data?.data.profile;
 	const nextAvailableSessions =
 		profileQuery.data?.data.nextAvailableSessions ?? [];
+	const isReported = profileQuery.data?.data.isReported ?? false;
 	const availableSlots = slotsQuery.data?.data.slots ?? [];
 	const coinBalance = coinBalanceQuery.data?.coinBalance ?? 0;
 	const coinValue = coinBalanceQuery.data?.coinValue;
@@ -278,17 +279,27 @@ export function PublicMentorProfilePage({
 										</a>
 									</Button>
 								)}
-								{currentUser?.id !== profile.user.id && (
-									<ReportDialog
-										targetId={profile.user.id}
-										targetType="USER"
-										trigger={
-											<Button variant="outline" className="px-4">
-												<Flag className="h-4 w-4" />
-											</Button>
-										}
-									/>
-								)}
+								{currentUser?.id !== profile.user.id &&
+									(isReported ? (
+										<Button
+											variant="outline"
+											className="px-4 text-muted-foreground cursor-not-allowed"
+											disabled
+										>
+											<Flag className="h-4 w-4 mr-1" />
+											Report Submitted
+										</Button>
+									) : (
+										<ReportDialog
+											targetId={profile.user.id}
+											targetType="USER"
+											trigger={
+												<Button variant="outline" className="px-4">
+													<Flag className="h-4 w-4" />
+												</Button>
+											}
+										/>
+									))}
 							</div>
 						</div>
 						<div className="flex flex-wrap gap-2">
