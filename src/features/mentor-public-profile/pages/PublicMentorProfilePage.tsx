@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { Flag } from "lucide-react";
+import { ArrowLeft, Flag } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { ReportDialog } from "@/components/common/ReportDialog";
 import { useProfile } from "@/features/profile-management/hooks/use-profile";
@@ -228,6 +228,18 @@ export function PublicMentorProfilePage({
 
 	return (
 		<div className="container mx-auto px-6 py-8 space-y-8">
+			{isAdminView && (
+				<Button
+					variant="ghost"
+					asChild
+					className="-ml-4 h-8 text-muted-foreground mr-auto mb-2"
+				>
+					<Link to="/report-management" search={{ page: 1, limit: 10 }}>
+						<ArrowLeft className="mr-2 h-4 w-4" />
+						Back to Reports
+					</Link>
+				</Button>
+			)}
 			<div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-6">
 				<Card className="border-border/60 shadow-sm">
 					<CardHeader className="space-y-4">
