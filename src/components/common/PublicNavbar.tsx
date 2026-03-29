@@ -1,12 +1,14 @@
 import { Link, useRouter } from "@tanstack/react-router";
 import { Menu, X, Zap } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ThemeToggle from "@/components/common/Theme-Toggle";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/shared/utils/cn";
 
 export default function PublicNavbar() {
 	const router = useRouter();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const [isScrolled, setIsScrolled] = useState(false);
 
 	const navLinks = [
 		{ href: "#features", label: "Features" },
@@ -14,8 +16,22 @@ export default function PublicNavbar() {
 		{ href: "#testimonials", label: "Reviews" },
 	];
 
+	useEffect(() => {
+		const handleScroll = () => setIsScrolled(window.scrollY > 12);
+		handleScroll();
+		window.addEventListener("scroll", handleScroll, { passive: true });
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, []);
+
 	return (
-		<header className="fixed top-3 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-6xl rounded-xl glass bg-background/80 border border-border/60 shadow-lg backdrop-blur-xl animate-soft-in">
+		<header
+			className={cn(
+				"fixed top-3 left-1/2 -translate-x-1/2 z-50 rounded-xl animate-soft-in transition-all duration-300",
+				isScrolled
+					? "w-[calc(100%-3.5rem)] max-w-5xl glass bg-background/80 border border-primary/20 shadow-lg backdrop-blur-xl"
+					: "w-[calc(100%-2rem)] max-w-6xl bg-transparent border border-transparent shadow-none backdrop-blur-0",
+			)}
+		>
 			<div className="mx-auto px-5 h-12 flex justify-between items-center">
 				{/* Left Side: Logo and Navigation */}
 				<div className="flex items-center gap-6">

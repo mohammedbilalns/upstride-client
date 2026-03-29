@@ -33,6 +33,7 @@ export interface PublicMentorProfileResponse {
 	data: {
 		profile: PublicMentorProfile;
 		nextAvailableSessions: PublicMentorSlot[];
+		isReported?: boolean;
 	};
 }
 

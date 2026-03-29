@@ -91,7 +91,7 @@ export function MentorDiscoveryPage() {
 									<Input
 										id="mentor-search"
 										placeholder="Search by name"
-										className="h-11 pl-11 rounded-xl bg-white/60 dark:bg-zinc-950/40"
+										className="h-11 pl-11 rounded-xl bg-white/60 dark:bg-zinc-950/40 transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary/20 hover:bg-white/80 dark:hover:bg-zinc-900/60"
 										value={searchInput}
 										onChange={(e) => setSearchInput(e.target.value)}
 										onKeyDown={(e) => {
@@ -113,7 +113,7 @@ export function MentorDiscoveryPage() {
 						</div>
 					</aside>
 
-					<section className="flex-1 min-w-0 min-h-0">
+					<section className="flex-1 min-w-0">
 						<div className="rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40 px-4 py-3">
 							<div>
 								<p className="text-sm font-medium text-zinc-700 dark:text-zinc-200">
@@ -135,7 +135,7 @@ export function MentorDiscoveryPage() {
 							</div>
 						</div>
 
-						<div className="mt-4 min-w-0 min-h-0 space-y-6 overflow-y-auto pr-2 lg:h-[calc(100vh-260px)]">
+						<div className="mt-4 min-w-0 space-y-6">
 							{isLoading && (
 								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5">
 									{Array.from({ length: 12 }).map((_, i) => (

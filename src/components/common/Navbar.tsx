@@ -1,7 +1,6 @@
 import { Link, useRouteContext } from "@tanstack/react-router";
 import {
 	Bell,
-	Bookmark,
 	Coins,
 	LayoutDashboard,
 	LogOut,
@@ -10,7 +9,7 @@ import {
 	X,
 	Zap,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ThemeToggle from "@/components/common/Theme-Toggle";
 import { cn } from "@/shared/utils/cn";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -30,7 +29,7 @@ import { NotificationDropdown } from "@/features/notifications/components/Notifi
 import { useGetUnreadCount } from "@/features/notifications/hooks";
 
 export default function UserNavbar() {
-	const { auth } = useRouteContext({ from: "/_user-layout" });
+	const { auth } = useRouteContext({ from: "__root__" });
 	const user = auth.user;
 	const logoutMutation = useLogout();
 	const { data: balance } = useCoinBalance();
@@ -38,7 +37,11 @@ export default function UserNavbar() {
 	const { data: unreadData } = useGetUnreadCount();
 	const unreadCount = unreadData?.count ?? 0;
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+	const [isDesktopNotificationsOpen, setIsDesktopNotificationsOpen] =
+		useState(false);
+	const [isMobileNotificationsOpen, setIsMobileNotificationsOpen] =
+		useState(false);
+	const [isScrolled, setIsScrolled] = useState(false);
 
 	const handleLogout = () => {
 		logoutMutation.mutate();
@@ -59,8 +62,22 @@ export default function UserNavbar() {
 		{ to: "/sessions", label: "Sessions" },
 	];
 
+	useEffect(() => {
+		const handleScroll = () => setIsScrolled(window.scrollY > 12);
+		handleScroll();
+		window.addEventListener("scroll", handleScroll, { passive: true });
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, []);
+
 	return (
-		<header className="fixed top-3 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-6xl rounded-xl glass animate-soft-in">
+		<header
+			className={cn(
+				"fixed top-3 left-1/2 -translate-x-1/2 z-50 rounded-xl animate-soft-in transition-all duration-300",
+				isScrolled
+					? "w-[calc(100%-4rem)] max-w-[60rem] glass bg-background/80 border border-primary/20 shadow-lg backdrop-blur-xl"
+					: "w-[calc(100%-2rem)] max-w-6xl bg-transparent border border-transparent shadow-none backdrop-blur-0",
+			)}
+		>
 			<div className="mx-auto px-5 h-12 flex justify-between items-center">
 				{/* Left Side: Logo and Navigation */}
 				<div className="flex items-center gap-6">
@@ -69,7 +86,8 @@ export default function UserNavbar() {
 						className="flex items-center gap-2 group"
 						onClick={() => {
 							setIsMenuOpen(false);
-							setIsNotificationsOpen(false);
+							setIsDesktopNotificationsOpen(false);
+							setIsMobileNotificationsOpen(false);
 						}}
 					>
 						<div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center shadow-sm shadow-primary/30 group-hover:shadow-primary/50 transition-all">
@@ -118,8 +136,8 @@ export default function UserNavbar() {
 
 					<div className="hidden sm:block">
 						<DropdownMenu
-							open={isNotificationsOpen}
-							onOpenChange={setIsNotificationsOpen}
+							open={isDesktopNotificationsOpen}
+							onOpenChange={setIsDesktopNotificationsOpen}
 							modal={false}
 						>
 							<DropdownMenuTrigger asChild>
@@ -128,7 +146,8 @@ export default function UserNavbar() {
 									size="icon"
 									className={cn(
 										"rounded-full relative h-8 w-8 md:h-9 md:w-9 transition-colors",
-										isNotificationsOpen && "bg-accent text-accent-foreground",
+										isDesktopNotificationsOpen &&
+											"bg-accent text-accent-foreground",
 									)}
 								>
 									<Bell className="h-4.5 w-4.5 md:h-5 md:w-5 text-muted-foreground" />
@@ -148,7 +167,7 @@ export default function UserNavbar() {
 								sideOffset={8}
 							>
 								<NotificationDropdown
-									onClose={() => setIsNotificationsOpen(false)}
+									onClose={() => setIsDesktopNotificationsOpen(false)}
 								/>
 							</DropdownMenuContent>
 						</DropdownMenu>
@@ -194,33 +213,15 @@ export default function UserNavbar() {
 								<DropdownMenuSeparator />
 								<DropdownMenuItem asChild>
 									<Link
-										to="/profile"
+										to={
+											user?.role === "MENTOR" ? "/mentor-dashboard" : "/profile"
+										}
 										className="cursor-pointer w-full flex items-center"
 									>
-										<UserIcon className="mr-2 h-4 w-4" />
-										<span>View Profile</span>
+										<LayoutDashboard className="mr-2 h-4 w-4" />
+										<span>Dashboard</span>
 									</Link>
 								</DropdownMenuItem>
-								<DropdownMenuItem asChild>
-									<Link
-										to="/profile/bookmarked-mentors"
-										className="cursor-pointer w-full flex items-center"
-									>
-										<Bookmark className="mr-2 h-4 w-4" />
-										<span>Bookmarked Mentors</span>
-									</Link>
-								</DropdownMenuItem>
-								{user?.role === "MENTOR" && (
-									<DropdownMenuItem asChild>
-										<Link
-											to="/mentor-dashboard"
-											className="cursor-pointer w-full flex items-center"
-										>
-											<LayoutDashboard className="mr-2 h-4 w-4" />
-											<span>Mentor Dashboard</span>
-										</Link>
-									</DropdownMenuItem>
-								)}
 								<DropdownMenuSeparator />
 								<DropdownMenuItem
 									className="cursor-pointer text-destructive focus:text-destructive"
@@ -240,20 +241,25 @@ export default function UserNavbar() {
 						</div>
 
 						<div>
-							<DropdownMenu onOpenChange={setIsNotificationsOpen} modal={false}>
+							<DropdownMenu
+								open={isMobileNotificationsOpen}
+								onOpenChange={setIsMobileNotificationsOpen}
+								modal={false}
+							>
 								<DropdownMenuTrigger asChild>
 									<Button
 										variant="ghost"
 										size="icon"
 										className={cn(
-											"h-8 w-8 rounded-lg",
-											isNotificationsOpen && "bg-accent text-accent-foreground",
+											"h-8 w-8 rounded-lg relative",
+											isMobileNotificationsOpen &&
+												"bg-accent text-accent-foreground",
 										)}
 									>
 										<Bell className="h-5 w-5 text-muted-foreground" />
 										{unreadCount > 0 && (
 											<Badge
-												className="absolute 0 right-0 h-3 w-3 flex items-center justify-center p-0 text-[8px] bg-primary"
+												className="absolute -top-1 -right-1 h-3.5 w-3.5 flex items-center justify-center p-0 text-[8px] bg-primary"
 												variant="default"
 											>
 												{unreadCount > 99 ? "99+" : unreadCount}
@@ -262,11 +268,13 @@ export default function UserNavbar() {
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent
-									className="w-[calc(100vw-2rem)] max-w-sm mr-4 p-0 border-border/80 shadow-2xl rounded-xl"
+									className="w-[calc(100vw-2.5rem)] max-w-sm p-0 border-border/80 shadow-2xl rounded-xl"
 									align="end"
-									sideOffset={8}
+									sideOffset={12}
 								>
-									<NotificationDropdown />
+									<NotificationDropdown
+										onClose={() => setIsMobileNotificationsOpen(false)}
+									/>
 								</DropdownMenuContent>
 							</DropdownMenu>
 						</div>
@@ -276,7 +284,8 @@ export default function UserNavbar() {
 							size="icon"
 							onClick={() => {
 								setIsMenuOpen(!isMenuOpen);
-								setIsNotificationsOpen(false);
+								setIsDesktopNotificationsOpen(false);
+								setIsMobileNotificationsOpen(false);
 							}}
 							className="h-8 w-8 rounded-lg"
 						>
@@ -350,34 +359,23 @@ export default function UserNavbar() {
 							</Link>
 						</div>
 
-						<div className="grid grid-cols-2 gap-2 mt-2">
+						<div className="flex flex-col gap-2 mt-2">
 							<Button
 								variant="outline"
 								size="sm"
 								className="w-full justify-start text-xs h-9 rounded-lg"
 								asChild
 							>
-								<Link to="/profile" onClick={() => setIsMenuOpen(false)}>
-									<UserIcon className="mr-2 h-3.5 w-3.5" />
-									Profile
+								<Link
+									to={
+										user?.role === "MENTOR" ? "/mentor-dashboard" : "/profile"
+									}
+									onClick={() => setIsMenuOpen(false)}
+								>
+									<LayoutDashboard className="mr-2 h-3.5 w-3.5" />
+									Dashboard
 								</Link>
 							</Button>
-							{user?.role === "MENTOR" && (
-								<Button
-									variant="outline"
-									size="sm"
-									className="w-full justify-start text-xs h-9 rounded-lg"
-									asChild
-								>
-									<Link
-										to="/mentor-dashboard"
-										onClick={() => setIsMenuOpen(false)}
-									>
-										<LayoutDashboard className="mr-2 h-3.5 w-3.5" />
-										Mentor Dashboard
-									</Link>
-								</Button>
-							)}
 							<Button
 								variant="outline"
 								size="sm"

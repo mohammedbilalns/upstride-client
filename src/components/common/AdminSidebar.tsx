@@ -1,11 +1,11 @@
 import { Link, useLocation, useRouteContext } from "@tanstack/react-router";
 import {
 	ChevronRight,
+	Flag,
 	GraduationCap,
 	LayoutDashboard,
 	Library,
 	LogOut,
-	Settings2,
 	Users,
 	Zap,
 } from "lucide-react";
@@ -57,9 +57,9 @@ export default function AdminSidebar() {
 			search: { tab: "interests" },
 		},
 		{
-			to: "/platform-settings",
-			label: "Platform Settings",
-			icon: Settings2,
+			to: "/report-management",
+			label: "Report Management",
+			icon: Flag,
 		},
 		...(user?.role === "SUPER_ADMIN"
 			? [

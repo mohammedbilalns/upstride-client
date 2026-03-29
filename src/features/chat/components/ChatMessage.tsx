@@ -1,5 +1,6 @@
 import { FileIcon, FileText, Clock } from "lucide-react";
 import type { ChatMessageDto } from "@/features/chat/types";
+import { ProgressiveImage } from "@/components/common/ProgressiveImage";
 
 interface ChatMessageProps {
 	message: ChatMessageDto;
@@ -48,10 +49,11 @@ export function ChatMessage({
 									rel="noreferrer"
 									className="block overflow-hidden rounded-lg group mt-1"
 								>
-									<img
+									<ProgressiveImage
 										src={previewUrl}
 										alt={message.content ?? "Image"}
-										className="max-w-full sm:max-w-[300px] rounded-lg border border-white/10 hover:scale-105 transition-transform duration-200"
+										wrapperClassName="max-w-full sm:max-w-[300px] rounded-lg border border-white/10"
+										className="w-full h-auto object-cover transition-transform duration-200 group-hover:scale-105"
 									/>
 								</a>
 							) : (

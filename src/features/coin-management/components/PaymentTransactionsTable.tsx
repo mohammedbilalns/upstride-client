@@ -69,7 +69,7 @@ export function PaymentTransactionsTable({
 												variant="outline"
 												className={
 													item.direction === "credit"
-														? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700"
+														? "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400"
 														: "border-rose-500/30 bg-rose-500/10 text-rose-700"
 												}
 											>

@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -164,13 +165,57 @@ background: color-mix(in oklch, var(--background) 70%, transparent);
   }
 
   @keyframes softIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .image-skeleton {
+    background: linear-gradient(
+      90deg,
+      oklch(0.92 0.01 260 / 0.9) 0%,
+      oklch(0.97 0.005 260 / 0.9) 50%,
+      oklch(0.92 0.01 260 / 0.9) 100%
+    );
+    background-size: 200% 100%;
+    animation: imageShimmer 1.2s ease-in-out infinite;
   }
+
+  .dark .image-skeleton {
+    background: linear-gradient(
+      90deg,
+      oklch(0.22 0.025 240 / 0.9) 0%,
+      oklch(0.3 0.02 240 / 0.9) 50%,
+      oklch(0.22 0.025 240 / 0.9) 100%
+    );
+  }
+
+  .image-fade-in {
+    animation: imageFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes imageShimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  @keyframes imageFadeIn {
+    from {
+      opacity: 0;
+      transform: scale(1.015);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 }

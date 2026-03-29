@@ -1,6 +1,7 @@
 import type { InternalAxiosRequestConfig } from "axios";
 import axios, { type AxiosError } from "axios";
-import { router } from "@/app/router/routerConfig";
+import type { router as AppRouter } from "@/app/router/routerConfig";
+import { authService } from "@/features/authentication/services/auth.service";
 import { clearAuthSession } from "@/features/authentication/utils/clear-auth-session";
 import { env } from "@/shared/config/env";
 
@@ -9,7 +10,14 @@ import { env } from "@/shared/config/env";
  */
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 	_retry?: boolean;
+	_csrfRetry?: boolean;
 }
+
+let routerInstance: typeof AppRouter | null = null;
+
+export const injectRouter = (router: typeof AppRouter) => {
+	routerInstance = router;
+};
 
 const api = axios.create({
 	baseURL: env.API_URL,
@@ -21,9 +29,13 @@ const api = axios.create({
  * Injects the Access Token from the Router context into the Authorization header.
  */
 api.interceptors.request.use((config) => {
-	const auth = router.options.context?.auth;
+	const auth = routerInstance?.options.context?.auth;
 	const token = auth?.accessToken;
 	const csrfToken = auth?.csrfToken;
+	console.debug(
+		"AXIOS INTERCEPTOR: csrf token from the router context: ",
+		csrfToken,
+	);
 
 	if (token) {
 		config.headers.Authorization = `Bearer ${token}`;
@@ -42,6 +54,36 @@ api.interceptors.response.use(
 	async (error: AxiosError) => {
 		const originalRequest = error.config as CustomAxiosRequestConfig;
 
+		if (
+			error.response?.status === 403 &&
+			originalRequest.url?.includes("/auth/refresh") &&
+			!originalRequest._csrfRetry
+		) {
+			const data = error.response.data as { message?: string } | undefined;
+			const message = data?.message?.toLowerCase() ?? "";
+
+			if (message.includes("csrf")) {
+				originalRequest._csrfRetry = true;
+
+				const csrfResponse = await authService.getCsrfToken();
+				const csrfToken = csrfResponse.data.csrfToken;
+
+				routerInstance?.update({
+					context: {
+						...routerInstance.options.context,
+						auth: {
+							...routerInstance.options.context.auth,
+							csrfToken,
+						},
+					},
+				});
+
+				originalRequest.headers = originalRequest.headers ?? {};
+				originalRequest.headers["x-csrf-token"] = csrfToken;
+				return api(originalRequest);
+			}
+		}
+
 		// Handle expired token (401 Unauthorized)
 		if (error.response?.status === 401 && !originalRequest._retry) {
 			// Skip refresh for auth or expertise-related endpoints
@@ -53,7 +95,7 @@ api.interceptors.response.use(
 				!originalRequest.url.includes("/revoke-all-other-sessions");
 
 			if (isAuthEndpoint) {
-				clearAuthSession(router);
+				if (routerInstance) clearAuthSession(routerInstance);
 				return Promise.reject(error);
 			}
 
@@ -65,11 +107,11 @@ api.interceptors.response.use(
 				const newAccessToken = data.data.accessToken;
 
 				// Update the router context with the new token
-				router.update({
+				routerInstance?.update({
 					context: {
-						...router.options.context,
+						...routerInstance.options.context,
 						auth: {
-							...router.options.context.auth,
+							...routerInstance.options.context.auth,
 							accessToken: newAccessToken,
 							isAuthenticated: true,
 						},
@@ -81,8 +123,10 @@ api.interceptors.response.use(
 				return api(originalRequest);
 			} catch (refreshError) {
 				// Refresh failed then log out and clear auth state
-				clearAuthSession(router);
-				router.navigate({ to: "/auth" });
+				if (routerInstance) {
+					clearAuthSession(routerInstance);
+					routerInstance.navigate({ to: "/auth" });
+				}
 				return Promise.reject(refreshError);
 			}
 		}
@@ -91,11 +135,13 @@ api.interceptors.response.use(
 			// Handle forbidden access (403) — blocked users
 			const data = error.response.data as { message?: string };
 			if (data?.message?.toLowerCase().includes("blocked")) {
-				clearAuthSession(router);
-				router.navigate({
-					to: "/auth",
-					search: { error: "blocked" },
-				});
+				if (routerInstance) {
+					clearAuthSession(routerInstance);
+					routerInstance.navigate({
+						to: "/auth",
+						search: { error: "blocked" },
+					});
+				}
 				return Promise.reject(error);
 			}
 		}

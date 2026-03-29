@@ -11,7 +11,7 @@ import type { User } from "@/shared/types/user";
 
 export type AuthenticatedUser = Pick<
 	User,
-	"id" | "name" | "role" | "coinBalance"
+	"id" | "name" | "role" | "coinBalance" | "email"
 > & {
 	profilePictureUrl: string | null;
 	isLocalAuth: boolean;

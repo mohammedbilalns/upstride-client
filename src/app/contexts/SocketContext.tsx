@@ -30,9 +30,11 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 	const auth = router.options.context?.auth;
 	const token = auth?.accessToken;
 	const isAuthenticated = auth?.isAuthenticated;
+	const userRole = auth?.user?.role;
+	const isAdminRole = userRole === "ADMIN" || userRole === "SUPER_ADMIN";
 
 	useEffect(() => {
-		if (isAuthenticated && token) {
+		if (isAuthenticated && token && !isAdminRole) {
 			console.log("[WS] Initializing connection with token");
 			const socketInstance = SocketService.getInstance(token);
 			setSocket(socketInstance);
@@ -118,12 +120,16 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 				socketInstance.off("notification:new");
 			};
 		} else {
-			console.log("[WS] No auth found, disconnecting if necessary");
+			if (isAdminRole) {
+				console.log("[WS] Admin role detected, skipping connection");
+			} else {
+				console.log("[WS] No auth found, disconnecting if necessary");
+			}
 			SocketService.disconnect();
 			setSocket(null);
 			setIsConnected(false);
 		}
-	}, [isAuthenticated, token, queryClient, location.pathname]);
+	}, [isAuthenticated, token, isAdminRole, queryClient, location.pathname]);
 
 	return (
 		<SocketContext.Provider value={{ socket, isConnected }}>

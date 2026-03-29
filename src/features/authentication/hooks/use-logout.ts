@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
 import type { ApiError } from "@/api/apiError";
@@ -10,10 +10,12 @@ import { clearAuthSession } from "../utils/clear-auth-session";
  */
 export function useLogout() {
 	const router = useRouter();
+	const queryClient = useQueryClient();
 
 	return useMutation({
 		mutationFn: () => authService.logout(),
 		onSuccess: () => {
+			queryClient.clear();
 			clearAuthSession(router);
 			toast.success("Logged out successfully");
 			// Invalidate cached data and navigate to auth page
@@ -23,6 +25,7 @@ export function useLogout() {
 		// Handles logout errors
 		onError: (error: ApiError) => {
 			if (error.response?.status === 401) {
+				queryClient.clear();
 				clearAuthSession(router);
 				router.invalidate();
 				router.navigate({ to: "/auth" });

@@ -1,5 +1,11 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import MentorSidebar from "@/components/common/MentorSidebar";
+import {
+	createFileRoute,
+	Outlet,
+	redirect,
+	useRouteContext,
+} from "@tanstack/react-router";
+import { ProfileSidebar } from "@/features/profile-management/components/ProfileSidebar";
+import UserNavbar from "@/components/common/Navbar";
 
 export const Route = createFileRoute("/_mentor-layout")({
 	beforeLoad: async ({ context, location }) => {
@@ -20,12 +26,38 @@ export const Route = createFileRoute("/_mentor-layout")({
 });
 
 function MentorLayout() {
+	const { auth } = useRouteContext({ from: "/_mentor-layout" });
+	const { user } = auth;
+
+	if (!user) return null;
+
 	return (
-		<div className="min-h-screen bg-background text-foreground flex">
-			<MentorSidebar />
-			<main className="flex-1 overflow-y-auto">
-				<Outlet />
-			</main>
+		<div className="relative min-h-screen flex flex-col pt-20">
+			<UserNavbar />
+			<div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-zinc-50 to-transparent dark:from-zinc-950 dark:to-transparent" />
+			<div className="container mx-auto px-4 md:px-6 py-8 flex flex-col gap-6 relative">
+				<div className="flex flex-col lg:flex-row gap-8">
+					<aside className="lg:w-[300px] shrink-0">
+						<div className="lg:sticky top-0">
+							<ProfileSidebar
+								user={{
+									name: user.name,
+									email: user.email,
+									role: user.role,
+									profilePictureUrl: user.profilePictureUrl,
+								}}
+								isMentor={true}
+							/>
+						</div>
+					</aside>
+
+					<section className="flex-1 min-w-0">
+						<div className="pb-10">
+							<Outlet />
+						</div>
+					</section>
+				</div>
+			</div>
 		</div>
 	);
 }

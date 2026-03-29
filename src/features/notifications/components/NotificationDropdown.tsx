@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bell, CheckCircle2, CircleDashed } from "lucide-react";
+import { Bell, CheckCircle2, CircleDashed, Loader2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "@tanstack/react-router";
 import { cn } from "@/shared/utils/cn";
@@ -16,12 +16,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 export function NotificationDropdown({ onClose }: { onClose?: () => void }) {
 	const [activeTab, setActiveTab] = useState<NotificationReadFilter>("all");
 
-	const { data, isLoading } = useGetNotifications({ status: activeTab });
+	const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
+		useGetNotifications({ status: activeTab });
 	const markReadMutation = useMarkNotificationRead();
 	const markAllReadMutation = useMarkAllNotificationsRead();
 	const navigate = useNavigate();
 
-	const notifications = data?.notifications || [];
+	const notifications = data?.pages.flatMap((page) => page.notifications) || [];
 
 	const handleMarkRead = (id: string, e: React.MouseEvent) => {
 		e.stopPropagation();
@@ -99,6 +100,9 @@ export function NotificationDropdown({ onClose }: { onClose?: () => void }) {
 							<NotificationList
 								notifications={notifications}
 								isLoading={isLoading}
+								isFetchingNextPage={isFetchingNextPage}
+								hasNextPage={hasNextPage}
+								fetchNextPage={fetchNextPage}
 								getNotificationIcon={getNotificationIcon}
 								handleMarkRead={handleMarkRead}
 								handleNotificationClick={handleNotificationClick}
@@ -116,6 +120,9 @@ export function NotificationDropdown({ onClose }: { onClose?: () => void }) {
 							<NotificationList
 								notifications={notifications}
 								isLoading={isLoading}
+								isFetchingNextPage={isFetchingNextPage}
+								hasNextPage={hasNextPage}
+								fetchNextPage={fetchNextPage}
 								getNotificationIcon={getNotificationIcon}
 								handleMarkRead={handleMarkRead}
 								handleNotificationClick={handleNotificationClick}
@@ -132,6 +139,9 @@ export function NotificationDropdown({ onClose }: { onClose?: () => void }) {
 function NotificationList({
 	notifications,
 	isLoading,
+	isFetchingNextPage,
+	hasNextPage,
+	fetchNextPage,
 	getNotificationIcon,
 	handleMarkRead,
 	handleNotificationClick,
@@ -139,6 +149,9 @@ function NotificationList({
 }: {
 	notifications: NotificationDto[];
 	isLoading: boolean;
+	isFetchingNextPage: boolean;
+	hasNextPage?: boolean;
+	fetchNextPage: () => void;
 	getNotificationIcon: (type: NotificationDto["type"]) => React.ReactNode;
 	handleMarkRead: (id: string, e: React.MouseEvent) => void;
 	handleNotificationClick: (notification: NotificationDto) => void;
@@ -176,7 +189,7 @@ function NotificationList({
 					key={notification.id}
 					onClick={() => handleNotificationClick(notification)}
 					className={cn(
-						"flex flex-col gap-3 p-4 transition-colors hover:bg-muted/50 cursor-pointer relative group",
+						"flex flex-col gap-3 p-4 transition-colors hover:bg-muted/50 cursor-pointer relative group border-b border-border/20 last:border-0",
 						!notification.isRead && "bg-primary/5",
 					)}
 				>
@@ -215,6 +228,27 @@ function NotificationList({
 					)}
 				</div>
 			))}
+
+			{hasNextPage && (
+				<div className="p-3 pt-4 flex justify-center border-t border-border/10">
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={() => fetchNextPage()}
+						disabled={isFetchingNextPage}
+						className="h-8 text-xs font-medium text-primary hover:text-primary/90 hover:bg-primary/10 transition-colors w-full gap-2"
+					>
+						{isFetchingNextPage ? (
+							<>
+								<Loader2 className="h-3 w-3 animate-spin" />
+								Loading...
+							</>
+						) : (
+							"View more notifications"
+						)}
+					</Button>
+				</div>
+			)}
 		</div>
 	);
 }

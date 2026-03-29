@@ -3,6 +3,7 @@ import { createRouter } from "@tanstack/react-router";
 import PendingComponent from "@/components/common/Pending-Component";
 import type { AuthenticatedUser } from "@/features/authentication/types";
 import { routeTree } from "@/routeTree.gen";
+import { injectRouter } from "@/api/axios";
 
 export const queryClient = new QueryClient();
 
@@ -34,3 +35,5 @@ export const router = createRouter({
 	defaultPendingComponent: PendingComponent,
 	scrollRestoration: true,
 });
+
+injectRouter(router);
