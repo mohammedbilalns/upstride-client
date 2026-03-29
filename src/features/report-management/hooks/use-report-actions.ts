@@ -33,3 +33,19 @@ export function useBlockArticle() {
 		},
 	});
 }
+
+export function useUnblockArticle() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (articleId: string) =>
+			ReportManagementService.unblockArticle(articleId),
+		onSuccess: () => {
+			toast.success("Article unblocked successfully");
+			queryClient.invalidateQueries({ queryKey: ["reports"] });
+		},
+		onError: (error: Error) => {
+			toast.error(error.message ?? "Failed to unblock article");
+		},
+	});
+}

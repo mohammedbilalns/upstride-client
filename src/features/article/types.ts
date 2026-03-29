@@ -3,6 +3,7 @@ export type ArticleReactionType = "LIKE";
 export interface ArticleAuthorSnapshot {
 	name: string;
 	avatarUrl?: string;
+	isBlocked?: boolean;
 }
 
 export interface ArticleDto {
@@ -19,6 +20,8 @@ export interface ArticleDto {
 	views: number;
 	commentsCount: number;
 	likesCount: number;
+	isBlockedByAdmin: boolean;
+	blockingReason: string | null;
 	createdAt: string;
 }
 
@@ -82,6 +85,13 @@ export interface GetArticleResponse {
 	isAuthor?: boolean;
 	userReaction?: ArticleReactionType;
 	isReported?: boolean;
+	appealMessage?: string | null;
+	appealedAt?: string | null;
+}
+
+export interface SubmitAppealInput {
+	articleId: string;
+	message: string;
 }
 
 export interface CreateArticleInput {

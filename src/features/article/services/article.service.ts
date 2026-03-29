@@ -24,6 +24,7 @@ import type {
 	UpdateArticleResponse,
 	UpdateCommentInput,
 	UpdateCommentResponse,
+	SubmitAppealInput,
 } from "../types";
 
 export const articleService = {
@@ -178,5 +179,12 @@ export const articleService = {
 			input,
 		);
 		return response.data.data;
+	},
+
+	submitAppeal: async (input: SubmitAppealInput): Promise<void> => {
+		await api.post(
+			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.APPEAL(input.articleId)}`,
+			{ message: input.message },
+		);
 	},
 };

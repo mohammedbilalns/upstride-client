@@ -84,6 +84,36 @@ export function ReportManagementPage() {
 						</SelectContent>
 					</Select>
 				</div>
+
+				<div className="flex items-center gap-2">
+					<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+						Appealed
+					</span>
+					<Select
+						value={
+							searchParams.isAppealSubmitted === true
+								? "true"
+								: searchParams.isAppealSubmitted === false
+									? "false"
+									: "all"
+						}
+						onValueChange={(v) =>
+							handleFilterChange(
+								"isAppealSubmitted",
+								v === "all" ? undefined : v === "true",
+							)
+						}
+					>
+						<SelectTrigger className="w-[160px] h-10">
+							<SelectValue placeholder="All Reports" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="all">All Reports</SelectItem>
+							<SelectItem value="true">Appealed Only</SelectItem>
+							<SelectItem value="false">Non-Appealed</SelectItem>
+						</SelectContent>
+					</Select>
+				</div>
 			</div>
 
 			<ReportTable reports={reportsData.reports} />

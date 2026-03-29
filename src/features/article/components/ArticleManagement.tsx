@@ -10,12 +10,14 @@ interface ArticleManagementProps {
 	articleId: string;
 	slug: string;
 	isAuthor: boolean;
+	isBlockedByAdmin?: boolean;
 }
 
 export function ArticleManagement({
 	articleId,
 	slug,
 	isAuthor,
+	isBlockedByAdmin = false,
 }: ArticleManagementProps) {
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -58,7 +60,8 @@ export function ArticleManagement({
 				variant="outline"
 				size="sm"
 				onClick={() => setShowDeleteConfirm(true)}
-				className="h-9 px-4 rounded-xl border-red-200 dark:border-red-900/30 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30"
+				disabled={isBlockedByAdmin}
+				className="h-9 px-4 rounded-xl border-red-200 dark:border-red-900/30 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 disabled:opacity-50 disabled:cursor-not-allowed"
 			>
 				<Trash2 className="h-4 w-4 mr-2" />
 				Delete

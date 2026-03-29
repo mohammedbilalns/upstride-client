@@ -64,7 +64,17 @@ export const ReportManagementService = {
 	): Promise<BlockArticleResponse> => {
 		const response = await api.patch<{ data: BlockArticleResponse }>(
 			`${ROUTES.REPORTS.BASE}${ROUTES.REPORTS.BLOCK_ARTICLE(input.articleId)}`,
+			{
+				reason: input.reason,
+				reportId: input.reportId,
+			},
 		);
 		return response.data.data;
+	},
+
+	unblockArticle: async (articleId: string): Promise<void> => {
+		await api.patch(
+			`${ROUTES.REPORTS.BASE}${ROUTES.REPORTS.UNBLOCK_ARTICLE(articleId)}`,
+		);
 	},
 };

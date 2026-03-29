@@ -1,17 +1,6 @@
-import { format } from "date-fns";
-import {
-	Calendar,
-	ExternalLink,
-	FileX2,
-	Loader2,
-	ShieldAlert,
-	UserX,
-} from "lucide-react";
+import { Loader2, ShieldAlert } from "lucide-react";
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
 	Table,
 	TableBody,
@@ -22,46 +11,53 @@ import {
 } from "@/components/ui/table";
 import { useBlockUser } from "@/features/user-management/hooks/use-user-actions";
 import { useQueryClient } from "@tanstack/react-query";
-import { useBlockArticle, useResolveReport } from "../hooks/use-report-actions";
+import {
+	useBlockArticle,
+	useResolveReport,
+	useUnblockArticle,
+} from "../hooks/use-report-actions";
 import type { ReportDto } from "../types";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { ReportTableRow } from "./ReportTableRow";
 
 interface ReportTableProps {
 	reports: ReportDto[];
 }
 
-type ReportAction = "resolve" | "block-user" | "block-article";
-
-const statusStyles: Record<string, string> = {
-	PENDING:
-		"bg-amber-500/15 text-amber-700 border-amber-500/30 hover:bg-amber-500/20",
-	RESOLVED:
-		"bg-emerald-500/15 text-emerald-700 border-emerald-500/30 hover:bg-emerald-500/20",
-	REJECTED:
-		"bg-rose-500/15 text-rose-600 border-rose-500/30 hover:bg-rose-500/20",
-	CLOSED:
-		"bg-slate-500/15 text-slate-600 border-slate-500/30 hover:bg-slate-500/20",
-};
+type ReportAction =
+	| "resolve"
+	| "block-user"
+	| "block-article"
+	| "unblock-article";
 
 export function ReportTable({ reports }: ReportTableProps) {
 	const [selectedReport, setSelectedReport] = useState<ReportDto | null>(null);
 	const [actionType, setActionType] = useState<ReportAction | null>(null);
+	const [adminReason, setAdminReason] = useState("");
+	const [expandedId, setExpandedId] = useState<string | null>(null);
+
 	const resolveMutation = useResolveReport();
 	const blockArticleMutation = useBlockArticle();
+	const unblockArticleMutation = useUnblockArticle();
 	const blockUserMutation = useBlockUser();
 	const queryClient = useQueryClient();
 
 	const isProcessing =
 		resolveMutation.isPending ||
 		blockArticleMutation.isPending ||
+		unblockArticleMutation.isPending ||
 		blockUserMutation.isPending;
 
 	const handleAction = async () => {
 		if (!selectedReport || !actionType) return;
 
+		const targetReportId = selectedReport.id;
+
 		if (actionType === "resolve") {
 			await resolveMutation.mutateAsync(
 				{
-					reportId: selectedReport.id,
+					reportId: targetReportId,
 					status: "RESOLVED",
 					actionTaken: "Marked as resolved",
 				},
@@ -77,14 +73,29 @@ export function ReportTable({ reports }: ReportTableProps) {
 
 		if (actionType === "block-article") {
 			await blockArticleMutation.mutateAsync(
-				{ articleId: selectedReport.targetId },
+				{
+					articleId: selectedReport.targetId,
+					reason: adminReason || selectedReport.reason,
+					reportId: targetReportId,
+				},
 				{
 					onSuccess: () => {
 						setSelectedReport(null);
 						setActionType(null);
+						setAdminReason("");
 					},
 				},
 			);
+			return;
+		}
+
+		if (actionType === "unblock-article") {
+			await unblockArticleMutation.mutateAsync(selectedReport.targetId, {
+				onSuccess: () => {
+					setSelectedReport(null);
+					setActionType(null);
+				},
+			});
 			return;
 		}
 
@@ -108,6 +119,8 @@ export function ReportTable({ reports }: ReportTableProps) {
 				return "Block Article";
 			case "block-user":
 				return "Block User";
+			case "unblock-article":
+				return "Unblock Article";
 			default:
 				return "Confirm Action";
 		}
@@ -118,9 +131,11 @@ export function ReportTable({ reports }: ReportTableProps) {
 			case "resolve":
 				return "Are you sure you want to mark this report as resolved?";
 			case "block-article":
-				return `Are you sure you want to block article ${selectedReport?.targetId}?`;
+				return "Are you sure you want to block this article?";
 			case "block-user":
-				return `Are you sure you want to block user ${selectedReport?.targetId}?`;
+				return "Are you sure you want to block this user?";
+			case "unblock-article":
+				return "Are you sure you want to unblock this article?";
 			default:
 				return "Are you sure you want to proceed?";
 		}
@@ -143,22 +158,31 @@ export function ReportTable({ reports }: ReportTableProps) {
 				return "Block Article";
 			case "block-user":
 				return "Block User";
+			case "unblock-article":
+				return "Unblock Article";
 			default:
 				return "Confirm";
 		}
 	})();
 
 	return (
-		<div className="bg-card rounded-xl border shadow-sm overflow-hidden">
+		<div className="bg-card rounded-xl border border-border/60 shadow-md overflow-hidden ring-1 ring-black/5">
 			<Table>
-				<TableHeader className="bg-muted/50">
-					<TableRow>
-						<TableHead className="w-[220px] py-4">Target</TableHead>
-						<TableHead>Reporter</TableHead>
-						<TableHead>Reason</TableHead>
-						<TableHead>Status</TableHead>
-						<TableHead>Reported</TableHead>
-						<TableHead className="text-right">Actions</TableHead>
+				<TableHeader className="bg-muted/40 border-b border-border/50">
+					<TableRow className="hover:bg-transparent">
+						<TableHead className="w-[48px]"></TableHead>
+						<TableHead className="min-w-[240px] py-4 text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80">
+							Target Content
+						</TableHead>
+						<TableHead className="min-w-[160px] text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80">
+							Reporter
+						</TableHead>
+						<TableHead className="w-[110px] text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80 text-center">
+							Status
+						</TableHead>
+						<TableHead className="text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80 pr-6">
+							Actions
+						</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -166,141 +190,31 @@ export function ReportTable({ reports }: ReportTableProps) {
 						<TableRow>
 							<TableCell
 								colSpan={6}
-								className="h-48 text-center text-muted-foreground"
+								className="h-64 text-center text-muted-foreground"
 							>
-								<div className="flex flex-col items-center gap-2">
-									<ShieldAlert className="w-8 h-8 opacity-20" />
-									<p>No reports found matching your criteria.</p>
+								<div className="flex flex-col items-center gap-3 opacity-60">
+									<ShieldAlert className="w-12 h-12 text-muted-foreground/30" />
+									<p className="font-medium">
+										No reports matching your criteria.
+									</p>
 								</div>
 							</TableCell>
 						</TableRow>
 					) : (
 						reports.map((report) => (
-							<TableRow
+							<ReportTableRow
 								key={report.id}
-								className="hover:bg-muted/30 transition-colors"
-							>
-								<TableCell className="py-4">
-									<div className="flex flex-col gap-1">
-										<Badge
-											variant="outline"
-											className={`w-fit px-2 py-0.5 rounded-md font-medium ${
-												report.targetType === "USER"
-													? "border-blue-200 bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400"
-													: "border-amber-200 bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400"
-											}`}
-										>
-											{report.targetType}
-										</Badge>
-										<span className="text-sm font-medium text-foreground mt-2">
-											{report.target?.title ||
-												report.target?.name ||
-												`ID: ${report.targetId}`}
-										</span>
-										{report.targetType === "ARTICLE" &&
-											report.targetSlug &&
-											report.targetSlug !== "undefined" && (
-												<Link
-													to="/admin-articles/$articleId"
-													params={{ articleId: report.targetSlug }}
-													className="text-xs text-primary hover:underline flex items-center gap-1 w-fit mt-1 font-medium"
-												>
-													<ExternalLink className="w-3 h-3" />
-													View Article
-												</Link>
-											)}
-										{report.targetType === "USER" && (
-											<Link
-												to="/admin-profiles/$profileId"
-												params={{ profileId: report.targetId }}
-												className="text-xs text-primary hover:underline flex items-center gap-1 w-fit mt-1 font-medium"
-											>
-												<ExternalLink className="w-3 h-3" />
-												View Profile
-											</Link>
-										)}
-									</div>
-								</TableCell>
-								<TableCell>
-									<span className="text-sm font-medium text-foreground">
-										{report.reporter?.name || report.reporterId}
-									</span>
-								</TableCell>
-								<TableCell>
-									<div className="flex flex-col">
-										<span className="text-sm font-semibold text-foreground/90">
-											{report.reason}
-										</span>
-										<span className="text-xs text-muted-foreground line-clamp-2">
-											{report.description || "No description provided."}
-										</span>
-									</div>
-								</TableCell>
-								<TableCell>
-									<Badge
-										variant="outline"
-										className={statusStyles[report.status]}
-									>
-										{report.status}
-									</Badge>
-								</TableCell>
-								<TableCell>
-									<span className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
-										<Calendar className="w-3.5 h-3.5" />
-										{format(new Date(report.createdAt), "MMM dd, yyyy")}
-									</span>
-								</TableCell>
-								<TableCell className="text-right">
-									<div className="flex items-center justify-end gap-2">
-										<Button
-											variant="ghost"
-											size="sm"
-											className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all font-semibold"
-											onClick={() => {
-												setSelectedReport(report);
-												setActionType("resolve");
-											}}
-											disabled={isProcessing || report.status !== "PENDING"}
-										>
-											<ShieldAlert className="w-4 h-4 mr-2" />
-											Resolve
-										</Button>
-										{report.status === "PENDING" && (
-											<>
-												{report.targetType === "USER" ? (
-													<Button
-														variant="ghost"
-														size="sm"
-														className="text-rose-600 hover:text-rose-700 hover:bg-rose-50/50 dark:hover:bg-rose-900/20 transition-all font-semibold"
-														onClick={() => {
-															setSelectedReport(report);
-															setActionType("block-user");
-														}}
-														disabled={isProcessing}
-													>
-														<UserX className="w-4 h-4 mr-2" />
-														Block User
-													</Button>
-												) : (
-													<Button
-														variant="ghost"
-														size="sm"
-														className="text-rose-600 hover:text-rose-700 hover:bg-rose-50/50 dark:hover:bg-rose-900/20 transition-all font-semibold"
-														onClick={() => {
-															setSelectedReport(report);
-															setActionType("block-article");
-														}}
-														disabled={isProcessing}
-													>
-														<FileX2 className="w-4 h-4 mr-2" />
-														Block Article
-													</Button>
-												)}
-											</>
-										)}
-									</div>
-								</TableCell>
-							</TableRow>
+								report={report}
+								isExpanded={expandedId === report.id}
+								onToggle={() =>
+									setExpandedId(expandedId === report.id ? null : report.id)
+								}
+								onAction={(rep, action) => {
+									setSelectedReport(rep);
+									setActionType(action);
+								}}
+								isProcessing={isProcessing}
+							/>
 						))
 					)}
 				</TableBody>
@@ -318,7 +232,26 @@ export function ReportTable({ reports }: ReportTableProps) {
 				variant={actionType === "resolve" ? "green" : "destructive"}
 				confirmText={confirmText}
 				isLoading={isProcessing}
-			/>
+			>
+				{actionType === "block-article" && (
+					<div className="mt-4 space-y-2">
+						<Label htmlFor="admin-reason" className="text-sm font-medium">
+							Administrator Blocking Reason
+						</Label>
+						<Textarea
+							id="admin-reason"
+							placeholder="Enter the official reason for blocking this article..."
+							value={adminReason}
+							onChange={(e) => setAdminReason(e.target.value)}
+							className="min-h-[100px] text-sm bg-muted/30 border-muted-foreground/20 focus:border-red-500/50"
+						/>
+						<p className="text-[10px] text-muted-foreground italic">
+							This reason will be visible to the author. If left blank, the
+							reporter's reason will be used.
+						</p>
+					</div>
+				)}
+			</ConfirmModal>
 		</div>
 	);
 }

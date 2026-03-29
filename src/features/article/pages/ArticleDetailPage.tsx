@@ -1,5 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Eye, Flag } from "lucide-react";
+import {
+	ArrowLeft,
+	Eye,
+	Flag,
+	ShieldAlert,
+	MessageSquareText,
+} from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,6 +20,8 @@ import { ReactionButtons } from "../components/ReactionButtons";
 import { ReportDialog } from "@/components/common/ReportDialog";
 import { CommentsSection } from "../components/CommentsSection";
 import { useProfile } from "@/features/profile-management/hooks/use-profile";
+import { AppealDialog } from "../components/AppealDialog";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function ArticleDetailPage({
 	articleId,
@@ -22,6 +31,7 @@ export function ArticleDetailPage({
 	isReadOnly?: boolean;
 }) {
 	const { data: profile } = useProfile();
+	const queryClient = useQueryClient();
 	const { data } = useQuery(articleQueries.detail(articleId));
 
 	if (!data) return null;
@@ -50,6 +60,58 @@ export function ArticleDetailPage({
 					)}
 				</Button>
 			</div>
+
+			{isAuthor && article.isBlockedByAdmin && (
+				<Alert className="mb-8 border-rose-100 bg-rose-50/30 dark:bg-rose-950/10 dark:border-rose-900/20 text-rose-900 dark:text-rose-100">
+					<ShieldAlert className="h-5 w-5 text-rose-600" />
+					<AlertTitle className="font-bold">
+						This article has been blocked by an administrator
+					</AlertTitle>
+					<AlertDescription className="mt-2 text-sm opacity-90 text-rose-800 dark:text-rose-200">
+						<p>
+							You can still view and update this article, but it is no longer
+							visible to the public. Once you have made the necessary
+							corrections, you can submit an appeal for review.
+						</p>
+						{article.blockingReason && (
+							<div className="mt-3 p-3 bg-white/60 dark:bg-black/10 rounded-lg border border-rose-100/50 dark:border-rose-900/10">
+								<span className="font-bold text-[10px] uppercase tracking-wider block mb-1 text-rose-700 dark:text-rose-300">
+									Reason for blocking:
+								</span>
+								<p className="italic text-base">"{article.blockingReason}"</p>
+							</div>
+						)}
+						{data.appealMessage ? (
+							<div className="mt-4 p-4 bg-blue-50/50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-900/30">
+								<h4 className="text-sm font-bold text-blue-900 dark:text-blue-100 flex items-center gap-2 mb-2">
+									<MessageSquareText className="h-4 w-4" />
+									Appeal Submitted
+									{data.appealedAt && (
+										<span className="text-xs font-normal opacity-70 ml-auto">
+											{format(new Date(data.appealedAt), "MMM d, yyyy")}
+										</span>
+									)}
+								</h4>
+								<p className="text-zinc-700 dark:text-zinc-300 text-sm">
+									"{data.appealMessage}"
+								</p>
+								<p className="mt-2 text-xs font-medium text-blue-700 dark:text-blue-400">
+									Your appeal is pending review by the administrators.
+								</p>
+							</div>
+						) : (
+							<AppealDialog
+								articleId={article.id}
+								onSuccess={() =>
+									queryClient.invalidateQueries({
+										queryKey: articleQueries.detail(articleId).queryKey,
+									})
+								}
+							/>
+						)}
+					</AlertDescription>
+				</Alert>
+			)}
 
 			<article className="space-y-8">
 				<div className="space-y-6">
@@ -85,6 +147,7 @@ export function ArticleDetailPage({
 								articleId={article.id}
 								slug={article.slug}
 								isAuthor={!!isAuthor && !isReadOnly}
+								isBlockedByAdmin={article.isBlockedByAdmin}
 							/>
 						</div>
 					</div>

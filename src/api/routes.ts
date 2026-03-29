@@ -115,6 +115,7 @@ export const ROUTES = {
 		TOP_TAGS: "/top-tags",
 		MENTOR: "/mentor",
 		EDIT: (articleId: string) => `/${articleId}/edit`,
+		APPEAL: (articleId: string) => `/${articleId}/appeal`,
 	},
 	RECURRING_RULES: {
 		BASE: "/recurring-rules",
@@ -164,5 +165,6 @@ export const ROUTES = {
 		REPORT_USER: (userId: string) => `/users/${userId}`,
 		STATUS: (reportId: string) => `/${reportId}/status`,
 		BLOCK_ARTICLE: (articleId: string) => `/articles/${articleId}/block`,
+		UNBLOCK_ARTICLE: (articleId: string) => `/articles/${articleId}/unblock`,
 	},
 };

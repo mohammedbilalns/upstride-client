@@ -9,6 +9,7 @@ export const ReportManagementSearchSchema = z.object({
 		.optional()
 		.catch(undefined),
 	targetType: z.enum(["USER", "ARTICLE"]).optional().catch(undefined),
+	isAppealSubmitted: z.boolean().optional().catch(undefined),
 });
 
 export type ReportManagementSearch = z.infer<

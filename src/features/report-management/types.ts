@@ -19,9 +19,14 @@ export interface ReportDto {
 		email?: string;
 		title?: string;
 		slug?: string;
+		blockingReason?: string;
 	};
 	targetSlug?: string;
-	actionTaken: string;
+	appealMessage: string | null;
+	appealedAt: string | null;
+	isAppealSubmitted: boolean;
+	actionTaken?: string;
+	actionTakenAt: string | null;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -54,6 +59,7 @@ export interface GetReportsInput {
 	targetType?: ReportTargetType | ReportTargetType[];
 	targetId?: string;
 	reporterId?: string;
+	isAppealSubmitted?: boolean;
 }
 
 export interface GetReportsResponse {
@@ -76,6 +82,8 @@ export interface UpdateReportStatusResponse {
 
 export interface BlockArticleInput {
 	articleId: string;
+	reason: string;
+	reportId?: string;
 }
 
 export interface BlockArticleResponse {
