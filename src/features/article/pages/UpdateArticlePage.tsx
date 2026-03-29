@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { articleQueries } from "../hooks/queries";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { Route } from "@/routes/_user-layout/mentor/articles/$articleId/update";
+import { Route } from "@/routes/_app-layout/_user-layout/mentor/articles/$articleId/update";
 import { ArticleImageUpload } from "../components/ArticleImageUpload";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";

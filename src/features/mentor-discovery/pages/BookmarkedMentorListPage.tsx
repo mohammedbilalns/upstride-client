@@ -7,7 +7,7 @@ import { useMentorList } from "../hooks/use-mentor-lists";
 
 export function BookmarkedMentorListPage() {
 	const { listId } = useParams({
-		from: "/_user-layout/profile/bookmarked-mentors/$listId",
+		from: "/_app-layout/_user-layout/profile/bookmarked-mentors/$listId",
 	});
 	const { data, isLoading } = useMentorList(listId);
 	const list = data?.list;

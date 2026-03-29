@@ -9,7 +9,7 @@ import { ChevronLeft, Plus, Save, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { articleQueries } from "../hooks/queries";
-import { Route } from "@/routes/_user-layout/mentor/articles/create";
+import { Route } from "@/routes/_app-layout/_user-layout/mentor/articles/create";
 import { ArticleImageUpload } from "../components/ArticleImageUpload";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";

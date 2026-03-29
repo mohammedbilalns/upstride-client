@@ -9,7 +9,7 @@ import { ArticleCard } from "../components/ArticleCard";
 import { ArticleFilters } from "../components/ArticleFilters";
 import { articleQueries } from "../hooks/queries";
 import { getMentorCategoriesQueryOptions } from "@/features/mentor-discovery/hooks/queries";
-import { Route } from "@/routes/_user-layout/articles/index";
+import { Route } from "@/routes/_app-layout/_user-layout/articles/index";
 import type { ArticleDto } from "../types";
 
 export function ArticlesPage() {

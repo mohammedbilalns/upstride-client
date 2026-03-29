@@ -4,7 +4,7 @@ import { GraduationCap, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Route } from "@/routes/_user-layout/mentors/index";
+import { Route } from "@/routes/_app-layout/_user-layout/mentors/index";
 import { useDebounce } from "@/shared/hooks/use-debounce";
 import { MentorCard } from "../components/MentorCard";
 import { MentorFilters } from "../components/MentorFilters";

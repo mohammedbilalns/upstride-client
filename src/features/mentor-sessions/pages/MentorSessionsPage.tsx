@@ -18,7 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { sessionBookingService } from "@/features/session-booking-management";
 import type { BookingListItem } from "@/features/session-booking-management/types";
 import { Pagination } from "@/features/user-management/components/Pagination";
-import { Route } from "@/routes/_mentor-layout/mentor-sessions";
+import { Route } from "@/routes/_app-layout/_mentor-layout/mentor-sessions";
 import { useMentorSessions } from "../hooks/use-mentor-sessions";
 
 const formatDate = (value: string) => format(new Date(value), "MMM dd, yyyy");

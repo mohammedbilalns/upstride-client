@@ -14,7 +14,7 @@ import { useLogout } from "@/features/authentication/hooks/use-logout";
 import { cn } from "@/shared/utils/cn";
 
 export default function MentorSidebar() {
-	const { auth } = useRouteContext({ from: "/_mentor-layout" });
+	const { auth } = useRouteContext({ from: "/_app-layout/_mentor-layout" });
 	const user = auth.user;
 	const location = useLocation();
 	const logoutMutation = useLogout();

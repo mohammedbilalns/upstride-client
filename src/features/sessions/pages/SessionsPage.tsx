@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { sessionBookingService } from "@/features/session-booking-management";
 import type { BookingListItem } from "@/features/session-booking-management/types";
 import { Pagination } from "@/features/user-management/components/Pagination";
-import { Route } from "@/routes/_user-layout/sessions";
+import { Route } from "@/routes/_app-layout/_user-layout/sessions";
 import { useUserSessions } from "../hooks/use-sessions";
 import { SessionFilters } from "../components/SessionFilters";
 import { cn } from "@/shared/utils/cn";

@@ -16,7 +16,7 @@ function formatTime(dateStr: string): string {
 
 export function ChatList() {
 	const location = useLocation();
-	const { auth } = useRouteContext({ from: "/_user-layout/chats" });
+	const { auth } = useRouteContext({ from: "/_app-layout/_user-layout/chats" });
 	const currentUserId = auth.user?.id;
 
 	const {

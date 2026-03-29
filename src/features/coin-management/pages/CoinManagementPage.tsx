@@ -9,7 +9,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Route } from "@/routes/_user-layout/coins";
+import { Route } from "@/routes/_app-layout/_user-layout/coins";
 import { CoinTransactionsTable } from "../components/CoinTransactionsTable";
 import { PaymentTransactionsTable } from "../components/PaymentTransactionsTable";
 import {

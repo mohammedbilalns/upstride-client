@@ -10,24 +10,13 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LinkedinRouteImport } from './routes/linkedin'
-import { Route as UserLayoutRouteImport } from './routes/_user-layout'
 import { Route as PublicLayoutRouteImport } from './routes/_public-layout'
-import { Route as MentorLayoutRouteImport } from './routes/_mentor-layout'
+import { Route as AppLayoutRouteImport } from './routes/_app-layout'
 import { Route as AdminLayoutRouteImport } from './routes/_admin-layout'
 import { Route as PublicLayoutIndexRouteImport } from './routes/_public-layout/index'
-import { Route as UserLayoutSessionsRouteImport } from './routes/_user-layout/sessions'
-import { Route as UserLayoutProfileRouteImport } from './routes/_user-layout/profile'
-import { Route as UserLayoutMentorsRouteImport } from './routes/_user-layout/mentors'
-import { Route as UserLayoutMentorRouteImport } from './routes/_user-layout/mentor'
-import { Route as UserLayoutHomeRouteImport } from './routes/_user-layout/home'
-import { Route as UserLayoutCoinsRouteImport } from './routes/_user-layout/coins'
-import { Route as UserLayoutChatsRouteImport } from './routes/_user-layout/chats'
 import { Route as PublicLayoutAuthRouteImport } from './routes/_public-layout/auth'
-import { Route as MentorLayoutMentorSlotManagementRouteImport } from './routes/_mentor-layout/mentor-slot-management'
-import { Route as MentorLayoutMentorSessionsRouteImport } from './routes/_mentor-layout/mentor-sessions'
-import { Route as MentorLayoutMentorRuleManagementRouteImport } from './routes/_mentor-layout/mentor-rule-management'
-import { Route as MentorLayoutMentorDashboardRouteImport } from './routes/_mentor-layout/mentor-dashboard'
-import { Route as MentorLayoutMentorArticlesRouteImport } from './routes/_mentor-layout/mentor-articles'
+import { Route as AppLayoutUserLayoutRouteImport } from './routes/_app-layout/_user-layout'
+import { Route as AppLayoutMentorLayoutRouteImport } from './routes/_app-layout/_mentor-layout'
 import { Route as AdminLayoutUserManagementRouteImport } from './routes/_admin-layout/user-management'
 import { Route as AdminLayoutReportManagementRouteImport } from './routes/_admin-layout/report-management'
 import { Route as AdminLayoutPlatformSettingsRouteImport } from './routes/_admin-layout/platform-settings'
@@ -35,37 +24,45 @@ import { Route as AdminLayoutMentorManagementRouteImport } from './routes/_admin
 import { Route as AdminLayoutDashboardRouteImport } from './routes/_admin-layout/dashboard'
 import { Route as AdminLayoutCatalogManagementRouteImport } from './routes/_admin-layout/catalog-management'
 import { Route as AdminLayoutAdminManagementRouteImport } from './routes/_admin-layout/admin-management'
-import { Route as UserLayoutProfileIndexRouteImport } from './routes/_user-layout/profile/index'
-import { Route as UserLayoutMentorsIndexRouteImport } from './routes/_user-layout/mentors/index'
-import { Route as UserLayoutChatsIndexRouteImport } from './routes/_user-layout/chats/index'
-import { Route as UserLayoutArticlesIndexRouteImport } from './routes/_user-layout/articles/index'
-import { Route as UserLayoutProfileSecurityRouteImport } from './routes/_user-layout/profile/security'
-import { Route as UserLayoutMentorsMentorIdRouteImport } from './routes/_user-layout/mentors/$mentorId'
-import { Route as UserLayoutMentorRegisterRouteImport } from './routes/_user-layout/mentor.register'
-import { Route as UserLayoutChatsChatIdRouteImport } from './routes/_user-layout/chats/$chatId'
+import { Route as AppLayoutUserLayoutSessionsRouteImport } from './routes/_app-layout/_user-layout/sessions'
+import { Route as AppLayoutUserLayoutProfileRouteImport } from './routes/_app-layout/_user-layout/profile'
+import { Route as AppLayoutUserLayoutMentorsRouteImport } from './routes/_app-layout/_user-layout/mentors'
+import { Route as AppLayoutUserLayoutMentorRouteImport } from './routes/_app-layout/_user-layout/mentor'
+import { Route as AppLayoutUserLayoutHomeRouteImport } from './routes/_app-layout/_user-layout/home'
+import { Route as AppLayoutUserLayoutCoinsRouteImport } from './routes/_app-layout/_user-layout/coins'
+import { Route as AppLayoutUserLayoutChatsRouteImport } from './routes/_app-layout/_user-layout/chats'
+import { Route as AppLayoutMentorLayoutMentorSlotManagementRouteImport } from './routes/_app-layout/_mentor-layout/mentor-slot-management'
+import { Route as AppLayoutMentorLayoutMentorSessionsRouteImport } from './routes/_app-layout/_mentor-layout/mentor-sessions'
+import { Route as AppLayoutMentorLayoutMentorRuleManagementRouteImport } from './routes/_app-layout/_mentor-layout/mentor-rule-management'
+import { Route as AppLayoutMentorLayoutMentorDashboardRouteImport } from './routes/_app-layout/_mentor-layout/mentor-dashboard'
+import { Route as AppLayoutMentorLayoutMentorArticlesRouteImport } from './routes/_app-layout/_mentor-layout/mentor-articles'
 import { Route as AdminLayoutAdminProfilesProfileIdRouteImport } from './routes/_admin-layout/admin-profiles.$profileId'
 import { Route as AdminLayoutAdminArticlesArticleIdRouteImport } from './routes/_admin-layout/admin-articles.$articleId'
-import { Route as UserLayoutProfileBookmarkedMentorsIndexRouteImport } from './routes/_user-layout/profile/bookmarked-mentors/index'
-import { Route as UserLayoutArticlesArticleIdIndexRouteImport } from './routes/_user-layout/articles/$articleId/index'
-import { Route as UserLayoutProfileBookmarkedMentorsListIdRouteImport } from './routes/_user-layout/profile/bookmarked-mentors/$listId'
-import { Route as UserLayoutMentorArticlesCreateRouteImport } from './routes/_user-layout/mentor/articles/create'
-import { Route as UserLayoutMentorArticlesArticleIdUpdateRouteImport } from './routes/_user-layout/mentor/articles/$articleId/update'
+import { Route as AppLayoutUserLayoutProfileIndexRouteImport } from './routes/_app-layout/_user-layout/profile/index'
+import { Route as AppLayoutUserLayoutMentorsIndexRouteImport } from './routes/_app-layout/_user-layout/mentors/index'
+import { Route as AppLayoutUserLayoutChatsIndexRouteImport } from './routes/_app-layout/_user-layout/chats/index'
+import { Route as AppLayoutUserLayoutArticlesIndexRouteImport } from './routes/_app-layout/_user-layout/articles/index'
+import { Route as AppLayoutUserLayoutProfileSecurityRouteImport } from './routes/_app-layout/_user-layout/profile/security'
+import { Route as AppLayoutUserLayoutMentorsMentorIdRouteImport } from './routes/_app-layout/_user-layout/mentors/$mentorId'
+import { Route as AppLayoutUserLayoutMentorRegisterRouteImport } from './routes/_app-layout/_user-layout/mentor.register'
+import { Route as AppLayoutUserLayoutChatsChatIdRouteImport } from './routes/_app-layout/_user-layout/chats/$chatId'
+import { Route as AppLayoutUserLayoutProfileBookmarkedMentorsIndexRouteImport } from './routes/_app-layout/_user-layout/profile/bookmarked-mentors/index'
+import { Route as AppLayoutUserLayoutArticlesArticleIdIndexRouteImport } from './routes/_app-layout/_user-layout/articles/$articleId/index'
+import { Route as AppLayoutUserLayoutProfileBookmarkedMentorsListIdRouteImport } from './routes/_app-layout/_user-layout/profile/bookmarked-mentors/$listId'
+import { Route as AppLayoutUserLayoutMentorArticlesCreateRouteImport } from './routes/_app-layout/_user-layout/mentor/articles/create'
+import { Route as AppLayoutUserLayoutMentorArticlesArticleIdUpdateRouteImport } from './routes/_app-layout/_user-layout/mentor/articles/$articleId/update'
 
 const LinkedinRoute = LinkedinRouteImport.update({
   id: '/linkedin',
   path: '/linkedin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UserLayoutRoute = UserLayoutRouteImport.update({
-  id: '/_user-layout',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PublicLayoutRoute = PublicLayoutRouteImport.update({
   id: '/_public-layout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MentorLayoutRoute = MentorLayoutRouteImport.update({
-  id: '/_mentor-layout',
+const AppLayoutRoute = AppLayoutRouteImport.update({
+  id: '/_app-layout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminLayoutRoute = AdminLayoutRouteImport.update({
@@ -77,76 +74,19 @@ const PublicLayoutIndexRoute = PublicLayoutIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PublicLayoutRoute,
 } as any)
-const UserLayoutSessionsRoute = UserLayoutSessionsRouteImport.update({
-  id: '/sessions',
-  path: '/sessions',
-  getParentRoute: () => UserLayoutRoute,
-} as any)
-const UserLayoutProfileRoute = UserLayoutProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => UserLayoutRoute,
-} as any)
-const UserLayoutMentorsRoute = UserLayoutMentorsRouteImport.update({
-  id: '/mentors',
-  path: '/mentors',
-  getParentRoute: () => UserLayoutRoute,
-} as any)
-const UserLayoutMentorRoute = UserLayoutMentorRouteImport.update({
-  id: '/mentor',
-  path: '/mentor',
-  getParentRoute: () => UserLayoutRoute,
-} as any)
-const UserLayoutHomeRoute = UserLayoutHomeRouteImport.update({
-  id: '/home',
-  path: '/home',
-  getParentRoute: () => UserLayoutRoute,
-} as any)
-const UserLayoutCoinsRoute = UserLayoutCoinsRouteImport.update({
-  id: '/coins',
-  path: '/coins',
-  getParentRoute: () => UserLayoutRoute,
-} as any)
-const UserLayoutChatsRoute = UserLayoutChatsRouteImport.update({
-  id: '/chats',
-  path: '/chats',
-  getParentRoute: () => UserLayoutRoute,
-} as any)
 const PublicLayoutAuthRoute = PublicLayoutAuthRouteImport.update({
   id: '/auth',
   path: '/auth',
   getParentRoute: () => PublicLayoutRoute,
 } as any)
-const MentorLayoutMentorSlotManagementRoute =
-  MentorLayoutMentorSlotManagementRouteImport.update({
-    id: '/mentor-slot-management',
-    path: '/mentor-slot-management',
-    getParentRoute: () => MentorLayoutRoute,
-  } as any)
-const MentorLayoutMentorSessionsRoute =
-  MentorLayoutMentorSessionsRouteImport.update({
-    id: '/mentor-sessions',
-    path: '/mentor-sessions',
-    getParentRoute: () => MentorLayoutRoute,
-  } as any)
-const MentorLayoutMentorRuleManagementRoute =
-  MentorLayoutMentorRuleManagementRouteImport.update({
-    id: '/mentor-rule-management',
-    path: '/mentor-rule-management',
-    getParentRoute: () => MentorLayoutRoute,
-  } as any)
-const MentorLayoutMentorDashboardRoute =
-  MentorLayoutMentorDashboardRouteImport.update({
-    id: '/mentor-dashboard',
-    path: '/mentor-dashboard',
-    getParentRoute: () => MentorLayoutRoute,
-  } as any)
-const MentorLayoutMentorArticlesRoute =
-  MentorLayoutMentorArticlesRouteImport.update({
-    id: '/mentor-articles',
-    path: '/mentor-articles',
-    getParentRoute: () => MentorLayoutRoute,
-  } as any)
+const AppLayoutUserLayoutRoute = AppLayoutUserLayoutRouteImport.update({
+  id: '/_user-layout',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppLayoutMentorLayoutRoute = AppLayoutMentorLayoutRouteImport.update({
+  id: '/_mentor-layout',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 const AdminLayoutUserManagementRoute =
   AdminLayoutUserManagementRouteImport.update({
     id: '/user-management',
@@ -188,49 +128,77 @@ const AdminLayoutAdminManagementRoute =
     path: '/admin-management',
     getParentRoute: () => AdminLayoutRoute,
   } as any)
-const UserLayoutProfileIndexRoute = UserLayoutProfileIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => UserLayoutProfileRoute,
-} as any)
-const UserLayoutMentorsIndexRoute = UserLayoutMentorsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => UserLayoutMentorsRoute,
-} as any)
-const UserLayoutChatsIndexRoute = UserLayoutChatsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => UserLayoutChatsRoute,
-} as any)
-const UserLayoutArticlesIndexRoute = UserLayoutArticlesIndexRouteImport.update({
-  id: '/articles/',
-  path: '/articles/',
-  getParentRoute: () => UserLayoutRoute,
-} as any)
-const UserLayoutProfileSecurityRoute =
-  UserLayoutProfileSecurityRouteImport.update({
-    id: '/security',
-    path: '/security',
-    getParentRoute: () => UserLayoutProfileRoute,
+const AppLayoutUserLayoutSessionsRoute =
+  AppLayoutUserLayoutSessionsRouteImport.update({
+    id: '/sessions',
+    path: '/sessions',
+    getParentRoute: () => AppLayoutUserLayoutRoute,
   } as any)
-const UserLayoutMentorsMentorIdRoute =
-  UserLayoutMentorsMentorIdRouteImport.update({
-    id: '/$mentorId',
-    path: '/$mentorId',
-    getParentRoute: () => UserLayoutMentorsRoute,
+const AppLayoutUserLayoutProfileRoute =
+  AppLayoutUserLayoutProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => AppLayoutUserLayoutRoute,
   } as any)
-const UserLayoutMentorRegisterRoute =
-  UserLayoutMentorRegisterRouteImport.update({
-    id: '/register',
-    path: '/register',
-    getParentRoute: () => UserLayoutMentorRoute,
+const AppLayoutUserLayoutMentorsRoute =
+  AppLayoutUserLayoutMentorsRouteImport.update({
+    id: '/mentors',
+    path: '/mentors',
+    getParentRoute: () => AppLayoutUserLayoutRoute,
   } as any)
-const UserLayoutChatsChatIdRoute = UserLayoutChatsChatIdRouteImport.update({
-  id: '/$chatId',
-  path: '/$chatId',
-  getParentRoute: () => UserLayoutChatsRoute,
+const AppLayoutUserLayoutMentorRoute =
+  AppLayoutUserLayoutMentorRouteImport.update({
+    id: '/mentor',
+    path: '/mentor',
+    getParentRoute: () => AppLayoutUserLayoutRoute,
+  } as any)
+const AppLayoutUserLayoutHomeRoute = AppLayoutUserLayoutHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => AppLayoutUserLayoutRoute,
 } as any)
+const AppLayoutUserLayoutCoinsRoute =
+  AppLayoutUserLayoutCoinsRouteImport.update({
+    id: '/coins',
+    path: '/coins',
+    getParentRoute: () => AppLayoutUserLayoutRoute,
+  } as any)
+const AppLayoutUserLayoutChatsRoute =
+  AppLayoutUserLayoutChatsRouteImport.update({
+    id: '/chats',
+    path: '/chats',
+    getParentRoute: () => AppLayoutUserLayoutRoute,
+  } as any)
+const AppLayoutMentorLayoutMentorSlotManagementRoute =
+  AppLayoutMentorLayoutMentorSlotManagementRouteImport.update({
+    id: '/mentor-slot-management',
+    path: '/mentor-slot-management',
+    getParentRoute: () => AppLayoutMentorLayoutRoute,
+  } as any)
+const AppLayoutMentorLayoutMentorSessionsRoute =
+  AppLayoutMentorLayoutMentorSessionsRouteImport.update({
+    id: '/mentor-sessions',
+    path: '/mentor-sessions',
+    getParentRoute: () => AppLayoutMentorLayoutRoute,
+  } as any)
+const AppLayoutMentorLayoutMentorRuleManagementRoute =
+  AppLayoutMentorLayoutMentorRuleManagementRouteImport.update({
+    id: '/mentor-rule-management',
+    path: '/mentor-rule-management',
+    getParentRoute: () => AppLayoutMentorLayoutRoute,
+  } as any)
+const AppLayoutMentorLayoutMentorDashboardRoute =
+  AppLayoutMentorLayoutMentorDashboardRouteImport.update({
+    id: '/mentor-dashboard',
+    path: '/mentor-dashboard',
+    getParentRoute: () => AppLayoutMentorLayoutRoute,
+  } as any)
+const AppLayoutMentorLayoutMentorArticlesRoute =
+  AppLayoutMentorLayoutMentorArticlesRouteImport.update({
+    id: '/mentor-articles',
+    path: '/mentor-articles',
+    getParentRoute: () => AppLayoutMentorLayoutRoute,
+  } as any)
 const AdminLayoutAdminProfilesProfileIdRoute =
   AdminLayoutAdminProfilesProfileIdRouteImport.update({
     id: '/admin-profiles/$profileId',
@@ -243,35 +211,83 @@ const AdminLayoutAdminArticlesArticleIdRoute =
     path: '/admin-articles/$articleId',
     getParentRoute: () => AdminLayoutRoute,
   } as any)
-const UserLayoutProfileBookmarkedMentorsIndexRoute =
-  UserLayoutProfileBookmarkedMentorsIndexRouteImport.update({
+const AppLayoutUserLayoutProfileIndexRoute =
+  AppLayoutUserLayoutProfileIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AppLayoutUserLayoutProfileRoute,
+  } as any)
+const AppLayoutUserLayoutMentorsIndexRoute =
+  AppLayoutUserLayoutMentorsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AppLayoutUserLayoutMentorsRoute,
+  } as any)
+const AppLayoutUserLayoutChatsIndexRoute =
+  AppLayoutUserLayoutChatsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AppLayoutUserLayoutChatsRoute,
+  } as any)
+const AppLayoutUserLayoutArticlesIndexRoute =
+  AppLayoutUserLayoutArticlesIndexRouteImport.update({
+    id: '/articles/',
+    path: '/articles/',
+    getParentRoute: () => AppLayoutUserLayoutRoute,
+  } as any)
+const AppLayoutUserLayoutProfileSecurityRoute =
+  AppLayoutUserLayoutProfileSecurityRouteImport.update({
+    id: '/security',
+    path: '/security',
+    getParentRoute: () => AppLayoutUserLayoutProfileRoute,
+  } as any)
+const AppLayoutUserLayoutMentorsMentorIdRoute =
+  AppLayoutUserLayoutMentorsMentorIdRouteImport.update({
+    id: '/$mentorId',
+    path: '/$mentorId',
+    getParentRoute: () => AppLayoutUserLayoutMentorsRoute,
+  } as any)
+const AppLayoutUserLayoutMentorRegisterRoute =
+  AppLayoutUserLayoutMentorRegisterRouteImport.update({
+    id: '/register',
+    path: '/register',
+    getParentRoute: () => AppLayoutUserLayoutMentorRoute,
+  } as any)
+const AppLayoutUserLayoutChatsChatIdRoute =
+  AppLayoutUserLayoutChatsChatIdRouteImport.update({
+    id: '/$chatId',
+    path: '/$chatId',
+    getParentRoute: () => AppLayoutUserLayoutChatsRoute,
+  } as any)
+const AppLayoutUserLayoutProfileBookmarkedMentorsIndexRoute =
+  AppLayoutUserLayoutProfileBookmarkedMentorsIndexRouteImport.update({
     id: '/bookmarked-mentors/',
     path: '/bookmarked-mentors/',
-    getParentRoute: () => UserLayoutProfileRoute,
+    getParentRoute: () => AppLayoutUserLayoutProfileRoute,
   } as any)
-const UserLayoutArticlesArticleIdIndexRoute =
-  UserLayoutArticlesArticleIdIndexRouteImport.update({
+const AppLayoutUserLayoutArticlesArticleIdIndexRoute =
+  AppLayoutUserLayoutArticlesArticleIdIndexRouteImport.update({
     id: '/articles/$articleId/',
     path: '/articles/$articleId/',
-    getParentRoute: () => UserLayoutRoute,
+    getParentRoute: () => AppLayoutUserLayoutRoute,
   } as any)
-const UserLayoutProfileBookmarkedMentorsListIdRoute =
-  UserLayoutProfileBookmarkedMentorsListIdRouteImport.update({
+const AppLayoutUserLayoutProfileBookmarkedMentorsListIdRoute =
+  AppLayoutUserLayoutProfileBookmarkedMentorsListIdRouteImport.update({
     id: '/bookmarked-mentors/$listId',
     path: '/bookmarked-mentors/$listId',
-    getParentRoute: () => UserLayoutProfileRoute,
+    getParentRoute: () => AppLayoutUserLayoutProfileRoute,
   } as any)
-const UserLayoutMentorArticlesCreateRoute =
-  UserLayoutMentorArticlesCreateRouteImport.update({
+const AppLayoutUserLayoutMentorArticlesCreateRoute =
+  AppLayoutUserLayoutMentorArticlesCreateRouteImport.update({
     id: '/articles/create',
     path: '/articles/create',
-    getParentRoute: () => UserLayoutMentorRoute,
+    getParentRoute: () => AppLayoutUserLayoutMentorRoute,
   } as any)
-const UserLayoutMentorArticlesArticleIdUpdateRoute =
-  UserLayoutMentorArticlesArticleIdUpdateRouteImport.update({
+const AppLayoutUserLayoutMentorArticlesArticleIdUpdateRoute =
+  AppLayoutUserLayoutMentorArticlesArticleIdUpdateRouteImport.update({
     id: '/articles/$articleId/update',
     path: '/articles/$articleId/update',
-    getParentRoute: () => UserLayoutMentorRoute,
+    getParentRoute: () => AppLayoutUserLayoutMentorRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -284,34 +300,34 @@ export interface FileRoutesByFullPath {
   '/platform-settings': typeof AdminLayoutPlatformSettingsRoute
   '/report-management': typeof AdminLayoutReportManagementRoute
   '/user-management': typeof AdminLayoutUserManagementRoute
-  '/mentor-articles': typeof MentorLayoutMentorArticlesRoute
-  '/mentor-dashboard': typeof MentorLayoutMentorDashboardRoute
-  '/mentor-rule-management': typeof MentorLayoutMentorRuleManagementRoute
-  '/mentor-sessions': typeof MentorLayoutMentorSessionsRoute
-  '/mentor-slot-management': typeof MentorLayoutMentorSlotManagementRoute
   '/auth': typeof PublicLayoutAuthRoute
-  '/chats': typeof UserLayoutChatsRouteWithChildren
-  '/coins': typeof UserLayoutCoinsRoute
-  '/home': typeof UserLayoutHomeRoute
-  '/mentor': typeof UserLayoutMentorRouteWithChildren
-  '/mentors': typeof UserLayoutMentorsRouteWithChildren
-  '/profile': typeof UserLayoutProfileRouteWithChildren
-  '/sessions': typeof UserLayoutSessionsRoute
   '/admin-articles/$articleId': typeof AdminLayoutAdminArticlesArticleIdRoute
   '/admin-profiles/$profileId': typeof AdminLayoutAdminProfilesProfileIdRoute
-  '/chats/$chatId': typeof UserLayoutChatsChatIdRoute
-  '/mentor/register': typeof UserLayoutMentorRegisterRoute
-  '/mentors/$mentorId': typeof UserLayoutMentorsMentorIdRoute
-  '/profile/security': typeof UserLayoutProfileSecurityRoute
-  '/articles/': typeof UserLayoutArticlesIndexRoute
-  '/chats/': typeof UserLayoutChatsIndexRoute
-  '/mentors/': typeof UserLayoutMentorsIndexRoute
-  '/profile/': typeof UserLayoutProfileIndexRoute
-  '/mentor/articles/create': typeof UserLayoutMentorArticlesCreateRoute
-  '/profile/bookmarked-mentors/$listId': typeof UserLayoutProfileBookmarkedMentorsListIdRoute
-  '/articles/$articleId/': typeof UserLayoutArticlesArticleIdIndexRoute
-  '/profile/bookmarked-mentors/': typeof UserLayoutProfileBookmarkedMentorsIndexRoute
-  '/mentor/articles/$articleId/update': typeof UserLayoutMentorArticlesArticleIdUpdateRoute
+  '/mentor-articles': typeof AppLayoutMentorLayoutMentorArticlesRoute
+  '/mentor-dashboard': typeof AppLayoutMentorLayoutMentorDashboardRoute
+  '/mentor-rule-management': typeof AppLayoutMentorLayoutMentorRuleManagementRoute
+  '/mentor-sessions': typeof AppLayoutMentorLayoutMentorSessionsRoute
+  '/mentor-slot-management': typeof AppLayoutMentorLayoutMentorSlotManagementRoute
+  '/chats': typeof AppLayoutUserLayoutChatsRouteWithChildren
+  '/coins': typeof AppLayoutUserLayoutCoinsRoute
+  '/home': typeof AppLayoutUserLayoutHomeRoute
+  '/mentor': typeof AppLayoutUserLayoutMentorRouteWithChildren
+  '/mentors': typeof AppLayoutUserLayoutMentorsRouteWithChildren
+  '/profile': typeof AppLayoutUserLayoutProfileRouteWithChildren
+  '/sessions': typeof AppLayoutUserLayoutSessionsRoute
+  '/chats/$chatId': typeof AppLayoutUserLayoutChatsChatIdRoute
+  '/mentor/register': typeof AppLayoutUserLayoutMentorRegisterRoute
+  '/mentors/$mentorId': typeof AppLayoutUserLayoutMentorsMentorIdRoute
+  '/profile/security': typeof AppLayoutUserLayoutProfileSecurityRoute
+  '/articles/': typeof AppLayoutUserLayoutArticlesIndexRoute
+  '/chats/': typeof AppLayoutUserLayoutChatsIndexRoute
+  '/mentors/': typeof AppLayoutUserLayoutMentorsIndexRoute
+  '/profile/': typeof AppLayoutUserLayoutProfileIndexRoute
+  '/mentor/articles/create': typeof AppLayoutUserLayoutMentorArticlesCreateRoute
+  '/profile/bookmarked-mentors/$listId': typeof AppLayoutUserLayoutProfileBookmarkedMentorsListIdRoute
+  '/articles/$articleId/': typeof AppLayoutUserLayoutArticlesArticleIdIndexRoute
+  '/profile/bookmarked-mentors/': typeof AppLayoutUserLayoutProfileBookmarkedMentorsIndexRoute
+  '/mentor/articles/$articleId/update': typeof AppLayoutUserLayoutMentorArticlesArticleIdUpdateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof PublicLayoutIndexRoute
@@ -323,38 +339,37 @@ export interface FileRoutesByTo {
   '/platform-settings': typeof AdminLayoutPlatformSettingsRoute
   '/report-management': typeof AdminLayoutReportManagementRoute
   '/user-management': typeof AdminLayoutUserManagementRoute
-  '/mentor-articles': typeof MentorLayoutMentorArticlesRoute
-  '/mentor-dashboard': typeof MentorLayoutMentorDashboardRoute
-  '/mentor-rule-management': typeof MentorLayoutMentorRuleManagementRoute
-  '/mentor-sessions': typeof MentorLayoutMentorSessionsRoute
-  '/mentor-slot-management': typeof MentorLayoutMentorSlotManagementRoute
   '/auth': typeof PublicLayoutAuthRoute
-  '/coins': typeof UserLayoutCoinsRoute
-  '/home': typeof UserLayoutHomeRoute
-  '/mentor': typeof UserLayoutMentorRouteWithChildren
-  '/sessions': typeof UserLayoutSessionsRoute
   '/admin-articles/$articleId': typeof AdminLayoutAdminArticlesArticleIdRoute
   '/admin-profiles/$profileId': typeof AdminLayoutAdminProfilesProfileIdRoute
-  '/chats/$chatId': typeof UserLayoutChatsChatIdRoute
-  '/mentor/register': typeof UserLayoutMentorRegisterRoute
-  '/mentors/$mentorId': typeof UserLayoutMentorsMentorIdRoute
-  '/profile/security': typeof UserLayoutProfileSecurityRoute
-  '/articles': typeof UserLayoutArticlesIndexRoute
-  '/chats': typeof UserLayoutChatsIndexRoute
-  '/mentors': typeof UserLayoutMentorsIndexRoute
-  '/profile': typeof UserLayoutProfileIndexRoute
-  '/mentor/articles/create': typeof UserLayoutMentorArticlesCreateRoute
-  '/profile/bookmarked-mentors/$listId': typeof UserLayoutProfileBookmarkedMentorsListIdRoute
-  '/articles/$articleId': typeof UserLayoutArticlesArticleIdIndexRoute
-  '/profile/bookmarked-mentors': typeof UserLayoutProfileBookmarkedMentorsIndexRoute
-  '/mentor/articles/$articleId/update': typeof UserLayoutMentorArticlesArticleIdUpdateRoute
+  '/mentor-articles': typeof AppLayoutMentorLayoutMentorArticlesRoute
+  '/mentor-dashboard': typeof AppLayoutMentorLayoutMentorDashboardRoute
+  '/mentor-rule-management': typeof AppLayoutMentorLayoutMentorRuleManagementRoute
+  '/mentor-sessions': typeof AppLayoutMentorLayoutMentorSessionsRoute
+  '/mentor-slot-management': typeof AppLayoutMentorLayoutMentorSlotManagementRoute
+  '/coins': typeof AppLayoutUserLayoutCoinsRoute
+  '/home': typeof AppLayoutUserLayoutHomeRoute
+  '/mentor': typeof AppLayoutUserLayoutMentorRouteWithChildren
+  '/sessions': typeof AppLayoutUserLayoutSessionsRoute
+  '/chats/$chatId': typeof AppLayoutUserLayoutChatsChatIdRoute
+  '/mentor/register': typeof AppLayoutUserLayoutMentorRegisterRoute
+  '/mentors/$mentorId': typeof AppLayoutUserLayoutMentorsMentorIdRoute
+  '/profile/security': typeof AppLayoutUserLayoutProfileSecurityRoute
+  '/articles': typeof AppLayoutUserLayoutArticlesIndexRoute
+  '/chats': typeof AppLayoutUserLayoutChatsIndexRoute
+  '/mentors': typeof AppLayoutUserLayoutMentorsIndexRoute
+  '/profile': typeof AppLayoutUserLayoutProfileIndexRoute
+  '/mentor/articles/create': typeof AppLayoutUserLayoutMentorArticlesCreateRoute
+  '/profile/bookmarked-mentors/$listId': typeof AppLayoutUserLayoutProfileBookmarkedMentorsListIdRoute
+  '/articles/$articleId': typeof AppLayoutUserLayoutArticlesArticleIdIndexRoute
+  '/profile/bookmarked-mentors': typeof AppLayoutUserLayoutProfileBookmarkedMentorsIndexRoute
+  '/mentor/articles/$articleId/update': typeof AppLayoutUserLayoutMentorArticlesArticleIdUpdateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_admin-layout': typeof AdminLayoutRouteWithChildren
-  '/_mentor-layout': typeof MentorLayoutRouteWithChildren
+  '/_app-layout': typeof AppLayoutRouteWithChildren
   '/_public-layout': typeof PublicLayoutRouteWithChildren
-  '/_user-layout': typeof UserLayoutRouteWithChildren
   '/linkedin': typeof LinkedinRoute
   '/_admin-layout/admin-management': typeof AdminLayoutAdminManagementRoute
   '/_admin-layout/catalog-management': typeof AdminLayoutCatalogManagementRoute
@@ -363,35 +378,37 @@ export interface FileRoutesById {
   '/_admin-layout/platform-settings': typeof AdminLayoutPlatformSettingsRoute
   '/_admin-layout/report-management': typeof AdminLayoutReportManagementRoute
   '/_admin-layout/user-management': typeof AdminLayoutUserManagementRoute
-  '/_mentor-layout/mentor-articles': typeof MentorLayoutMentorArticlesRoute
-  '/_mentor-layout/mentor-dashboard': typeof MentorLayoutMentorDashboardRoute
-  '/_mentor-layout/mentor-rule-management': typeof MentorLayoutMentorRuleManagementRoute
-  '/_mentor-layout/mentor-sessions': typeof MentorLayoutMentorSessionsRoute
-  '/_mentor-layout/mentor-slot-management': typeof MentorLayoutMentorSlotManagementRoute
+  '/_app-layout/_mentor-layout': typeof AppLayoutMentorLayoutRouteWithChildren
+  '/_app-layout/_user-layout': typeof AppLayoutUserLayoutRouteWithChildren
   '/_public-layout/auth': typeof PublicLayoutAuthRoute
-  '/_user-layout/chats': typeof UserLayoutChatsRouteWithChildren
-  '/_user-layout/coins': typeof UserLayoutCoinsRoute
-  '/_user-layout/home': typeof UserLayoutHomeRoute
-  '/_user-layout/mentor': typeof UserLayoutMentorRouteWithChildren
-  '/_user-layout/mentors': typeof UserLayoutMentorsRouteWithChildren
-  '/_user-layout/profile': typeof UserLayoutProfileRouteWithChildren
-  '/_user-layout/sessions': typeof UserLayoutSessionsRoute
   '/_public-layout/': typeof PublicLayoutIndexRoute
   '/_admin-layout/admin-articles/$articleId': typeof AdminLayoutAdminArticlesArticleIdRoute
   '/_admin-layout/admin-profiles/$profileId': typeof AdminLayoutAdminProfilesProfileIdRoute
-  '/_user-layout/chats/$chatId': typeof UserLayoutChatsChatIdRoute
-  '/_user-layout/mentor/register': typeof UserLayoutMentorRegisterRoute
-  '/_user-layout/mentors/$mentorId': typeof UserLayoutMentorsMentorIdRoute
-  '/_user-layout/profile/security': typeof UserLayoutProfileSecurityRoute
-  '/_user-layout/articles/': typeof UserLayoutArticlesIndexRoute
-  '/_user-layout/chats/': typeof UserLayoutChatsIndexRoute
-  '/_user-layout/mentors/': typeof UserLayoutMentorsIndexRoute
-  '/_user-layout/profile/': typeof UserLayoutProfileIndexRoute
-  '/_user-layout/mentor/articles/create': typeof UserLayoutMentorArticlesCreateRoute
-  '/_user-layout/profile/bookmarked-mentors/$listId': typeof UserLayoutProfileBookmarkedMentorsListIdRoute
-  '/_user-layout/articles/$articleId/': typeof UserLayoutArticlesArticleIdIndexRoute
-  '/_user-layout/profile/bookmarked-mentors/': typeof UserLayoutProfileBookmarkedMentorsIndexRoute
-  '/_user-layout/mentor/articles/$articleId/update': typeof UserLayoutMentorArticlesArticleIdUpdateRoute
+  '/_app-layout/_mentor-layout/mentor-articles': typeof AppLayoutMentorLayoutMentorArticlesRoute
+  '/_app-layout/_mentor-layout/mentor-dashboard': typeof AppLayoutMentorLayoutMentorDashboardRoute
+  '/_app-layout/_mentor-layout/mentor-rule-management': typeof AppLayoutMentorLayoutMentorRuleManagementRoute
+  '/_app-layout/_mentor-layout/mentor-sessions': typeof AppLayoutMentorLayoutMentorSessionsRoute
+  '/_app-layout/_mentor-layout/mentor-slot-management': typeof AppLayoutMentorLayoutMentorSlotManagementRoute
+  '/_app-layout/_user-layout/chats': typeof AppLayoutUserLayoutChatsRouteWithChildren
+  '/_app-layout/_user-layout/coins': typeof AppLayoutUserLayoutCoinsRoute
+  '/_app-layout/_user-layout/home': typeof AppLayoutUserLayoutHomeRoute
+  '/_app-layout/_user-layout/mentor': typeof AppLayoutUserLayoutMentorRouteWithChildren
+  '/_app-layout/_user-layout/mentors': typeof AppLayoutUserLayoutMentorsRouteWithChildren
+  '/_app-layout/_user-layout/profile': typeof AppLayoutUserLayoutProfileRouteWithChildren
+  '/_app-layout/_user-layout/sessions': typeof AppLayoutUserLayoutSessionsRoute
+  '/_app-layout/_user-layout/chats/$chatId': typeof AppLayoutUserLayoutChatsChatIdRoute
+  '/_app-layout/_user-layout/mentor/register': typeof AppLayoutUserLayoutMentorRegisterRoute
+  '/_app-layout/_user-layout/mentors/$mentorId': typeof AppLayoutUserLayoutMentorsMentorIdRoute
+  '/_app-layout/_user-layout/profile/security': typeof AppLayoutUserLayoutProfileSecurityRoute
+  '/_app-layout/_user-layout/articles/': typeof AppLayoutUserLayoutArticlesIndexRoute
+  '/_app-layout/_user-layout/chats/': typeof AppLayoutUserLayoutChatsIndexRoute
+  '/_app-layout/_user-layout/mentors/': typeof AppLayoutUserLayoutMentorsIndexRoute
+  '/_app-layout/_user-layout/profile/': typeof AppLayoutUserLayoutProfileIndexRoute
+  '/_app-layout/_user-layout/mentor/articles/create': typeof AppLayoutUserLayoutMentorArticlesCreateRoute
+  '/_app-layout/_user-layout/profile/bookmarked-mentors/$listId': typeof AppLayoutUserLayoutProfileBookmarkedMentorsListIdRoute
+  '/_app-layout/_user-layout/articles/$articleId/': typeof AppLayoutUserLayoutArticlesArticleIdIndexRoute
+  '/_app-layout/_user-layout/profile/bookmarked-mentors/': typeof AppLayoutUserLayoutProfileBookmarkedMentorsIndexRoute
+  '/_app-layout/_user-layout/mentor/articles/$articleId/update': typeof AppLayoutUserLayoutMentorArticlesArticleIdUpdateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -405,12 +422,14 @@ export interface FileRouteTypes {
     | '/platform-settings'
     | '/report-management'
     | '/user-management'
+    | '/auth'
+    | '/admin-articles/$articleId'
+    | '/admin-profiles/$profileId'
     | '/mentor-articles'
     | '/mentor-dashboard'
     | '/mentor-rule-management'
     | '/mentor-sessions'
     | '/mentor-slot-management'
-    | '/auth'
     | '/chats'
     | '/coins'
     | '/home'
@@ -418,8 +437,6 @@ export interface FileRouteTypes {
     | '/mentors'
     | '/profile'
     | '/sessions'
-    | '/admin-articles/$articleId'
-    | '/admin-profiles/$profileId'
     | '/chats/$chatId'
     | '/mentor/register'
     | '/mentors/$mentorId'
@@ -444,18 +461,18 @@ export interface FileRouteTypes {
     | '/platform-settings'
     | '/report-management'
     | '/user-management'
+    | '/auth'
+    | '/admin-articles/$articleId'
+    | '/admin-profiles/$profileId'
     | '/mentor-articles'
     | '/mentor-dashboard'
     | '/mentor-rule-management'
     | '/mentor-sessions'
     | '/mentor-slot-management'
-    | '/auth'
     | '/coins'
     | '/home'
     | '/mentor'
     | '/sessions'
-    | '/admin-articles/$articleId'
-    | '/admin-profiles/$profileId'
     | '/chats/$chatId'
     | '/mentor/register'
     | '/mentors/$mentorId'
@@ -472,9 +489,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_admin-layout'
-    | '/_mentor-layout'
+    | '/_app-layout'
     | '/_public-layout'
-    | '/_user-layout'
     | '/linkedin'
     | '/_admin-layout/admin-management'
     | '/_admin-layout/catalog-management'
@@ -483,42 +499,43 @@ export interface FileRouteTypes {
     | '/_admin-layout/platform-settings'
     | '/_admin-layout/report-management'
     | '/_admin-layout/user-management'
-    | '/_mentor-layout/mentor-articles'
-    | '/_mentor-layout/mentor-dashboard'
-    | '/_mentor-layout/mentor-rule-management'
-    | '/_mentor-layout/mentor-sessions'
-    | '/_mentor-layout/mentor-slot-management'
+    | '/_app-layout/_mentor-layout'
+    | '/_app-layout/_user-layout'
     | '/_public-layout/auth'
-    | '/_user-layout/chats'
-    | '/_user-layout/coins'
-    | '/_user-layout/home'
-    | '/_user-layout/mentor'
-    | '/_user-layout/mentors'
-    | '/_user-layout/profile'
-    | '/_user-layout/sessions'
     | '/_public-layout/'
     | '/_admin-layout/admin-articles/$articleId'
     | '/_admin-layout/admin-profiles/$profileId'
-    | '/_user-layout/chats/$chatId'
-    | '/_user-layout/mentor/register'
-    | '/_user-layout/mentors/$mentorId'
-    | '/_user-layout/profile/security'
-    | '/_user-layout/articles/'
-    | '/_user-layout/chats/'
-    | '/_user-layout/mentors/'
-    | '/_user-layout/profile/'
-    | '/_user-layout/mentor/articles/create'
-    | '/_user-layout/profile/bookmarked-mentors/$listId'
-    | '/_user-layout/articles/$articleId/'
-    | '/_user-layout/profile/bookmarked-mentors/'
-    | '/_user-layout/mentor/articles/$articleId/update'
+    | '/_app-layout/_mentor-layout/mentor-articles'
+    | '/_app-layout/_mentor-layout/mentor-dashboard'
+    | '/_app-layout/_mentor-layout/mentor-rule-management'
+    | '/_app-layout/_mentor-layout/mentor-sessions'
+    | '/_app-layout/_mentor-layout/mentor-slot-management'
+    | '/_app-layout/_user-layout/chats'
+    | '/_app-layout/_user-layout/coins'
+    | '/_app-layout/_user-layout/home'
+    | '/_app-layout/_user-layout/mentor'
+    | '/_app-layout/_user-layout/mentors'
+    | '/_app-layout/_user-layout/profile'
+    | '/_app-layout/_user-layout/sessions'
+    | '/_app-layout/_user-layout/chats/$chatId'
+    | '/_app-layout/_user-layout/mentor/register'
+    | '/_app-layout/_user-layout/mentors/$mentorId'
+    | '/_app-layout/_user-layout/profile/security'
+    | '/_app-layout/_user-layout/articles/'
+    | '/_app-layout/_user-layout/chats/'
+    | '/_app-layout/_user-layout/mentors/'
+    | '/_app-layout/_user-layout/profile/'
+    | '/_app-layout/_user-layout/mentor/articles/create'
+    | '/_app-layout/_user-layout/profile/bookmarked-mentors/$listId'
+    | '/_app-layout/_user-layout/articles/$articleId/'
+    | '/_app-layout/_user-layout/profile/bookmarked-mentors/'
+    | '/_app-layout/_user-layout/mentor/articles/$articleId/update'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AdminLayoutRoute: typeof AdminLayoutRouteWithChildren
-  MentorLayoutRoute: typeof MentorLayoutRouteWithChildren
+  AppLayoutRoute: typeof AppLayoutRouteWithChildren
   PublicLayoutRoute: typeof PublicLayoutRouteWithChildren
-  UserLayoutRoute: typeof UserLayoutRouteWithChildren
   LinkedinRoute: typeof LinkedinRoute
 }
 
@@ -531,13 +548,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LinkedinRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_user-layout': {
-      id: '/_user-layout'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof UserLayoutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_public-layout': {
       id: '/_public-layout'
       path: ''
@@ -545,11 +555,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicLayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_mentor-layout': {
-      id: '/_mentor-layout'
+    '/_app-layout': {
+      id: '/_app-layout'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof MentorLayoutRouteImport
+      preLoaderRoute: typeof AppLayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_admin-layout': {
@@ -566,55 +576,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicLayoutIndexRouteImport
       parentRoute: typeof PublicLayoutRoute
     }
-    '/_user-layout/sessions': {
-      id: '/_user-layout/sessions'
-      path: '/sessions'
-      fullPath: '/sessions'
-      preLoaderRoute: typeof UserLayoutSessionsRouteImport
-      parentRoute: typeof UserLayoutRoute
-    }
-    '/_user-layout/profile': {
-      id: '/_user-layout/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof UserLayoutProfileRouteImport
-      parentRoute: typeof UserLayoutRoute
-    }
-    '/_user-layout/mentors': {
-      id: '/_user-layout/mentors'
-      path: '/mentors'
-      fullPath: '/mentors'
-      preLoaderRoute: typeof UserLayoutMentorsRouteImport
-      parentRoute: typeof UserLayoutRoute
-    }
-    '/_user-layout/mentor': {
-      id: '/_user-layout/mentor'
-      path: '/mentor'
-      fullPath: '/mentor'
-      preLoaderRoute: typeof UserLayoutMentorRouteImport
-      parentRoute: typeof UserLayoutRoute
-    }
-    '/_user-layout/home': {
-      id: '/_user-layout/home'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof UserLayoutHomeRouteImport
-      parentRoute: typeof UserLayoutRoute
-    }
-    '/_user-layout/coins': {
-      id: '/_user-layout/coins'
-      path: '/coins'
-      fullPath: '/coins'
-      preLoaderRoute: typeof UserLayoutCoinsRouteImport
-      parentRoute: typeof UserLayoutRoute
-    }
-    '/_user-layout/chats': {
-      id: '/_user-layout/chats'
-      path: '/chats'
-      fullPath: '/chats'
-      preLoaderRoute: typeof UserLayoutChatsRouteImport
-      parentRoute: typeof UserLayoutRoute
-    }
     '/_public-layout/auth': {
       id: '/_public-layout/auth'
       path: '/auth'
@@ -622,40 +583,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicLayoutAuthRouteImport
       parentRoute: typeof PublicLayoutRoute
     }
-    '/_mentor-layout/mentor-slot-management': {
-      id: '/_mentor-layout/mentor-slot-management'
-      path: '/mentor-slot-management'
-      fullPath: '/mentor-slot-management'
-      preLoaderRoute: typeof MentorLayoutMentorSlotManagementRouteImport
-      parentRoute: typeof MentorLayoutRoute
+    '/_app-layout/_user-layout': {
+      id: '/_app-layout/_user-layout'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppLayoutUserLayoutRouteImport
+      parentRoute: typeof AppLayoutRoute
     }
-    '/_mentor-layout/mentor-sessions': {
-      id: '/_mentor-layout/mentor-sessions'
-      path: '/mentor-sessions'
-      fullPath: '/mentor-sessions'
-      preLoaderRoute: typeof MentorLayoutMentorSessionsRouteImport
-      parentRoute: typeof MentorLayoutRoute
-    }
-    '/_mentor-layout/mentor-rule-management': {
-      id: '/_mentor-layout/mentor-rule-management'
-      path: '/mentor-rule-management'
-      fullPath: '/mentor-rule-management'
-      preLoaderRoute: typeof MentorLayoutMentorRuleManagementRouteImport
-      parentRoute: typeof MentorLayoutRoute
-    }
-    '/_mentor-layout/mentor-dashboard': {
-      id: '/_mentor-layout/mentor-dashboard'
-      path: '/mentor-dashboard'
-      fullPath: '/mentor-dashboard'
-      preLoaderRoute: typeof MentorLayoutMentorDashboardRouteImport
-      parentRoute: typeof MentorLayoutRoute
-    }
-    '/_mentor-layout/mentor-articles': {
-      id: '/_mentor-layout/mentor-articles'
-      path: '/mentor-articles'
-      fullPath: '/mentor-articles'
-      preLoaderRoute: typeof MentorLayoutMentorArticlesRouteImport
-      parentRoute: typeof MentorLayoutRoute
+    '/_app-layout/_mentor-layout': {
+      id: '/_app-layout/_mentor-layout'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppLayoutMentorLayoutRouteImport
+      parentRoute: typeof AppLayoutRoute
     }
     '/_admin-layout/user-management': {
       id: '/_admin-layout/user-management'
@@ -706,61 +646,89 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLayoutAdminManagementRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
-    '/_user-layout/profile/': {
-      id: '/_user-layout/profile/'
-      path: '/'
-      fullPath: '/profile/'
-      preLoaderRoute: typeof UserLayoutProfileIndexRouteImport
-      parentRoute: typeof UserLayoutProfileRoute
+    '/_app-layout/_user-layout/sessions': {
+      id: '/_app-layout/_user-layout/sessions'
+      path: '/sessions'
+      fullPath: '/sessions'
+      preLoaderRoute: typeof AppLayoutUserLayoutSessionsRouteImport
+      parentRoute: typeof AppLayoutUserLayoutRoute
     }
-    '/_user-layout/mentors/': {
-      id: '/_user-layout/mentors/'
-      path: '/'
-      fullPath: '/mentors/'
-      preLoaderRoute: typeof UserLayoutMentorsIndexRouteImport
-      parentRoute: typeof UserLayoutMentorsRoute
+    '/_app-layout/_user-layout/profile': {
+      id: '/_app-layout/_user-layout/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AppLayoutUserLayoutProfileRouteImport
+      parentRoute: typeof AppLayoutUserLayoutRoute
     }
-    '/_user-layout/chats/': {
-      id: '/_user-layout/chats/'
-      path: '/'
-      fullPath: '/chats/'
-      preLoaderRoute: typeof UserLayoutChatsIndexRouteImport
-      parentRoute: typeof UserLayoutChatsRoute
+    '/_app-layout/_user-layout/mentors': {
+      id: '/_app-layout/_user-layout/mentors'
+      path: '/mentors'
+      fullPath: '/mentors'
+      preLoaderRoute: typeof AppLayoutUserLayoutMentorsRouteImport
+      parentRoute: typeof AppLayoutUserLayoutRoute
     }
-    '/_user-layout/articles/': {
-      id: '/_user-layout/articles/'
-      path: '/articles'
-      fullPath: '/articles/'
-      preLoaderRoute: typeof UserLayoutArticlesIndexRouteImport
-      parentRoute: typeof UserLayoutRoute
+    '/_app-layout/_user-layout/mentor': {
+      id: '/_app-layout/_user-layout/mentor'
+      path: '/mentor'
+      fullPath: '/mentor'
+      preLoaderRoute: typeof AppLayoutUserLayoutMentorRouteImport
+      parentRoute: typeof AppLayoutUserLayoutRoute
     }
-    '/_user-layout/profile/security': {
-      id: '/_user-layout/profile/security'
-      path: '/security'
-      fullPath: '/profile/security'
-      preLoaderRoute: typeof UserLayoutProfileSecurityRouteImport
-      parentRoute: typeof UserLayoutProfileRoute
+    '/_app-layout/_user-layout/home': {
+      id: '/_app-layout/_user-layout/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof AppLayoutUserLayoutHomeRouteImport
+      parentRoute: typeof AppLayoutUserLayoutRoute
     }
-    '/_user-layout/mentors/$mentorId': {
-      id: '/_user-layout/mentors/$mentorId'
-      path: '/$mentorId'
-      fullPath: '/mentors/$mentorId'
-      preLoaderRoute: typeof UserLayoutMentorsMentorIdRouteImport
-      parentRoute: typeof UserLayoutMentorsRoute
+    '/_app-layout/_user-layout/coins': {
+      id: '/_app-layout/_user-layout/coins'
+      path: '/coins'
+      fullPath: '/coins'
+      preLoaderRoute: typeof AppLayoutUserLayoutCoinsRouteImport
+      parentRoute: typeof AppLayoutUserLayoutRoute
     }
-    '/_user-layout/mentor/register': {
-      id: '/_user-layout/mentor/register'
-      path: '/register'
-      fullPath: '/mentor/register'
-      preLoaderRoute: typeof UserLayoutMentorRegisterRouteImport
-      parentRoute: typeof UserLayoutMentorRoute
+    '/_app-layout/_user-layout/chats': {
+      id: '/_app-layout/_user-layout/chats'
+      path: '/chats'
+      fullPath: '/chats'
+      preLoaderRoute: typeof AppLayoutUserLayoutChatsRouteImport
+      parentRoute: typeof AppLayoutUserLayoutRoute
     }
-    '/_user-layout/chats/$chatId': {
-      id: '/_user-layout/chats/$chatId'
-      path: '/$chatId'
-      fullPath: '/chats/$chatId'
-      preLoaderRoute: typeof UserLayoutChatsChatIdRouteImport
-      parentRoute: typeof UserLayoutChatsRoute
+    '/_app-layout/_mentor-layout/mentor-slot-management': {
+      id: '/_app-layout/_mentor-layout/mentor-slot-management'
+      path: '/mentor-slot-management'
+      fullPath: '/mentor-slot-management'
+      preLoaderRoute: typeof AppLayoutMentorLayoutMentorSlotManagementRouteImport
+      parentRoute: typeof AppLayoutMentorLayoutRoute
+    }
+    '/_app-layout/_mentor-layout/mentor-sessions': {
+      id: '/_app-layout/_mentor-layout/mentor-sessions'
+      path: '/mentor-sessions'
+      fullPath: '/mentor-sessions'
+      preLoaderRoute: typeof AppLayoutMentorLayoutMentorSessionsRouteImport
+      parentRoute: typeof AppLayoutMentorLayoutRoute
+    }
+    '/_app-layout/_mentor-layout/mentor-rule-management': {
+      id: '/_app-layout/_mentor-layout/mentor-rule-management'
+      path: '/mentor-rule-management'
+      fullPath: '/mentor-rule-management'
+      preLoaderRoute: typeof AppLayoutMentorLayoutMentorRuleManagementRouteImport
+      parentRoute: typeof AppLayoutMentorLayoutRoute
+    }
+    '/_app-layout/_mentor-layout/mentor-dashboard': {
+      id: '/_app-layout/_mentor-layout/mentor-dashboard'
+      path: '/mentor-dashboard'
+      fullPath: '/mentor-dashboard'
+      preLoaderRoute: typeof AppLayoutMentorLayoutMentorDashboardRouteImport
+      parentRoute: typeof AppLayoutMentorLayoutRoute
+    }
+    '/_app-layout/_mentor-layout/mentor-articles': {
+      id: '/_app-layout/_mentor-layout/mentor-articles'
+      path: '/mentor-articles'
+      fullPath: '/mentor-articles'
+      preLoaderRoute: typeof AppLayoutMentorLayoutMentorArticlesRouteImport
+      parentRoute: typeof AppLayoutMentorLayoutRoute
     }
     '/_admin-layout/admin-profiles/$profileId': {
       id: '/_admin-layout/admin-profiles/$profileId'
@@ -776,40 +744,96 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLayoutAdminArticlesArticleIdRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
-    '/_user-layout/profile/bookmarked-mentors/': {
-      id: '/_user-layout/profile/bookmarked-mentors/'
+    '/_app-layout/_user-layout/profile/': {
+      id: '/_app-layout/_user-layout/profile/'
+      path: '/'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof AppLayoutUserLayoutProfileIndexRouteImport
+      parentRoute: typeof AppLayoutUserLayoutProfileRoute
+    }
+    '/_app-layout/_user-layout/mentors/': {
+      id: '/_app-layout/_user-layout/mentors/'
+      path: '/'
+      fullPath: '/mentors/'
+      preLoaderRoute: typeof AppLayoutUserLayoutMentorsIndexRouteImport
+      parentRoute: typeof AppLayoutUserLayoutMentorsRoute
+    }
+    '/_app-layout/_user-layout/chats/': {
+      id: '/_app-layout/_user-layout/chats/'
+      path: '/'
+      fullPath: '/chats/'
+      preLoaderRoute: typeof AppLayoutUserLayoutChatsIndexRouteImport
+      parentRoute: typeof AppLayoutUserLayoutChatsRoute
+    }
+    '/_app-layout/_user-layout/articles/': {
+      id: '/_app-layout/_user-layout/articles/'
+      path: '/articles'
+      fullPath: '/articles/'
+      preLoaderRoute: typeof AppLayoutUserLayoutArticlesIndexRouteImport
+      parentRoute: typeof AppLayoutUserLayoutRoute
+    }
+    '/_app-layout/_user-layout/profile/security': {
+      id: '/_app-layout/_user-layout/profile/security'
+      path: '/security'
+      fullPath: '/profile/security'
+      preLoaderRoute: typeof AppLayoutUserLayoutProfileSecurityRouteImport
+      parentRoute: typeof AppLayoutUserLayoutProfileRoute
+    }
+    '/_app-layout/_user-layout/mentors/$mentorId': {
+      id: '/_app-layout/_user-layout/mentors/$mentorId'
+      path: '/$mentorId'
+      fullPath: '/mentors/$mentorId'
+      preLoaderRoute: typeof AppLayoutUserLayoutMentorsMentorIdRouteImport
+      parentRoute: typeof AppLayoutUserLayoutMentorsRoute
+    }
+    '/_app-layout/_user-layout/mentor/register': {
+      id: '/_app-layout/_user-layout/mentor/register'
+      path: '/register'
+      fullPath: '/mentor/register'
+      preLoaderRoute: typeof AppLayoutUserLayoutMentorRegisterRouteImport
+      parentRoute: typeof AppLayoutUserLayoutMentorRoute
+    }
+    '/_app-layout/_user-layout/chats/$chatId': {
+      id: '/_app-layout/_user-layout/chats/$chatId'
+      path: '/$chatId'
+      fullPath: '/chats/$chatId'
+      preLoaderRoute: typeof AppLayoutUserLayoutChatsChatIdRouteImport
+      parentRoute: typeof AppLayoutUserLayoutChatsRoute
+    }
+    '/_app-layout/_user-layout/profile/bookmarked-mentors/': {
+      id: '/_app-layout/_user-layout/profile/bookmarked-mentors/'
       path: '/bookmarked-mentors'
       fullPath: '/profile/bookmarked-mentors/'
-      preLoaderRoute: typeof UserLayoutProfileBookmarkedMentorsIndexRouteImport
-      parentRoute: typeof UserLayoutProfileRoute
+      preLoaderRoute: typeof AppLayoutUserLayoutProfileBookmarkedMentorsIndexRouteImport
+      parentRoute: typeof AppLayoutUserLayoutProfileRoute
     }
-    '/_user-layout/articles/$articleId/': {
-      id: '/_user-layout/articles/$articleId/'
+    '/_app-layout/_user-layout/articles/$articleId/': {
+      id: '/_app-layout/_user-layout/articles/$articleId/'
       path: '/articles/$articleId'
       fullPath: '/articles/$articleId/'
-      preLoaderRoute: typeof UserLayoutArticlesArticleIdIndexRouteImport
-      parentRoute: typeof UserLayoutRoute
+      preLoaderRoute: typeof AppLayoutUserLayoutArticlesArticleIdIndexRouteImport
+      parentRoute: typeof AppLayoutUserLayoutRoute
     }
-    '/_user-layout/profile/bookmarked-mentors/$listId': {
-      id: '/_user-layout/profile/bookmarked-mentors/$listId'
+    '/_app-layout/_user-layout/profile/bookmarked-mentors/$listId': {
+      id: '/_app-layout/_user-layout/profile/bookmarked-mentors/$listId'
       path: '/bookmarked-mentors/$listId'
       fullPath: '/profile/bookmarked-mentors/$listId'
-      preLoaderRoute: typeof UserLayoutProfileBookmarkedMentorsListIdRouteImport
-      parentRoute: typeof UserLayoutProfileRoute
+      preLoaderRoute: typeof AppLayoutUserLayoutProfileBookmarkedMentorsListIdRouteImport
+      parentRoute: typeof AppLayoutUserLayoutProfileRoute
     }
-    '/_user-layout/mentor/articles/create': {
-      id: '/_user-layout/mentor/articles/create'
+    '/_app-layout/_user-layout/mentor/articles/create': {
+      id: '/_app-layout/_user-layout/mentor/articles/create'
       path: '/articles/create'
       fullPath: '/mentor/articles/create'
-      preLoaderRoute: typeof UserLayoutMentorArticlesCreateRouteImport
-      parentRoute: typeof UserLayoutMentorRoute
+      preLoaderRoute: typeof AppLayoutUserLayoutMentorArticlesCreateRouteImport
+      parentRoute: typeof AppLayoutUserLayoutMentorRoute
     }
-    '/_user-layout/mentor/articles/$articleId/update': {
-      id: '/_user-layout/mentor/articles/$articleId/update'
+    '/_app-layout/_user-layout/mentor/articles/$articleId/update': {
+      id: '/_app-layout/_user-layout/mentor/articles/$articleId/update'
       path: '/articles/$articleId/update'
       fullPath: '/mentor/articles/$articleId/update'
-      preLoaderRoute: typeof UserLayoutMentorArticlesArticleIdUpdateRouteImport
-      parentRoute: typeof UserLayoutMentorRoute
+      preLoaderRoute: typeof AppLayoutUserLayoutMentorArticlesArticleIdUpdateRouteImport
+      parentRoute: typeof AppLayoutUserLayoutMentorRoute
     }
   }
 }
@@ -844,24 +868,149 @@ const AdminLayoutRouteWithChildren = AdminLayoutRoute._addFileChildren(
   AdminLayoutRouteChildren,
 )
 
-interface MentorLayoutRouteChildren {
-  MentorLayoutMentorArticlesRoute: typeof MentorLayoutMentorArticlesRoute
-  MentorLayoutMentorDashboardRoute: typeof MentorLayoutMentorDashboardRoute
-  MentorLayoutMentorRuleManagementRoute: typeof MentorLayoutMentorRuleManagementRoute
-  MentorLayoutMentorSessionsRoute: typeof MentorLayoutMentorSessionsRoute
-  MentorLayoutMentorSlotManagementRoute: typeof MentorLayoutMentorSlotManagementRoute
+interface AppLayoutMentorLayoutRouteChildren {
+  AppLayoutMentorLayoutMentorArticlesRoute: typeof AppLayoutMentorLayoutMentorArticlesRoute
+  AppLayoutMentorLayoutMentorDashboardRoute: typeof AppLayoutMentorLayoutMentorDashboardRoute
+  AppLayoutMentorLayoutMentorRuleManagementRoute: typeof AppLayoutMentorLayoutMentorRuleManagementRoute
+  AppLayoutMentorLayoutMentorSessionsRoute: typeof AppLayoutMentorLayoutMentorSessionsRoute
+  AppLayoutMentorLayoutMentorSlotManagementRoute: typeof AppLayoutMentorLayoutMentorSlotManagementRoute
 }
 
-const MentorLayoutRouteChildren: MentorLayoutRouteChildren = {
-  MentorLayoutMentorArticlesRoute: MentorLayoutMentorArticlesRoute,
-  MentorLayoutMentorDashboardRoute: MentorLayoutMentorDashboardRoute,
-  MentorLayoutMentorRuleManagementRoute: MentorLayoutMentorRuleManagementRoute,
-  MentorLayoutMentorSessionsRoute: MentorLayoutMentorSessionsRoute,
-  MentorLayoutMentorSlotManagementRoute: MentorLayoutMentorSlotManagementRoute,
+const AppLayoutMentorLayoutRouteChildren: AppLayoutMentorLayoutRouteChildren = {
+  AppLayoutMentorLayoutMentorArticlesRoute:
+    AppLayoutMentorLayoutMentorArticlesRoute,
+  AppLayoutMentorLayoutMentorDashboardRoute:
+    AppLayoutMentorLayoutMentorDashboardRoute,
+  AppLayoutMentorLayoutMentorRuleManagementRoute:
+    AppLayoutMentorLayoutMentorRuleManagementRoute,
+  AppLayoutMentorLayoutMentorSessionsRoute:
+    AppLayoutMentorLayoutMentorSessionsRoute,
+  AppLayoutMentorLayoutMentorSlotManagementRoute:
+    AppLayoutMentorLayoutMentorSlotManagementRoute,
 }
 
-const MentorLayoutRouteWithChildren = MentorLayoutRoute._addFileChildren(
-  MentorLayoutRouteChildren,
+const AppLayoutMentorLayoutRouteWithChildren =
+  AppLayoutMentorLayoutRoute._addFileChildren(
+    AppLayoutMentorLayoutRouteChildren,
+  )
+
+interface AppLayoutUserLayoutChatsRouteChildren {
+  AppLayoutUserLayoutChatsChatIdRoute: typeof AppLayoutUserLayoutChatsChatIdRoute
+  AppLayoutUserLayoutChatsIndexRoute: typeof AppLayoutUserLayoutChatsIndexRoute
+}
+
+const AppLayoutUserLayoutChatsRouteChildren: AppLayoutUserLayoutChatsRouteChildren =
+  {
+    AppLayoutUserLayoutChatsChatIdRoute: AppLayoutUserLayoutChatsChatIdRoute,
+    AppLayoutUserLayoutChatsIndexRoute: AppLayoutUserLayoutChatsIndexRoute,
+  }
+
+const AppLayoutUserLayoutChatsRouteWithChildren =
+  AppLayoutUserLayoutChatsRoute._addFileChildren(
+    AppLayoutUserLayoutChatsRouteChildren,
+  )
+
+interface AppLayoutUserLayoutMentorRouteChildren {
+  AppLayoutUserLayoutMentorRegisterRoute: typeof AppLayoutUserLayoutMentorRegisterRoute
+  AppLayoutUserLayoutMentorArticlesCreateRoute: typeof AppLayoutUserLayoutMentorArticlesCreateRoute
+  AppLayoutUserLayoutMentorArticlesArticleIdUpdateRoute: typeof AppLayoutUserLayoutMentorArticlesArticleIdUpdateRoute
+}
+
+const AppLayoutUserLayoutMentorRouteChildren: AppLayoutUserLayoutMentorRouteChildren =
+  {
+    AppLayoutUserLayoutMentorRegisterRoute:
+      AppLayoutUserLayoutMentorRegisterRoute,
+    AppLayoutUserLayoutMentorArticlesCreateRoute:
+      AppLayoutUserLayoutMentorArticlesCreateRoute,
+    AppLayoutUserLayoutMentorArticlesArticleIdUpdateRoute:
+      AppLayoutUserLayoutMentorArticlesArticleIdUpdateRoute,
+  }
+
+const AppLayoutUserLayoutMentorRouteWithChildren =
+  AppLayoutUserLayoutMentorRoute._addFileChildren(
+    AppLayoutUserLayoutMentorRouteChildren,
+  )
+
+interface AppLayoutUserLayoutMentorsRouteChildren {
+  AppLayoutUserLayoutMentorsMentorIdRoute: typeof AppLayoutUserLayoutMentorsMentorIdRoute
+  AppLayoutUserLayoutMentorsIndexRoute: typeof AppLayoutUserLayoutMentorsIndexRoute
+}
+
+const AppLayoutUserLayoutMentorsRouteChildren: AppLayoutUserLayoutMentorsRouteChildren =
+  {
+    AppLayoutUserLayoutMentorsMentorIdRoute:
+      AppLayoutUserLayoutMentorsMentorIdRoute,
+    AppLayoutUserLayoutMentorsIndexRoute: AppLayoutUserLayoutMentorsIndexRoute,
+  }
+
+const AppLayoutUserLayoutMentorsRouteWithChildren =
+  AppLayoutUserLayoutMentorsRoute._addFileChildren(
+    AppLayoutUserLayoutMentorsRouteChildren,
+  )
+
+interface AppLayoutUserLayoutProfileRouteChildren {
+  AppLayoutUserLayoutProfileSecurityRoute: typeof AppLayoutUserLayoutProfileSecurityRoute
+  AppLayoutUserLayoutProfileIndexRoute: typeof AppLayoutUserLayoutProfileIndexRoute
+  AppLayoutUserLayoutProfileBookmarkedMentorsListIdRoute: typeof AppLayoutUserLayoutProfileBookmarkedMentorsListIdRoute
+  AppLayoutUserLayoutProfileBookmarkedMentorsIndexRoute: typeof AppLayoutUserLayoutProfileBookmarkedMentorsIndexRoute
+}
+
+const AppLayoutUserLayoutProfileRouteChildren: AppLayoutUserLayoutProfileRouteChildren =
+  {
+    AppLayoutUserLayoutProfileSecurityRoute:
+      AppLayoutUserLayoutProfileSecurityRoute,
+    AppLayoutUserLayoutProfileIndexRoute: AppLayoutUserLayoutProfileIndexRoute,
+    AppLayoutUserLayoutProfileBookmarkedMentorsListIdRoute:
+      AppLayoutUserLayoutProfileBookmarkedMentorsListIdRoute,
+    AppLayoutUserLayoutProfileBookmarkedMentorsIndexRoute:
+      AppLayoutUserLayoutProfileBookmarkedMentorsIndexRoute,
+  }
+
+const AppLayoutUserLayoutProfileRouteWithChildren =
+  AppLayoutUserLayoutProfileRoute._addFileChildren(
+    AppLayoutUserLayoutProfileRouteChildren,
+  )
+
+interface AppLayoutUserLayoutRouteChildren {
+  AppLayoutUserLayoutChatsRoute: typeof AppLayoutUserLayoutChatsRouteWithChildren
+  AppLayoutUserLayoutCoinsRoute: typeof AppLayoutUserLayoutCoinsRoute
+  AppLayoutUserLayoutHomeRoute: typeof AppLayoutUserLayoutHomeRoute
+  AppLayoutUserLayoutMentorRoute: typeof AppLayoutUserLayoutMentorRouteWithChildren
+  AppLayoutUserLayoutMentorsRoute: typeof AppLayoutUserLayoutMentorsRouteWithChildren
+  AppLayoutUserLayoutProfileRoute: typeof AppLayoutUserLayoutProfileRouteWithChildren
+  AppLayoutUserLayoutSessionsRoute: typeof AppLayoutUserLayoutSessionsRoute
+  AppLayoutUserLayoutArticlesIndexRoute: typeof AppLayoutUserLayoutArticlesIndexRoute
+  AppLayoutUserLayoutArticlesArticleIdIndexRoute: typeof AppLayoutUserLayoutArticlesArticleIdIndexRoute
+}
+
+const AppLayoutUserLayoutRouteChildren: AppLayoutUserLayoutRouteChildren = {
+  AppLayoutUserLayoutChatsRoute: AppLayoutUserLayoutChatsRouteWithChildren,
+  AppLayoutUserLayoutCoinsRoute: AppLayoutUserLayoutCoinsRoute,
+  AppLayoutUserLayoutHomeRoute: AppLayoutUserLayoutHomeRoute,
+  AppLayoutUserLayoutMentorRoute: AppLayoutUserLayoutMentorRouteWithChildren,
+  AppLayoutUserLayoutMentorsRoute: AppLayoutUserLayoutMentorsRouteWithChildren,
+  AppLayoutUserLayoutProfileRoute: AppLayoutUserLayoutProfileRouteWithChildren,
+  AppLayoutUserLayoutSessionsRoute: AppLayoutUserLayoutSessionsRoute,
+  AppLayoutUserLayoutArticlesIndexRoute: AppLayoutUserLayoutArticlesIndexRoute,
+  AppLayoutUserLayoutArticlesArticleIdIndexRoute:
+    AppLayoutUserLayoutArticlesArticleIdIndexRoute,
+}
+
+const AppLayoutUserLayoutRouteWithChildren =
+  AppLayoutUserLayoutRoute._addFileChildren(AppLayoutUserLayoutRouteChildren)
+
+interface AppLayoutRouteChildren {
+  AppLayoutMentorLayoutRoute: typeof AppLayoutMentorLayoutRouteWithChildren
+  AppLayoutUserLayoutRoute: typeof AppLayoutUserLayoutRouteWithChildren
+}
+
+const AppLayoutRouteChildren: AppLayoutRouteChildren = {
+  AppLayoutMentorLayoutRoute: AppLayoutMentorLayoutRouteWithChildren,
+  AppLayoutUserLayoutRoute: AppLayoutUserLayoutRouteWithChildren,
+}
+
+const AppLayoutRouteWithChildren = AppLayoutRoute._addFileChildren(
+  AppLayoutRouteChildren,
 )
 
 interface PublicLayoutRouteChildren {
@@ -878,101 +1027,10 @@ const PublicLayoutRouteWithChildren = PublicLayoutRoute._addFileChildren(
   PublicLayoutRouteChildren,
 )
 
-interface UserLayoutChatsRouteChildren {
-  UserLayoutChatsChatIdRoute: typeof UserLayoutChatsChatIdRoute
-  UserLayoutChatsIndexRoute: typeof UserLayoutChatsIndexRoute
-}
-
-const UserLayoutChatsRouteChildren: UserLayoutChatsRouteChildren = {
-  UserLayoutChatsChatIdRoute: UserLayoutChatsChatIdRoute,
-  UserLayoutChatsIndexRoute: UserLayoutChatsIndexRoute,
-}
-
-const UserLayoutChatsRouteWithChildren = UserLayoutChatsRoute._addFileChildren(
-  UserLayoutChatsRouteChildren,
-)
-
-interface UserLayoutMentorRouteChildren {
-  UserLayoutMentorRegisterRoute: typeof UserLayoutMentorRegisterRoute
-  UserLayoutMentorArticlesCreateRoute: typeof UserLayoutMentorArticlesCreateRoute
-  UserLayoutMentorArticlesArticleIdUpdateRoute: typeof UserLayoutMentorArticlesArticleIdUpdateRoute
-}
-
-const UserLayoutMentorRouteChildren: UserLayoutMentorRouteChildren = {
-  UserLayoutMentorRegisterRoute: UserLayoutMentorRegisterRoute,
-  UserLayoutMentorArticlesCreateRoute: UserLayoutMentorArticlesCreateRoute,
-  UserLayoutMentorArticlesArticleIdUpdateRoute:
-    UserLayoutMentorArticlesArticleIdUpdateRoute,
-}
-
-const UserLayoutMentorRouteWithChildren =
-  UserLayoutMentorRoute._addFileChildren(UserLayoutMentorRouteChildren)
-
-interface UserLayoutMentorsRouteChildren {
-  UserLayoutMentorsMentorIdRoute: typeof UserLayoutMentorsMentorIdRoute
-  UserLayoutMentorsIndexRoute: typeof UserLayoutMentorsIndexRoute
-}
-
-const UserLayoutMentorsRouteChildren: UserLayoutMentorsRouteChildren = {
-  UserLayoutMentorsMentorIdRoute: UserLayoutMentorsMentorIdRoute,
-  UserLayoutMentorsIndexRoute: UserLayoutMentorsIndexRoute,
-}
-
-const UserLayoutMentorsRouteWithChildren =
-  UserLayoutMentorsRoute._addFileChildren(UserLayoutMentorsRouteChildren)
-
-interface UserLayoutProfileRouteChildren {
-  UserLayoutProfileSecurityRoute: typeof UserLayoutProfileSecurityRoute
-  UserLayoutProfileIndexRoute: typeof UserLayoutProfileIndexRoute
-  UserLayoutProfileBookmarkedMentorsListIdRoute: typeof UserLayoutProfileBookmarkedMentorsListIdRoute
-  UserLayoutProfileBookmarkedMentorsIndexRoute: typeof UserLayoutProfileBookmarkedMentorsIndexRoute
-}
-
-const UserLayoutProfileRouteChildren: UserLayoutProfileRouteChildren = {
-  UserLayoutProfileSecurityRoute: UserLayoutProfileSecurityRoute,
-  UserLayoutProfileIndexRoute: UserLayoutProfileIndexRoute,
-  UserLayoutProfileBookmarkedMentorsListIdRoute:
-    UserLayoutProfileBookmarkedMentorsListIdRoute,
-  UserLayoutProfileBookmarkedMentorsIndexRoute:
-    UserLayoutProfileBookmarkedMentorsIndexRoute,
-}
-
-const UserLayoutProfileRouteWithChildren =
-  UserLayoutProfileRoute._addFileChildren(UserLayoutProfileRouteChildren)
-
-interface UserLayoutRouteChildren {
-  UserLayoutChatsRoute: typeof UserLayoutChatsRouteWithChildren
-  UserLayoutCoinsRoute: typeof UserLayoutCoinsRoute
-  UserLayoutHomeRoute: typeof UserLayoutHomeRoute
-  UserLayoutMentorRoute: typeof UserLayoutMentorRouteWithChildren
-  UserLayoutMentorsRoute: typeof UserLayoutMentorsRouteWithChildren
-  UserLayoutProfileRoute: typeof UserLayoutProfileRouteWithChildren
-  UserLayoutSessionsRoute: typeof UserLayoutSessionsRoute
-  UserLayoutArticlesIndexRoute: typeof UserLayoutArticlesIndexRoute
-  UserLayoutArticlesArticleIdIndexRoute: typeof UserLayoutArticlesArticleIdIndexRoute
-}
-
-const UserLayoutRouteChildren: UserLayoutRouteChildren = {
-  UserLayoutChatsRoute: UserLayoutChatsRouteWithChildren,
-  UserLayoutCoinsRoute: UserLayoutCoinsRoute,
-  UserLayoutHomeRoute: UserLayoutHomeRoute,
-  UserLayoutMentorRoute: UserLayoutMentorRouteWithChildren,
-  UserLayoutMentorsRoute: UserLayoutMentorsRouteWithChildren,
-  UserLayoutProfileRoute: UserLayoutProfileRouteWithChildren,
-  UserLayoutSessionsRoute: UserLayoutSessionsRoute,
-  UserLayoutArticlesIndexRoute: UserLayoutArticlesIndexRoute,
-  UserLayoutArticlesArticleIdIndexRoute: UserLayoutArticlesArticleIdIndexRoute,
-}
-
-const UserLayoutRouteWithChildren = UserLayoutRoute._addFileChildren(
-  UserLayoutRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   AdminLayoutRoute: AdminLayoutRouteWithChildren,
-  MentorLayoutRoute: MentorLayoutRouteWithChildren,
+  AppLayoutRoute: AppLayoutRouteWithChildren,
   PublicLayoutRoute: PublicLayoutRouteWithChildren,
-  UserLayoutRoute: UserLayoutRouteWithChildren,
   LinkedinRoute: LinkedinRoute,
 }
 export const routeTree = rootRouteImport
