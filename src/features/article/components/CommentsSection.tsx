@@ -1,19 +1,5 @@
-import {
-	MessageSquare,
-	MoreVertical,
-	Trash2,
-	Pencil,
-	AlertTriangle,
-	Loader2,
-} from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { MessageSquare, AlertTriangle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
 	Dialog,
 	DialogContent,
@@ -22,12 +8,12 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { articleQueries } from "../hooks/queries";
 import { useArticleMutations } from "../hooks/mutations";
 import { CommentForm } from "./CommentForm";
+import { CommentItem } from "./CommentItem";
 
 interface CommentsSectionProps {
 	articleId: string;
@@ -40,6 +26,7 @@ export function CommentsSection({
 	currentUserId,
 	isReadOnly = false,
 }: CommentsSectionProps) {
+	const queryClient = useQueryClient();
 	const {
 		data,
 		isLoading,
@@ -47,26 +34,27 @@ export function CommentsSection({
 		hasNextPage,
 		fetchNextPage,
 		error,
-	} = useInfiniteQuery(articleQueries.commentsInfinite({ articleId }));
-
-	const { deleteComment } = useArticleMutations();
-	const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
-	const [deletingCommentId, setDeletingCommentId] = useState<string | null>(
-		null,
+	} = useInfiniteQuery(
+		articleQueries.commentsInfinite({ articleId, parentId: null }),
 	);
 
+	const { deleteComment } = useArticleMutations();
+	const [deletingComment, setDeletingComment] = useState<{
+		id: string;
+		parentId: string | null;
+	} | null>(null);
+
 	const comments = data?.pages.flatMap((page) => page.items) || [];
-	const totalComments = data?.pages[0]?.total || 0;
 
 	if (isLoading) {
 		return (
-			<div className="space-y-4 animate-pulse">
+			<div className="space-y-6 animate-pulse">
 				{[1, 2, 3].map((i) => (
 					<div key={i} className="flex gap-4">
 						<div className="w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-800" />
-						<div className="flex-1 space-y-2">
-							<div className="h-4 w-1/4 bg-zinc-200 dark:bg-zinc-800 rounded" />
-							<div className="h-4 w-full bg-zinc-200 dark:bg-zinc-800 rounded" />
+						<div className="flex-1 space-y-3">
+							<div className="h-4 w-1/4 bg-zinc-200 dark:bg-zinc-800 rounded-full" />
+							<div className="h-20 w-full bg-zinc-200 dark:bg-zinc-800 rounded-2xl" />
 						</div>
 					</div>
 				))}
@@ -76,104 +64,80 @@ export function CommentsSection({
 
 	if (error) {
 		return (
-			<div className="py-8 text-center text-red-500 bg-red-50 dark:bg-red-950/20 rounded-xl border border-red-100 dark:border-red-900/30">
-				Failed to load comments. Please try again later.
+			<div className="py-12 text-center text-red-500 bg-red-50/50 dark:bg-red-950/10 rounded-3xl border border-red-100/50 dark:border-red-900/20">
+				<AlertTriangle className="h-8 w-8 mx-auto mb-3 opacity-50" />
+				<p className="font-semibold text-sm tracking-tight">
+					Failed to load comments
+				</p>
+				<p className="text-xs opacity-70 mt-1">
+					Please refresh the page and try again.
+				</p>
 			</div>
 		);
 	}
 
 	return (
-		<div className="space-y-8">
+		<div className="space-y-10">
 			<div className="flex items-center justify-between">
-				<h3 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50 flex items-center gap-2">
-					<MessageSquare className="h-6 w-6 text-primary" />
-					Comments ({totalComments})
-				</h3>
+				<div className="flex items-center gap-3">
+					<div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
+						<MessageSquare className="h-5 w-5" />
+					</div>
+					<div>
+						<h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-50 tracking-tight">
+							Discussion
+						</h3>
+					</div>
+				</div>
 			</div>
 
 			{!isReadOnly && (
-				<div className="bg-zinc-50 dark:bg-zinc-900/50 p-6 rounded-2xl border border-zinc-100 dark:border-zinc-800">
-					<CommentForm articleId={articleId} />
+				<div className="bg-white/40 dark:bg-zinc-950/20 p-2 rounded-[28px] border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm backdrop-blur-sm">
+					<div className="bg-white dark:bg-zinc-900/40 p-5 rounded-[22px] border border-zinc-100 dark:border-zinc-800/60">
+						<CommentForm
+							articleId={articleId}
+							onSuccess={() => {
+								queryClient.invalidateQueries({
+									queryKey: articleQueries.all,
+								});
+							}}
+						/>
+					</div>
 				</div>
 			)}
 
-			<div className="space-y-6">
+			<div className="space-y-2">
 				{comments.length === 0 ? (
-					<div className="text-center py-12 text-zinc-500">
-						No comments yet. Be the first to share your thoughts!
+					<div className="flex flex-col items-center justify-center py-20 text-center bg-zinc-50/50 dark:bg-zinc-900/20 rounded-[32px] border border-dashed border-zinc-200/60 dark:border-zinc-800/60">
+						<div className="h-14 w-14 rounded-full bg-white dark:bg-zinc-900 shadow-sm flex items-center justify-center mb-4 text-zinc-300">
+							<MessageSquare className="h-7 w-7" />
+						</div>
+						<h4 className="text-sm font-bold text-zinc-800 dark:text-zinc-200">
+							No comments yet
+						</h4>
+						<p className="text-xs text-zinc-500 max-w-[180px] mt-1 mx-auto">
+							Join the conversation and be the first to share your perspective!
+						</p>
 					</div>
 				) : (
 					comments.map((comment) => (
-						<div key={comment.id} className="flex gap-4 group">
-							<Avatar className="h-10 w-10 shrink-0 border border-zinc-100 dark:border-zinc-800">
-								<AvatarImage src={comment.authorSnapshot.avatarUrl} />
-								<AvatarFallback>
-									{comment.authorSnapshot.name.charAt(0)}
-								</AvatarFallback>
-							</Avatar>
-							<div className="flex-1 min-w-0 space-y-1">
-								<div className="flex items-center justify-between">
-									<div className="flex items-center gap-2">
-										<span className="font-bold text-sm text-zinc-900 dark:text-zinc-50">
-											{comment.authorSnapshot.name}
-										</span>
-										<span className="text-xs text-zinc-500">
-											{format(new Date(comment.createdAt), "MMM d, yyyy")}
-										</span>
-									</div>
-									{currentUserId === comment.userId && (
-										<DropdownMenu>
-											<DropdownMenuTrigger asChild>
-												<Button
-													variant="ghost"
-													size="icon"
-													className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-												>
-													<MoreVertical className="h-4 w-4 text-zinc-500" />
-												</Button>
-											</DropdownMenuTrigger>
-											<DropdownMenuContent align="end">
-												<DropdownMenuItem
-													onClick={() => setEditingCommentId(comment.id)}
-												>
-													<Pencil className="h-4 w-4 mr-2" />
-													Edit
-												</DropdownMenuItem>
-												<DropdownMenuItem
-													className="text-red-600 focus:text-red-500"
-													onClick={() => setDeletingCommentId(comment.id)}
-												>
-													<Trash2 className="h-4 w-4 mr-2" />
-													Delete
-												</DropdownMenuItem>
-											</DropdownMenuContent>
-										</DropdownMenu>
-									)}
-								</div>
-								{editingCommentId === comment.id ? (
-									<div className="mt-2 bg-white dark:bg-zinc-950 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
-										<CommentForm
-											articleId={articleId}
-											commentId={comment.id}
-											initialContent={comment.content}
-											onSuccess={() => setEditingCommentId(null)}
-											onCancel={() => setEditingCommentId(null)}
-										/>
-									</div>
-								) : (
-									<p className="text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap break-words">
-										{comment.content}
-									</p>
-								)}
-							</div>
-						</div>
+						<CommentItem
+							key={comment.id}
+							articleId={articleId}
+							comment={comment}
+							currentUserId={currentUserId}
+							onEdit={() => {}}
+							onDelete={(id, pId) =>
+								setDeletingComment({ id, parentId: pId ?? null })
+							}
+						/>
 					))
 				)}
 			</div>
 
 			<Dialog
-				open={!!deletingCommentId}
-				onOpenChange={() => setDeletingCommentId(null)}
+				open={!!deletingComment}
+				onOpenChange={() => setDeletingComment(null)}
 			>
 				<DialogContent className="sm:max-w-[425px]">
 					<DialogHeader>
@@ -189,7 +153,7 @@ export function CommentsSection({
 					<DialogFooter className="gap-2 sm:gap-0">
 						<Button
 							variant="ghost"
-							onClick={() => setDeletingCommentId(null)}
+							onClick={() => setDeletingComment(null)}
 							disabled={deleteComment.isPending}
 						>
 							Cancel
@@ -197,12 +161,13 @@ export function CommentsSection({
 						<Button
 							variant="destructive"
 							onClick={async () => {
-								if (deletingCommentId) {
+								if (deletingComment) {
 									await deleteComment.mutateAsync({
 										articleId,
-										commentId: deletingCommentId,
+										commentId: deletingComment.id,
+										parentId: deletingComment.parentId,
 									});
-									setDeletingCommentId(null);
+									setDeletingComment(null);
 								}
 							}}
 							disabled={deleteComment.isPending}

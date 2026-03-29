@@ -7,6 +7,7 @@ import type {
 	CreateCommentResponse,
 	DeleteArticleInput,
 	DeleteCommentInput,
+	DeleteCommentResponse,
 	GetArticleResponse,
 	GetArticlesInput,
 	GetArticlesResponse,
@@ -128,10 +129,13 @@ export const articleService = {
 		return response.data.data;
 	},
 
-	deleteComment: async (input: DeleteCommentInput): Promise<void> => {
-		await api.delete(
+	deleteComment: async (
+		input: DeleteCommentInput,
+	): Promise<DeleteCommentResponse> => {
+		const response = await api.delete<{ data: DeleteCommentResponse }>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.COMMENT_BY_ID(input.commentId)}`,
 		);
+		return response.data.data;
 	},
 
 	reactToArticle: async (

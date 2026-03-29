@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import FieldError from "@/components/common/Field-Error";
 import { useArticleMutations } from "../hooks/mutations";
+import { useProfile } from "@/features/profile-management/hooks/use-profile";
 
 const commentSchema = z.object({
 	content: z
@@ -32,6 +33,7 @@ export function CommentForm({
 	onCancel,
 }: CommentFormProps) {
 	const { createComment, updateComment } = useArticleMutations();
+	const { data: profile } = useProfile();
 	const isEdit = !!commentId;
 
 	const form = useForm({
@@ -43,6 +45,7 @@ export function CommentForm({
 				await updateComment.mutateAsync({
 					articleId,
 					commentId,
+					parentId,
 					content: value.content,
 				});
 			} else {
@@ -50,6 +53,13 @@ export function CommentForm({
 					articleId,
 					content: value.content,
 					parentId,
+					userId: profile?.id,
+					author: profile
+						? {
+								name: profile.name,
+								avatarUrl: profile.profilePictureUrl || undefined,
+							}
+						: undefined,
 				});
 			}
 			form.reset();

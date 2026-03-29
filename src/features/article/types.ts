@@ -143,6 +143,11 @@ export interface UpdateCommentResponse {
 }
 
 export interface DeleteCommentInput {
+	articleId: string;
+	commentId: string;
+}
+
+export interface DeleteCommentResponse {
 	commentId: string;
 }
 
