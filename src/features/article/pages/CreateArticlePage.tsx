@@ -57,7 +57,7 @@ export function CreateArticlePage() {
 			tags: [] as string[] | undefined,
 		},
 		validators: {
-			onChange: articleSchema as any,
+			onBlur: articleSchema as any,
 		},
 		onSubmit: async ({ value }) => {
 			const result = articleSchema.safeParse(value);
@@ -120,7 +120,7 @@ export function CreateArticlePage() {
 									{field.state.meta.errors &&
 									field.state.meta.errors.length > 0 &&
 									field.state.meta.isTouched ? (
-										<p className="text-sm text-destructive mt-1">
+										<p className="text-sm text-red-500/90 dark:text-red-400 mt-1">
 											{typeof field.state.meta.errors[0] === "string"
 												? field.state.meta.errors[0]
 												: (field.state.meta.errors[0] as any)?.message ||
@@ -138,11 +138,12 @@ export function CreateArticlePage() {
 									<ArticleEditor
 										content={field.state.value}
 										onChange={(content) => field.handleChange(content)}
+										onBlur={field.handleBlur}
 									/>
 									{field.state.meta.errors &&
 									field.state.meta.errors.length > 0 &&
 									field.state.meta.isTouched ? (
-										<p className="text-sm text-destructive mt-1">
+										<p className="text-sm text-red-500/90 dark:text-red-400 mt-1">
 											{typeof field.state.meta.errors[0] === "string"
 												? field.state.meta.errors[0]
 												: (field.state.meta.errors[0] as any)?.message ||
@@ -168,7 +169,7 @@ export function CreateArticlePage() {
 										{field.state.meta.errors &&
 										field.state.meta.errors.length > 0 &&
 										field.state.meta.isTouched ? (
-											<p className="text-sm text-destructive mt-1">
+											<p className="text-sm text-red-500/90 dark:text-red-400 mt-1">
 												{typeof field.state.meta.errors[0] === "string"
 													? field.state.meta.errors[0]
 													: (field.state.meta.errors[0] as any)?.message ||
@@ -209,6 +210,7 @@ export function CreateArticlePage() {
 										<Input
 											id="tags"
 											placeholder="Add a tag and press Enter"
+											onBlur={field.handleBlur}
 											onKeyDown={(e) => {
 												if (e.key === "Enter") {
 													e.preventDefault();
@@ -231,7 +233,7 @@ export function CreateArticlePage() {
 										{field.state.meta.errors &&
 										field.state.meta.errors.length > 0 &&
 										field.state.meta.isTouched ? (
-											<p className="text-sm text-destructive mt-1">
+											<p className="text-sm text-red-500/90 dark:text-red-400 mt-1">
 												{typeof field.state.meta.errors[0] === "string"
 													? field.state.meta.errors[0]
 													: (field.state.meta.errors[0] as any)?.message ||

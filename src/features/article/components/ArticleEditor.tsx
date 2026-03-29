@@ -19,6 +19,7 @@ import { useEffect } from "react";
 interface ArticleEditorProps {
 	content?: string;
 	onChange: (content: string) => void;
+	onBlur?: () => void;
 }
 
 const MenuBar = ({ editor }: { editor: any }) => {
@@ -138,7 +139,11 @@ const MenuBar = ({ editor }: { editor: any }) => {
 	);
 };
 
-export function ArticleEditor({ content, onChange }: ArticleEditorProps) {
+export function ArticleEditor({
+	content,
+	onChange,
+	onBlur,
+}: ArticleEditorProps) {
 	const editor = useEditor({
 		extensions: [
 			StarterKit,
@@ -152,6 +157,9 @@ export function ArticleEditor({ content, onChange }: ArticleEditorProps) {
 		content: content || "",
 		onUpdate: ({ editor }) => {
 			onChange(editor.getHTML());
+		},
+		onBlur: () => {
+			onBlur?.();
 		},
 		editorProps: {
 			attributes: {

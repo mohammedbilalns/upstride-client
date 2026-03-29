@@ -142,7 +142,7 @@ export function UpdateArticlePage() {
 									{field.state.meta.errors &&
 									field.state.meta.errors.length > 0 &&
 									field.state.meta.isTouched ? (
-										<p className="text-sm text-destructive mt-1">
+										<p className="text-sm text-red-500/90 dark:text-red-400 mt-1">
 											{typeof field.state.meta.errors[0] === "string"
 												? field.state.meta.errors[0]
 												: (field.state.meta.errors[0] as any)?.message ||
@@ -164,7 +164,7 @@ export function UpdateArticlePage() {
 									{field.state.meta.errors &&
 									field.state.meta.errors.length > 0 &&
 									field.state.meta.isTouched ? (
-										<p className="text-sm text-destructive mt-1">
+										<p className="text-sm text-red-500/90 dark:text-red-400 mt-1">
 											{typeof field.state.meta.errors[0] === "string"
 												? field.state.meta.errors[0]
 												: (field.state.meta.errors[0] as any)?.message ||
@@ -191,7 +191,7 @@ export function UpdateArticlePage() {
 										{field.state.meta.errors &&
 										field.state.meta.errors.length > 0 &&
 										field.state.meta.isTouched ? (
-											<p className="text-sm text-destructive mt-1">
+											<p className="text-sm text-red-500/90 dark:text-red-400 mt-1">
 												{typeof field.state.meta.errors[0] === "string"
 													? field.state.meta.errors[0]
 													: (field.state.meta.errors[0] as any)?.message ||
@@ -253,7 +253,7 @@ export function UpdateArticlePage() {
 										/>
 										{field.state.meta.errors &&
 										field.state.meta.errors.length > 0 ? (
-											<p className="text-sm text-destructive">
+											<p className="text-sm text-red-500/90 dark:text-red-400 mt-1">
 												{field.state.meta.errors.join(", ")}
 											</p>
 										) : (
