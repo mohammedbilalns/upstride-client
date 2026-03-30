@@ -76,11 +76,6 @@ export function ProfileSidebar({ user, isMentor }: ProfileSidebarProps) {
 								icon: LayoutDashboard,
 							},
 							{
-								to: "/mentor-slot-management",
-								label: "Slot Management",
-								icon: CalendarClock,
-							},
-							{
 								to: "/mentor-rule-management",
 								label: "Rule Management",
 								icon: Repeat,

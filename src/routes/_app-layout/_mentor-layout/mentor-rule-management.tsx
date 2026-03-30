@@ -73,12 +73,8 @@ const availabilityRuleSchema = z
 		endTime: z
 			.string()
 			.regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Must be HH:MM"),
-		startDate: z
-			.string()
-			.regex(/^\d{4}-\d{2}-\d{2}$/, "Must be YYYY-MM-DD"),
-		endDate: z
-			.string()
-			.regex(/^\d{4}-\d{2}-\d{2}$/, "Must be YYYY-MM-DD"),
+		startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Must be YYYY-MM-DD"),
+		endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Must be YYYY-MM-DD"),
 		breakTimes: z
 			.array(
 				z.object({
@@ -163,9 +159,8 @@ function MentorRuleManagement() {
 		type: "enable" | "delete" | "add" | "conflict" | "enable-conflict";
 		ruleId?: string;
 	} | null>(null);
-	const [pendingRule, setPendingRule] = useState<CreateAvailabilityInput | null>(
-		null,
-	);
+	const [pendingRule, setPendingRule] =
+		useState<CreateAvailabilityInput | null>(null);
 	const [conflictSummaries, setConflictSummaries] = useState<
 		ConflictAvailabilitySummary[]
 	>([]);
@@ -243,7 +238,6 @@ function MentorRuleManagement() {
 			return merged;
 		});
 	}, [data, page]);
-
 
 	const addMutation = useMutation({
 		mutationFn: (data: CreateAvailabilityInput) =>
@@ -422,9 +416,7 @@ function MentorRuleManagement() {
 											onChange={(e) => field.handleChange(e.target.value)}
 											onBlur={field.handleBlur}
 										/>
-										<FieldError
-											message={field.state.meta.errors?.[0] as any}
-										/>
+										<FieldError message={field.state.meta.errors?.[0] as any} />
 									</div>
 								)}
 							</form.Field>
@@ -439,241 +431,223 @@ function MentorRuleManagement() {
 											onChange={(e) => field.handleChange(e.target.value)}
 											onBlur={field.handleBlur}
 										/>
-										<FieldError
-											message={field.state.meta.errors?.[0] as any}
-										/>
+										<FieldError message={field.state.meta.errors?.[0] as any} />
 									</div>
 								)}
 							</form.Field>
 						</div>
 
-					{/* Date Range & Time */}
-					<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-						<form.Field name="startDate">
-							{(field) => (
-								<div className="space-y-2">
-									<Label htmlFor={field.name}>Start Date</Label>
-									<Input
-										id={field.name}
-										type="date"
-										value={field.state.value}
-										min={today}
-										onChange={(e) => field.handleChange(e.target.value)}
-										onBlur={field.handleBlur}
-									/>
-									<FieldError
-										message={field.state.meta.errors?.[0] as any}
-									/>
-								</div>
-							)}
-						</form.Field>
-						<form.Field name="endDate">
-							{(field) => (
-								<div className="space-y-2">
-									<Label htmlFor={field.name}>End Date</Label>
-									<Input
-										id={field.name}
-										type="date"
-										value={field.state.value}
-										min={form.state.values.startDate || today}
-										onChange={(e) => field.handleChange(e.target.value)}
-										onBlur={field.handleBlur}
-									/>
-									<FieldError
-										message={field.state.meta.errors?.[0] as any}
-									/>
-								</div>
-							)}
-						</form.Field>
-						<form.Field name="startTime">
-							{(field) => (
-								<div className="space-y-2">
-									<Label htmlFor={field.name}>Daily Start Time</Label>
-									<Input
-										id={field.name}
-										type="time"
-										value={field.state.value}
-										onChange={(e) => field.handleChange(e.target.value)}
-										onBlur={field.handleBlur}
-									/>
-									<FieldError
-										message={field.state.meta.errors?.[0] as any}
-									/>
-								</div>
-							)}
-						</form.Field>
-						<form.Field name="endTime">
-							{(field) => (
-								<div className="space-y-2">
-									<Label htmlFor={field.name}>Daily End Time</Label>
-									<Input
-										id={field.name}
-										type="time"
-										value={field.state.value}
-										onChange={(e) => field.handleChange(e.target.value)}
-										onBlur={field.handleBlur}
-									/>
-									<FieldError
-										message={field.state.meta.errors?.[0] as any}
-									/>
-								</div>
-							)}
-						</form.Field>
-					</div>
-
-					{/* Days of Week */}
-					<form.Field name="days">
-						{(field) => (
-							<div className="space-y-3">
-								<Label>Active Days</Label>
-								<div className="flex flex-wrap gap-3">
-									{DAYS.map((day) => {
-										const selected = form.state.values.days.includes(day);
-										return (
-											<button
-												type="button"
-												key={day}
-												onClick={() => toggleDay(day)}
-												className={cn(
-													"px-4 py-2 border rounded-full text-sm font-medium transition-colors",
-													selected
-														? "bg-primary text-primary-foreground border-primary"
-														: "bg-background text-muted-foreground border-input hover:border-primary hover:text-foreground",
-												)}
-											>
-												{day}
-											</button>
-										);
-									})}
-								</div>
-								<FieldError message={field.state.meta.errors?.[0] as any} />
-							</div>
-						)}
-					</form.Field>
-
-					{/* Break Times */}
-					<div className="space-y-3 p-4 border rounded-xl bg-muted/10">
-						<div className="flex items-center justify-between">
-							<Label className="text-base font-semibold">Break Times</Label>
-							<Button variant="outline" size="sm" onClick={addBreakTime}>
-								<Plus className="h-4 w-4 mr-2" /> Add Break
-							</Button>
-						</div>
-						{!form.state.values.breakTimes?.length ? (
-							<p className="text-sm text-muted-foreground">
-								No breaks configured. You will be available consecutively.
-							</p>
-						) : (
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-								{form.state.values.breakTimes.map((bt, i) => (
-									<div
-										key={i}
-										className="flex items-center gap-2 p-3 bg-background border rounded-lg"
-									>
+						{/* Date Range & Time */}
+						<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+							<form.Field name="startDate">
+								{(field) => (
+									<div className="space-y-2">
+										<Label htmlFor={field.name}>Start Date</Label>
 										<Input
-											type="time"
-											value={bt.startTime}
-											className="h-9"
-											onChange={(e) =>
-												updateBreakTime(i, "startTime", e.target.value)
-											}
+											id={field.name}
+											type="date"
+											value={field.state.value}
+											min={today}
+											onChange={(e) => field.handleChange(e.target.value)}
+											onBlur={field.handleBlur}
 										/>
-										<span className="text-muted-foreground">to</span>
-										<Input
-											type="time"
-											value={bt.endTime}
-											className="h-9"
-											onChange={(e) =>
-												updateBreakTime(i, "endTime", e.target.value)
-											}
-										/>
-										<Button
-											variant="ghost"
-											size="icon"
-											className="text-rose-500 h-9 w-9 shrink-0"
-											onClick={() => removeBreakTime(i)}
-										>
-											<X className="h-4 w-4" />
-										</Button>
+										<FieldError message={field.state.meta.errors?.[0] as any} />
 									</div>
-								))}
-							</div>
-						)}
-					</div>
+								)}
+							</form.Field>
+							<form.Field name="endDate">
+								{(field) => (
+									<div className="space-y-2">
+										<Label htmlFor={field.name}>End Date</Label>
+										<Input
+											id={field.name}
+											type="date"
+											value={field.state.value}
+											min={form.state.values.startDate || today}
+											onChange={(e) => field.handleChange(e.target.value)}
+											onBlur={field.handleBlur}
+										/>
+										<FieldError message={field.state.meta.errors?.[0] as any} />
+									</div>
+								)}
+							</form.Field>
+							<form.Field name="startTime">
+								{(field) => (
+									<div className="space-y-2">
+										<Label htmlFor={field.name}>Daily Start Time</Label>
+										<Input
+											id={field.name}
+											type="time"
+											value={field.state.value}
+											onChange={(e) => field.handleChange(e.target.value)}
+											onBlur={field.handleBlur}
+										/>
+										<FieldError message={field.state.meta.errors?.[0] as any} />
+									</div>
+								)}
+							</form.Field>
+							<form.Field name="endTime">
+								{(field) => (
+									<div className="space-y-2">
+										<Label htmlFor={field.name}>Daily End Time</Label>
+										<Input
+											id={field.name}
+											type="time"
+											value={field.state.value}
+											onChange={(e) => field.handleChange(e.target.value)}
+											onBlur={field.handleBlur}
+										/>
+										<FieldError message={field.state.meta.errors?.[0] as any} />
+									</div>
+								)}
+							</form.Field>
+						</div>
 
-					{/* Slot Config */}
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-						<form.Field name="slotDuration">
+						{/* Days of Week */}
+						<form.Field name="days">
 							{(field) => (
 								<div className="space-y-3">
-									<Label>Slot Duration (minutes)</Label>
-									<RadioGroup
-										value={String(field.state.value)}
-										onValueChange={(val) =>
-											field.handleChange(Number(val) as 30 | 60)
-										}
-										className="flex items-center gap-4"
-									>
-										<div className="flex items-center space-x-2">
-											<RadioGroupItem value="30" id="r30" />
-											<Label htmlFor="r30">30 min</Label>
-										</div>
-										<div className="flex items-center space-x-2">
-											<RadioGroupItem value="60" id="r60" />
-											<Label htmlFor="r60">60 min</Label>
-										</div>
-									</RadioGroup>
-									<FieldError
-										message={field.state.meta.errors?.[0] as any}
-									/>
+									<Label>Active Days</Label>
+									<div className="flex flex-wrap gap-3">
+										{DAYS.map((day) => {
+											const selected = form.state.values.days.includes(day);
+											return (
+												<button
+													type="button"
+													key={day}
+													onClick={() => toggleDay(day)}
+													className={cn(
+														"px-4 py-2 border rounded-full text-sm font-medium transition-colors",
+														selected
+															? "bg-primary text-primary-foreground border-primary"
+															: "bg-background text-muted-foreground border-input hover:border-primary hover:text-foreground",
+													)}
+												>
+													{day}
+												</button>
+											);
+										})}
+									</div>
+									<FieldError message={field.state.meta.errors?.[0] as any} />
 								</div>
 							)}
 						</form.Field>
-						<form.Field name="bufferTime">
-							{(field) => (
-								<div className="space-y-2">
-									<Label htmlFor={field.name}>
-										Buffer Between Sessions (min)
-									</Label>
-									<Input
-										id={field.name}
-										type="number"
-										min="5"
-										max="60"
-										step="5"
-										value={field.state.value}
-										onChange={(e) =>
-											field.handleChange(
-												e.target.value === ""
-													? ""
-													: Number(e.target.value),
-											)
-										}
-										onBlur={field.handleBlur}
-									/>
-									<FieldError
-										message={field.state.meta.errors?.[0] as any}
-									/>
-								</div>
-							)}
-						</form.Field>
-					</div>
 
-					<form.Subscribe
-						selector={(state) => [state.canSubmit, state.isSubmitting]}
-						children={([canSubmit, isSubmitting]) => (
-							<Button
-								type="submit"
-								className="mt-6 h-11 px-8 w-full md:w-auto"
-								disabled={
-									!canSubmit || isSubmitting || addMutation.isPending
-								}
-							>
-								Submit Rule Configuration
-							</Button>
-						)}
-					/>
-				</form>
+						{/* Break Times */}
+						<div className="space-y-3 p-4 border rounded-xl bg-muted/10">
+							<div className="flex items-center justify-between">
+								<Label className="text-base font-semibold">Break Times</Label>
+								<Button variant="outline" size="sm" onClick={addBreakTime}>
+									<Plus className="h-4 w-4 mr-2" /> Add Break
+								</Button>
+							</div>
+							{!form.state.values.breakTimes?.length ? (
+								<p className="text-sm text-muted-foreground">
+									No breaks configured. You will be available consecutively.
+								</p>
+							) : (
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+									{form.state.values.breakTimes.map((bt, i) => (
+										<div
+											key={i}
+											className="flex items-center gap-2 p-3 bg-background border rounded-lg"
+										>
+											<Input
+												type="time"
+												value={bt.startTime}
+												className="h-9"
+												onChange={(e) =>
+													updateBreakTime(i, "startTime", e.target.value)
+												}
+											/>
+											<span className="text-muted-foreground">to</span>
+											<Input
+												type="time"
+												value={bt.endTime}
+												className="h-9"
+												onChange={(e) =>
+													updateBreakTime(i, "endTime", e.target.value)
+												}
+											/>
+											<Button
+												variant="ghost"
+												size="icon"
+												className="text-rose-500 h-9 w-9 shrink-0"
+												onClick={() => removeBreakTime(i)}
+											>
+												<X className="h-4 w-4" />
+											</Button>
+										</div>
+									))}
+								</div>
+							)}
+						</div>
+
+						{/* Slot Config */}
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+							<form.Field name="slotDuration">
+								{(field) => (
+									<div className="space-y-3">
+										<Label>Slot Duration (minutes)</Label>
+										<RadioGroup
+											value={String(field.state.value)}
+											onValueChange={(val) =>
+												field.handleChange(Number(val) as 30 | 60)
+											}
+											className="flex items-center gap-4"
+										>
+											<div className="flex items-center space-x-2">
+												<RadioGroupItem value="30" id="r30" />
+												<Label htmlFor="r30">30 min</Label>
+											</div>
+											<div className="flex items-center space-x-2">
+												<RadioGroupItem value="60" id="r60" />
+												<Label htmlFor="r60">60 min</Label>
+											</div>
+										</RadioGroup>
+										<FieldError message={field.state.meta.errors?.[0] as any} />
+									</div>
+								)}
+							</form.Field>
+							<form.Field name="bufferTime">
+								{(field) => (
+									<div className="space-y-2">
+										<Label htmlFor={field.name}>
+											Buffer Between Sessions (min)
+										</Label>
+										<Input
+											id={field.name}
+											type="number"
+											min="5"
+											max="60"
+											step="5"
+											value={field.state.value}
+											onChange={(e) =>
+												field.handleChange(
+													e.target.value === "" ? "" : Number(e.target.value),
+												)
+											}
+											onBlur={field.handleBlur}
+										/>
+										<FieldError message={field.state.meta.errors?.[0] as any} />
+									</div>
+								)}
+							</form.Field>
+						</div>
+
+						<form.Subscribe
+							selector={(state) => [state.canSubmit, state.isSubmitting]}
+							children={([canSubmit, isSubmitting]) => (
+								<Button
+									type="submit"
+									className="mt-6 h-11 px-8 w-full md:w-auto"
+									disabled={!canSubmit || isSubmitting || addMutation.isPending}
+								>
+									Submit Rule Configuration
+								</Button>
+							)}
+						/>
+					</form>
 				</CardContent>
 			</Card>
 
@@ -903,9 +877,9 @@ function MentorRuleManagement() {
 							? "Availability Conflict"
 							: confirmAction?.type === "enable-conflict"
 								? "Availability Conflict"
-							: confirmAction?.type === "delete"
-								? "Disable Rule"
-								: "Re-enable Rule"
+								: confirmAction?.type === "delete"
+									? "Disable Rule"
+									: "Re-enable Rule"
 				}
 				message={
 					confirmAction?.type === "add"
@@ -920,7 +894,9 @@ function MentorRuleManagement() {
 												c.startTime
 											}-${c.endTime})`,
 									)
-									.join("; ")}. Would you want to continue? The new rule will have the higher priority over the old one.`
+									.join(
+										"; ",
+									)}. Would you want to continue? The new rule will have the higher priority over the old one.`
 							: confirmAction?.type === "enable-conflict"
 								? `There is a conflict with: ${conflictSummaries
 										.map(
@@ -931,10 +907,12 @@ function MentorRuleManagement() {
 													c.startTime
 												}-${c.endTime})`,
 										)
-										.join("; ")}. Would you want to continue? The new rule will have the higher priority over the old one.`
-							: confirmAction?.type === "delete"
-								? "Are you sure you want to disable this availability rule? Mentees won't be able to book these slots while disabled."
-								: "Bring this rule back into active rotation?"
+										.join(
+											"; ",
+										)}. Would you want to continue? The new rule will have the higher priority over the old one.`
+								: confirmAction?.type === "delete"
+									? "Are you sure you want to disable this availability rule? Mentees won't be able to book these slots while disabled."
+									: "Bring this rule back into active rotation?"
 				}
 				variant={confirmAction?.type === "delete" ? "destructive" : "default"}
 				isLoading={

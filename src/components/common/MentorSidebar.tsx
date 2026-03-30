@@ -48,11 +48,6 @@ export default function MentorSidebar() {
 			label: "Rule Management",
 			icon: Repeat,
 		},
-		{
-			to: "/mentor-slot-management",
-			label: "Slot Management",
-			icon: CalendarClock,
-		},
 	];
 
 	return (
