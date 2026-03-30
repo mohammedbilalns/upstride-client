@@ -148,9 +148,9 @@ export const ROUTES = {
 		ROOT: "/",
 		SLOTS: (mentorId: string) => `/slots/${mentorId}`,
 		CANCEL: (id: string) => `/${id}/cancel`,
-		MENTOR_CANCEL: (id: string) => `/${id}/mentor-cancel`,
-		USER: "/user",
-		MENTOR: "/mentor",
+		MENTOR_CANCEL: (id: string) => `/${id}/mentor/cancel`,
+		USER: "/me",
+		MENTOR: "/mentor/me",
 	},
 	SESSION_BOOKINGS: {
 		BASE: "/session-bookings",
