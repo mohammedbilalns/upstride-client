@@ -1,12 +1,13 @@
-type IssueLike = { path: Array<string | number>; message: string };
+type IssueLike = { path: Array<string | number | symbol>; message: string };
 
-export const pathToKey = (path: Array<string | number>) =>
-	path.reduce((acc, segment) => {
+export const pathToKey = (path: Array<string | number | symbol>): string =>
+	path.reduce((acc: string, segment) => {
+		const segmentStr = String(segment);
 		if (typeof segment === "number") {
-			return `${acc}[${segment}]`;
+			return `${acc}[${segmentStr}]`;
 		}
-		if (!acc) return segment;
-		return `${acc}.${segment}`;
+		if (!acc) return segmentStr;
+		return `${acc}.${segmentStr}`;
 	}, "");
 
 export const buildFieldErrorsFromIssues = (issues: IssueLike[]) => {

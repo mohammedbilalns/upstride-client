@@ -1,21 +1,29 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
-import { Calendar, Clock, Video, XCircle, History, Info } from "lucide-react";
+import {
+	Calendar,
+	Clock,
+	Video,
+	XCircle,
+	History,
+	CreditCard,
+	Coins,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { sessionBookingService } from "@/features/session-booking-management";
-import type { BookingListItem } from "@/features/session-booking-management/types";
+import type {
+	BookingDto,
+	BookingFilter,
+} from "@/features/session-booking-management/types";
 import { Pagination } from "@/features/user-management/components/Pagination";
 import { Route } from "@/routes/_app-layout/_user-layout/sessions";
 import { useUserSessions } from "../hooks/use-sessions";
 import { SessionFilters } from "../components/SessionFilters";
-import { cn } from "@/shared/utils/cn";
-
-import type { BookingFilter } from "@/features/session-booking-management/types";
 
 const formatDate = (value: string) => format(new Date(value), "MMM dd, yyyy");
 const formatTime = (value: string) => format(new Date(value), "hh:mm a");
@@ -55,9 +63,9 @@ export function SessionsPage() {
 		},
 	});
 
-	const updateSearch = (updates: any) => {
+	const updateSearch = (updates: Partial<typeof search>) => {
 		navigate({
-			search: (prev: any) => ({
+			search: (prev) => ({
 				...prev,
 				...updates,
 			}),
@@ -195,7 +203,7 @@ export function SessionsPage() {
 					if (pendingCancelId) cancelMutation.mutate(pendingCancelId);
 				}}
 				title="Cancel session"
-				message="Cancelling more than 5 days before the session gives a full refund. Within 5 days, only 50% is refunded."
+				message="Confirm cancellation for this session."
 				confirmText="Confirm Cancel"
 				variant="destructive"
 				isLoading={cancelMutation.isPending}
@@ -210,10 +218,6 @@ export function SessionsPage() {
 						placeholder="Please share why you're cancelling..."
 						className="min-h-[100px] rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-800 resize-none focus:ring-primary/20"
 					/>
-					<div className="flex items-start gap-2 p-3 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 text-[11px] text-amber-700 dark:text-amber-400">
-						<Info className="h-4 w-4 shrink-0" />
-						<p>Your reason helps us improve our mentoring community.</p>
-					</div>
 				</div>
 			</ConfirmModal>
 		</div>
@@ -226,26 +230,30 @@ function SessionCard({
 	onCancel,
 	isCancelling,
 }: {
-	booking: BookingListItem;
+	booking: BookingDto;
 	showCancel: boolean;
 	onCancel: () => void;
 	isCancelling: boolean;
 }) {
 	const timeUntilStartMs = new Date(booking.startTime).getTime() - Date.now();
-	const showMeetingInfo =
-		showCancel && timeUntilStartMs <= 60 * 60 * 1000 && timeUntilStartMs >= 0;
+	const isCancelled = booking.status.startsWith("CANCELLED");
+	const isUpcoming =
+		booking.status === "CONFIRMED" || booking.status === "PENDING";
 
-	const statusLabel = booking.status === "cancelled" ? "Cancelled" : null;
+	const showMeetingInfo =
+		isUpcoming &&
+		!isCancelled &&
+		timeUntilStartMs <= 60 * 60 * 1000 &&
+		timeUntilStartMs >= 0;
 
 	const canCancel =
-		showCancel &&
-		(booking.status === "confirmed" || booking.status === "pending");
+		showCancel && !isCancelled && booking.status !== "COMPLETED";
 
 	return (
 		<div className="group flex flex-col gap-4 rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-5 sm:flex-row sm:items-center sm:justify-between transition-all hover:border-zinc-300 dark:hover:border-zinc-700 shadow-sm hover:shadow-md">
 			<div className="flex gap-4">
 				<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-					{booking.status === "cancelled" ? (
+					{isCancelled ? (
 						<XCircle className="h-6 w-6" />
 					) : (
 						<Video className="h-6 w-6" />
@@ -258,14 +266,22 @@ function SessionCard({
 							params={{ mentorId: booking.mentorId }}
 							className="text-base font-bold text-zinc-900 dark:text-zinc-50 hover:text-primary transition-colors truncate"
 						>
-							{booking.mentorName ?? "Mentor"}
+							Mentor Profile
 						</Link>
-						{statusLabel && (
+						{isCancelled && (
 							<Badge
 								variant="destructive"
 								className="h-5 text-[10px] px-2 rounded-full uppercase tracking-wider"
 							>
-								{statusLabel}
+								Cancelled
+							</Badge>
+						)}
+						{booking.status === "PENDING" && (
+							<Badge
+								variant="secondary"
+								className="h-5 text-[10px] px-2 rounded-full uppercase tracking-wider"
+							>
+								Payment Pending
 							</Badge>
 						)}
 					</div>
@@ -282,41 +298,34 @@ function SessionCard({
 					</div>
 
 					<div className="flex items-center gap-3">
-						<span className="text-xs font-semibold text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-900/50 px-2 py-0.5 rounded-md">
-							{booking.price} coins
+						<span className="flex items-center gap-1 text-xs font-semibold text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-900/50 px-2 py-0.5 rounded-md">
+							{booking.paymentType === "COINS" ? (
+								<Coins className="h-3 w-3 text-amber-500" />
+							) : (
+								<CreditCard className="h-3 w-3 text-blue-500" />
+							)}
+							{booking.totalAmount}{" "}
+							{booking.currency === "inr" ? "₹" : booking.currency}
 						</span>
-						{showMeetingInfo && booking.meetingId && (
-							<div className="flex items-center gap-1.5 text-xs text-primary font-medium">
+						{showMeetingInfo && booking.meetingLink && (
+							<a
+								href={booking.meetingLink}
+								target="_blank"
+								rel="noreferrer"
+								className="flex items-center gap-1.5 text-xs text-primary font-medium hover:underline"
+							>
 								<Video className="h-3.5 w-3.5" />
 								<span>Join Session</span>
-							</div>
+							</a>
 						)}
 					</div>
 				</div>
 			</div>
 
 			<div className="flex items-center gap-3 sm:flex-col sm:items-end sm:gap-2">
-				{booking.attendanceStatus && (
-					<Badge
-						variant={
-							booking.attendanceStatus === "attended" ? "default" : "secondary"
-						}
-						className={cn(
-							"h-6 px-3 rounded-full text-[11px] font-medium border-none",
-							booking.attendanceStatus === "attended"
-								? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
-								: "bg-zinc-100 text-zinc-600 dark:bg-zinc-900/50 dark:text-zinc-400",
-						)}
-					>
-						{booking.attendanceStatus === "attended"
-							? "✓ Attended"
-							: "Not Attended"}
-					</Badge>
-				)}
-
-				{booking.status === "cancelled" && booking.cancellationReason && (
+				{isCancelled && booking.notes && (
 					<div className="hidden lg:block text-[10px] text-zinc-500 text-right max-w-[200px] line-clamp-1 italic">
-						"{booking.cancellationReason}"
+						"{booking.notes}"
 					</div>
 				)}
 

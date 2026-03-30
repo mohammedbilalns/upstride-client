@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, Flag } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { ArrowLeft, Flag, CreditCard, Coins } from "lucide-react";
+import { useMemo, useState } from "react";
 import { ReportDialog } from "@/components/common/ReportDialog";
 import { useProfile } from "@/features/profile-management/hooks/use-profile";
 import { MentorArticlesSection } from "../components/MentorArticlesSection";
@@ -27,15 +27,25 @@ import {
 	useCoinBalance,
 } from "@/features/coin-management";
 import { publicMentorProfileService } from "@/features/mentor-public-profile";
-import type { PublicMentorSlot } from "@/features/mentor-public-profile/types";
+import type { AvailabilitySlot } from "@/features/availability-management/types";
 import { sessionBookingService } from "@/features/session-booking-management";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+
+declare module "@tanstack/react-router" {
+	interface HistoryState {
+		receiver?: {
+			id: string;
+			name: string;
+			profilePictureUrl?: string | null;
+		};
+	}
+}
 
 interface PublicMentorProfilePageProps {
 	mentorId: string;
 	isAdminView?: boolean;
 }
-
-const PENDING_BOOKING_STORAGE_KEY = "pending-booking-slot";
 
 export function PublicMentorProfilePage({
 	mentorId,
@@ -47,11 +57,12 @@ export function PublicMentorProfilePage({
 		new Date(),
 	);
 	const [bookingSlotId, setBookingSlotId] = useState<string | null>(null);
-	const [selectedSlot, setSelectedSlot] = useState<PublicMentorSlot | null>(
+	const [selectedSlot, setSelectedSlot] = useState<AvailabilitySlot | null>(
 		null,
 	);
 	const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 	const [isTopUpOpen, setIsTopUpOpen] = useState(false);
+	const [paymentType, setPaymentType] = useState<"COINS" | "STRIPE">("COINS");
 
 	const profileQuery = useQuery({
 		queryKey: ["public-mentor-profile", mentorId],
@@ -79,12 +90,20 @@ export function PublicMentorProfilePage({
 	});
 
 	const bookMutation = useMutation({
-		mutationFn: (slotId: string) =>
-			sessionBookingService.bookSession({ slotId }),
-		onMutate: (slotId) => {
-			setBookingSlotId(slotId);
+		mutationFn: (data: {
+			mentorId: string;
+			startTime: string;
+			endTime: string;
+			paymentType: "COINS" | "STRIPE";
+		}) => sessionBookingService.bookSession(data),
+		onMutate: (data) => {
+			setBookingSlotId(data.startTime);
 		},
 		onSuccess: (response) => {
+			if (response.data.paymentUrl) {
+				window.location.href = response.data.paymentUrl;
+				return;
+			}
 			toast.success(response.message || "Session booked successfully");
 			setIsConfirmOpen(false);
 			setSelectedSlot(null);
@@ -109,8 +128,6 @@ export function PublicMentorProfilePage({
 	});
 
 	const profile = profileQuery.data?.data.profile;
-	const nextAvailableSessions =
-		profileQuery.data?.data.nextAvailableSessions ?? [];
 	const isReported = profileQuery.data?.data.isReported ?? false;
 	const availableSlots = slotsQuery.data?.data.slots ?? [];
 	const coinBalance = coinBalanceQuery.data?.coinBalance ?? 0;
@@ -132,74 +149,29 @@ export function PublicMentorProfilePage({
 		});
 	};
 
-	const storePendingSlot = (slot: PublicMentorSlot) => {
-		try {
-			localStorage.setItem(
-				PENDING_BOOKING_STORAGE_KEY,
-				JSON.stringify({ mentorId, slot, source: "mentor" }),
-			);
-		} catch {
-			// Ignore storage failures.
-		}
-	};
-
-	const loadPendingSlot = () => {
-		try {
-			const raw = localStorage.getItem(PENDING_BOOKING_STORAGE_KEY);
-			if (!raw) return null;
-			const parsed = JSON.parse(raw) as {
-				mentorId: string;
-				slot: PublicMentorSlot;
-				source?: string;
-			};
-			if (parsed.mentorId !== mentorId) return null;
-			if (parsed.source !== "mentor") return null;
-			return parsed.slot;
-		} catch {
-			return null;
-		}
-	};
-
-	const clearPendingSlot = () => {
-		try {
-			localStorage.removeItem(PENDING_BOOKING_STORAGE_KEY);
-		} catch {
-			// Ignore storage failures.
-		}
-	};
-
-	useEffect(() => {
-		if (!coinBalanceQuery.data) return;
-		const pending = loadPendingSlot();
-		if (!pending) return;
-		if (coinBalance >= pending.price) {
-			setSelectedSlot(pending);
-			setIsConfirmOpen(true);
-			clearPendingSlot();
-		}
-	}, [coinBalance, coinBalanceQuery.data, mentorId]);
-
-	const handleBookClick = (slot: PublicMentorSlot) => {
+	const handleBookClick = (slot: AvailabilitySlot) => {
 		setSelectedSlot(slot);
-		if (coinBalanceQuery.isLoading) {
-			toast.info("Checking your coin balance...");
-			return;
-		}
-		if (coinBalance < slot.price) {
-			setIsTopUpOpen(true);
-			return;
-		}
 		setIsConfirmOpen(true);
 	};
 
 	const handleConfirmBooking = () => {
 		if (!selectedSlot) return;
-		bookMutation.mutate(selectedSlot.id);
+
+		if (paymentType === "COINS" && coinBalance < selectedSlot.price) {
+			setIsTopUpOpen(true);
+			setIsConfirmOpen(false);
+			return;
+		}
+
+		bookMutation.mutate({
+			mentorId,
+			startTime: selectedSlot.startTime,
+			endTime: selectedSlot.endTime,
+			paymentType,
+		});
 	};
 
 	const handleCheckout = async (coins: number) => {
-		if (!selectedSlot) return;
-		storePendingSlot(selectedSlot);
 		const session = await coinManagementService.createCheckoutSession({
 			coins,
 		});
@@ -363,51 +335,6 @@ export function PublicMentorProfilePage({
 						</div>
 					</CardContent>
 				</Card>
-
-				{!isAdminView && (
-					<Card className="border-border/60 shadow-sm">
-						<CardHeader>
-							<CardTitle className="text-lg">Next available sessions</CardTitle>
-						</CardHeader>
-						<CardContent className="space-y-3">
-							{nextAvailableSessions.length === 0 && (
-								<p className="text-sm text-muted-foreground">
-									No upcoming sessions yet.
-								</p>
-							)}
-							{nextAvailableSessions.map((slot) => (
-								<div
-									key={slot.id}
-									className="flex items-center justify-between rounded-lg border border-border/60 p-3"
-								>
-									<div>
-										<p className="font-medium">
-											{formatTime(slot.startTime)} - {formatTime(slot.endTime)}
-										</p>
-										<p className="text-xs text-muted-foreground">
-											{new Date(slot.startTime).toLocaleDateString()} ·{" "}
-											{slot.durationMinutes} mins · {slot.price} coins
-										</p>
-									</div>
-									<div className="flex items-center gap-2">
-										<Badge variant="secondary">Available</Badge>
-										<Button
-											size="sm"
-											onClick={() => handleBookClick(slot)}
-											disabled={
-												bookMutation.isPending && bookingSlotId === slot.id
-											}
-										>
-											{bookMutation.isPending && bookingSlotId === slot.id
-												? "Booking..."
-												: "Book"}
-										</Button>
-									</div>
-								</div>
-							))}
-						</CardContent>
-					</Card>
-				)}
 			</div>
 
 			{!isAdminView && (
@@ -448,7 +375,7 @@ export function PublicMentorProfilePage({
 							)}
 							{availableSlots.map((slot) => (
 								<div
-									key={slot.id}
+									key={slot.startTime}
 									className="flex items-center justify-between rounded-lg border border-border/60 p-3"
 								>
 									<div>
@@ -465,10 +392,12 @@ export function PublicMentorProfilePage({
 											size="sm"
 											onClick={() => handleBookClick(slot)}
 											disabled={
-												bookMutation.isPending && bookingSlotId === slot.id
+												bookMutation.isPending &&
+												bookingSlotId === slot.startTime
 											}
 										>
-											{bookMutation.isPending && bookingSlotId === slot.id
+											{bookMutation.isPending &&
+											bookingSlotId === slot.startTime
 												? "Booking..."
 												: "Book"}
 										</Button>
@@ -502,25 +431,67 @@ export function PublicMentorProfilePage({
 				}}
 				onConfirm={handleConfirmBooking}
 				title="Confirm booking"
-				message={
-					selectedSlot
-						? `Book this session for ${selectedSlot.price} coins?`
-						: "Book this session?"
-				}
+				message={selectedSlot ? `Book this session?` : "Book this session?"}
 				confirmText="Confirm booking"
 				isLoading={bookMutation.isPending}
 			>
 				{selectedSlot && (
-					<div className="mt-3 space-y-1 text-sm text-muted-foreground">
-						<p>
-							Time: {formatTime(selectedSlot.startTime)} -{" "}
-							{formatTime(selectedSlot.endTime)}
-						</p>
-						<p>Duration: {selectedSlot.durationMinutes} mins</p>
-						<p>
-							Balance after booking:{" "}
-							{Math.max(coinBalance - selectedSlot.price, 0)}
-						</p>
+					<div className="mt-4 space-y-4">
+						<div className="space-y-1 text-sm text-muted-foreground">
+							<p>
+								Time: {formatTime(selectedSlot.startTime)} -{" "}
+								{formatTime(selectedSlot.endTime)}
+							</p>
+							<p>Duration: {selectedSlot.durationMinutes} mins</p>
+							<p className="font-medium text-foreground">
+								Price: {selectedSlot.price} coins
+							</p>
+						</div>
+
+						<Separator />
+
+						<div className="space-y-3">
+							<Label className="text-sm font-semibold">Payment Method</Label>
+							<RadioGroup
+								value={paymentType}
+								onValueChange={(val: "COINS" | "STRIPE") => setPaymentType(val)}
+								className="grid grid-cols-2 gap-4"
+							>
+								<div className="flex items-center space-x-2">
+									<RadioGroupItem value="COINS" id="coins" />
+									<Label
+										htmlFor="coins"
+										className="flex items-center gap-2 cursor-pointer"
+									>
+										<Coins className="h-4 w-4 text-amber-500" />
+										Coins ({coinBalance})
+									</Label>
+								</div>
+								<div className="flex items-center space-x-2">
+									<RadioGroupItem value="STRIPE" id="stripe" />
+									<Label
+										htmlFor="stripe"
+										className="flex items-center gap-2 cursor-pointer"
+									>
+										<CreditCard className="h-4 w-4 text-blue-500" />
+										Direct Payment
+									</Label>
+								</div>
+							</RadioGroup>
+						</div>
+
+						{paymentType === "COINS" && (
+							<p className="text-xs text-muted-foreground">
+								Balance after booking:{" "}
+								<span
+									className={
+										coinBalance < selectedSlot.price ? "text-red-500" : ""
+									}
+								>
+									{Math.max(coinBalance - selectedSlot.price, 0)} coins
+								</span>
+							</p>
+						)}
 					</div>
 				)}
 			</ConfirmModal>
@@ -531,7 +502,7 @@ export function PublicMentorProfilePage({
 						<DialogDescription>
 							You need{" "}
 							{selectedSlot ? Math.max(selectedSlot.price - coinBalance, 0) : 0}{" "}
-							more coins to book this session.
+							more coins to book this session using Coins.
 						</DialogDescription>
 					</DialogHeader>
 					<div className="mt-2 space-y-4">
@@ -543,15 +514,31 @@ export function PublicMentorProfilePage({
 								</span>
 							</p>
 						</div>
+						<div className="flex flex-col gap-4">
+							<p className="text-sm">
+								You can either top up your wallet or use direct payment.
+							</p>
+							<div className="flex gap-2">
+								<Button
+									variant="outline"
+									className="flex-1"
+									onClick={() => {
+										setIsTopUpOpen(false);
+										setPaymentType("STRIPE");
+										setIsConfirmOpen(true);
+									}}
+								>
+									Use Direct Payment
+								</Button>
+							</div>
+						</div>
+						<Separator />
 						<AddBalanceForm
 							onSubmit={handleCheckout}
 							coinValue={coinValue}
 							label="Purchase coins"
 							placeholder="Enter Coins"
 						/>
-						<div className="text-xs text-muted-foreground">
-							After payment, you will be redirected back to continue booking.
-						</div>
 					</div>
 				</DialogContent>
 			</Dialog>

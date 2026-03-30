@@ -20,7 +20,7 @@ import { CreateAdminDialog } from "./CreateAdminDialog";
 
 export function AdminManagement() {
 	const navigate = useNavigate({ from: Route.fullPath });
-	const searchParams = Route.useSearch();
+	const searchParams = Route.useSearch() as AdminManagementSearch;
 	const { data: adminsData } = useAdmins(searchParams);
 
 	const [searchTerm, setSearchTerm] = useState(searchParams.search || "");

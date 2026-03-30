@@ -1,28 +1,32 @@
+import { useForm } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
+import FieldError from "@/components/common/Field-Error";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-	Dialog,
-	DialogContent,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { availabilityManagementService } from "@/features/availability-management/services/availability-management.service";
+import { useProfile } from "@/features/profile-management/hooks/use-profile";
+import { Clock, Calendar, Power, Plus, X } from "lucide-react";
+import type {
+	DayOfWeek,
+	BreakTime,
+	CreateAvailabilityInput,
+	AvailabilityRule,
+	ConflictAvailabilitySummary,
+} from "@/features/availability-management/types";
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import { recurringRuleService } from "@/features/recurring-rule-management";
+	buildEmptyStringErrors,
+	buildFieldErrorsFromIssues,
+} from "@/shared/utils/form-validation";
+import { cn } from "@/shared/utils/cn";
 
 export const Route = createFileRoute(
 	"/_app-layout/_mentor-layout/mentor-rule-management",
@@ -30,466 +34,863 @@ export const Route = createFileRoute(
 	component: MentorRuleManagement,
 });
 
+const DAYS: DayOfWeek[] = [
+	"Monday",
+	"Tuesday",
+	"Wednesday",
+	"Thursday",
+	"Friday",
+	"Saturday",
+	"Sunday",
+];
+
+const DaySchema = z.enum([
+	"Monday",
+	"Tuesday",
+	"Wednesday",
+	"Thursday",
+	"Friday",
+	"Saturday",
+	"Sunday",
+]);
+
+const availabilityRuleSchema = z
+	.object({
+		name: z
+			.string()
+			.trim()
+			.min(2, "Name must be at least 2 characters")
+			.max(100, "Name must be at most 100 characters"),
+		description: z
+			.string()
+			.trim()
+			.min(10, "Description must be at least 10 characters")
+			.max(1000, "Description must be at most 1000 characters"),
+		days: z.array(DaySchema).min(1, "At least one day is required"),
+		startTime: z
+			.string()
+			.regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Must be HH:MM"),
+		endTime: z
+			.string()
+			.regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Must be HH:MM"),
+		startDate: z
+			.string()
+			.regex(/^\d{4}-\d{2}-\d{2}$/, "Must be YYYY-MM-DD"),
+		endDate: z
+			.string()
+			.regex(/^\d{4}-\d{2}-\d{2}$/, "Must be YYYY-MM-DD"),
+		breakTimes: z
+			.array(
+				z.object({
+					startTime: z
+						.string()
+						.regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Must be HH:MM"),
+					endTime: z
+						.string()
+						.regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Must be HH:MM"),
+				}),
+			)
+			.default([]),
+		slotDuration: z.union([z.literal(30), z.literal(60)]),
+		bufferTime: z
+			.number()
+			.int()
+			.min(5, "Buffer time must be between 5 and 60 minutes")
+			.max(60, "Buffer time must be between 5 and 60 minutes"),
+	})
+	.superRefine((value, ctx) => {
+		const [startH, startM] = value.startTime.split(":").map(Number);
+		const [endH, endM] = value.endTime.split(":").map(Number);
+		const start = startH * 60 + startM;
+		const end = endH * 60 + endM;
+		if (end <= start) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: "End time must be after start time",
+				path: ["endTime"],
+			});
+			return;
+		}
+		if (end - start < 60) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: "Availability must be at least 1 hour",
+				path: ["endTime"],
+			});
+		}
+	});
+
+type AvailabilityFormValues = Omit<
+	z.infer<typeof availabilityRuleSchema>,
+	"bufferTime"
+> & {
+	bufferTime: number | "";
+};
+
+const formatDateShort = (dateStr: string) => {
+	const [year, month, day] = dateStr.split("-");
+	if (!year || !month || !day) return dateStr;
+	return `${day}/${month}/${year.slice(-2)}`;
+};
+
 function MentorRuleManagement() {
+	const { data: profile } = useProfile();
 	const queryClient = useQueryClient();
-	const [newRule, setNewRule] = useState({
-		weekDay: "1",
+	const [availabilityFilter, setAvailabilityFilter] = useState<
+		"active" | "expired"
+	>("active");
+	const [statusFilter, setStatusFilter] = useState<"all" | "disabled">("all");
+	const [page, setPage] = useState(1);
+	const limit = 5;
+	const [rules, setRules] = useState<AvailabilityRule[]>([]);
+	const today = new Date().toISOString().split("T")[0];
+	const defaultValues: AvailabilityFormValues = {
+		name: "",
+		description: "",
+		days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
 		startTime: "09:00",
-		endTime: "09:30",
-		slotDuration: "30",
-	});
-	const [editingRuleId, setEditingRuleId] = useState<string | null>(null);
+		endTime: "17:00",
+		startDate: today,
+		endDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
+			.toISOString()
+			.split("T")[0],
+		breakTimes: [{ startTime: "12:00", endTime: "13:00" }],
+		slotDuration: 30,
+		bufferTime: 15,
+	};
+
 	const [confirmAction, setConfirmAction] = useState<{
-		type: "enable" | "disable" | "delete" | "add";
-		ruleId: string;
+		type: "enable" | "delete" | "add" | "conflict" | "enable-conflict";
+		ruleId?: string;
 	} | null>(null);
-	const [editRule, setEditRule] = useState({
-		weekDay: "",
-		startTime: "",
-		endTime: "",
-		slotDuration: "30",
+	const [pendingRule, setPendingRule] = useState<CreateAvailabilityInput | null>(
+		null,
+	);
+	const [conflictSummaries, setConflictSummaries] = useState<
+		ConflictAvailabilitySummary[]
+	>([]);
+
+	const validateForm = (value: AvailabilityFormValues) => {
+		const emptyErrors = buildEmptyStringErrors(value);
+		if (Object.keys(emptyErrors).length > 0) {
+			return { fields: emptyErrors };
+		}
+		if (value.bufferTime === "") {
+			return { fields: { bufferTime: "Buffer time is required" } };
+		}
+
+		const parsed = availabilityRuleSchema.safeParse({
+			...value,
+			bufferTime: value.bufferTime,
+		});
+		return parsed.success
+			? undefined
+			: { fields: buildFieldErrorsFromIssues(parsed.error.issues) };
+	};
+
+	const form = useForm({
+		defaultValues,
+		validators: {
+			onBlur: ({ value }) => validateForm(value),
+		},
+		onSubmit: async ({ value }) => {
+			if (value.bufferTime === "") return;
+			const parsed = availabilityRuleSchema.safeParse({
+				...value,
+				bufferTime: value.bufferTime,
+			});
+			if (!parsed.success) return;
+			setPendingRule(parsed.data);
+			setConfirmAction({ type: "add" });
+		},
 	});
 
-	const { data, isLoading } = useQuery({
-		queryKey: ["recurring-rules"],
-		queryFn: () => recurringRuleService.getRules(),
+	const { data, isLoading, isFetching } = useQuery({
+		queryKey: [
+			"mentor-availabilities",
+			profile?.id,
+			availabilityFilter,
+			statusFilter,
+			page,
+		],
+		queryFn: () =>
+			availabilityManagementService.getMentorAvailabilities({
+				mentorId: profile?.id || "",
+				expiredOnly: availabilityFilter === "expired",
+				includeExpired: availabilityFilter !== "expired" ? false : undefined,
+				status: statusFilter === "disabled" ? "disabled" : undefined,
+				page,
+				limit,
+			}),
+		enabled: !!profile?.id,
 	});
 
-	const rules = data?.data.rules ?? [];
+	const pagination = data?.pagination;
+	const hasMore =
+		pagination !== undefined
+			? pagination.page < pagination.totalPages
+			: (data?.data?.availabilities?.length ?? 0) === limit;
 
-	const ruleById = useMemo(() => {
-		return new Map(rules.map((rule) => [rule.ruleId, rule]));
-	}, [rules]);
+	useEffect(() => {
+		if (!data?.data?.availabilities) return;
+		setRules((prev) => {
+			if (page === 1) return data.data.availabilities;
+			const existingIds = new Set(prev.map((r) => r.id));
+			const merged = [...prev];
+			for (const rule of data.data.availabilities) {
+				if (!existingIds.has(rule.id)) merged.push(rule);
+			}
+			return merged;
+		});
+	}, [data, page]);
 
-	const toMinutes = (time: string) => {
-		const [hours, minutes] = time.split(":").map(Number);
-		if (Number.isNaN(hours) || Number.isNaN(minutes)) return 0;
-		return hours * 60 + minutes;
-	};
-
-	const toTimeString = (minutes: number) => {
-		const h = Math.floor(minutes / 60);
-		const m = minutes % 60;
-		return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
-	};
-
-	const clampMinutes = (value: number) => {
-		if (value < 0) return 0;
-		if (value > 24 * 60 - 1) return 24 * 60 - 1;
-		return value;
-	};
-
-	const updateNewStart = (value: string) => {
-		const start = toMinutes(value);
-		const duration = Number(newRule.slotDuration);
-		const end = clampMinutes(start + duration);
-		setNewRule((prev) => ({
-			...prev,
-			startTime: value,
-			endTime: toTimeString(end),
-		}));
-	};
-
-	const updateNewEnd = (value: string) => {
-		const end = toMinutes(value);
-		const duration = Number(newRule.slotDuration);
-		const start = clampMinutes(end - duration);
-		setNewRule((prev) => ({
-			...prev,
-			endTime: value,
-			startTime: toTimeString(start),
-		}));
-	};
-
-	const updateNewDuration = (value: string) => {
-		const start = toMinutes(newRule.startTime);
-		const duration = Number(value);
-		const end = clampMinutes(start + duration);
-		setNewRule((prev) => ({
-			...prev,
-			slotDuration: value,
-			endTime: toTimeString(end),
-		}));
-	};
-
-	const updateEditStart = (value: string) => {
-		const start = toMinutes(value);
-		const duration = Number(editRule.slotDuration);
-		const end = clampMinutes(start + duration);
-		setEditRule((prev) => ({
-			...prev,
-			startTime: value,
-			endTime: toTimeString(end),
-		}));
-	};
-
-	const updateEditEnd = (value: string) => {
-		const end = toMinutes(value);
-		const duration = Number(editRule.slotDuration);
-		const start = clampMinutes(end - duration);
-		setEditRule((prev) => ({
-			...prev,
-			endTime: value,
-			startTime: toTimeString(start),
-		}));
-	};
-
-	const updateEditDuration = (value: string) => {
-		const start = toMinutes(editRule.startTime);
-		const duration = Number(value);
-		const end = clampMinutes(start + duration);
-		setEditRule((prev) => ({
-			...prev,
-			slotDuration: value,
-			endTime: toTimeString(end),
-		}));
-	};
 
 	const addMutation = useMutation({
-		mutationFn: () =>
-			recurringRuleService.addRule({
-				rule: {
-					weekDay: Number(newRule.weekDay),
-					startTime: toMinutes(newRule.startTime),
-					endTime: toMinutes(newRule.endTime),
-					slotDuration: Number(newRule.slotDuration) as 30 | 60,
-				},
-			}),
+		mutationFn: (data: CreateAvailabilityInput) =>
+			availabilityManagementService.checkAndCreateAvailability(data),
+		onSuccess: (response) => {
+			if (response.data.created) {
+				toast.success("Availability rule added");
+				queryClient.invalidateQueries({ queryKey: ["mentor-availabilities"] });
+				form.reset();
+				setPendingRule(null);
+				setPage(1);
+				setRules([]);
+				return;
+			}
+
+			setConflictSummaries(response.data.conflicts ?? []);
+			setConfirmAction({ type: "conflict" });
+		},
+		onError: (error: any) => {
+			toast.error(error?.response?.data?.message || "Failed to add rule");
+		},
+	});
+	const forceCreateMutation = useMutation({
+		mutationFn: (data: CreateAvailabilityInput) =>
+			availabilityManagementService.createAvailability(data),
 		onSuccess: () => {
-			toast.success("Rule added");
-			queryClient.invalidateQueries({ queryKey: ["recurring-rules"] });
-			setNewRule({
-				weekDay: "1",
-				startTime: "09:00",
-				endTime: "09:30",
-				slotDuration: "30",
-			});
+			toast.success("Availability rule added");
+			queryClient.invalidateQueries({ queryKey: ["mentor-availabilities"] });
+			form.reset();
+			setPendingRule(null);
+			setConflictSummaries([]);
+			setPage(1);
+			setRules([]);
 		},
 		onError: (error: any) => {
 			toast.error(error?.response?.data?.message || "Failed to add rule");
 		},
 	});
 
-	const updateMutation = useMutation({
-		mutationFn: () =>
-			recurringRuleService.updateRule({
-				ruleId: editingRuleId as string,
-				updates: {
-					weekDay: Number(editRule.weekDay),
-					startTime: toMinutes(editRule.startTime),
-					endTime: toMinutes(editRule.endTime),
-					slotDuration: Number(editRule.slotDuration) as 30 | 60,
-				},
-			}),
+	const deleteMutation = useMutation({
+		mutationFn: (id: string) =>
+			availabilityManagementService.deleteAvailability(id),
 		onSuccess: () => {
-			toast.success("Rule updated");
-			queryClient.invalidateQueries({ queryKey: ["recurring-rules"] });
-			setEditingRuleId(null);
+			toast.success("Rule disabled/deleted");
+			queryClient.invalidateQueries({ queryKey: ["mentor-availabilities"] });
+			setPage(1);
+			setRules([]);
 		},
 		onError: (error: any) => {
-			toast.error(error?.response?.data?.message || "Failed to update rule");
+			toast.error(error?.response?.data?.message || "Failed to disable rule");
 		},
 	});
 
 	const enableMutation = useMutation({
-		mutationFn: (ruleId: string) => recurringRuleService.enableRule(ruleId),
+		mutationFn: (id: string) =>
+			availabilityManagementService.reenableAvailability(id),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["recurring-rules"] });
-		},
-	});
-
-	const disableMutation = useMutation({
-		mutationFn: (ruleId: string) => recurringRuleService.disableRule(ruleId),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["recurring-rules"] });
-		},
-	});
-
-	const deleteMutation = useMutation({
-		mutationFn: (ruleId: string) => recurringRuleService.deleteRule({ ruleId }),
-		onSuccess: () => {
-			toast.success("Rule deleted");
-			queryClient.invalidateQueries({ queryKey: ["recurring-rules"] });
+			toast.success("Rule re-enabled");
+			queryClient.invalidateQueries({ queryKey: ["mentor-availabilities"] });
+			setConfirmAction(null);
+			setConflictSummaries([]);
+			setPage(1);
+			setRules([]);
 		},
 		onError: (error: any) => {
-			toast.error(error?.response?.data?.message || "Failed to delete rule");
+			toast.error(error?.response?.data?.message || "Failed to enable rule");
 		},
 	});
-
-	const openEditDialog = (ruleId: string) => {
-		const rule = ruleById.get(ruleId);
-		if (!rule) return;
-		setEditingRuleId(ruleId);
-		setEditRule({
-			weekDay: String(rule.weekDay),
-			startTime: toTimeString(rule.startTime),
-			endTime: toTimeString(rule.endTime),
-			slotDuration: String(rule.slotDuration),
-		});
-	};
+	const checkEnableMutation = useMutation({
+		mutationFn: (id: string) =>
+			availabilityManagementService.checkAndReenableAvailability(id),
+		onSuccess: (response, ruleId) => {
+			if (response.data.enabled) {
+				toast.success("Rule re-enabled");
+				queryClient.invalidateQueries({ queryKey: ["mentor-availabilities"] });
+				setPage(1);
+				setRules([]);
+				return;
+			}
+			setConflictSummaries(response.data.conflicts ?? []);
+			setConfirmAction({ type: "enable-conflict", ruleId });
+		},
+		onError: (error: any) => {
+			toast.error(error?.response?.data?.message || "Failed to enable rule");
+		},
+	});
 
 	const confirmAndRun = () => {
 		if (!confirmAction) return;
-		if (confirmAction.type === "add") {
-			addMutation.mutate();
-		}
-		if (confirmAction.type === "enable") {
+		if (confirmAction.type === "add" && pendingRule)
+			addMutation.mutate(pendingRule);
+		if (confirmAction.type === "conflict" && pendingRule)
+			forceCreateMutation.mutate(pendingRule);
+		if (confirmAction.type === "enable-conflict" && confirmAction.ruleId)
 			enableMutation.mutate(confirmAction.ruleId);
-		}
-		if (confirmAction.type === "disable") {
-			disableMutation.mutate(confirmAction.ruleId);
-		}
-		if (confirmAction.type === "delete") {
+		if (confirmAction.type === "delete" && confirmAction.ruleId)
 			deleteMutation.mutate(confirmAction.ruleId);
+		if (confirmAction.type === "enable" && confirmAction.ruleId) {
+			checkEnableMutation.mutate(confirmAction.ruleId);
 		}
 		setConfirmAction(null);
 	};
 
+	const toggleDay = (day: DayOfWeek) => {
+		const currentDays = form.state.values.days;
+		const nextDays = currentDays.includes(day)
+			? currentDays.filter((d) => d !== day)
+			: [...currentDays, day];
+		form.setFieldValue("days", nextDays);
+	};
+
+	const addBreakTime = () => {
+		const current = form.state.values.breakTimes ?? [];
+		form.setFieldValue("breakTimes", [
+			...current,
+			{ startTime: "12:00", endTime: "13:00" },
+		]);
+	};
+
+	const updateBreakTime = (
+		index: number,
+		field: keyof BreakTime,
+		value: string,
+	) => {
+		const bt = [...(form.state.values.breakTimes || [])];
+		bt[index] = { ...bt[index], [field]: value };
+		form.setFieldValue("breakTimes", bt);
+	};
+
+	const removeBreakTime = (index: number) => {
+		const next = (form.state.values.breakTimes || []).filter(
+			(_, i) => i !== index,
+		);
+		form.setFieldValue("breakTimes", next);
+	};
+
 	return (
-		<div className="p-4 md:p-8 space-y-6">
-			<Card className="border-border/60 shadow-sm">
-				<CardHeader>
-					<CardTitle className="text-2xl">Rule Management</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<p className="text-muted-foreground">
-						Configure weekly availability rules.
-					</p>
-					<p className="text-sm text-muted-foreground mt-2">
-						Slots for the next week are generated automatically from active
-						rules.
-					</p>
-				</CardContent>
-			</Card>
+		<div className="p-4 md:p-8 space-y-8 max-w-5xl mx-auto">
+			<div className="flex flex-col gap-2">
+				<h1 className="text-3xl font-bold tracking-tight">
+					Availability Rules
+				</h1>
+				<p className="text-muted-foreground">
+					Define your recurring weekly availability. The system will
+					automatically compute accurate booking slots based on these configured
+					rules, break times, and session durations.
+				</p>
+			</div>
 
-			<Card className="border-border/60 shadow-sm">
-				<CardHeader>
-					<CardTitle className="text-xl">Add Rule</CardTitle>
+			<Card className="border-border/60 shadow-sm overflow-hidden">
+				<CardHeader className="bg-muted/30">
+					<CardTitle className="text-lg flex items-center gap-2">
+						<Plus className="h-5 w-5 text-primary" />
+						Create New Rule
+					</CardTitle>
 				</CardHeader>
-				<CardContent className="space-y-4">
-					<div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-						<div className="space-y-2">
-							<Label>Weekday</Label>
-							<Select
-								value={newRule.weekDay}
-								onValueChange={(value) =>
-									setNewRule((prev) => ({ ...prev, weekDay: value }))
-								}
-							>
-								<SelectTrigger>
-									<SelectValue placeholder="Weekday" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="0">Sunday</SelectItem>
-									<SelectItem value="1">Monday</SelectItem>
-									<SelectItem value="2">Tuesday</SelectItem>
-									<SelectItem value="3">Wednesday</SelectItem>
-									<SelectItem value="4">Thursday</SelectItem>
-									<SelectItem value="5">Friday</SelectItem>
-									<SelectItem value="6">Saturday</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-						<div className="space-y-2">
-							<Label>Start</Label>
-							<Input
-								type="time"
-								value={newRule.startTime}
-								onChange={(e) => updateNewStart(e.target.value)}
-							/>
-						</div>
-						<div className="space-y-2">
-							<Label>End</Label>
-							<Input
-								type="time"
-								value={newRule.endTime}
-								onChange={(e) => updateNewEnd(e.target.value)}
-							/>
-						</div>
-						<div className="space-y-2">
-							<Label>Duration</Label>
-							<Select
-								value={newRule.slotDuration}
-								onValueChange={updateNewDuration}
-							>
-								<SelectTrigger>
-									<SelectValue placeholder="Duration" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="30">30 mins</SelectItem>
-									<SelectItem value="60">60 mins</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-					</div>
-					<Button
-						onClick={() =>
-							setConfirmAction({
-								type: "add",
-								ruleId: "new",
-							})
-						}
-						disabled={addMutation.isPending}
+				<CardContent className="p-6 space-y-6">
+					<form
+						onSubmit={(e) => {
+							e.preventDefault();
+							e.stopPropagation();
+							form.handleSubmit();
+						}}
+						className="space-y-6"
 					>
-						Add Rule
-					</Button>
-				</CardContent>
-			</Card>
-
-			<Card className="border-border/60 shadow-sm">
-				<CardHeader>
-					<CardTitle className="text-xl">Recurring Rules</CardTitle>
-				</CardHeader>
-				<CardContent className="space-y-3">
-					{isLoading && (
-						<p className="text-sm text-muted-foreground">Loading...</p>
-					)}
-					{!isLoading && rules.length === 0 && (
-						<p className="text-sm text-muted-foreground">No rules yet.</p>
-					)}
-					{rules.map((rule) => (
-						<div
-							key={rule.ruleId}
-							className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-border/60 rounded-lg gap-4"
-						>
-							<div className="space-y-1">
-								<p className="font-medium">Weekday {rule.weekDay}</p>
-								<p className="text-sm text-muted-foreground">
-									{toTimeString(rule.startTime)} - {toTimeString(rule.endTime)}{" "}
-									• {rule.slotDuration}m
-								</p>
-							</div>
-							<div className="flex flex-wrap items-center gap-2">
-								<Badge
-									variant={rule.isActive === false ? "secondary" : "default"}
-								>
-									{rule.isActive === false ? "Disabled" : "Active"}
-								</Badge>
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={() => openEditDialog(rule.ruleId)}
-								>
-									Edit
-								</Button>
-								{rule.isActive === false ? (
-									<Button
-										variant="outline"
-										size="sm"
-										onClick={() =>
-											setConfirmAction({
-												type: "enable",
-												ruleId: rule.ruleId,
-											})
-										}
-									>
-										Enable
-									</Button>
-								) : (
-									<Button
-										variant="outline"
-										size="sm"
-										onClick={() =>
-											setConfirmAction({
-												type: "disable",
-												ruleId: rule.ruleId,
-											})
-										}
-									>
-										Disable
-									</Button>
+						{/* Basic Info */}
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+							<form.Field name="name">
+								{(field) => (
+									<div className="space-y-2">
+										<Label htmlFor={field.name}>Rule Name</Label>
+										<Input
+											id={field.name}
+											placeholder="e.g. Fall Semester Morning Slots"
+											value={field.state.value}
+											onChange={(e) => field.handleChange(e.target.value)}
+											onBlur={field.handleBlur}
+										/>
+										<FieldError
+											message={field.state.meta.errors?.[0] as any}
+										/>
+									</div>
 								)}
-								<Button
-									variant="destructive"
-									size="sm"
-									onClick={() =>
-										setConfirmAction({
-											type: "delete",
-											ruleId: rule.ruleId,
-										})
-									}
-								>
-									Delete
-								</Button>
-							</div>
+							</form.Field>
+							<form.Field name="description">
+								{(field) => (
+									<div className="space-y-2">
+										<Label htmlFor={field.name}>Description</Label>
+										<Input
+											id={field.name}
+											placeholder="What is this rule for?"
+											value={field.state.value}
+											onChange={(e) => field.handleChange(e.target.value)}
+											onBlur={field.handleBlur}
+										/>
+										<FieldError
+											message={field.state.meta.errors?.[0] as any}
+										/>
+									</div>
+								)}
+							</form.Field>
 						</div>
-					))}
-				</CardContent>
-			</Card>
 
-			<Dialog
-				open={Boolean(editingRuleId)}
-				onOpenChange={() => setEditingRuleId(null)}
-			>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>Edit Rule</DialogTitle>
-					</DialogHeader>
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-						<div className="space-y-2">
-							<Label>Weekday</Label>
-							<Select
-								value={editRule.weekDay}
-								onValueChange={(value) =>
-									setEditRule((prev) => ({ ...prev, weekDay: value }))
+					{/* Date Range & Time */}
+					<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+						<form.Field name="startDate">
+							{(field) => (
+								<div className="space-y-2">
+									<Label htmlFor={field.name}>Start Date</Label>
+									<Input
+										id={field.name}
+										type="date"
+										value={field.state.value}
+										min={today}
+										onChange={(e) => field.handleChange(e.target.value)}
+										onBlur={field.handleBlur}
+									/>
+									<FieldError
+										message={field.state.meta.errors?.[0] as any}
+									/>
+								</div>
+							)}
+						</form.Field>
+						<form.Field name="endDate">
+							{(field) => (
+								<div className="space-y-2">
+									<Label htmlFor={field.name}>End Date</Label>
+									<Input
+										id={field.name}
+										type="date"
+										value={field.state.value}
+										min={form.state.values.startDate || today}
+										onChange={(e) => field.handleChange(e.target.value)}
+										onBlur={field.handleBlur}
+									/>
+									<FieldError
+										message={field.state.meta.errors?.[0] as any}
+									/>
+								</div>
+							)}
+						</form.Field>
+						<form.Field name="startTime">
+							{(field) => (
+								<div className="space-y-2">
+									<Label htmlFor={field.name}>Daily Start Time</Label>
+									<Input
+										id={field.name}
+										type="time"
+										value={field.state.value}
+										onChange={(e) => field.handleChange(e.target.value)}
+										onBlur={field.handleBlur}
+									/>
+									<FieldError
+										message={field.state.meta.errors?.[0] as any}
+									/>
+								</div>
+							)}
+						</form.Field>
+						<form.Field name="endTime">
+							{(field) => (
+								<div className="space-y-2">
+									<Label htmlFor={field.name}>Daily End Time</Label>
+									<Input
+										id={field.name}
+										type="time"
+										value={field.state.value}
+										onChange={(e) => field.handleChange(e.target.value)}
+										onBlur={field.handleBlur}
+									/>
+									<FieldError
+										message={field.state.meta.errors?.[0] as any}
+									/>
+								</div>
+							)}
+						</form.Field>
+					</div>
+
+					{/* Days of Week */}
+					<form.Field name="days">
+						{(field) => (
+							<div className="space-y-3">
+								<Label>Active Days</Label>
+								<div className="flex flex-wrap gap-3">
+									{DAYS.map((day) => {
+										const selected = form.state.values.days.includes(day);
+										return (
+											<button
+												type="button"
+												key={day}
+												onClick={() => toggleDay(day)}
+												className={cn(
+													"px-4 py-2 border rounded-full text-sm font-medium transition-colors",
+													selected
+														? "bg-primary text-primary-foreground border-primary"
+														: "bg-background text-muted-foreground border-input hover:border-primary hover:text-foreground",
+												)}
+											>
+												{day}
+											</button>
+										);
+									})}
+								</div>
+								<FieldError message={field.state.meta.errors?.[0] as any} />
+							</div>
+						)}
+					</form.Field>
+
+					{/* Break Times */}
+					<div className="space-y-3 p-4 border rounded-xl bg-muted/10">
+						<div className="flex items-center justify-between">
+							<Label className="text-base font-semibold">Break Times</Label>
+							<Button variant="outline" size="sm" onClick={addBreakTime}>
+								<Plus className="h-4 w-4 mr-2" /> Add Break
+							</Button>
+						</div>
+						{!form.state.values.breakTimes?.length ? (
+							<p className="text-sm text-muted-foreground">
+								No breaks configured. You will be available consecutively.
+							</p>
+						) : (
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+								{form.state.values.breakTimes.map((bt, i) => (
+									<div
+										key={i}
+										className="flex items-center gap-2 p-3 bg-background border rounded-lg"
+									>
+										<Input
+											type="time"
+											value={bt.startTime}
+											className="h-9"
+											onChange={(e) =>
+												updateBreakTime(i, "startTime", e.target.value)
+											}
+										/>
+										<span className="text-muted-foreground">to</span>
+										<Input
+											type="time"
+											value={bt.endTime}
+											className="h-9"
+											onChange={(e) =>
+												updateBreakTime(i, "endTime", e.target.value)
+											}
+										/>
+										<Button
+											variant="ghost"
+											size="icon"
+											className="text-rose-500 h-9 w-9 shrink-0"
+											onClick={() => removeBreakTime(i)}
+										>
+											<X className="h-4 w-4" />
+										</Button>
+									</div>
+								))}
+							</div>
+						)}
+					</div>
+
+					{/* Slot Config */}
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+						<form.Field name="slotDuration">
+							{(field) => (
+								<div className="space-y-3">
+									<Label>Slot Duration (minutes)</Label>
+									<RadioGroup
+										value={String(field.state.value)}
+										onValueChange={(val) =>
+											field.handleChange(Number(val) as 30 | 60)
+										}
+										className="flex items-center gap-4"
+									>
+										<div className="flex items-center space-x-2">
+											<RadioGroupItem value="30" id="r30" />
+											<Label htmlFor="r30">30 min</Label>
+										</div>
+										<div className="flex items-center space-x-2">
+											<RadioGroupItem value="60" id="r60" />
+											<Label htmlFor="r60">60 min</Label>
+										</div>
+									</RadioGroup>
+									<FieldError
+										message={field.state.meta.errors?.[0] as any}
+									/>
+								</div>
+							)}
+						</form.Field>
+						<form.Field name="bufferTime">
+							{(field) => (
+								<div className="space-y-2">
+									<Label htmlFor={field.name}>
+										Buffer Between Sessions (min)
+									</Label>
+									<Input
+										id={field.name}
+										type="number"
+										min="5"
+										max="60"
+										step="5"
+										value={field.state.value}
+										onChange={(e) =>
+											field.handleChange(
+												e.target.value === ""
+													? ""
+													: Number(e.target.value),
+											)
+										}
+										onBlur={field.handleBlur}
+									/>
+									<FieldError
+										message={field.state.meta.errors?.[0] as any}
+									/>
+								</div>
+							)}
+						</form.Field>
+					</div>
+
+					<form.Subscribe
+						selector={(state) => [state.canSubmit, state.isSubmitting]}
+						children={([canSubmit, isSubmitting]) => (
+							<Button
+								type="submit"
+								className="mt-6 h-11 px-8 w-full md:w-auto"
+								disabled={
+									!canSubmit || isSubmitting || addMutation.isPending
 								}
 							>
-								<SelectTrigger>
-									<SelectValue placeholder="Weekday" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="0">Sunday</SelectItem>
-									<SelectItem value="1">Monday</SelectItem>
-									<SelectItem value="2">Tuesday</SelectItem>
-									<SelectItem value="3">Wednesday</SelectItem>
-									<SelectItem value="4">Thursday</SelectItem>
-									<SelectItem value="5">Friday</SelectItem>
-									<SelectItem value="6">Saturday</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-						<div className="space-y-2">
-							<Label>Duration</Label>
-							<Select
-								value={editRule.slotDuration}
-								onValueChange={updateEditDuration}
-							>
-								<SelectTrigger>
-									<SelectValue placeholder="Duration" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="30">30 mins</SelectItem>
-									<SelectItem value="60">60 mins</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-						<div className="space-y-2">
-							<Label>Start</Label>
-							<Input
-								type="time"
-								value={editRule.startTime}
-								onChange={(e) => updateEditStart(e.target.value)}
-							/>
-						</div>
-						<div className="space-y-2">
-							<Label>End</Label>
-							<Input
-								type="time"
-								value={editRule.endTime}
-								onChange={(e) => updateEditEnd(e.target.value)}
-							/>
-						</div>
-					</div>
-					<DialogFooter>
+								Submit Rule Configuration
+							</Button>
+						)}
+					/>
+				</form>
+				</CardContent>
+			</Card>
+
+			<div className="space-y-4">
+				<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+					<h2 className="text-xl font-semibold flex items-center gap-2">
+						<Calendar className="h-5 w-5" />
+						Current Rules
+					</h2>
+					<div className="flex items-center gap-2">
 						<Button
-							onClick={() => updateMutation.mutate()}
-							disabled={updateMutation.isPending}
+							type="button"
+							variant={
+								availabilityFilter === "active" && statusFilter !== "disabled"
+									? "default"
+									: "outline"
+							}
+							size="sm"
+							onClick={() => {
+								setAvailabilityFilter("active");
+								setStatusFilter("all");
+								setPage(1);
+								setRules([]);
+							}}
 						>
-							Save Changes
+							Active
 						</Button>
-					</DialogFooter>
-				</DialogContent>
-			</Dialog>
+						<Button
+							type="button"
+							variant={availabilityFilter === "expired" ? "default" : "outline"}
+							size="sm"
+							onClick={() => {
+								setAvailabilityFilter("expired");
+								setStatusFilter("all");
+								setPage(1);
+								setRules([]);
+							}}
+						>
+							Expired
+						</Button>
+						<Button
+							type="button"
+							variant={statusFilter === "disabled" ? "default" : "outline"}
+							size="sm"
+							onClick={() => {
+								setAvailabilityFilter("active");
+								setStatusFilter((prev) =>
+									prev === "disabled" ? "all" : "disabled",
+								);
+								setPage(1);
+								setRules([]);
+							}}
+						>
+							Disabled Only
+						</Button>
+					</div>
+				</div>
+				{isLoading ? (
+					<div className="p-8 text-center text-muted-foreground animate-pulse">
+						Loading rules...
+					</div>
+				) : rules.length === 0 ? (
+					<Card className="border-dashed border-2 flex flex-col items-center justify-center p-12 text-center">
+						<Clock className="h-12 w-12 text-muted-foreground/30 mb-4" />
+						<p className="text-muted-foreground font-medium">
+							No availability rules defined yet.
+						</p>
+						<p className="text-sm text-muted-foreground">
+							Add a rule above to start receiving bookings.
+						</p>
+					</Card>
+				) : (
+					<div className="space-y-6">
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+							{rules.map((rule) => {
+								const active = rule.status;
+								return (
+									<Card
+										key={rule.id}
+										className={cn(
+											"border-border/60 shadow-sm transition-all flex flex-col hover:shadow-md",
+											!active && "opacity-60 bg-muted/20 border-dashed",
+										)}
+									>
+										<CardHeader className="pb-3 border-b bg-muted/10">
+											<div className="flex justify-between items-start">
+												<div>
+													<CardTitle className="text-base line-clamp-1">
+														{rule.name}
+													</CardTitle>
+													<p className="text-xs text-muted-foreground mt-1 line-clamp-2 min-h-[32px]">
+														{rule.description || "No description provided."}
+													</p>
+												</div>
+												<Badge
+													variant={active ? "default" : "secondary"}
+													className="shrink-0 ml-2"
+												>
+													{active ? "Active" : "Disabled"}
+												</Badge>
+											</div>
+										</CardHeader>
+										<CardContent className="p-4 flex-1 space-y-4 text-sm">
+											<div className="space-y-1.5 border-b pb-3">
+												<div className="flex justify-between">
+													<span className="text-muted-foreground">
+														Valid Period:
+													</span>
+													<span className="font-medium text-right">
+														{formatDateShort(rule.startDate)} to{" "}
+														{formatDateShort(rule.endDate)}
+													</span>
+												</div>
+												<div className="flex justify-between">
+													<span className="text-muted-foreground">
+														Daily Window:
+													</span>
+													<span className="font-medium">
+														{rule.startTime} - {rule.endTime}
+													</span>
+												</div>
+												<div className="flex justify-between">
+													<span className="text-muted-foreground">
+														Session / Buffer:
+													</span>
+													<span className="font-medium">
+														{rule.slotDuration}m / {rule.bufferTime}m
+													</span>
+												</div>
+											</div>
+
+											<div>
+												<span className="text-muted-foreground block mb-2 text-xs uppercase tracking-wider font-semibold">
+													Active Days
+												</span>
+												<div className="flex flex-wrap gap-1">
+													{rule.days.map((d) => (
+														<Badge
+															key={d}
+															variant="outline"
+															className="bg-background text-xs font-normal px-2 py-0.5"
+														>
+															{d.substring(0, 3)}
+														</Badge>
+													))}
+												</div>
+											</div>
+
+											{rule.breakTimes && rule.breakTimes.length > 0 && (
+												<div>
+													<span className="text-muted-foreground block mb-2 text-xs uppercase tracking-wider font-semibold">
+														Break Times
+													</span>
+													<div className="space-y-1">
+														{rule.breakTimes.map((bt, i) => (
+															<div
+																key={i}
+																className="text-xs flex items-center gap-1.5"
+															>
+																<Clock className="w-3 h-3" /> {bt.startTime} -{" "}
+																{bt.endTime}
+															</div>
+														))}
+													</div>
+												</div>
+											)}
+										</CardContent>
+										<div className="p-3 border-t bg-muted/5 flex justify-end gap-2 shrink-0">
+											{active ? (
+												<Button
+													variant="ghost"
+													size="sm"
+													className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 w-full justify-center"
+													onClick={() =>
+														setConfirmAction({
+															type: "delete",
+															ruleId: rule.id,
+														})
+													}
+												>
+													<Power className="h-4 w-4 mr-2" /> Disable Rule
+												</Button>
+											) : (
+												<Button
+													variant="ghost"
+													size="sm"
+													className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 w-full justify-center"
+													onClick={() =>
+														setConfirmAction({
+															type: "enable",
+															ruleId: rule.id,
+														})
+													}
+												>
+													<Power className="h-4 w-4 mr-2" /> Enable Rule
+												</Button>
+											)}
+										</div>
+									</Card>
+								);
+							})}
+						</div>
+						{hasMore && (
+							<div className="flex justify-center">
+								<Button
+									type="button"
+									variant="outline"
+									disabled={isFetching}
+									onClick={() => setPage((prev) => prev + 1)}
+								>
+									{isFetching ? "Loading..." : "View more"}
+								</Button>
+							</div>
+						)}
+					</div>
+				)}
+			</div>
 
 			<ConfirmModal
 				isOpen={Boolean(confirmAction)}
@@ -497,38 +898,53 @@ function MentorRuleManagement() {
 				onConfirm={confirmAndRun}
 				title={
 					confirmAction?.type === "add"
-						? "Add Rule"
-						: confirmAction?.type === "delete"
-							? "Delete Rule"
-							: confirmAction?.type === "disable"
+						? "Confirm New Rule"
+						: confirmAction?.type === "conflict"
+							? "Availability Conflict"
+							: confirmAction?.type === "enable-conflict"
+								? "Availability Conflict"
+							: confirmAction?.type === "delete"
 								? "Disable Rule"
-								: "Enable Rule"
+								: "Re-enable Rule"
 				}
 				message={
 					confirmAction?.type === "add"
-						? "Create this recurring rule and generate slots for the next week?"
-						: confirmAction?.type === "delete"
-							? "This will permanently remove the rule. Continue?"
-							: confirmAction?.type === "disable"
-								? "Disabled rules won't generate slots. Continue?"
-								: "Enable this rule and allow slot generation?"
+						? "This will create a new availability rule for mentees to book sessions."
+						: confirmAction?.type === "conflict"
+							? `There is a conflict with: ${conflictSummaries
+									.map(
+										(c) =>
+											`${c.name} (${formatDateShort(
+												c.startDate,
+											)} to ${formatDateShort(c.endDate)}, ${
+												c.startTime
+											}-${c.endTime})`,
+									)
+									.join("; ")}. Would you want to continue? The new rule will have the higher priority over the old one.`
+							: confirmAction?.type === "enable-conflict"
+								? `There is a conflict with: ${conflictSummaries
+										.map(
+											(c) =>
+												`${c.name} (${formatDateShort(
+													c.startDate,
+												)} to ${formatDateShort(c.endDate)}, ${
+													c.startTime
+												}-${c.endTime})`,
+										)
+										.join("; ")}. Would you want to continue? The new rule will have the higher priority over the old one.`
+							: confirmAction?.type === "delete"
+								? "Are you sure you want to disable this availability rule? Mentees won't be able to book these slots while disabled."
+								: "Bring this rule back into active rotation?"
 				}
 				variant={confirmAction?.type === "delete" ? "destructive" : "default"}
 				isLoading={
-					enableMutation.isPending ||
-					disableMutation.isPending ||
+					addMutation.isPending ||
+					forceCreateMutation.isPending ||
 					deleteMutation.isPending ||
-					addMutation.isPending
+					enableMutation.isPending ||
+					checkEnableMutation.isPending
 				}
-				confirmText={
-					confirmAction?.type === "add"
-						? "Yes, Add"
-						: confirmAction?.type === "delete"
-							? "Yes, Delete"
-							: confirmAction?.type === "disable"
-								? "Yes, Disable"
-								: "Yes, Enable"
-				}
+				confirmText="Confirm"
 			/>
 		</div>
 	);

@@ -117,6 +117,15 @@ export const ROUTES = {
 		EDIT: (articleId: string) => `/${articleId}/edit`,
 		APPEAL: (articleId: string) => `/${articleId}/appeal`,
 	},
+	AVAILABILITY: {
+		BASE: "/availability",
+		ROOT: "/",
+		MENTOR: "/mentor/me",
+		CHECK_CREATE: "/check-create",
+		DELETE: (id: string) => `/${id}`,
+		REENABLE: (id: string) => `/${id}/reenable`,
+		CHECK_REENABLE: (id: string) => `/${id}/check-reenable`,
+	},
 	RECURRING_RULES: {
 		BASE: "/recurring-rules",
 		ROOT: "/",
@@ -133,6 +142,15 @@ export const ROUTES = {
 		CANCEL: (slotId: string) => `/${slotId}/cancel`,
 		ENABLE: (slotId: string) => `/${slotId}/enable`,
 		PUBLIC_AVAILABLE: (mentorId: string) => `/public/${mentorId}/available`,
+	},
+	BOOKINGS: {
+		BASE: "/bookings",
+		ROOT: "/",
+		SLOTS: (mentorId: string) => `/slots/${mentorId}`,
+		CANCEL: (id: string) => `/${id}/cancel`,
+		MENTOR_CANCEL: (id: string) => `/${id}/mentor-cancel`,
+		USER: "/user",
+		MENTOR: "/mentor",
 	},
 	SESSION_BOOKINGS: {
 		BASE: "/session-bookings",

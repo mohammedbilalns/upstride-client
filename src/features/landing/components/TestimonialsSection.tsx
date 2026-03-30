@@ -1,5 +1,4 @@
 import { QuoteIcon, Star } from "lucide-react";
-import { useId } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { testimonials } from "../data";

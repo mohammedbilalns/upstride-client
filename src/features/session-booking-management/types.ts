@@ -1,11 +1,46 @@
-export interface BookSessionInput {
-	slotId: string;
+export type PaymentType = "COINS" | "STRIPE";
+export type PaymentStatus = "PENDING" | "COMPLETED" | "FAILED" | "REFUNDED";
+export type BookingStatus =
+	| "PENDING"
+	| "CONFIRMED"
+	| "COMPLETED"
+	| "CANCELLED_BY_MENTEE"
+	| "CANCELLED_BY_MENTOR";
+
+export interface CreateBookingInput {
+	mentorId: string;
+	startTime: string; // ISO string
+	endTime: string; // ISO string
+	paymentType: PaymentType;
+	notes?: string;
 }
 
-export interface BookSessionResponse {
+export interface CreateBookingResponse {
+	success: boolean;
 	message: string;
 	data: {
 		bookingId: string;
+		paymentStatus: "PENDING" | "COMPLETED";
+		paymentUrl?: string;
+	};
+}
+
+export interface BookSessionInput {
+	slotId?: string; // Legacy
+	mentorId?: string;
+	startTime?: string;
+	endTime?: string;
+	paymentType?: PaymentType;
+	notes?: string;
+}
+
+export interface BookSessionResponse {
+	success: boolean;
+	message: string;
+	data: {
+		bookingId: string;
+		paymentStatus?: "PENDING" | "COMPLETED";
+		paymentUrl?: string;
 	};
 }
 
@@ -15,35 +50,11 @@ export interface CancelBookingInput {
 }
 
 export interface CancelBookingResponse {
+	success: boolean;
 	message: string;
 	data: {
 		bookingId: string;
-		status: "cancelled";
-	};
-}
-
-export interface RequestRescheduleInput {
-	bookingId: string;
-}
-
-export interface RequestRescheduleResponse {
-	message: string;
-	data: {
-		bookingId: string;
-		status: "pending";
-	};
-}
-
-export interface HandleRescheduleInput {
-	bookingId: string;
-	newSlotId: string;
-}
-
-export interface HandleRescheduleResponse {
-	message: string;
-	data: {
-		bookingId: string;
-		status: "confirmed";
+		status: string;
 	};
 }
 
@@ -55,32 +66,46 @@ export interface GetBookingsInput {
 	limit?: number;
 }
 
-export interface BookingListItem {
+export interface BookingDto {
 	id: string;
-	userId: string;
 	mentorId: string;
-	mentorName: string | null;
-	slotId: string;
+	menteeId: string;
 	startTime: string;
 	endTime: string;
-	price: number;
-	status: "pending" | "confirmed" | "cancelled" | "completed" | "refunded";
-	attendanceStatus: "attended" | "not_attended" | null;
-	meetingId: string | null;
-	meetingUrl: string | null;
-	cancellationReason: string | null;
-	cancelledBy: "user" | "mentor" | null;
+	startDate: string;
+	status: BookingStatus;
+	paymentType: PaymentType;
+	paymentStatus: PaymentStatus;
+	totalAmount: number;
+	currency: string;
+	meetingLink: string;
+	notes: string | null;
 	createdAt: string;
 	updatedAt: string;
 }
 
 export interface GetBookingsResponse {
+	success: boolean;
 	message: string;
 	data: {
-		items: BookingListItem[];
+		items: BookingDto[];
 		total: number;
 		page: number;
 		limit: number;
 		totalPages: number;
+	};
+}
+
+// Keep legacy ones if needed for now
+export interface HandleRescheduleInput {
+	bookingId: string;
+	newSlotId: string;
+}
+
+export interface HandleRescheduleResponse {
+	message: string;
+	data: {
+		bookingId: string;
+		status: "confirmed";
 	};
 }

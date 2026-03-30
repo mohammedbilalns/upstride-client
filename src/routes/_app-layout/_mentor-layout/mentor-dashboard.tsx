@@ -96,10 +96,8 @@ function MentorDashboard() {
 			z.object({
 				currentPricePer30Min: z
 					.string()
-					.optional()
 					.refine(
 						(value) =>
-							value === undefined ||
 							value === "" ||
 							(!Number.isNaN(Number(value)) &&
 								Number.isInteger(Number(value)) &&
@@ -110,6 +108,9 @@ function MentorDashboard() {
 						},
 					),
 				bio: z.string().trim().min(10, "Bio must be at least 10 characters"),
+				newSkillId: z.string(),
+				newSkillLevel: z.string(),
+				newQualification: z.string(),
 			}),
 		[],
 	);
@@ -306,7 +307,7 @@ function MentorDashboard() {
 										onChange={(e) => field.handleChange(e.target.value)}
 										onBlur={field.handleBlur}
 									/>
-									<FieldError message={field.state.meta.errors?.[0]?.message} />
+									<FieldError message={field.state.meta.errors?.[0] as any} />
 								</div>
 							)}
 						</form.Field>
@@ -320,7 +321,7 @@ function MentorDashboard() {
 										onChange={(e) => field.handleChange(e.target.value)}
 										onBlur={field.handleBlur}
 									/>
-									<FieldError message={field.state.meta.errors?.[0]?.message} />
+									<FieldError message={field.state.meta.errors?.[0] as any} />
 								</div>
 							)}
 						</form.Field>

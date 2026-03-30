@@ -1,10 +1,8 @@
 export interface PublicMentorSlot {
-	id: string;
-	startTime: string;
-	endTime: string;
+	startTime: string; // ISO
+	endTime: string; // ISO
 	durationMinutes: number;
 	price: number;
-	currency: "coins";
 }
 
 export interface PublicMentorProfile {

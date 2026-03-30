@@ -46,7 +46,7 @@ export function AddItemDialog({
 			name: "",
 		},
 		validators: {
-			onSubmit: schema ? z.object({ name: schema }) : undefined,
+			onSubmit: (schema ? z.object({ name: schema }) : undefined) as any,
 		},
 		onSubmit: async ({ value }) => {
 			if (schema) {
