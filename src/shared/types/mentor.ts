@@ -23,6 +23,7 @@ export interface Mentor {
 		}[];
 	}[];
 	resumeUrl: string;
+	educationalQualifications: string[];
 	resubmissionCount: number;
 	status: "approved" | "rejected" | "pending";
 	rejectionReason: string | null;

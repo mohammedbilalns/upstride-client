@@ -80,40 +80,65 @@ export function MentorRowDetails({ mentor }: MentorRowDetailsProps) {
 			</div>
 
 			<div className="space-y-6">
-				<h4 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-2">
-					<Briefcase className="w-4 h-4" />
-					Expertises & Skills
-				</h4>
-				<div className="space-y-6">
-					{mentor.expertises.map((exp) => (
-						<div key={exp.name} className="space-y-3">
-							<div className="flex items-center gap-2">
-								<Badge
-									variant="secondary"
-									className="px-3 py-1 text-xs font-semibold uppercase tracking-wider"
+				<div>
+					<h4 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-2">
+						<Briefcase className="w-4 h-4" />
+						Education
+					</h4>
+					{mentor.educationalQualifications.length > 0 ? (
+						<div className="space-y-2">
+							{mentor.educationalQualifications.map((item) => (
+								<div
+									key={item}
+									className="text-sm bg-background/50 px-3 py-2 rounded-lg border"
 								>
-									{exp.name}
-								</Badge>
-								<div className="h-[1px] flex-1 bg-border/50" />
-							</div>
-							<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-								{exp.skills.map((skill) => (
-									<div
-										key={skill.name}
-										className="flex items-center justify-between text-sm bg-background/50 px-3 py-2 rounded-lg border group/skill hover:border-primary/30 transition-colors"
-									>
-										<span className="font-medium">{skill.name}</span>
-										<Badge
-											variant="outline"
-											className="text-[10px] bg-muted/30"
-										>
-											{skill.level}
-										</Badge>
-									</div>
-								))}
-							</div>
+									{item}
+								</div>
+							))}
 						</div>
-					))}
+					) : (
+						<p className="text-sm text-muted-foreground italic">
+							No education details provided.
+						</p>
+					)}
+				</div>
+
+				<div>
+					<h4 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-2">
+						<Briefcase className="w-4 h-4" />
+						Expertises & Skills
+					</h4>
+					<div className="space-y-6">
+						{mentor.expertises.map((exp) => (
+							<div key={exp.name} className="space-y-3">
+								<div className="flex items-center gap-2">
+									<Badge
+										variant="secondary"
+										className="px-3 py-1 text-xs font-semibold uppercase tracking-wider"
+									>
+										{exp.name}
+									</Badge>
+									<div className="h-[1px] flex-1 bg-border/50" />
+								</div>
+								<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+									{exp.skills.map((skill) => (
+										<div
+											key={skill.name}
+											className="flex items-center justify-between text-sm bg-background/50 px-3 py-2 rounded-lg border group/skill hover:border-primary/30 transition-colors"
+										>
+											<span className="font-medium">{skill.name}</span>
+											<Badge
+												variant="outline"
+												className="text-[10px] bg-muted/30"
+											>
+												{skill.level}
+											</Badge>
+										</div>
+									))}
+								</div>
+							</div>
+						))}
+					</div>
 				</div>
 			</div>
 		</div>
