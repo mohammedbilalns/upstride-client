@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+	createContext,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import { Socket } from "socket.io-client";
 import { useLocation, useRouter } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
@@ -25,6 +31,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 	const queryClient = useQueryClient();
 	const location = useLocation();
 	const router = useRouter();
+	const pathnameRef = useRef(location.pathname);
 
 	// Get auth state from router context
 	const auth = router.options.context?.auth;
@@ -32,6 +39,10 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 	const isAuthenticated = auth?.isAuthenticated;
 	const userRole = auth?.user?.role;
 	const isAdminRole = userRole === "ADMIN" || userRole === "SUPER_ADMIN";
+
+	useEffect(() => {
+		pathnameRef.current = location.pathname;
+	}, [location.pathname]);
 
 	useEffect(() => {
 		if (isAuthenticated && token && !isAdminRole) {
@@ -62,7 +73,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 					console.log("[WS] Received chat:message", data);
 
 					//  Update chat history if we are currently in that chat
-					const currentChatId = location.pathname.split("/").pop();
+					const currentChatId = pathnameRef.current.split("/").pop();
 					if (
 						currentChatId === data.chatId ||
 						currentChatId === data.message.senderId
@@ -129,7 +140,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 			setSocket(null);
 			setIsConnected(false);
 		}
-	}, [isAuthenticated, token, isAdminRole, queryClient, location.pathname]);
+	}, [isAuthenticated, token, isAdminRole, queryClient]);
 
 	return (
 		<SocketContext.Provider value={{ socket, isConnected }}>
