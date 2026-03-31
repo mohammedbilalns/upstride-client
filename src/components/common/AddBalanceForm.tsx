@@ -12,6 +12,9 @@ interface AddBalanceFormProps {
 	label?: string;
 	placeholder?: string;
 	coinValue?: number;
+	defaultCoins?: number;
+	minCoins?: number;
+	minCoinsWarning?: string;
 }
 
 const addBalanceSchema = z.object({
@@ -23,11 +26,14 @@ export function AddBalanceForm({
 	label = "Add coins to your wallet",
 	placeholder = "Enter coin amount",
 	coinValue,
+	defaultCoins = 0,
+	minCoins,
+	minCoinsWarning,
 }: AddBalanceFormProps) {
 	const inputId = useId();
 	const form = useForm({
 		defaultValues: {
-			coins: 0,
+			coins: defaultCoins,
 		},
 		validators: {
 			onSubmit: addBalanceSchema,
@@ -74,6 +80,14 @@ export function AddBalanceForm({
 									<FieldError
 										message={getErrorMessage(field.state.meta.errors?.[0])}
 									/>
+									{typeof minCoins === "number" &&
+									field.state.value > 0 &&
+									field.state.value < minCoins ? (
+										<p className="text-xs text-amber-600 dark:text-amber-400">
+											{minCoinsWarning ??
+												`Add at least ${minCoins} coins to cover this booking.`}
+										</p>
+									) : null}
 									<div className="min-h-[40px]">
 										{coinValue && (field.state.value || 0) > 0 ? (
 											<div className="space-y-0.5 text-xs text-muted-foreground">

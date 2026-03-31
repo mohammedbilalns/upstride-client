@@ -1,7 +1,8 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { Coins } from "lucide-react";
+import { Link, createFileRoute } from "@tanstack/react-router";
+import { format } from "date-fns";
+import { Calendar, Clock, Coins, ArrowRight } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -28,6 +29,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { catalogService } from "@/features/catalog-management/services/catalog.service";
 import { mentorProfileService } from "@/features/mentor-profile";
+import { useMentorSessions } from "@/features/mentor-sessions/hooks/use-mentor-sessions";
 
 export const Route = createFileRoute(
 	"/_app-layout/_mentor-layout/mentor-dashboard",
@@ -47,6 +49,13 @@ function MentorDashboard() {
 	});
 
 	const profile = data?.data.profile;
+	const upcomingParams = useMemo(
+		() => ({ page: 1, limit: 5, filter: "upcoming" as const }),
+		[],
+	);
+	const { data: upcomingSessions, isLoading: upcomingLoading } =
+		useMentorSessions(upcomingParams);
+	const upcomingItems = upcomingSessions?.data.items ?? [];
 	const [isEditOpen, setIsEditOpen] = useState(false);
 	const [skillError, setSkillError] = useState<string | null>(null);
 	const [qualificationError, setQualificationError] = useState<string | null>(
@@ -169,44 +178,106 @@ function MentorDashboard() {
 					<p className="text-muted-foreground">
 						Manage your availability and upcoming sessions.
 					</p>
-					{isLoading && (
-						<p className="text-sm text-muted-foreground">Loading profile...</p>
-					)}
-					{profile && (
-						<div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
-							<div className="space-y-2">
-								<div className="flex items-center gap-3 flex-wrap">
-									<h2 className="text-xl font-semibold">{profile.user.name}</h2>
-									{profile.tierName && (
-										<Badge variant="secondary">{profile.tierName}</Badge>
-									)}
-									<Button variant="outline" size="sm" onClick={openEdit}>
-										Edit Profile
-									</Button>
-								</div>
-								<p className="text-sm text-muted-foreground">
-									{profile.currentRole.name} • {profile.organization}
-								</p>
-								{profile.personalWebsite && (
-									<p className="text-sm text-muted-foreground">
-										{profile.personalWebsite}
-									</p>
-								)}
-							</div>
-							<div className="md:ml-auto grid grid-cols-1 sm:grid-cols-2 gap-4">
-								<div className="p-4 border border-border/60 rounded-lg">
-									<p className="text-xs text-muted-foreground">Current Price</p>
-									<p className="text-lg font-semibold flex items-center gap-2">
-										<Coins className="h-4 w-4 text-primary" />
-										<span>{profile.currentPricePer30Min ?? 0}</span>
-										<span className="text-sm text-muted-foreground">/ 30m</span>
-									</p>
-								</div>
-							</div>
-						</div>
-					)}
 				</CardContent>
 			</Card>
+
+			<div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-6">
+				<Card className="border-border/60 shadow-sm">
+					<CardHeader className="pb-3">
+						<CardTitle className="text-xl">Profile Snapshot</CardTitle>
+					</CardHeader>
+					<CardContent className="space-y-4">
+						{isLoading && (
+							<p className="text-sm text-muted-foreground">
+								Loading profile...
+							</p>
+						)}
+						{profile && (
+							<div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+								<div className="space-y-2">
+									<div className="flex items-center gap-3 flex-wrap">
+										<h2 className="text-xl font-semibold">
+											{profile.user.name}
+										</h2>
+										{profile.tierName && (
+											<Badge variant="secondary">{profile.tierName}</Badge>
+										)}
+										<Button variant="outline" size="sm" onClick={openEdit}>
+											Edit Profile
+										</Button>
+									</div>
+									<p className="text-sm text-muted-foreground">
+										{profile.currentRole.name} • {profile.organization}
+									</p>
+									{profile.personalWebsite && (
+										<p className="text-sm text-muted-foreground">
+											{profile.personalWebsite}
+										</p>
+									)}
+								</div>
+								<div className="md:ml-auto grid grid-cols-1 sm:grid-cols-2 gap-4">
+									<div className="p-4 border border-border/60 rounded-lg">
+										<p className="text-xs text-muted-foreground">
+											Current Price
+										</p>
+										<p className="text-lg font-semibold flex items-center gap-2">
+											<Coins className="h-4 w-4 text-primary" />
+											<span>{profile.currentPricePer30Min ?? 0}</span>
+											<span className="text-sm text-muted-foreground">
+												/ 30m
+											</span>
+										</p>
+									</div>
+								</div>
+							</div>
+						)}
+					</CardContent>
+				</Card>
+
+				<Card className="border-border/60 shadow-sm">
+					<CardHeader className="flex items-center justify-between">
+						<CardTitle className="text-xl">Upcoming Sessions</CardTitle>
+						<Button variant="ghost" size="sm" asChild>
+							<Link to="/mentor-sessions" className="flex items-center gap-2">
+								View all <ArrowRight className="h-4 w-4" />
+							</Link>
+						</Button>
+					</CardHeader>
+					<CardContent className="space-y-3">
+						{upcomingLoading && (
+							<p className="text-sm text-muted-foreground">
+								Loading sessions...
+							</p>
+						)}
+						{!upcomingLoading && upcomingItems.length === 0 && (
+							<div className="border border-dashed border-border/60 rounded-xl p-6 text-center text-sm text-muted-foreground">
+								No upcoming sessions scheduled.
+							</div>
+						)}
+						<div className="space-y-3">
+							{upcomingItems.map((session) => (
+								<div
+									key={session.id}
+									className="flex items-center justify-between rounded-lg border border-border/60 p-3"
+								>
+									<div className="space-y-1">
+										<div className="flex items-center gap-2 text-sm font-semibold">
+											<Calendar className="h-4 w-4 text-primary" />
+											{format(new Date(session.startTime), "MMM dd, yyyy")}
+										</div>
+										<div className="flex items-center gap-2 text-xs text-muted-foreground">
+											<Clock className="h-4 w-4" />
+											{format(new Date(session.startTime), "hh:mm a")} -{" "}
+											{format(new Date(session.endTime), "hh:mm a")}
+										</div>
+									</div>
+									<Badge variant="secondary">{session.status}</Badge>
+								</div>
+							))}
+						</div>
+					</CardContent>
+				</Card>
+			</div>
 
 			<Card className="border-border/60 shadow-sm">
 				<CardHeader>

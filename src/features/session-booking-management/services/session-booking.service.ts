@@ -57,4 +57,10 @@ export const sessionBookingService = {
 		);
 		return response.data;
 	},
+	repayBooking: async (bookingId: string): Promise<BookSessionResponse> => {
+		const response = await api.post<BookSessionResponse>(
+			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.REPAY(bookingId)}`,
+		);
+		return response.data;
+	},
 };

@@ -58,7 +58,12 @@ export interface CancelBookingResponse {
 	};
 }
 
-export type BookingFilter = "past" | "cancelled" | "upcoming" | "all";
+export type BookingFilter =
+	| "past"
+	| "cancelled"
+	| "upcoming"
+	| "all"
+	| "payment_pending";
 
 export interface GetBookingsInput {
 	filter?: BookingFilter;
@@ -80,6 +85,7 @@ export interface BookingDto {
 	currency: string;
 	meetingLink: string;
 	notes: string | null;
+	mentorName: string | null;
 	createdAt: string;
 	updatedAt: string;
 }
