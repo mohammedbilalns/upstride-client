@@ -34,6 +34,7 @@ export function SessionsPage() {
 	const search = Route.useSearch();
 	const [pendingCancelId, setPendingCancelId] = useState<string | null>(null);
 	const [cancelReason, setCancelReason] = useState("");
+	const [pendingRepayId, setPendingRepayId] = useState<string | null>(null);
 
 	const filter = (
 		search.tab === "past" ? "past" : search.upcomingFilter
@@ -60,6 +61,23 @@ export function SessionsPage() {
 		onError: () => {
 			setPendingCancelId(null);
 			setCancelReason("");
+		},
+	});
+	const repayMutation = useMutation({
+		mutationFn: (bookingId: string) =>
+			sessionBookingService.repayBooking(bookingId),
+		onSuccess: (response) => {
+			if (response.data.paymentUrl) {
+				window.location.href = response.data.paymentUrl;
+				return;
+			}
+			navigate({
+				to: "/bookings/success",
+				search: { id: response.data.bookingId },
+			});
+		},
+		onSettled: () => {
+			setPendingRepayId(null);
 		},
 	});
 
@@ -115,7 +133,7 @@ export function SessionsPage() {
 						<div className="rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40 px-4 py-3">
 							<div>
 								<p className="text-sm font-medium text-zinc-700 dark:text-zinc-200">
-									Session results
+									Sessions
 								</p>
 								{!isLoading && (
 									<p className="text-xs text-zinc-500">
@@ -173,7 +191,9 @@ export function SessionsPage() {
 										booking={booking}
 										showCancel={search.tab === "upcoming"}
 										onCancel={() => setPendingCancelId(booking.id)}
+										onRepay={() => setPendingRepayId(booking.id)}
 										isCancelling={cancelMutation.isPending}
+										isRepaying={repayMutation.isPending}
 									/>
 								))}
 							</div>
@@ -220,6 +240,18 @@ export function SessionsPage() {
 					/>
 				</div>
 			</ConfirmModal>
+
+			<ConfirmModal
+				isOpen={Boolean(pendingRepayId)}
+				onClose={() => setPendingRepayId(null)}
+				onConfirm={() => {
+					if (pendingRepayId) repayMutation.mutate(pendingRepayId);
+				}}
+				title="Retry payment"
+				message="This session payment is still pending. Continue to complete the payment?"
+				confirmText="Pay now"
+				isLoading={repayMutation.isPending}
+			/>
 		</div>
 	);
 }
@@ -228,17 +260,22 @@ function SessionCard({
 	booking,
 	showCancel,
 	onCancel,
+	onRepay,
 	isCancelling,
+	isRepaying,
 }: {
 	booking: BookingDto;
 	showCancel: boolean;
 	onCancel: () => void;
+	onRepay: () => void;
 	isCancelling: boolean;
+	isRepaying: boolean;
 }) {
 	const timeUntilStartMs = new Date(booking.startTime).getTime() - Date.now();
 	const isCancelled = booking.status.startsWith("CANCELLED");
 	const isUpcoming =
-		booking.status === "CONFIRMED" || booking.status === "PENDING";
+		(booking.status === "CONFIRMED" || booking.status === "PENDING") &&
+		timeUntilStartMs >= 0;
 
 	const showMeetingInfo =
 		isUpcoming &&
@@ -248,6 +285,11 @@ function SessionCard({
 
 	const canCancel =
 		showCancel && !isCancelled && booking.status !== "COMPLETED";
+	const canRepay =
+		!isCancelled &&
+		booking.paymentType === "STRIPE" &&
+		booking.paymentStatus !== "COMPLETED" &&
+		timeUntilStartMs >= 0;
 
 	return (
 		<div className="group flex flex-col gap-4 rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-5 sm:flex-row sm:items-center sm:justify-between transition-all hover:border-zinc-300 dark:hover:border-zinc-700 shadow-sm hover:shadow-md">
@@ -266,7 +308,7 @@ function SessionCard({
 							params={{ mentorId: booking.mentorId }}
 							className="text-base font-bold text-zinc-900 dark:text-zinc-50 hover:text-primary transition-colors truncate"
 						>
-							Mentor Profile
+							{booking.mentorName || "Mentor Profile"}
 						</Link>
 						{isCancelled && (
 							<Badge
@@ -323,10 +365,33 @@ function SessionCard({
 			</div>
 
 			<div className="flex items-center gap-3 sm:flex-col sm:items-end sm:gap-2">
+				<Button
+					asChild
+					variant="outline"
+					size="sm"
+					className="h-9 px-4 rounded-xl text-xs font-semibold"
+				>
+					<Link to="/sessions/$sessionId" params={{ sessionId: booking.id }}>
+						View details
+					</Link>
+				</Button>
+
 				{isCancelled && booking.notes && (
 					<div className="hidden lg:block text-[10px] text-zinc-500 text-right max-w-[200px] line-clamp-1 italic">
 						"{booking.notes}"
 					</div>
+				)}
+
+				{canRepay && (
+					<Button
+						variant="default"
+						size="sm"
+						onClick={onRepay}
+						disabled={isRepaying}
+						className="h-9 px-4 rounded-xl text-xs font-semibold"
+					>
+						Pay now
+					</Button>
 				)}
 
 				{canCancel && (

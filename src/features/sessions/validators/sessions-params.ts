@@ -5,7 +5,9 @@ export const SessionsSearchSchema = z.object({
 	tab: z.enum(["upcoming", "past"]).catch("upcoming"),
 	page: pageSchema,
 	limit: limitSchema,
-	upcomingFilter: z.enum(["upcoming", "cancelled"]).catch("upcoming"),
+	upcomingFilter: z
+		.enum(["upcoming", "cancelled", "payment_pending"])
+		.catch("upcoming"),
 });
 
 export type SessionsSearch = z.infer<typeof SessionsSearchSchema>;
