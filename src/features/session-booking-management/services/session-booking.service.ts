@@ -7,6 +7,7 @@ import type {
 	CancelBookingResponse,
 	GetBookingsInput,
 	GetBookingsResponse,
+	GetBookingDetailsResponse,
 } from "../types";
 
 export const sessionBookingService = {
@@ -21,7 +22,7 @@ export const sessionBookingService = {
 	cancelBooking: async (
 		data: CancelBookingInput,
 	): Promise<CancelBookingResponse> => {
-		const response = await api.patch<CancelBookingResponse>(
+		const response = await api.put<CancelBookingResponse>(
 			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.CANCEL(data.bookingId)}`,
 			{ reason: data.reason },
 		);
@@ -31,7 +32,7 @@ export const sessionBookingService = {
 	cancelBookingByMentor: async (
 		data: CancelBookingInput,
 	): Promise<CancelBookingResponse> => {
-		const response = await api.patch<CancelBookingResponse>(
+		const response = await api.put<CancelBookingResponse>(
 			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.MENTOR_CANCEL(data.bookingId)}`,
 			{ reason: data.reason },
 		);
@@ -54,6 +55,14 @@ export const sessionBookingService = {
 		const response = await api.get<GetBookingsResponse>(
 			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.MENTOR}`,
 			{ params },
+		);
+		return response.data;
+	},
+	getBookingDetails: async (
+		bookingId: string,
+	): Promise<GetBookingDetailsResponse> => {
+		const response = await api.get<GetBookingDetailsResponse>(
+			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.BY_ID(bookingId)}`,
 		);
 		return response.data;
 	},

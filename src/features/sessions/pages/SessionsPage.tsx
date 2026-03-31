@@ -11,22 +11,77 @@ import {
 	Coins,
 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { sessionBookingService } from "@/features/session-booking-management";
 import type {
 	BookingDto,
 	BookingFilter,
 } from "@/features/session-booking-management/types";
+import { useCoinBalance } from "@/features/coin-management/hooks/use-coin-management";
 import { Pagination } from "@/features/user-management/components/Pagination";
-import { Route } from "@/routes/_app-layout/_user-layout/sessions";
+import { Route } from "@/routes/_app-layout/_user-layout/sessions/index";
 import { useUserSessions } from "../hooks/use-sessions";
 import { SessionFilters } from "../components/SessionFilters";
 
 const formatDate = (value: string) => format(new Date(value), "MMM dd, yyyy");
 const formatTime = (value: string) => format(new Date(value), "hh:mm a");
+const formatBookedDate = (value: string) =>
+	format(new Date(value), "MMM dd, yyyy");
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+const getRefundPreview = (
+	booking: BookingDto | undefined,
+	coinValue?: number,
+) => {
+	if (!booking || booking.paymentStatus !== "COMPLETED") {
+		return {
+			percentage: 0,
+			amount: 0,
+			reason: "Payment not completed. No refund applicable.",
+		};
+	}
+
+	const diffMs = new Date(booking.startTime).getTime() - Date.now();
+	if (!Number.isFinite(diffMs) || diffMs <= 0 || diffMs <= DAY_MS) {
+		return {
+			percentage: 0,
+			amount: 0,
+			reason: "No refund within 24 hours of the session start time.",
+		};
+	}
+
+	const percentage = diffMs <= 3 * DAY_MS ? 50 : 75;
+	const baseCoins =
+		booking.paymentType === "COINS"
+			? booking.totalAmount
+			: coinValue
+				? booking.totalAmount * coinValue
+				: null;
+	const amount =
+		baseCoins !== null ? Math.round((baseCoins * percentage) / 100) : null;
+
+	return {
+		percentage,
+		amount,
+		reason:
+			percentage === 50
+				? "Refunded 50% (within 3 days of the session)."
+				: "Refunded 75% (more than 3 days before the session).",
+	};
+};
 
 export function SessionsPage() {
 	const navigate = useNavigate({ from: Route.fullPath });
@@ -35,6 +90,11 @@ export function SessionsPage() {
 	const [pendingCancelId, setPendingCancelId] = useState<string | null>(null);
 	const [cancelReason, setCancelReason] = useState("");
 	const [pendingRepayId, setPendingRepayId] = useState<string | null>(null);
+	const [selectedBooking, setSelectedBooking] = useState<BookingDto | null>(
+		null,
+	);
+	const coinBalanceQuery = useCoinBalance();
+	const coinValue = coinBalanceQuery.data?.coinValue;
 
 	const filter = (
 		search.tab === "past" ? "past" : search.upcomingFilter
@@ -52,15 +112,28 @@ export function SessionsPage() {
 	const cancelMutation = useMutation({
 		mutationFn: (bookingId: string) =>
 			sessionBookingService.cancelBooking({ bookingId, reason: cancelReason }),
-		onSuccess: () => {
+		onSuccess: (response) => {
 			queryClient.invalidateQueries({ queryKey: ["sessions", "user"] });
 			queryClient.invalidateQueries({ queryKey: ["wallet", "balance"] });
 			setPendingCancelId(null);
 			setCancelReason("");
+			const refund = response.data.refund;
+			if (refund) {
+				if (refund.amount > 0) {
+					toast.success(
+						`Refund amount: ${refund.amount} coins (${refund.percentage}%).`,
+					);
+				} else {
+					toast.info(refund.reason);
+				}
+			}
 		},
-		onError: () => {
+		onError: (error: any) => {
 			setPendingCancelId(null);
 			setCancelReason("");
+			toast.error(
+				error?.response?.data?.message || "Failed to cancel session booking.",
+			);
 		},
 	});
 	const repayMutation = useMutation({
@@ -95,6 +168,11 @@ export function SessionsPage() {
 
 	const bookings = data?.data.items ?? [];
 	const total = data?.data.total ?? 0;
+	const isDetailsOpen = Boolean(selectedBooking);
+	const pendingCancelBooking = bookings.find(
+		(booking) => booking.id === pendingCancelId,
+	);
+	const refundPreview = getRefundPreview(pendingCancelBooking, coinValue);
 
 	return (
 		<div className="relative">
@@ -190,6 +268,7 @@ export function SessionsPage() {
 										key={booking.id}
 										booking={booking}
 										showCancel={search.tab === "upcoming"}
+										onViewDetails={() => setSelectedBooking(booking)}
 										onCancel={() => setPendingCancelId(booking.id)}
 										onRepay={() => setPendingRepayId(booking.id)}
 										isCancelling={cancelMutation.isPending}
@@ -215,6 +294,116 @@ export function SessionsPage() {
 				</div>
 			</div>
 
+			<Dialog
+				open={isDetailsOpen}
+				onOpenChange={(open) => {
+					if (!open) setSelectedBooking(null);
+				}}
+			>
+				<DialogContent className="sm:max-w-[560px]">
+					<DialogHeader>
+						<DialogTitle>Session Details</DialogTitle>
+						<DialogDescription>
+							Review the details for this session.
+						</DialogDescription>
+					</DialogHeader>
+
+					{selectedBooking && (
+						<div className="space-y-4 text-sm">
+							<div className="space-y-1">
+								<p className="text-xs uppercase tracking-wide text-muted-foreground">
+									Mentor
+								</p>
+								<p className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
+									{selectedBooking.mentorName || "Mentor"}
+								</p>
+							</div>
+
+							<div className="grid gap-3 sm:grid-cols-2">
+								<div className="rounded-xl border border-zinc-200/60 dark:border-zinc-800 p-3">
+									<p className="text-xs uppercase tracking-wide text-muted-foreground">
+										Session Date
+									</p>
+									<p className="mt-1 font-medium">
+										{formatDate(selectedBooking.startTime)}
+									</p>
+									<p className="text-xs text-muted-foreground">
+										{formatTime(selectedBooking.startTime)} -{" "}
+										{formatTime(selectedBooking.endTime)}
+									</p>
+								</div>
+								<div className="rounded-xl border border-zinc-200/60 dark:border-zinc-800 p-3">
+									<p className="text-xs uppercase tracking-wide text-muted-foreground">
+										Booked On
+									</p>
+									<p className="mt-1 font-medium">
+										{formatBookedDate(selectedBooking.createdAt)}
+									</p>
+								</div>
+							</div>
+
+							<div className="flex flex-wrap items-center gap-2">
+								<Badge variant="outline" className="text-[10px] uppercase">
+									{selectedBooking.status}
+								</Badge>
+								<Badge variant="secondary" className="text-[10px] uppercase">
+									{selectedBooking.paymentStatus}
+								</Badge>
+								<span className="flex items-center gap-1 text-xs font-semibold text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-900/50 px-2 py-0.5 rounded-md">
+									{selectedBooking.paymentType === "COINS" ? (
+										<Coins className="h-3 w-3 text-amber-500" />
+									) : (
+										<CreditCard className="h-3 w-3 text-blue-500" />
+									)}
+									{selectedBooking.totalAmount}{" "}
+									{selectedBooking.currency === "inr"
+										? "₹"
+										: selectedBooking.currency}
+								</span>
+							</div>
+
+							<div className="space-y-1">
+								<p className="text-xs uppercase tracking-wide text-muted-foreground">
+									Meeting Link
+								</p>
+								{selectedBooking.meetingLink &&
+								selectedBooking.meetingLink !== "Pending" ? (
+									<a
+										href={selectedBooking.meetingLink}
+										target="_blank"
+										rel="noreferrer"
+										className="text-primary font-medium hover:underline break-all"
+									>
+										{selectedBooking.meetingLink}
+									</a>
+								) : (
+									<p className="text-muted-foreground">Pending</p>
+								)}
+							</div>
+
+							{selectedBooking.notes && (
+								<div className="rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 p-3">
+									<p className="text-xs uppercase tracking-wide text-muted-foreground">
+										Notes
+									</p>
+									<p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">
+										{selectedBooking.notes}
+									</p>
+								</div>
+							)}
+						</div>
+					)}
+
+					<DialogFooter>
+						<DialogClose asChild>
+							<Button type="button" variant="outline">
+								Close
+							</Button>
+						</DialogClose>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
 			<ConfirmModal
 				isOpen={Boolean(pendingCancelId)}
 				onClose={() => setPendingCancelId(null)}
@@ -229,6 +418,25 @@ export function SessionsPage() {
 				isLoading={cancelMutation.isPending}
 			>
 				<div className="mt-4 space-y-3">
+					<div className="rounded-xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3 text-xs text-zinc-600 dark:text-zinc-300">
+						<p className="font-semibold text-zinc-800 dark:text-zinc-100">
+							Refund preview
+						</p>
+						{refundPreview.amount !== null ? (
+							<p className="mt-1">
+								Refund amount: {refundPreview.amount} coins (
+								{refundPreview.percentage}%).
+							</p>
+						) : (
+							<p className="mt-1">
+								Refund amount: {refundPreview.percentage}% (coin value
+								unavailable).
+							</p>
+						)}
+						<p className="mt-1 text-zinc-500 dark:text-zinc-400">
+							{refundPreview.reason}
+						</p>
+					</div>
 					<label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
 						Cancellation reason
 					</label>
@@ -259,6 +467,7 @@ export function SessionsPage() {
 function SessionCard({
 	booking,
 	showCancel,
+	onViewDetails,
 	onCancel,
 	onRepay,
 	isCancelling,
@@ -266,6 +475,7 @@ function SessionCard({
 }: {
 	booking: BookingDto;
 	showCancel: boolean;
+	onViewDetails: () => void;
 	onCancel: () => void;
 	onRepay: () => void;
 	isCancelling: boolean;
@@ -371,9 +581,9 @@ function SessionCard({
 					size="sm"
 					className="h-9 px-4 rounded-xl text-xs font-semibold"
 				>
-					<Link to="/sessions/$sessionId" params={{ sessionId: booking.id }}>
+					<button type="button" onClick={onViewDetails}>
 						View details
-					</Link>
+					</button>
 				</Button>
 
 				{isCancelled && booking.notes && (

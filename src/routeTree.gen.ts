@@ -37,11 +37,12 @@ import { Route as AppLayoutMentorLayoutMentorDashboardRouteImport } from './rout
 import { Route as AppLayoutMentorLayoutMentorArticlesRouteImport } from './routes/_app-layout/_mentor-layout/mentor-articles'
 import { Route as AdminLayoutAdminProfilesProfileIdRouteImport } from './routes/_admin-layout/admin-profiles.$profileId'
 import { Route as AdminLayoutAdminArticlesArticleIdRouteImport } from './routes/_admin-layout/admin-articles.$articleId'
+import { Route as AppLayoutUserLayoutSessionsIndexRouteImport } from './routes/_app-layout/_user-layout/sessions/index'
 import { Route as AppLayoutUserLayoutProfileIndexRouteImport } from './routes/_app-layout/_user-layout/profile/index'
 import { Route as AppLayoutUserLayoutMentorsIndexRouteImport } from './routes/_app-layout/_user-layout/mentors/index'
 import { Route as AppLayoutUserLayoutChatsIndexRouteImport } from './routes/_app-layout/_user-layout/chats/index'
 import { Route as AppLayoutUserLayoutArticlesIndexRouteImport } from './routes/_app-layout/_user-layout/articles/index'
-import { Route as AppLayoutUserLayoutSessionsSessionIdRouteImport } from './routes/_app-layout/_user-layout/sessions.$sessionId'
+import { Route as AppLayoutUserLayoutSessionsSessionIdRouteImport } from './routes/_app-layout/_user-layout/sessions/$sessionId'
 import { Route as AppLayoutUserLayoutProfileSecurityRouteImport } from './routes/_app-layout/_user-layout/profile/security'
 import { Route as AppLayoutUserLayoutPaymentsSuccessRouteImport } from './routes/_app-layout/_user-layout/payments/success'
 import { Route as AppLayoutUserLayoutMentorsMentorIdRouteImport } from './routes/_app-layout/_user-layout/mentors/$mentorId'
@@ -207,6 +208,12 @@ const AdminLayoutAdminArticlesArticleIdRoute =
     path: '/admin-articles/$articleId',
     getParentRoute: () => AdminLayoutRoute,
   } as any)
+const AppLayoutUserLayoutSessionsIndexRoute =
+  AppLayoutUserLayoutSessionsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AppLayoutUserLayoutSessionsRoute,
+  } as any)
 const AppLayoutUserLayoutProfileIndexRoute =
   AppLayoutUserLayoutProfileIndexRouteImport.update({
     id: '/',
@@ -339,6 +346,7 @@ export interface FileRoutesByFullPath {
   '/chats/': typeof AppLayoutUserLayoutChatsIndexRoute
   '/mentors/': typeof AppLayoutUserLayoutMentorsIndexRoute
   '/profile/': typeof AppLayoutUserLayoutProfileIndexRoute
+  '/sessions/': typeof AppLayoutUserLayoutSessionsIndexRoute
   '/mentor/articles/create': typeof AppLayoutUserLayoutMentorArticlesCreateRoute
   '/profile/bookmarked-mentors/$listId': typeof AppLayoutUserLayoutProfileBookmarkedMentorsListIdRoute
   '/articles/$articleId/': typeof AppLayoutUserLayoutArticlesArticleIdIndexRoute
@@ -365,7 +373,6 @@ export interface FileRoutesByTo {
   '/coins': typeof AppLayoutUserLayoutCoinsRoute
   '/home': typeof AppLayoutUserLayoutHomeRoute
   '/mentor': typeof AppLayoutUserLayoutMentorRouteWithChildren
-  '/sessions': typeof AppLayoutUserLayoutSessionsRouteWithChildren
   '/bookings/success': typeof AppLayoutUserLayoutBookingsSuccessRoute
   '/chats/$chatId': typeof AppLayoutUserLayoutChatsChatIdRoute
   '/mentor/register': typeof AppLayoutUserLayoutMentorRegisterRoute
@@ -377,6 +384,7 @@ export interface FileRoutesByTo {
   '/chats': typeof AppLayoutUserLayoutChatsIndexRoute
   '/mentors': typeof AppLayoutUserLayoutMentorsIndexRoute
   '/profile': typeof AppLayoutUserLayoutProfileIndexRoute
+  '/sessions': typeof AppLayoutUserLayoutSessionsIndexRoute
   '/mentor/articles/create': typeof AppLayoutUserLayoutMentorArticlesCreateRoute
   '/profile/bookmarked-mentors/$listId': typeof AppLayoutUserLayoutProfileBookmarkedMentorsListIdRoute
   '/articles/$articleId': typeof AppLayoutUserLayoutArticlesArticleIdIndexRoute
@@ -424,6 +432,7 @@ export interface FileRoutesById {
   '/_app-layout/_user-layout/chats/': typeof AppLayoutUserLayoutChatsIndexRoute
   '/_app-layout/_user-layout/mentors/': typeof AppLayoutUserLayoutMentorsIndexRoute
   '/_app-layout/_user-layout/profile/': typeof AppLayoutUserLayoutProfileIndexRoute
+  '/_app-layout/_user-layout/sessions/': typeof AppLayoutUserLayoutSessionsIndexRoute
   '/_app-layout/_user-layout/mentor/articles/create': typeof AppLayoutUserLayoutMentorArticlesCreateRoute
   '/_app-layout/_user-layout/profile/bookmarked-mentors/$listId': typeof AppLayoutUserLayoutProfileBookmarkedMentorsListIdRoute
   '/_app-layout/_user-layout/articles/$articleId/': typeof AppLayoutUserLayoutArticlesArticleIdIndexRoute
@@ -467,6 +476,7 @@ export interface FileRouteTypes {
     | '/chats/'
     | '/mentors/'
     | '/profile/'
+    | '/sessions/'
     | '/mentor/articles/create'
     | '/profile/bookmarked-mentors/$listId'
     | '/articles/$articleId/'
@@ -493,7 +503,6 @@ export interface FileRouteTypes {
     | '/coins'
     | '/home'
     | '/mentor'
-    | '/sessions'
     | '/bookings/success'
     | '/chats/$chatId'
     | '/mentor/register'
@@ -505,6 +514,7 @@ export interface FileRouteTypes {
     | '/chats'
     | '/mentors'
     | '/profile'
+    | '/sessions'
     | '/mentor/articles/create'
     | '/profile/bookmarked-mentors/$listId'
     | '/articles/$articleId'
@@ -551,6 +561,7 @@ export interface FileRouteTypes {
     | '/_app-layout/_user-layout/chats/'
     | '/_app-layout/_user-layout/mentors/'
     | '/_app-layout/_user-layout/profile/'
+    | '/_app-layout/_user-layout/sessions/'
     | '/_app-layout/_user-layout/mentor/articles/create'
     | '/_app-layout/_user-layout/profile/bookmarked-mentors/$listId'
     | '/_app-layout/_user-layout/articles/$articleId/'
@@ -762,6 +773,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin-articles/$articleId'
       preLoaderRoute: typeof AdminLayoutAdminArticlesArticleIdRouteImport
       parentRoute: typeof AdminLayoutRoute
+    }
+    '/_app-layout/_user-layout/sessions/': {
+      id: '/_app-layout/_user-layout/sessions/'
+      path: '/'
+      fullPath: '/sessions/'
+      preLoaderRoute: typeof AppLayoutUserLayoutSessionsIndexRouteImport
+      parentRoute: typeof AppLayoutUserLayoutSessionsRoute
     }
     '/_app-layout/_user-layout/profile/': {
       id: '/_app-layout/_user-layout/profile/'
@@ -1010,12 +1028,15 @@ const AppLayoutUserLayoutProfileRouteWithChildren =
 
 interface AppLayoutUserLayoutSessionsRouteChildren {
   AppLayoutUserLayoutSessionsSessionIdRoute: typeof AppLayoutUserLayoutSessionsSessionIdRoute
+  AppLayoutUserLayoutSessionsIndexRoute: typeof AppLayoutUserLayoutSessionsIndexRoute
 }
 
 const AppLayoutUserLayoutSessionsRouteChildren: AppLayoutUserLayoutSessionsRouteChildren =
   {
     AppLayoutUserLayoutSessionsSessionIdRoute:
       AppLayoutUserLayoutSessionsSessionIdRoute,
+    AppLayoutUserLayoutSessionsIndexRoute:
+      AppLayoutUserLayoutSessionsIndexRoute,
   }
 
 const AppLayoutUserLayoutSessionsRouteWithChildren =

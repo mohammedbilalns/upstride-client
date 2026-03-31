@@ -55,6 +55,12 @@ export interface CancelBookingResponse {
 	data: {
 		bookingId: string;
 		status: string;
+		refund?: {
+			amount: number;
+			percentage: number;
+			currency: "COINS";
+			reason: string;
+		};
 	};
 }
 
@@ -99,6 +105,14 @@ export interface GetBookingsResponse {
 		page: number;
 		limit: number;
 		totalPages: number;
+	};
+}
+
+export interface GetBookingDetailsResponse {
+	success: boolean;
+	message: string;
+	data: {
+		booking: BookingDto;
 	};
 }
 
