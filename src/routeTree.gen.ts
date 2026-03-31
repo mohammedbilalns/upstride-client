@@ -41,10 +41,13 @@ import { Route as AppLayoutUserLayoutProfileIndexRouteImport } from './routes/_a
 import { Route as AppLayoutUserLayoutMentorsIndexRouteImport } from './routes/_app-layout/_user-layout/mentors/index'
 import { Route as AppLayoutUserLayoutChatsIndexRouteImport } from './routes/_app-layout/_user-layout/chats/index'
 import { Route as AppLayoutUserLayoutArticlesIndexRouteImport } from './routes/_app-layout/_user-layout/articles/index'
+import { Route as AppLayoutUserLayoutSessionsSessionIdRouteImport } from './routes/_app-layout/_user-layout/sessions.$sessionId'
 import { Route as AppLayoutUserLayoutProfileSecurityRouteImport } from './routes/_app-layout/_user-layout/profile/security'
+import { Route as AppLayoutUserLayoutPaymentsSuccessRouteImport } from './routes/_app-layout/_user-layout/payments/success'
 import { Route as AppLayoutUserLayoutMentorsMentorIdRouteImport } from './routes/_app-layout/_user-layout/mentors/$mentorId'
 import { Route as AppLayoutUserLayoutMentorRegisterRouteImport } from './routes/_app-layout/_user-layout/mentor.register'
 import { Route as AppLayoutUserLayoutChatsChatIdRouteImport } from './routes/_app-layout/_user-layout/chats/$chatId'
+import { Route as AppLayoutUserLayoutBookingsSuccessRouteImport } from './routes/_app-layout/_user-layout/bookings/success'
 import { Route as AppLayoutUserLayoutProfileBookmarkedMentorsIndexRouteImport } from './routes/_app-layout/_user-layout/profile/bookmarked-mentors/index'
 import { Route as AppLayoutUserLayoutArticlesArticleIdIndexRouteImport } from './routes/_app-layout/_user-layout/articles/$articleId/index'
 import { Route as AppLayoutUserLayoutProfileBookmarkedMentorsListIdRouteImport } from './routes/_app-layout/_user-layout/profile/bookmarked-mentors/$listId'
@@ -228,11 +231,23 @@ const AppLayoutUserLayoutArticlesIndexRoute =
     path: '/articles/',
     getParentRoute: () => AppLayoutUserLayoutRoute,
   } as any)
+const AppLayoutUserLayoutSessionsSessionIdRoute =
+  AppLayoutUserLayoutSessionsSessionIdRouteImport.update({
+    id: '/$sessionId',
+    path: '/$sessionId',
+    getParentRoute: () => AppLayoutUserLayoutSessionsRoute,
+  } as any)
 const AppLayoutUserLayoutProfileSecurityRoute =
   AppLayoutUserLayoutProfileSecurityRouteImport.update({
     id: '/security',
     path: '/security',
     getParentRoute: () => AppLayoutUserLayoutProfileRoute,
+  } as any)
+const AppLayoutUserLayoutPaymentsSuccessRoute =
+  AppLayoutUserLayoutPaymentsSuccessRouteImport.update({
+    id: '/payments/success',
+    path: '/payments/success',
+    getParentRoute: () => AppLayoutUserLayoutRoute,
   } as any)
 const AppLayoutUserLayoutMentorsMentorIdRoute =
   AppLayoutUserLayoutMentorsMentorIdRouteImport.update({
@@ -251,6 +266,12 @@ const AppLayoutUserLayoutChatsChatIdRoute =
     id: '/$chatId',
     path: '/$chatId',
     getParentRoute: () => AppLayoutUserLayoutChatsRoute,
+  } as any)
+const AppLayoutUserLayoutBookingsSuccessRoute =
+  AppLayoutUserLayoutBookingsSuccessRouteImport.update({
+    id: '/bookings/success',
+    path: '/bookings/success',
+    getParentRoute: () => AppLayoutUserLayoutRoute,
   } as any)
 const AppLayoutUserLayoutProfileBookmarkedMentorsIndexRoute =
   AppLayoutUserLayoutProfileBookmarkedMentorsIndexRouteImport.update({
@@ -306,11 +327,14 @@ export interface FileRoutesByFullPath {
   '/mentor': typeof AppLayoutUserLayoutMentorRouteWithChildren
   '/mentors': typeof AppLayoutUserLayoutMentorsRouteWithChildren
   '/profile': typeof AppLayoutUserLayoutProfileRouteWithChildren
-  '/sessions': typeof AppLayoutUserLayoutSessionsRoute
+  '/sessions': typeof AppLayoutUserLayoutSessionsRouteWithChildren
+  '/bookings/success': typeof AppLayoutUserLayoutBookingsSuccessRoute
   '/chats/$chatId': typeof AppLayoutUserLayoutChatsChatIdRoute
   '/mentor/register': typeof AppLayoutUserLayoutMentorRegisterRoute
   '/mentors/$mentorId': typeof AppLayoutUserLayoutMentorsMentorIdRoute
+  '/payments/success': typeof AppLayoutUserLayoutPaymentsSuccessRoute
   '/profile/security': typeof AppLayoutUserLayoutProfileSecurityRoute
+  '/sessions/$sessionId': typeof AppLayoutUserLayoutSessionsSessionIdRoute
   '/articles/': typeof AppLayoutUserLayoutArticlesIndexRoute
   '/chats/': typeof AppLayoutUserLayoutChatsIndexRoute
   '/mentors/': typeof AppLayoutUserLayoutMentorsIndexRoute
@@ -341,11 +365,14 @@ export interface FileRoutesByTo {
   '/coins': typeof AppLayoutUserLayoutCoinsRoute
   '/home': typeof AppLayoutUserLayoutHomeRoute
   '/mentor': typeof AppLayoutUserLayoutMentorRouteWithChildren
-  '/sessions': typeof AppLayoutUserLayoutSessionsRoute
+  '/sessions': typeof AppLayoutUserLayoutSessionsRouteWithChildren
+  '/bookings/success': typeof AppLayoutUserLayoutBookingsSuccessRoute
   '/chats/$chatId': typeof AppLayoutUserLayoutChatsChatIdRoute
   '/mentor/register': typeof AppLayoutUserLayoutMentorRegisterRoute
   '/mentors/$mentorId': typeof AppLayoutUserLayoutMentorsMentorIdRoute
+  '/payments/success': typeof AppLayoutUserLayoutPaymentsSuccessRoute
   '/profile/security': typeof AppLayoutUserLayoutProfileSecurityRoute
+  '/sessions/$sessionId': typeof AppLayoutUserLayoutSessionsSessionIdRoute
   '/articles': typeof AppLayoutUserLayoutArticlesIndexRoute
   '/chats': typeof AppLayoutUserLayoutChatsIndexRoute
   '/mentors': typeof AppLayoutUserLayoutMentorsIndexRoute
@@ -385,11 +412,14 @@ export interface FileRoutesById {
   '/_app-layout/_user-layout/mentor': typeof AppLayoutUserLayoutMentorRouteWithChildren
   '/_app-layout/_user-layout/mentors': typeof AppLayoutUserLayoutMentorsRouteWithChildren
   '/_app-layout/_user-layout/profile': typeof AppLayoutUserLayoutProfileRouteWithChildren
-  '/_app-layout/_user-layout/sessions': typeof AppLayoutUserLayoutSessionsRoute
+  '/_app-layout/_user-layout/sessions': typeof AppLayoutUserLayoutSessionsRouteWithChildren
+  '/_app-layout/_user-layout/bookings/success': typeof AppLayoutUserLayoutBookingsSuccessRoute
   '/_app-layout/_user-layout/chats/$chatId': typeof AppLayoutUserLayoutChatsChatIdRoute
   '/_app-layout/_user-layout/mentor/register': typeof AppLayoutUserLayoutMentorRegisterRoute
   '/_app-layout/_user-layout/mentors/$mentorId': typeof AppLayoutUserLayoutMentorsMentorIdRoute
+  '/_app-layout/_user-layout/payments/success': typeof AppLayoutUserLayoutPaymentsSuccessRoute
   '/_app-layout/_user-layout/profile/security': typeof AppLayoutUserLayoutProfileSecurityRoute
+  '/_app-layout/_user-layout/sessions/$sessionId': typeof AppLayoutUserLayoutSessionsSessionIdRoute
   '/_app-layout/_user-layout/articles/': typeof AppLayoutUserLayoutArticlesIndexRoute
   '/_app-layout/_user-layout/chats/': typeof AppLayoutUserLayoutChatsIndexRoute
   '/_app-layout/_user-layout/mentors/': typeof AppLayoutUserLayoutMentorsIndexRoute
@@ -426,10 +456,13 @@ export interface FileRouteTypes {
     | '/mentors'
     | '/profile'
     | '/sessions'
+    | '/bookings/success'
     | '/chats/$chatId'
     | '/mentor/register'
     | '/mentors/$mentorId'
+    | '/payments/success'
     | '/profile/security'
+    | '/sessions/$sessionId'
     | '/articles/'
     | '/chats/'
     | '/mentors/'
@@ -461,10 +494,13 @@ export interface FileRouteTypes {
     | '/home'
     | '/mentor'
     | '/sessions'
+    | '/bookings/success'
     | '/chats/$chatId'
     | '/mentor/register'
     | '/mentors/$mentorId'
+    | '/payments/success'
     | '/profile/security'
+    | '/sessions/$sessionId'
     | '/articles'
     | '/chats'
     | '/mentors'
@@ -504,10 +540,13 @@ export interface FileRouteTypes {
     | '/_app-layout/_user-layout/mentors'
     | '/_app-layout/_user-layout/profile'
     | '/_app-layout/_user-layout/sessions'
+    | '/_app-layout/_user-layout/bookings/success'
     | '/_app-layout/_user-layout/chats/$chatId'
     | '/_app-layout/_user-layout/mentor/register'
     | '/_app-layout/_user-layout/mentors/$mentorId'
+    | '/_app-layout/_user-layout/payments/success'
     | '/_app-layout/_user-layout/profile/security'
+    | '/_app-layout/_user-layout/sessions/$sessionId'
     | '/_app-layout/_user-layout/articles/'
     | '/_app-layout/_user-layout/chats/'
     | '/_app-layout/_user-layout/mentors/'
@@ -752,12 +791,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLayoutUserLayoutArticlesIndexRouteImport
       parentRoute: typeof AppLayoutUserLayoutRoute
     }
+    '/_app-layout/_user-layout/sessions/$sessionId': {
+      id: '/_app-layout/_user-layout/sessions/$sessionId'
+      path: '/$sessionId'
+      fullPath: '/sessions/$sessionId'
+      preLoaderRoute: typeof AppLayoutUserLayoutSessionsSessionIdRouteImport
+      parentRoute: typeof AppLayoutUserLayoutSessionsRoute
+    }
     '/_app-layout/_user-layout/profile/security': {
       id: '/_app-layout/_user-layout/profile/security'
       path: '/security'
       fullPath: '/profile/security'
       preLoaderRoute: typeof AppLayoutUserLayoutProfileSecurityRouteImport
       parentRoute: typeof AppLayoutUserLayoutProfileRoute
+    }
+    '/_app-layout/_user-layout/payments/success': {
+      id: '/_app-layout/_user-layout/payments/success'
+      path: '/payments/success'
+      fullPath: '/payments/success'
+      preLoaderRoute: typeof AppLayoutUserLayoutPaymentsSuccessRouteImport
+      parentRoute: typeof AppLayoutUserLayoutRoute
     }
     '/_app-layout/_user-layout/mentors/$mentorId': {
       id: '/_app-layout/_user-layout/mentors/$mentorId'
@@ -779,6 +832,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/chats/$chatId'
       preLoaderRoute: typeof AppLayoutUserLayoutChatsChatIdRouteImport
       parentRoute: typeof AppLayoutUserLayoutChatsRoute
+    }
+    '/_app-layout/_user-layout/bookings/success': {
+      id: '/_app-layout/_user-layout/bookings/success'
+      path: '/bookings/success'
+      fullPath: '/bookings/success'
+      preLoaderRoute: typeof AppLayoutUserLayoutBookingsSuccessRouteImport
+      parentRoute: typeof AppLayoutUserLayoutRoute
     }
     '/_app-layout/_user-layout/profile/bookmarked-mentors/': {
       id: '/_app-layout/_user-layout/profile/bookmarked-mentors/'
@@ -948,6 +1008,21 @@ const AppLayoutUserLayoutProfileRouteWithChildren =
     AppLayoutUserLayoutProfileRouteChildren,
   )
 
+interface AppLayoutUserLayoutSessionsRouteChildren {
+  AppLayoutUserLayoutSessionsSessionIdRoute: typeof AppLayoutUserLayoutSessionsSessionIdRoute
+}
+
+const AppLayoutUserLayoutSessionsRouteChildren: AppLayoutUserLayoutSessionsRouteChildren =
+  {
+    AppLayoutUserLayoutSessionsSessionIdRoute:
+      AppLayoutUserLayoutSessionsSessionIdRoute,
+  }
+
+const AppLayoutUserLayoutSessionsRouteWithChildren =
+  AppLayoutUserLayoutSessionsRoute._addFileChildren(
+    AppLayoutUserLayoutSessionsRouteChildren,
+  )
+
 interface AppLayoutUserLayoutRouteChildren {
   AppLayoutUserLayoutChatsRoute: typeof AppLayoutUserLayoutChatsRouteWithChildren
   AppLayoutUserLayoutCoinsRoute: typeof AppLayoutUserLayoutCoinsRoute
@@ -955,7 +1030,9 @@ interface AppLayoutUserLayoutRouteChildren {
   AppLayoutUserLayoutMentorRoute: typeof AppLayoutUserLayoutMentorRouteWithChildren
   AppLayoutUserLayoutMentorsRoute: typeof AppLayoutUserLayoutMentorsRouteWithChildren
   AppLayoutUserLayoutProfileRoute: typeof AppLayoutUserLayoutProfileRouteWithChildren
-  AppLayoutUserLayoutSessionsRoute: typeof AppLayoutUserLayoutSessionsRoute
+  AppLayoutUserLayoutSessionsRoute: typeof AppLayoutUserLayoutSessionsRouteWithChildren
+  AppLayoutUserLayoutBookingsSuccessRoute: typeof AppLayoutUserLayoutBookingsSuccessRoute
+  AppLayoutUserLayoutPaymentsSuccessRoute: typeof AppLayoutUserLayoutPaymentsSuccessRoute
   AppLayoutUserLayoutArticlesIndexRoute: typeof AppLayoutUserLayoutArticlesIndexRoute
   AppLayoutUserLayoutArticlesArticleIdIndexRoute: typeof AppLayoutUserLayoutArticlesArticleIdIndexRoute
 }
@@ -967,7 +1044,12 @@ const AppLayoutUserLayoutRouteChildren: AppLayoutUserLayoutRouteChildren = {
   AppLayoutUserLayoutMentorRoute: AppLayoutUserLayoutMentorRouteWithChildren,
   AppLayoutUserLayoutMentorsRoute: AppLayoutUserLayoutMentorsRouteWithChildren,
   AppLayoutUserLayoutProfileRoute: AppLayoutUserLayoutProfileRouteWithChildren,
-  AppLayoutUserLayoutSessionsRoute: AppLayoutUserLayoutSessionsRoute,
+  AppLayoutUserLayoutSessionsRoute:
+    AppLayoutUserLayoutSessionsRouteWithChildren,
+  AppLayoutUserLayoutBookingsSuccessRoute:
+    AppLayoutUserLayoutBookingsSuccessRoute,
+  AppLayoutUserLayoutPaymentsSuccessRoute:
+    AppLayoutUserLayoutPaymentsSuccessRoute,
   AppLayoutUserLayoutArticlesIndexRoute: AppLayoutUserLayoutArticlesIndexRoute,
   AppLayoutUserLayoutArticlesArticleIdIndexRoute:
     AppLayoutUserLayoutArticlesArticleIdIndexRoute,
