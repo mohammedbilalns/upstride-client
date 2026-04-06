@@ -6,7 +6,7 @@ import { clearAuthSession } from "@/features/authentication/utils/clear-auth-ses
 import { env } from "@/shared/config/env";
 
 /**
- * Axios request config type with retry flag
+ * Axios request config type with retry flags
  */
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 	_retry?: boolean;

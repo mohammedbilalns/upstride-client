@@ -7,7 +7,18 @@ import {
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+	EmojiPicker,
+	EmojiPickerContent,
+	EmojiPickerFooter,
+	EmojiPickerSearch,
+} from "@/components/ui/emoji-picker";
 import { Input } from "@/components/ui/input";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChatMessage } from "@/features/chat/components/ChatMessage";
 import { fileService } from "@/shared/services/file.service";
@@ -19,6 +30,7 @@ import {
 import { getChatInfiniteQueryOptions } from "@/features/chat/hooks/queries";
 import {
 	ArrowLeft,
+	Smile,
 	Send,
 	Paperclip,
 	Image as ImageIcon,
@@ -26,6 +38,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import type { ChatMessageDto } from "@/features/chat/types";
+import type { Emoji } from "frimousse";
 
 export const Route = createFileRoute("/_app-layout/_user-layout/chats/$chatId")(
 	{
@@ -52,6 +65,7 @@ function ChatDetail() {
 		Record<string, string>
 	>({});
 	const [isUploadingMedia, setIsUploadingMedia] = useState(false);
+	const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
 
 	// Cleanup blob URLs on unmount
 	useEffect(() => {
@@ -64,6 +78,7 @@ function ChatDetail() {
 
 	const imageInputRef = useRef<HTMLInputElement>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const messageInputRef = useRef<HTMLInputElement>(null);
 
 	const {
 		data,
@@ -152,6 +167,12 @@ function ChatDetail() {
 		});
 		setNewMessage("");
 		requestAnimationFrame(() => scrollToBottom("smooth"));
+	};
+
+	const handleEmojiSelect = (emoji: Emoji) => {
+		setNewMessage((prev) => `${prev}${emoji.emoji}`);
+		setIsEmojiPickerOpen(false);
+		requestAnimationFrame(() => messageInputRef.current?.focus());
 	};
 
 	const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -378,7 +399,38 @@ function ChatDetail() {
 						<Paperclip className="w-5 h-5" />
 					</Button>
 
+					<Popover open={isEmojiPickerOpen} onOpenChange={setIsEmojiPickerOpen}>
+						<PopoverTrigger asChild>
+							<Button
+								type="button"
+								variant="ghost"
+								size="icon"
+								className="shrink-0 text-muted-foreground -ml-2"
+								disabled={isUploadingMedia || sendMessage.isPending}
+								aria-label="Open emoji picker"
+							>
+								<Smile className="w-5 h-5" />
+							</Button>
+						</PopoverTrigger>
+						<PopoverContent
+							align="end"
+							side="top"
+							sideOffset={8}
+							className="p-0"
+						>
+							<EmojiPicker
+								className="h-80 w-72"
+								onEmojiSelect={handleEmojiSelect}
+							>
+								<EmojiPickerSearch />
+								<EmojiPickerContent />
+								<EmojiPickerFooter />
+							</EmojiPicker>
+						</PopoverContent>
+					</Popover>
+
 					<Input
+						ref={messageInputRef}
 						value={newMessage}
 						onChange={(e) => setNewMessage(e.target.value)}
 						placeholder={
