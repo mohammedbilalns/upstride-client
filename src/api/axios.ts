@@ -132,7 +132,7 @@ api.interceptors.response.use(
 		}
 
 		if (error.response?.status === 403) {
-			// Handle forbidden access (403) — blocked users
+			// Handle forbidden access (403)
 			const data = error.response.data as { message?: string };
 			if (data?.message?.toLowerCase().includes("blocked")) {
 				if (routerInstance) {

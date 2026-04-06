@@ -14,7 +14,7 @@ export const Route = createFileRoute(
 		const status =
 			(error as { response?: { status?: number } })?.response?.status ??
 			(error as { status?: number })?.status;
-		if (status === 404) {
+		if (status === 404 || status === 400) {
 			return (
 				<ArticleNotFound
 					backTo="/report-management"

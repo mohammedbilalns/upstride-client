@@ -39,6 +39,8 @@ import {
 import { toast } from "sonner";
 import type { ChatMessageDto } from "@/features/chat/types";
 import type { Emoji } from "frimousse";
+import { ChatNotFound } from "@/features/chat/components/ChatNotFound";
+import ErrorComponent from "@/components/common/Error-Component";
 
 export const Route = createFileRoute("/_app-layout/_user-layout/chats/$chatId")(
 	{
@@ -46,6 +48,15 @@ export const Route = createFileRoute("/_app-layout/_user-layout/chats/$chatId")(
 			await queryClient.ensureInfiniteQueryData(
 				getChatInfiniteQueryOptions(params.chatId),
 			);
+		},
+		errorComponent: ({ error }) => {
+			const status =
+				(error as { response?: { status?: number } })?.response?.status ??
+				(error as { status?: number })?.status;
+			if (status === 404 || status === 400) {
+				return <ChatNotFound />;
+			}
+			return <ErrorComponent error={error} />;
 		},
 		component: ChatDetail,
 	},
@@ -251,17 +262,8 @@ function ChatDetail() {
 	if (isError) {
 		const status = (error as { response?: { status?: number } })?.response
 			?.status;
-		if (status === 404) {
-			return (
-				<div className="flex flex-1 flex-col items-center justify-center p-8 text-center gap-4">
-					<p className="text-sm text-muted-foreground">
-						Conversation not found.
-					</p>
-					<Button asChild variant="outline">
-						<Link to="/chats">Back to chats</Link>
-					</Button>
-				</div>
-			);
+		if (status === 404 || status === 400) {
+			return <ChatNotFound />;
 		}
 		return (
 			<div className="flex flex-1 flex-col items-center justify-center p-8 text-center gap-4">
