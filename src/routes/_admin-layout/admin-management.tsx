@@ -1,8 +1,8 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { AdminManagement } from "@/features/admin-management/components/AdminManagement";
 import { adminManagementQueryOptions } from "@/features/admin-management/hooks/use-admins";
+import { AdminManagementPage } from "@/features/admin-management/pages/AdminManagementPage";
 import {
-	AdminManagementSearch,
+	type AdminManagementSearch,
 	AdminManagementSearchSchema,
 } from "@/features/admin-management/validators/admin-management-params";
 
@@ -18,5 +18,5 @@ export const Route = createFileRoute("/_admin-layout/admin-management")({
 		queryClient.ensureQueryData(
 			adminManagementQueryOptions(search as AdminManagementSearch),
 		),
-	component: AdminManagement,
+	component: AdminManagementPage,
 });

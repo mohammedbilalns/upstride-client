@@ -12,8 +12,8 @@ import {
 import { Route } from "@/routes/_admin-layout/user-management";
 import { useDebounce } from "@/shared/hooks/use-debounce";
 import { useUsers } from "../hooks/use-users";
-import { Pagination } from "./Pagination";
-import { UserTable } from "./UserTable";
+import { Pagination } from "../components/Pagination";
+import { UserTable } from "../components/UserTable";
 
 export function UserManagement() {
 	const navigate = useNavigate({ from: Route.fullPath });

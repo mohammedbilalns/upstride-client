@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { articleQueries } from "@/features/article/hooks/queries";
-import { ArticleDetailPage } from "@/features/article/pages/ArticleDetailPage";
 import ErrorComponent from "@/components/common/Error-Component";
 import { ArticleNotFound } from "@/features/article/components/ArticleNotFound";
+import { articleQueries } from "@/features/article/hooks/queries";
+import { ArticleDetailPage } from "@/features/article/pages/ArticleDetailPage";
 
 export const Route = createFileRoute(
 	"/_admin-layout/admin-articles/$articleId",

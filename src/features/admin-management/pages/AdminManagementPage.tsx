@@ -15,10 +15,10 @@ import { Route } from "@/routes/_admin-layout/admin-management";
 import { useDebounce } from "@/shared/hooks/use-debounce";
 import { useAdmins } from "../hooks/use-admins";
 import type { AdminManagementSearch } from "../validators/admin-management-params";
-import { AdminTable } from "./AdminTable";
-import { CreateAdminDialog } from "./CreateAdminDialog";
+import { AdminTable } from "../components/AdminTable";
+import { CreateAdminDialog } from "../components/CreateAdminDialog";
 
-export function AdminManagement() {
+export function AdminManagementPage() {
 	const navigate = useNavigate({ from: Route.fullPath });
 	const searchParams = Route.useSearch() as AdminManagementSearch;
 	const { data: adminsData } = useAdmins(searchParams);
