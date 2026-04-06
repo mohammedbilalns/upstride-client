@@ -1,20 +1,27 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { format, parseISO } from "date-fns";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import FieldError from "@/components/common/Field-Error";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { availabilityManagementService } from "@/features/availability-management/services/availability-management.service";
 import { useProfile } from "@/features/profile-management/hooks/use-profile";
-import { Clock, Calendar, Power, Plus, X } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Power, Plus, X } from "lucide-react";
 import type {
 	DayOfWeek,
 	BreakTime,
@@ -164,6 +171,11 @@ function MentorRuleManagement() {
 	const [conflictSummaries, setConflictSummaries] = useState<
 		ConflictAvailabilitySummary[]
 	>([]);
+	const todayDate = useMemo(() => {
+		const date = new Date();
+		date.setHours(0, 0, 0, 0);
+		return date;
+	}, []);
 
 	const validateForm = (value: AvailabilityFormValues) => {
 		const emptyErrors = buildEmptyStringErrors(value);
@@ -443,14 +455,37 @@ function MentorRuleManagement() {
 								{(field) => (
 									<div className="space-y-2">
 										<Label htmlFor={field.name}>Start Date</Label>
-										<Input
-											id={field.name}
-											type="date"
-											value={field.state.value}
-											min={today}
-											onChange={(e) => field.handleChange(e.target.value)}
-											onBlur={field.handleBlur}
-										/>
+										<Popover>
+											<PopoverTrigger asChild>
+												<Button
+													id={field.name}
+													variant="outline"
+													className="w-full justify-start text-left font-normal"
+												>
+													<CalendarIcon className="mr-2 h-4 w-4" />
+													{field.state.value
+														? format(parseISO(field.state.value), "PPP")
+														: "Pick a date"}
+												</Button>
+											</PopoverTrigger>
+											<PopoverContent align="start" className="p-0">
+												<Calendar
+													mode="single"
+													selected={
+														field.state.value
+															? parseISO(field.state.value)
+															: undefined
+													}
+													onSelect={(date) => {
+														if (!date) return;
+														field.handleChange(format(date, "yyyy-MM-dd"));
+														field.handleBlur();
+													}}
+													disabled={(date) => date < todayDate}
+													initialFocus
+												/>
+											</PopoverContent>
+										</Popover>
 										<FieldError message={field.state.meta.errors?.[0] as any} />
 									</div>
 								)}
@@ -459,14 +494,41 @@ function MentorRuleManagement() {
 								{(field) => (
 									<div className="space-y-2">
 										<Label htmlFor={field.name}>End Date</Label>
-										<Input
-											id={field.name}
-											type="date"
-											value={field.state.value}
-											min={form.state.values.startDate || today}
-											onChange={(e) => field.handleChange(e.target.value)}
-											onBlur={field.handleBlur}
-										/>
+										<Popover>
+											<PopoverTrigger asChild>
+												<Button
+													id={field.name}
+													variant="outline"
+													className="w-full justify-start text-left font-normal"
+												>
+													<CalendarIcon className="mr-2 h-4 w-4" />
+													{field.state.value
+														? format(parseISO(field.state.value), "PPP")
+														: "Pick a date"}
+												</Button>
+											</PopoverTrigger>
+											<PopoverContent align="start" className="p-0">
+												<Calendar
+													mode="single"
+													selected={
+														field.state.value
+															? parseISO(field.state.value)
+															: undefined
+													}
+													onSelect={(date) => {
+														if (!date) return;
+														field.handleChange(format(date, "yyyy-MM-dd"));
+														field.handleBlur();
+													}}
+													disabled={(date) => {
+														const startDate = form.state.values.startDate;
+														if (!startDate) return date < todayDate;
+														return date < parseISO(startDate);
+													}}
+													initialFocus
+												/>
+											</PopoverContent>
+										</Popover>
 										<FieldError message={field.state.meta.errors?.[0] as any} />
 									</div>
 								)}
@@ -654,7 +716,7 @@ function MentorRuleManagement() {
 			<div className="space-y-4">
 				<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
 					<h2 className="text-xl font-semibold flex items-center gap-2">
-						<Calendar className="h-5 w-5" />
+						<CalendarIcon className="h-5 w-5" />
 						Current Rules
 					</h2>
 					<div className="flex items-center gap-2">

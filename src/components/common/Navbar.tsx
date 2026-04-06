@@ -240,7 +240,7 @@ export default function UserNavbar() {
 							<ThemeToggle />
 						</div>
 
-						<div>
+						<div className="sm:hidden">
 							<DropdownMenu
 								open={isMobileNotificationsOpen}
 								onOpenChange={setIsMobileNotificationsOpen}

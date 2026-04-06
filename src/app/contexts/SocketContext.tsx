@@ -1,15 +1,10 @@
-import React, {
-	createContext,
-	useContext,
-	useEffect,
-	useRef,
-	useState,
-} from "react";
-import { Socket } from "socket.io-client";
-import { useLocation, useRouter } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { SocketService } from "@/shared/services/socket.service";
+import { useLocation, useRouter } from "@tanstack/react-router";
+import type React from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import type { Socket } from "socket.io-client";
 import { toast } from "sonner";
+import { SocketService } from "@/shared/services/socket.service";
 
 interface SocketContextType {
 	socket: Socket | null;
