@@ -146,7 +146,9 @@ export function ArticleEditor({
 }: ArticleEditorProps) {
 	const editor = useEditor({
 		extensions: [
-			StarterKit,
+			StarterKit.configure({
+				link: false,
+			}),
 			Placeholder.configure({
 				placeholder: "Start writing your article masterpiece...",
 			}),
