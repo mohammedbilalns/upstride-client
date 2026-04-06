@@ -1,63 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { articleQueries } from "./queries";
 import { toast } from "sonner";
-import { articleService } from "../services/article.service";
+import { articleQueries } from "../queries";
+import { articleService } from "../../services/article.service";
 import {
 	addCommentOptimistically,
 	deleteCommentOptimistically,
 	updateCommentOptimistically,
-} from "../utils/comment-cache";
+} from "../../utils/comment-cache";
 
-export const useArticleMutations = () => {
+export function useArticleCommentMutations() {
 	const queryClient = useQueryClient();
-
-	const react = useMutation({
-		mutationFn: async ({ articleId }: { articleId: string; slug: string }) => {
-			return articleService.reactToArticle({ articleId });
-		},
-		onMutate: async (variables) => {
-			await queryClient.cancelQueries({
-				queryKey: articleQueries.detail(variables.slug).queryKey,
-			});
-
-			const previousData = queryClient.getQueryData(
-				articleQueries.detail(variables.slug).queryKey,
-			);
-
-			queryClient.setQueryData(
-				articleQueries.detail(variables.slug).queryKey,
-				(old: any) => {
-					if (!old) return old;
-					const { article, userReaction } = old;
-					const isLiked = userReaction === "LIKE";
-					return {
-						...old,
-						userReaction: isLiked ? undefined : "LIKE",
-						article: {
-							...article,
-							likesCount: Math.max(0, article.likesCount + (isLiked ? -1 : 1)),
-						},
-					};
-				},
-			);
-
-			return { previousData };
-		},
-		onError: (_err, variables, context) => {
-			if (context?.previousData) {
-				queryClient.setQueryData(
-					articleQueries.detail(variables.slug).queryKey,
-					context.previousData,
-				);
-			}
-			toast.error("Failed to update reaction");
-		},
-		onSettled: (_data, _error, variables) => {
-			queryClient.invalidateQueries({
-				queryKey: articleQueries.detail(variables.slug).queryKey,
-			});
-		},
-	});
 
 	const createComment = useMutation({
 		mutationFn: async (variables: {
@@ -155,31 +107,6 @@ export const useArticleMutations = () => {
 		},
 	});
 
-	const report = useMutation({
-		mutationFn: async ({
-			targetId,
-			targetType,
-			reason,
-			description,
-		}: {
-			targetId: string;
-			targetType: "ARTICLE" | "USER";
-			reason: string;
-			description: string;
-		}) => {
-			if (targetType === "ARTICLE") {
-				return articleService.reportArticle(targetId, { reason, description });
-			}
-			return articleService.reportUser(targetId, { reason, description });
-		},
-		onSuccess: () => {
-			toast.success("Report submitted successfully");
-		},
-		onError: (error: Error) => {
-			toast.error(error.message);
-		},
-	});
-
 	const updateComment = useMutation({
 		mutationFn: async (variables: {
 			articleId: string;
@@ -223,10 +150,8 @@ export const useArticleMutations = () => {
 	});
 
 	return {
-		react,
 		createComment,
 		updateComment,
 		deleteComment,
-		report,
 	};
-};
+}
