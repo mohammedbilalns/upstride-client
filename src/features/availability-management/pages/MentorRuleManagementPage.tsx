@@ -8,13 +8,11 @@ import { AvailabilityRulesSection } from "@/features/availability-management/com
 import { availabilityManagementService } from "@/features/availability-management/services/availability-management.service";
 import type {
 	AvailabilityRule,
-	ConflictAvailabilitySummary,
 	CreateAvailabilityInput,
 	MentorAvailabilitiesResponse,
 } from "@/features/availability-management/types";
 import type { AvailabilityFormValues } from "@/features/availability-management/validators/rule.schema";
 import { useProfile } from "@/features/profile-management/hooks/use-profile";
-import { formatDateDmyShort } from "@/shared/utils/date";
 
 export function MentorRuleManagementPage() {
 	const { data: profile } = useProfile();
@@ -44,14 +42,11 @@ export function MentorRuleManagementPage() {
 	};
 
 	const [confirmAction, setConfirmAction] = useState<{
-		type: "enable" | "delete" | "add" | "conflict" | "enable-conflict";
+		type: "enable" | "delete" | "add";
 		ruleId?: string;
 	} | null>(null);
 	const [pendingRule, setPendingRule] =
 		useState<CreateAvailabilityInput | null>(null);
-	const [conflictSummaries, setConflictSummaries] = useState<
-		ConflictAvailabilitySummary[]
-	>([]);
 	const todayDate = useMemo(() => {
 		const date = new Date();
 		date.setHours(0, 0, 0, 0);
@@ -193,62 +188,10 @@ export function MentorRuleManagementPage() {
 					? items.filter((item) => item.id !== context.optimisticId)
 					: items.filter((item) => !item.id.startsWith("temp-")),
 			);
-			setConflictSummaries(response.data.conflicts ?? []);
-			setConfirmAction({ type: "conflict" });
-		},
-		onError: (error: any, _variables, context) => {
-			if (context?.snapshots) restoreAvailabilityCache(context.snapshots);
-			toast.error(error?.response?.data?.message || "Failed to add rule");
-		},
-	});
-	const forceCreateMutation = useMutation({
-		mutationFn: (data: CreateAvailabilityInput) =>
-			availabilityManagementService.createAvailability(data),
-		onMutate: (data) => {
-			const snapshots = snapshotAvailabilityCache();
-			const optimisticId = `temp-${Date.now()}`;
-			const mentorId = profile?.id ?? "temp";
-			const optimisticRule: AvailabilityRule = {
-				id: optimisticId,
-				mentorId,
-				name: data.name,
-				description: data.description,
-				days: data.days,
-				startTime: data.startTime,
-				endTime: data.endTime,
-				startDate: data.startDate,
-				endDate: data.endDate,
-				breakTimes: data.breakTimes ?? [],
-				slotDuration: data.slotDuration,
-				bufferTime: data.bufferTime ?? 5,
-				status: true,
-				createdAt: new Date(),
-				updatedAt: new Date(),
-			};
-			updateAvailabilityCache((items) => [optimisticRule, ...items]);
-			return { snapshots, optimisticId };
-		},
-		onSuccess: (response, _variables, context) => {
-			const availabilityId = response?.data;
-			if (availabilityId && context?.optimisticId) {
-				updateAvailabilityCache((items) =>
-					items.map((item) =>
-						item.id === context.optimisticId
-							? { ...item, id: availabilityId }
-							: item,
-					),
-				);
-			} else {
-				updateAvailabilityCache((items) =>
-					items.filter((item) => !item.id.startsWith("temp-")),
-				);
-			}
-			toast.success("Availability rule added");
-			setFormKey((prev) => prev + 1);
+			toast.error(
+				"This rule overlaps with an existing active rule. Please adjust the schedule.",
+			);
 			setPendingRule(null);
-			setConflictSummaries([]);
-			setPage(1);
-			setRules([]);
 		},
 		onError: (error: any, _variables, context) => {
 			if (context?.snapshots) restoreAvailabilityCache(context.snapshots);
@@ -293,7 +236,6 @@ export function MentorRuleManagementPage() {
 		onSuccess: () => {
 			toast.success("Rule re-enabled");
 			setConfirmAction(null);
-			setConflictSummaries([]);
 		},
 		onError: (error: any, _variables, context) => {
 			if (context?.snapshots) restoreAvailabilityCache(context.snapshots);
@@ -312,11 +254,12 @@ export function MentorRuleManagementPage() {
 				);
 				toast.success("Rule re-enabled");
 				setConfirmAction(null);
-				setConflictSummaries([]);
 				return;
 			}
-			setConflictSummaries(response.data.conflicts ?? []);
-			setConfirmAction({ type: "enable-conflict", ruleId });
+			toast.error(
+				"This rule overlaps with an existing active rule. Disable the conflicting rule first.",
+			);
+			setConfirmAction(null);
 		},
 		onError: (error: any) => {
 			toast.error(error?.response?.data?.message || "Failed to enable rule");
@@ -327,10 +270,6 @@ export function MentorRuleManagementPage() {
 		if (!confirmAction) return;
 		if (confirmAction.type === "add" && pendingRule)
 			addMutation.mutate(pendingRule);
-		if (confirmAction.type === "conflict" && pendingRule)
-			forceCreateMutation.mutate(pendingRule);
-		if (confirmAction.type === "enable-conflict" && confirmAction.ruleId)
-			enableMutation.mutate(confirmAction.ruleId);
 		if (confirmAction.type === "delete" && confirmAction.ruleId)
 			deleteMutation.mutate(confirmAction.ruleId);
 		if (confirmAction.type === "enable" && confirmAction.ruleId) {
@@ -391,51 +330,20 @@ export function MentorRuleManagementPage() {
 				title={
 					confirmAction?.type === "add"
 						? "Confirm New Rule"
-						: confirmAction?.type === "conflict"
-							? "Availability Conflict"
-							: confirmAction?.type === "enable-conflict"
-								? "Availability Conflict"
-								: confirmAction?.type === "delete"
-									? "Disable Rule"
-									: "Re-enable Rule"
+						: confirmAction?.type === "delete"
+							? "Disable Rule"
+							: "Re-enable Rule"
 				}
 				message={
 					confirmAction?.type === "add"
 						? "This will create a new availability rule for mentees to book sessions."
-						: confirmAction?.type === "conflict"
-							? `There is a conflict with: ${conflictSummaries
-									.map(
-										(c) =>
-											`${c.name} (${formatDateDmyShort(
-												c.startDate,
-											)} to ${formatDateDmyShort(c.endDate)}, ${
-												c.startTime
-											}-${c.endTime})`,
-									)
-									.join(
-										"; ",
-									)}. Would you want to continue? The new rule will have the higher priority over the old one.`
-							: confirmAction?.type === "enable-conflict"
-								? `There is a conflict with: ${conflictSummaries
-										.map(
-											(c) =>
-												`${c.name} (${formatDateDmyShort(
-													c.startDate,
-												)} to ${formatDateDmyShort(c.endDate)}, ${
-													c.startTime
-												}-${c.endTime})`,
-										)
-										.join(
-											"; ",
-										)}. Would you want to continue? The new rule will have the higher priority over the old one.`
-								: confirmAction?.type === "delete"
-									? "Are you sure you want to disable this availability rule? Mentees won't be able to book these slots while disabled."
-									: "Bring this rule back into active rotation?"
+						: confirmAction?.type === "delete"
+							? "Are you sure you want to disable this availability rule? Mentees won't be able to book these slots while disabled."
+							: "Bring this rule back into active rotation?"
 				}
 				variant={confirmAction?.type === "delete" ? "destructive" : "default"}
 				isLoading={
 					addMutation.isPending ||
-					forceCreateMutation.isPending ||
 					deleteMutation.isPending ||
 					enableMutation.isPending ||
 					checkEnableMutation.isPending
