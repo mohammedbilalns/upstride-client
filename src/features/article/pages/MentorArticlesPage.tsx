@@ -1,15 +1,35 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { FileText, Loader2, Plus } from "lucide-react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { ArticleCard } from "../components/ArticleCard";
 import { articleQueries } from "../hooks/queries";
 import type { ArticleDto } from "../types";
 
+const statusOptions = [
+	{ label: "All", value: "all" },
+	{ label: "Active", value: "active" },
+	{ label: "Blocked", value: "blocked" },
+] as const;
+
 export function MentorArticlesPage() {
 	const navigate = useNavigate();
+	const [status, setStatus] =
+		useState<(typeof statusOptions)[number]["value"]>("all");
+	const listParams = useMemo(
+		() => (status === "all" ? {} : { status }),
+		[status],
+	);
 	const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-		useInfiniteQuery(articleQueries.mentorListInfinite());
+		useInfiniteQuery(articleQueries.mentorListInfinite(listParams));
 
 	const items = data?.pages.flatMap((page) => page.items) ?? [];
 
@@ -30,13 +50,34 @@ export function MentorArticlesPage() {
 						</p>
 					</div>
 				</div>
-				<Button
-					onClick={() => navigate({ to: "/mentor/articles/create" })}
-					className="rounded-xl bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-zinc-50 dark:text-zinc-900 shadow-lg shadow-zinc-900/10 font-bold px-5"
-				>
-					<Plus className="h-4 w-4 mr-2" />
-					Create Article
-				</Button>
+				<div className="flex flex-wrap items-center gap-3">
+					<div className="min-w-[160px]">
+						<Select
+							value={status}
+							onValueChange={(value) =>
+								setStatus(value as (typeof statusOptions)[number]["value"])
+							}
+						>
+							<SelectTrigger className="h-10 rounded-xl bg-white/80 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-800">
+								<SelectValue placeholder="Filter by status" />
+							</SelectTrigger>
+							<SelectContent>
+								{statusOptions.map((option) => (
+									<SelectItem key={option.value} value={option.value}>
+										{option.label}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
+					<Button
+						onClick={() => navigate({ to: "/mentor/articles/create" })}
+						className="rounded-xl bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-zinc-50 dark:text-zinc-900 shadow-lg shadow-zinc-900/10 font-bold px-5"
+					>
+						<Plus className="h-4 w-4 mr-2" />
+						Create Article
+					</Button>
+				</div>
 			</div>
 
 			<section>

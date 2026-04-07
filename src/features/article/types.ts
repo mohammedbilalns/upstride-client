@@ -68,6 +68,14 @@ export interface GetArticlesInput {
 	limit?: number;
 }
 
+export type MentorArticlesStatus = "active" | "blocked";
+
+export interface GetMentorArticlesInput {
+	page: number;
+	search?: string;
+	status?: MentorArticlesStatus;
+}
+
 export interface GetTopTagsResponse {
 	tags: { tag: string; count: number }[];
 }

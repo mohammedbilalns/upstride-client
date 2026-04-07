@@ -13,6 +13,7 @@ import type {
 	GetArticlesResponse,
 	GetCommentsInput,
 	GetCommentsResponse,
+	GetMentorArticlesInput,
 	GetTopTagsResponse,
 	ReactToArticleInput,
 	ReactToArticleResponse,
@@ -47,6 +48,7 @@ export const articleService = {
 	getMentorArticles: async (params: {
 		page: number;
 		search?: string;
+		status?: GetMentorArticlesInput["status"];
 	}): Promise<GetArticlesResponse> => {
 		const response = await api.get<{ data: GetArticlesResponse }>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.MENTOR}`,
