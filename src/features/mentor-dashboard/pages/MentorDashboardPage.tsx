@@ -32,17 +32,6 @@ export function MentorDashboardPage() {
 
 	return (
 		<div className="p-8 space-y-6">
-			<Card className="border-border/60 shadow-sm">
-				<CardHeader className="pb-3">
-					<CardTitle className="text-2xl">Mentor Dashboard</CardTitle>
-				</CardHeader>
-				<CardContent className="space-y-4">
-					<p className="text-muted-foreground">
-						Manage your availability and upcoming sessions.
-					</p>
-				</CardContent>
-			</Card>
-
 			<div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-6">
 				<Card className="border-border/60 shadow-sm">
 					<CardHeader className="pb-3">
@@ -61,9 +50,6 @@ export function MentorDashboardPage() {
 										<h2 className="text-xl font-semibold">
 											{profile.user.name}
 										</h2>
-										{profile.tierName && (
-											<Badge variant="secondary">{profile.tierName}</Badge>
-										)}
 										<Button
 											variant="outline"
 											size="sm"
