@@ -1,9 +1,8 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Coins } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { z } from "zod";
 import FieldError from "@/components/common/Field-Error";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { mentorProfileService } from "@/features/mentor-profile";
+import { mentorProfileSchema } from "@/features/mentor-profile/validators/mentor-profile.schema";
 
 export function EditMentorProfileModal({
 	isOpen,
@@ -46,30 +46,6 @@ export function EditMentorProfileModal({
 		{ skillId: string; level: "BEGINNER" | "INTERMEDIATE" | "ADVANCED" }[]
 	>([]);
 	const [pendingQualifications, setPendingQualifications] = useState<string[]>(
-		[],
-	);
-
-	const mentorProfileSchema = useMemo(
-		() =>
-			z.object({
-				currentPricePer30Min: z
-					.string()
-					.refine(
-						(value) =>
-							value === "" ||
-							(!Number.isNaN(Number(value)) &&
-								Number.isInteger(Number(value)) &&
-								Number(value) >= 100 &&
-								Number(value) <= 10000),
-						{
-							message: "Price must be a whole number between 100 and 10000",
-						},
-					),
-				bio: z.string().trim().min(10, "Bio must be at least 10 characters"),
-				newSkillId: z.string(),
-				newSkillLevel: z.string(),
-				newQualification: z.string(),
-			}),
 		[],
 	);
 

@@ -1,19 +1,11 @@
 import { useForm } from "@tanstack/react-form";
 import { Loader2, Send } from "lucide-react";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import FieldError from "@/components/common/Field-Error";
 import { useArticleMutations } from "../hooks/mutations";
 import { useProfile } from "@/features/profile-management/hooks/use-profile";
-
-const commentSchema = z.object({
-	content: z
-		.string()
-		.trim()
-		.min(2, "Comment must be at least 2 characters")
-		.max(500, "Comment is too long (max 500 characters)"),
-});
+import { commentSchema } from "@/features/article/validators/comment.schema";
 
 interface CommentFormProps {
 	articleId: string;
