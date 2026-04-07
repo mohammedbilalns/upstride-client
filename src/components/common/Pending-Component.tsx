@@ -17,7 +17,7 @@ export default function PendingComponent({ resource }: PendingComponentProps) {
 				{/*  Dynamic Text */}
 				<div className="flex flex-col items-center gap-2">
 					<span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] animate-pulse">
-						{resource ? `Loading ${resource}...` : "Loading..."}
+						Loading...
 					</span>
 
 					{/* Progress Dots */}

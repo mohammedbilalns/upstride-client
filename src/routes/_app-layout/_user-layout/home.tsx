@@ -1,86 +1,117 @@
-import {
-	createFileRoute,
-	useNavigate,
-	useRouteContext,
-} from "@tanstack/react-router";
-import { ArrowRight, GraduationCap } from "lucide-react";
+import { createFileRoute, useRouteContext, Link } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { mentorDiscoveryService } from "@/features/mentor-discovery/services/mentor-discovery.service";
+import { mentorListsService } from "@/features/mentor-discovery/services/mentor-lists.service";
+import { sessionBookingService } from "@/features/session-booking-management/services/session-booking.service";
+import { articleService } from "@/features/article/services/article.service";
+import { articleQueries } from "@/features/article/hooks/queries";
+import { FeedArticleCard } from "@/features/home/components/FeedArticleCard";
+import { BecomeMentorWidget } from "@/features/home/components/BecomeMentorWidget";
+import { SuggestedMentorsWidget } from "@/features/home/components/SuggestedMentorsWidget";
+import { SavedListsWidget } from "@/features/home/components/SavedListsWidget";
+import { UpcomingSessionsWidget } from "@/features/home/components/UpcomingSessionsWidget";
+import { RecommendedArticlesWidget } from "@/features/home/components/RecommendedArticlesWidget";
 
 export const Route = createFileRoute("/_app-layout/_user-layout/home")({
+	loader: async ({ context: { queryClient } }) => {
+		await Promise.all([
+			queryClient.ensureQueryData({
+				queryKey: ["home", "suggested-mentors"],
+				queryFn: () => mentorDiscoveryService.getMentors({ page: 1 }),
+			}),
+			queryClient.ensureQueryData({
+				queryKey: ["home", "saved-lists"],
+				queryFn: () => mentorListsService.getLists(),
+			}),
+			queryClient.ensureQueryData({
+				queryKey: ["home", "upcoming-sessions"],
+				queryFn: () =>
+					sessionBookingService.getUserBookings({
+						filter: "upcoming",
+						limit: 10,
+					}),
+			}),
+			queryClient.ensureQueryData({
+				queryKey: ["home", "recommended-articles"],
+				queryFn: () => articleService.getArticles({ page: 1, limit: 3 }),
+			}),
+			queryClient.ensureQueryData(articleQueries.list({ page: 1, limit: 10 })),
+		]);
+	},
 	component: RouteComponent,
 });
 
 function RouteComponent() {
-	const { auth } = useRouteContext({ from: "__root__" });
-	const userRole = auth.user?.role;
-	const navigate = useNavigate({ from: Route.fullPath });
+	const { auth } = useRouteContext({ from: "/_app-layout/_user-layout/home" });
+
+	const { data: mentorsData } = useSuspenseQuery({
+		queryKey: ["home", "suggested-mentors"],
+		queryFn: () => mentorDiscoveryService.getMentors({ page: 1 }),
+	});
+
+	const { data: savedListsData } = useSuspenseQuery({
+		queryKey: ["home", "saved-lists"],
+		queryFn: () => mentorListsService.getLists(),
+	});
+
+	const { data: sessionsData } = useSuspenseQuery({
+		queryKey: ["home", "upcoming-sessions"],
+		queryFn: () =>
+			sessionBookingService.getUserBookings({ filter: "upcoming", limit: 10 }),
+	});
+
+	const { data: recArticlesData } = useSuspenseQuery({
+		queryKey: ["home", "recommended-articles"],
+		queryFn: () => articleService.getArticles({ page: 1, limit: 3 }),
+	});
+
+	const { data: feedArticlesData } = useSuspenseQuery(
+		articleQueries.list({ page: 1, limit: 10 }),
+	);
 
 	return (
-		<div className="container mx-auto py-6 px-4 space-y-8">
-			{userRole === "USER" && (
-				<section className="relative overflow-hidden rounded-2xl bg-linear-to-br from-primary/10 via-background to-secondary/10 p-6 md:p-8 border border-border/50 shadow-xl animate-in fade-in zoom-in-95 duration-700">
-					<div className="absolute top-0 right-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
-					<div className="absolute bottom-0 left-0 -ml-16 -mb-16 h-64 w-64 rounded-full bg-secondary/5 blur-3xl pointer-events-none" />
+		<div className="container mx-auto py-8 px-4 md:px-6">
+			<div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
+				{/* Left Sidebar */}
+				<aside className="hidden lg:flex flex-col space-y-6 col-span-1">
+					{auth.user?.role === "USER" && <BecomeMentorWidget />}
+					<SuggestedMentorsWidget mentors={mentorsData.items} />
+					<SavedListsWidget lists={savedListsData.items} />
+				</aside>
 
-					<div className="relative flex flex-col md:flex-row items-center justify-between gap-8">
-						<div className="max-w-xl space-y-6 text-center md:text-left">
-							<div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary animate-in slide-in-from-left-4 duration-1000">
-								<GraduationCap className="h-4 w-4" />
-								<span>Grow your career</span>
+				{/* Main Feed */}
+				<main className="col-span-1 lg:col-span-2 flex flex-col space-y-6">
+					{feedArticlesData.items.length === 0 ? (
+						<div className="rounded-xl border border-border bg-card p-12 text-center text-muted-foreground flex items-center justify-center h-48">
+							No articles to show right now.
+						</div>
+					) : (
+						<div className="flex flex-col space-y-6">
+							<div className="grid grid-cols-1 gap-6">
+								{feedArticlesData.items.map((article) => (
+									<FeedArticleCard key={article.id} article={article} />
+								))}
 							</div>
-							<h1 className="text-3xl font-bold tracking-tight text-foreground leading-tight">
-								Become a <span className="text-primary">Mentor</span> today.
-							</h1>
-							<p className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto md:mx-0">
-								Share your journey, empower others, and build a lasting legacy.
-								Join our community of elite mentors.
-							</p>
-							<div className="flex flex-wrap justify-center md:justify-start gap-4 pt-4">
-								<button
-									type="button"
-									onPointerDown={() =>
-										console.log("Home: register pointer down", {
-											pathname: window.location.pathname,
-										})
-									}
-									onClick={async () => {
-										console.log("Home: register click", {
-											isAuthenticated: auth.isAuthenticated,
-											userId: auth.user?.id,
-											role: auth.user?.role,
-											pathname: window.location.pathname,
-										});
-										try {
-											await navigate({ to: "/mentor/register" });
-											console.log("Home: navigate success", {
-												pathname: window.location.pathname,
-											});
-										} catch (error) {
-											console.error("Home: navigate error", error);
-										}
-									}}
-									className="group relative z-10 inline-flex h-10 items-center justify-center overflow-hidden rounded-full bg-primary px-6 text-sm font-bold text-primary-foreground shadow-lg transition-all hover:scale-105 active:scale-95 duration-300"
+							{feedArticlesData.items.length > 0 && (
+								<Link
+									to="/articles"
+									search={(prev: any) => prev}
+									className="w-full text-sm text-primary font-medium hover:underline pt-2 text-center"
 								>
-									<span className="relative z-10 flex items-center gap-2">
-										Register as Mentor
-										<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-									</span>
-									<div className="absolute inset-0 z-0 bg-linear-to-r from-primary via-primary/80 to-primary opacity-0 transition-opacity group-hover:opacity-100" />
-								</button>
-							</div>
+									View More Items in Feed
+								</Link>
+							)}
 						</div>
+					)}
+				</main>
 
-						<div className="w-full max-w-xs animate-in slide-in-from-right-4 duration-1000 hidden md:block">
-							<div className="aspect-square rounded-xl bg-linear-to-br from-primary/20 to-secondary/20 border border-border/50 shadow-inner flex items-center justify-center relative group overflow-hidden">
-								<GraduationCap className="h-32 w-32 text-primary/40 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-700" />
-								<div className="absolute inset-0 bg-linear-to-t from-background/40 to-transparent" />
-							</div>
-						</div>
-					</div>
-				</section>
-			)}
-
-			<div className="text-2xl font-semibold text-muted-foreground italic text-center opacity-50">
-				Hello "/_authenticated/home"!
+				{/* Right Sidebar */}
+				<aside className="col-span-1 flex flex-col space-y-6">
+					<UpcomingSessionsWidget
+						sessions={sessionsData.data?.items?.slice(0, 3)}
+					/>
+					<RecommendedArticlesWidget articles={recArticlesData.items} />
+				</aside>
 			</div>
 		</div>
 	);
