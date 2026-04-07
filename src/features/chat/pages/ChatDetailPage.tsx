@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,6 +40,7 @@ import {
 } from "@/features/chat/hooks";
 import { chatKeys } from "@/features/chat/hooks/queries";
 import type { ChatMessageDto } from "@/features/chat/types";
+import { publicMentorProfileService } from "@/features/mentor-public-profile/services/public-mentor-profile.service";
 import { fileService } from "@/shared/services/file.service";
 
 export function ChatDetailPage() {
@@ -82,6 +83,8 @@ export function ChatDetailPage() {
 		isError,
 		error,
 	} = useGetChat(chatId);
+	const errorStatus = (error as { response?: { status?: number } })?.response
+		?.status;
 
 	const allMessages: ChatMessageDto[] =
 		data?.pages
@@ -102,8 +105,34 @@ export function ChatDetailPage() {
 				};
 		  }
 		| undefined;
+
+	const shouldFetchReceiver =
+		!locationState?.receiver &&
+		!receiverFromApi &&
+		(errorStatus === 404 || errorStatus === 400);
+	const { data: mentorProfileResponse } = useQuery({
+		queryKey: ["public-mentor-profile", chatId],
+		queryFn: () => publicMentorProfileService.getPublicProfile(chatId),
+		enabled: shouldFetchReceiver,
+	});
+	const receiverFromProfile = mentorProfileResponse
+		? {
+				id: mentorProfileResponse.data.profile.user.id,
+				name: mentorProfileResponse.data.profile.user.name,
+				profilePictureUrl:
+					mentorProfileResponse.data.profile.user.avatar ?? null,
+			}
+		: null;
+
 	const otherUser =
-		chat?.receiver ?? receiverFromApi ?? locationState?.receiver ?? null;
+		chat?.receiver ??
+		receiverFromApi ??
+		locationState?.receiver ??
+		receiverFromProfile ??
+		null;
+
+	const isNewChat =
+		!isLoading && (isError || !data?.pages?.length) && !chat && !!otherUser;
 
 	const sendMessage = useSendMessage(chat?.id ?? chatId, chatId);
 	const markRead = useMarkChatRead();
@@ -267,10 +296,8 @@ export function ChatDetailPage() {
 		);
 	}
 
-	if (isError) {
-		const status = (error as { response?: { status?: number } })?.response
-			?.status;
-		if (status === 404 || status === 400) {
+	if (isError && !isNewChat) {
+		if (errorStatus === 404 || errorStatus === 400) {
 			return <ChatNotFound />;
 		}
 		return (
@@ -281,6 +308,10 @@ export function ChatDetailPage() {
 				</Button>
 			</div>
 		);
+	}
+
+	if (!chat && !isNewChat) {
+		return <ChatNotFound />;
 	}
 
 	return (
