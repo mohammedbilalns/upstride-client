@@ -31,6 +31,7 @@ export function CreateRuleScheduleFields({
 							<PopoverTrigger asChild>
 								<Button
 									id={field.name}
+									type="button"
 									variant="outline"
 									className="w-full justify-start text-left font-normal"
 								>
@@ -68,6 +69,7 @@ export function CreateRuleScheduleFields({
 							<PopoverTrigger asChild>
 								<Button
 									id={field.name}
+									type="button"
 									variant="outline"
 									className="w-full justify-start text-left font-normal"
 								>
@@ -91,7 +93,10 @@ export function CreateRuleScheduleFields({
 									disabled={(date) => {
 										const startDate = form.state.values.startDate;
 										if (!startDate) return date < todayDate;
-										return date < parseISO(startDate);
+										const start = parseISO(startDate);
+										const maxEnd = new Date(start);
+										maxEnd.setDate(maxEnd.getDate() + 30);
+										return date < start || date > maxEnd;
 									}}
 									initialFocus
 								/>

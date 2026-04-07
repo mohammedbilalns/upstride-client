@@ -70,6 +70,75 @@ export const availabilityRuleSchema = z
 				path: ["endTime"],
 			});
 		}
+
+		const startDate = new Date(`${value.startDate}T00:00:00Z`);
+		const endDate = new Date(`${value.endDate}T00:00:00Z`);
+		if (
+			!Number.isNaN(startDate.getTime()) &&
+			!Number.isNaN(endDate.getTime())
+		) {
+			const diffMs = endDate.getTime() - startDate.getTime();
+			const diffDays = diffMs / (1000 * 60 * 60 * 24);
+			if (diffDays > 30) {
+				ctx.addIssue({
+					code: z.ZodIssueCode.custom,
+					message: "Availability duration cannot exceed 30 days",
+					path: ["endDate"],
+				});
+			}
+		}
+
+		const breaks = value.breakTimes ?? [];
+		if (breaks.length > 5) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: "Maximum 5 break times allowed",
+				path: ["breakTimes"],
+			});
+			return;
+		}
+
+		const toMinutes = (time: string) => {
+			const [h, m] = time.split(":").map(Number);
+			return h * 60 + m;
+		};
+
+		const sorted = breaks
+			.map((bt, index) => ({
+				index,
+				start: toMinutes(bt.startTime),
+				end: toMinutes(bt.endTime),
+			}))
+			.sort((a, b) => a.start - b.start);
+
+		for (let i = 0; i < sorted.length; i += 1) {
+			const currentBreak = sorted[i];
+			const breakDuration = currentBreak.end - currentBreak.start;
+			if (breakDuration <= 0) {
+				ctx.addIssue({
+					code: z.ZodIssueCode.custom,
+					message: "Break end time must be after start time",
+					path: ["breakTimes", currentBreak.index, "endTime"],
+				});
+				continue;
+			}
+			if (breakDuration < 5 || breakDuration > 120) {
+				ctx.addIssue({
+					code: z.ZodIssueCode.custom,
+					message: "Break duration must be between 5 minutes and 2 hours",
+					path: ["breakTimes", currentBreak.index, "endTime"],
+				});
+			}
+			const nextBreak = sorted[i + 1];
+			if (nextBreak && currentBreak.end > nextBreak.start) {
+				ctx.addIssue({
+					code: z.ZodIssueCode.custom,
+					message: "Break times must not overlap",
+					path: ["breakTimes"],
+				});
+				break;
+			}
+		}
 	});
 
 export type AvailabilityFormValues = Omit<

@@ -19,6 +19,7 @@ import { Route as AppLayoutUserLayoutRouteImport } from './routes/_app-layout/_u
 import { Route as AppLayoutMentorLayoutRouteImport } from './routes/_app-layout/_mentor-layout'
 import { Route as AdminLayoutUserManagementRouteImport } from './routes/_admin-layout/user-management'
 import { Route as AdminLayoutReportManagementRouteImport } from './routes/_admin-layout/report-management'
+import { Route as AdminLayoutPlatformTransactionsRouteImport } from './routes/_admin-layout/platform-transactions'
 import { Route as AdminLayoutPlatformSettingsRouteImport } from './routes/_admin-layout/platform-settings'
 import { Route as AdminLayoutMentorManagementRouteImport } from './routes/_admin-layout/mentor-management'
 import { Route as AdminLayoutDashboardRouteImport } from './routes/_admin-layout/dashboard'
@@ -98,6 +99,12 @@ const AdminLayoutReportManagementRoute =
   AdminLayoutReportManagementRouteImport.update({
     id: '/report-management',
     path: '/report-management',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
+const AdminLayoutPlatformTransactionsRoute =
+  AdminLayoutPlatformTransactionsRouteImport.update({
+    id: '/platform-transactions',
+    path: '/platform-transactions',
     getParentRoute: () => AdminLayoutRoute,
   } as any)
 const AdminLayoutPlatformSettingsRoute =
@@ -305,6 +312,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AdminLayoutDashboardRoute
   '/mentor-management': typeof AdminLayoutMentorManagementRoute
   '/platform-settings': typeof AdminLayoutPlatformSettingsRoute
+  '/platform-transactions': typeof AdminLayoutPlatformTransactionsRoute
   '/report-management': typeof AdminLayoutReportManagementRoute
   '/user-management': typeof AdminLayoutUserManagementRoute
   '/auth': typeof PublicLayoutAuthRoute
@@ -345,6 +353,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AdminLayoutDashboardRoute
   '/mentor-management': typeof AdminLayoutMentorManagementRoute
   '/platform-settings': typeof AdminLayoutPlatformSettingsRoute
+  '/platform-transactions': typeof AdminLayoutPlatformTransactionsRoute
   '/report-management': typeof AdminLayoutReportManagementRoute
   '/user-management': typeof AdminLayoutUserManagementRoute
   '/auth': typeof PublicLayoutAuthRoute
@@ -384,6 +393,7 @@ export interface FileRoutesById {
   '/_admin-layout/dashboard': typeof AdminLayoutDashboardRoute
   '/_admin-layout/mentor-management': typeof AdminLayoutMentorManagementRoute
   '/_admin-layout/platform-settings': typeof AdminLayoutPlatformSettingsRoute
+  '/_admin-layout/platform-transactions': typeof AdminLayoutPlatformTransactionsRoute
   '/_admin-layout/report-management': typeof AdminLayoutReportManagementRoute
   '/_admin-layout/user-management': typeof AdminLayoutUserManagementRoute
   '/_app-layout/_mentor-layout': typeof AppLayoutMentorLayoutRouteWithChildren
@@ -429,6 +439,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/mentor-management'
     | '/platform-settings'
+    | '/platform-transactions'
     | '/report-management'
     | '/user-management'
     | '/auth'
@@ -469,6 +480,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/mentor-management'
     | '/platform-settings'
+    | '/platform-transactions'
     | '/report-management'
     | '/user-management'
     | '/auth'
@@ -507,6 +519,7 @@ export interface FileRouteTypes {
     | '/_admin-layout/dashboard'
     | '/_admin-layout/mentor-management'
     | '/_admin-layout/platform-settings'
+    | '/_admin-layout/platform-transactions'
     | '/_admin-layout/report-management'
     | '/_admin-layout/user-management'
     | '/_app-layout/_mentor-layout'
@@ -620,6 +633,13 @@ declare module '@tanstack/react-router' {
       path: '/report-management'
       fullPath: '/report-management'
       preLoaderRoute: typeof AdminLayoutReportManagementRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
+    '/_admin-layout/platform-transactions': {
+      id: '/_admin-layout/platform-transactions'
+      path: '/platform-transactions'
+      fullPath: '/platform-transactions'
+      preLoaderRoute: typeof AdminLayoutPlatformTransactionsRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
     '/_admin-layout/platform-settings': {
@@ -862,6 +882,7 @@ interface AdminLayoutRouteChildren {
   AdminLayoutDashboardRoute: typeof AdminLayoutDashboardRoute
   AdminLayoutMentorManagementRoute: typeof AdminLayoutMentorManagementRoute
   AdminLayoutPlatformSettingsRoute: typeof AdminLayoutPlatformSettingsRoute
+  AdminLayoutPlatformTransactionsRoute: typeof AdminLayoutPlatformTransactionsRoute
   AdminLayoutReportManagementRoute: typeof AdminLayoutReportManagementRoute
   AdminLayoutUserManagementRoute: typeof AdminLayoutUserManagementRoute
   AdminLayoutAdminArticlesArticleIdRoute: typeof AdminLayoutAdminArticlesArticleIdRoute
@@ -874,6 +895,7 @@ const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
   AdminLayoutDashboardRoute: AdminLayoutDashboardRoute,
   AdminLayoutMentorManagementRoute: AdminLayoutMentorManagementRoute,
   AdminLayoutPlatformSettingsRoute: AdminLayoutPlatformSettingsRoute,
+  AdminLayoutPlatformTransactionsRoute: AdminLayoutPlatformTransactionsRoute,
   AdminLayoutReportManagementRoute: AdminLayoutReportManagementRoute,
   AdminLayoutUserManagementRoute: AdminLayoutUserManagementRoute,
   AdminLayoutAdminArticlesArticleIdRoute:

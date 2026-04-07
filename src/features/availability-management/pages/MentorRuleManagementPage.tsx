@@ -34,7 +34,7 @@ export function MentorRuleManagementPage() {
 		startTime: "09:00",
 		endTime: "17:00",
 		startDate: today,
-		endDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
+		endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000)
 			.toISOString()
 			.split("T")[0],
 		breakTimes: [{ startTime: "12:00", endTime: "13:00" }],

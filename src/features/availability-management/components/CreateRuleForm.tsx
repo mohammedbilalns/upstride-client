@@ -71,7 +71,7 @@ export function CreateRuleForm({
 	const form = useForm({
 		defaultValues,
 		validators: {
-			onBlur: ({ value }) => validateForm(value),
+			onSubmit: ({ value }) => validateForm(value),
 		},
 		onSubmit: async ({ value }) => {
 			if (value.bufferTime === "") return;
@@ -94,9 +94,21 @@ export function CreateRuleForm({
 
 	const addBreakTime = () => {
 		const current = form.state.values.breakTimes ?? [];
+		if (current.length >= 5) return;
+		const last = current[current.length - 1];
+		const nextStartHour = last
+			? Math.min(parseInt(last.endTime.split(":")[0] || "0", 10) + 1, 23)
+			: 12;
+		const nextStart = `${String(nextStartHour).padStart(2, "0")}:${
+			last ? last.endTime.split(":")[1] || "00" : "00"
+		}`;
+		const nextEndHour = Math.min(nextStartHour + 1, 23);
+		const nextEnd = `${String(nextEndHour).padStart(2, "0")}:${
+			last ? last.endTime.split(":")[1] || "00" : "00"
+		}`;
 		form.setFieldValue("breakTimes", [
 			...current,
-			{ startTime: "12:00", endTime: "13:00" },
+			{ startTime: nextStart, endTime: nextEnd },
 		]);
 	};
 

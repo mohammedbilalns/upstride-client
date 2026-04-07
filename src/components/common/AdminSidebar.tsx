@@ -7,6 +7,7 @@ import {
 	Library,
 	LogOut,
 	Users,
+	Wallet,
 	Zap,
 } from "lucide-react";
 import ThemeToggle from "@/components/common/Theme-Toggle";
@@ -52,6 +53,11 @@ export default function AdminSidebar() {
 			to: "/report-management",
 			label: "Report Management",
 			icon: Flag,
+		},
+		{
+			to: "/platform-transactions",
+			label: "Platform Transactions",
+			icon: Wallet,
 		},
 		...(user?.role === "SUPER_ADMIN"
 			? [

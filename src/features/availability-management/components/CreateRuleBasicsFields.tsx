@@ -16,7 +16,7 @@ export function CreateRuleBasicsFields({ form }: CreateRuleBasicsFieldsProps) {
 						<Label htmlFor={field.name}>Rule Name</Label>
 						<Input
 							id={field.name}
-							placeholder="e.g. Fall Semester Morning Slots"
+							placeholder="Enter a name for this rule"
 							value={field.state.value}
 							onChange={(e) => field.handleChange(e.target.value)}
 							onBlur={field.handleBlur}
