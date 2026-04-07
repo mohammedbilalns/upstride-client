@@ -30,6 +30,7 @@ export function MentorListDialog({
 	const [isCreateOpen, setIsCreateOpen] = useState(false);
 	const [name, setName] = useState("");
 	const [description, setDescription] = useState("");
+	const [formError, setFormError] = useState<string | null>(null);
 
 	const fetchLists = useFetchMentorLists();
 	const createList = useCreateMentorList();
@@ -52,16 +53,26 @@ export function MentorListDialog({
 	const resetCreateForm = () => {
 		setName("");
 		setDescription("");
+		setFormError(null);
 		setIsCreateOpen(false);
 	};
 
 	const handleCreate = () => {
 		const trimmedName = name.trim();
-		if (!trimmedName) return;
+		const trimmedDescription = description.trim();
+		if (trimmedName.length < 3 || trimmedName.length > 50) {
+			setFormError("Title must be between 3 and 50 characters.");
+			return;
+		}
+		if (trimmedDescription.length < 10 || trimmedDescription.length > 100) {
+			setFormError("Description must be between 10 and 100 characters.");
+			return;
+		}
+		setFormError(null);
 		createList.mutate(
 			{
 				name: trimmedName,
-				description: description.trim() ? description.trim() : null,
+				description: trimmedDescription,
 			},
 			{
 				onSuccess: (data) => {
@@ -123,6 +134,9 @@ export function MentorListDialog({
 									placeholder="Optional description"
 								/>
 							</div>
+							{formError && (
+								<p className="text-sm text-rose-600">{formError}</p>
+							)}
 							<div className="flex items-center justify-end gap-2">
 								<Button
 									variant="ghost"

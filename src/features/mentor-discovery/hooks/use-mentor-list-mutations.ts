@@ -5,6 +5,7 @@ import { mentorListsService } from "../services/mentor-lists.service";
 import type {
 	AddMentorToListInput,
 	CreateMentorListInput,
+	DeleteMentorListInput,
 	RemoveMentorFromListInput,
 } from "../types";
 
@@ -59,6 +60,21 @@ export function useRemoveMentorFromList() {
 		onError: (error: ApiError) => {
 			toast.error(
 				error.response?.data?.message || "Failed to remove mentor from list",
+			);
+		},
+	});
+}
+
+export function useDeleteMentorList() {
+	return useMutation({
+		mutationFn: (input: DeleteMentorListInput) =>
+			mentorListsService.deleteList(input),
+		onSuccess: () => {
+			toast.success("Mentor list deleted");
+		},
+		onError: (error: ApiError) => {
+			toast.error(
+				error.response?.data?.message || "Failed to delete mentor list",
 			);
 		},
 	});
