@@ -32,11 +32,6 @@ api.interceptors.request.use((config) => {
 	const auth = routerInstance?.options.context?.auth;
 	const token = auth?.accessToken;
 	const csrfToken = auth?.csrfToken;
-	console.debug(
-		"AXIOS INTERCEPTOR: csrf token from the router context: ",
-		csrfToken,
-	);
-
 	if (token) {
 		config.headers.Authorization = `Bearer ${token}`;
 	}

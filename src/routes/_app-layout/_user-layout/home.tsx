@@ -1,4 +1,8 @@
-import { createFileRoute, Link, useRouteContext } from "@tanstack/react-router";
+import {
+	createFileRoute,
+	useNavigate,
+	useRouteContext,
+} from "@tanstack/react-router";
 import { ArrowRight, GraduationCap } from "lucide-react";
 
 export const Route = createFileRoute("/_app-layout/_user-layout/home")({
@@ -7,15 +11,15 @@ export const Route = createFileRoute("/_app-layout/_user-layout/home")({
 
 function RouteComponent() {
 	const { auth } = useRouteContext({ from: "__root__" });
-	console.debug("Router auth context: auth");
 	const userRole = auth.user?.role;
+	const navigate = useNavigate({ from: Route.fullPath });
 
 	return (
 		<div className="container mx-auto py-6 px-4 space-y-8">
 			{userRole === "USER" && (
 				<section className="relative overflow-hidden rounded-2xl bg-linear-to-br from-primary/10 via-background to-secondary/10 p-6 md:p-8 border border-border/50 shadow-xl animate-in fade-in zoom-in-95 duration-700">
-					<div className="absolute top-0 right-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-primary/5 blur-3xl" />
-					<div className="absolute bottom-0 left-0 -ml-16 -mb-16 h-64 w-64 rounded-full bg-secondary/5 blur-3xl" />
+					<div className="absolute top-0 right-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
+					<div className="absolute bottom-0 left-0 -ml-16 -mb-16 h-64 w-64 rounded-full bg-secondary/5 blur-3xl pointer-events-none" />
 
 					<div className="relative flex flex-col md:flex-row items-center justify-between gap-8">
 						<div className="max-w-xl space-y-6 text-center md:text-left">
@@ -31,16 +35,37 @@ function RouteComponent() {
 								Join our community of elite mentors.
 							</p>
 							<div className="flex flex-wrap justify-center md:justify-start gap-4 pt-4">
-								<Link
-									to="/mentor/register"
-									className="group relative inline-flex h-10 items-center justify-center overflow-hidden rounded-full bg-primary px-6 text-sm font-bold text-primary-foreground shadow-lg transition-all hover:scale-105 active:scale-95 duration-300"
+								<button
+									type="button"
+									onPointerDown={() =>
+										console.log("Home: register pointer down", {
+											pathname: window.location.pathname,
+										})
+									}
+									onClick={async () => {
+										console.log("Home: register click", {
+											isAuthenticated: auth.isAuthenticated,
+											userId: auth.user?.id,
+											role: auth.user?.role,
+											pathname: window.location.pathname,
+										});
+										try {
+											await navigate({ to: "/mentor/register" });
+											console.log("Home: navigate success", {
+												pathname: window.location.pathname,
+											});
+										} catch (error) {
+											console.error("Home: navigate error", error);
+										}
+									}}
+									className="group relative z-10 inline-flex h-10 items-center justify-center overflow-hidden rounded-full bg-primary px-6 text-sm font-bold text-primary-foreground shadow-lg transition-all hover:scale-105 active:scale-95 duration-300"
 								>
 									<span className="relative z-10 flex items-center gap-2">
 										Register as Mentor
 										<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
 									</span>
 									<div className="absolute inset-0 z-0 bg-linear-to-r from-primary via-primary/80 to-primary opacity-0 transition-opacity group-hover:opacity-100" />
-								</Link>
+								</button>
 							</div>
 						</div>
 
