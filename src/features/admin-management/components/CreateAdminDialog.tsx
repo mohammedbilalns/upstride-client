@@ -45,7 +45,7 @@ export function CreateAdminDialog({
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="sm:max-w-[520px]">
+			<DialogContent className="sm:max-w-130">
 				<DialogHeader>
 					<DialogTitle>Create Admin</DialogTitle>
 					<DialogDescription>

@@ -107,7 +107,7 @@ export function ChatList() {
 											{lastMessageLabel}
 										</p>
 										{unreadCount > 0 && (
-											<span className="flex items-center justify-center w-5 h-5 bg-primary text-primary-foreground text-[10px] font-bold rounded-full flex-shrink-0">
+											<span className="flex items-center justify-center w-5 h-5 bg-primary text-primary-foreground text-[10px] font-bold rounded-full shrink-0">
 												{unreadCount}
 											</span>
 										)}

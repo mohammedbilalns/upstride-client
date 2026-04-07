@@ -37,7 +37,6 @@ export const fileService = {
 	/**
 	 * Uploads a file directly to cloud storage using a presigned URL.
 	 */
-	//TODO: improve to include the progress of file upload
 	uploadFile: async (
 		url: string,
 		fields: Record<string, string>,

@@ -1,4 +1,4 @@
-import { format, isValid, parse } from "date-fns";
+import { isValid, parse } from "date-fns";
 import { Briefcase, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import FieldError from "@/components/common/Field-Error";
@@ -14,6 +14,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { useProfessions } from "../hooks/use-catalog";
+import { formatDateInput } from "@/shared/utils/date";
 
 interface ExperienceSectionProps {
 	form: any;
@@ -21,15 +22,6 @@ interface ExperienceSectionProps {
 }
 
 const MAX_EXPERIENCE_ITEMS = 7;
-
-const formatDateForDisplay = (isoString: string | null) => {
-	if (!isoString) return "";
-	try {
-		return format(new Date(isoString), "yyyy-MM-dd");
-	} catch {
-		return "";
-	}
-};
 
 export function ExperienceSection({
 	form,
@@ -193,7 +185,7 @@ export function ExperienceSection({
 														<Label className="text-xs">From Date</Label>
 														<Input
 															type="date"
-															value={formatDateForDisplay(subField.state.value)}
+															value={formatDateInput(subField.state.value)}
 															onChange={(e) => {
 																handleDateChange(
 																	field,
@@ -220,7 +212,7 @@ export function ExperienceSection({
 														</Label>
 														<Input
 															type="date"
-															value={formatDateForDisplay(subField.state.value)}
+															value={formatDateInput(subField.state.value)}
 															onChange={(e) => {
 																handleDateChange(
 																	field,

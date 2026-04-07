@@ -1,6 +1,6 @@
-import { FileIcon, FileText, Clock } from "lucide-react";
-import type { ChatMessageDto } from "@/features/chat/types";
+import { Clock, FileIcon, FileText } from "lucide-react";
 import { ProgressiveImage } from "@/components/common/ProgressiveImage";
+import type { ChatMessageDto } from "@/features/chat/types";
 import { formatChatTimestamp } from "@/shared/utils/date";
 
 interface ChatMessageProps {

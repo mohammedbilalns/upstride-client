@@ -54,6 +54,20 @@ export function formatChatTimestamp(
 	return date.toLocaleDateString([], { month: "short", day: "numeric" });
 }
 
+export function formatDateInput(value: DateInput | null | undefined): string {
+	if (value === null || value === undefined || value === "") return "";
+	return formatWithPattern(value, "yyyy-MM-dd");
+}
+
+export function formatDateDmyShort(value: DateInput): string {
+	const date = toDate(value);
+	if (!date) return typeof value === "string" ? value : "";
+	const day = String(date.getDate()).padStart(2, "0");
+	const month = String(date.getMonth() + 1).padStart(2, "0");
+	const year = String(date.getFullYear()).slice(-2);
+	return `${day}/${month}/${year}`;
+}
+
 export function formatLocaleDateLong(value: DateInput): string {
 	const date = toDate(value);
 	if (!date) return typeof value === "string" ? value : "";

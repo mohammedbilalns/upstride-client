@@ -18,9 +18,9 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { formatDateShort } from "@/shared/utils/date";
 import { useBlockAdmin, useUnblockAdmin } from "../hooks/use-admin-actions";
 import type { AdminListItem } from "../types";
-import { formatDateShort } from "@/shared/utils/date";
 
 interface AdminTableProps {
 	admins: AdminListItem[];

@@ -15,13 +15,8 @@ import type {
 } from "@/features/availability-management/types";
 import { CreateRuleForm } from "@/features/availability-management/components/CreateRuleForm";
 import { cn } from "@/shared/utils/cn";
+import { formatDateDmyShort } from "@/shared/utils/date";
 import type { AvailabilityFormValues } from "@/features/availability-management/validators/rule.schema";
-
-const formatDateShort = (dateStr: string) => {
-	const [year, month, day] = dateStr.split("-");
-	if (!year || !month || !day) return dateStr;
-	return `${day}/${month}/${year.slice(-2)}`;
-};
 
 export function MentorRuleManagementPage() {
 	const { data: profile } = useProfile();
@@ -347,8 +342,8 @@ export function MentorRuleManagementPage() {
 														Valid Period:
 													</span>
 													<span className="font-medium text-right">
-														{formatDateShort(rule.startDate)} to{" "}
-														{formatDateShort(rule.endDate)}
+														{formatDateDmyShort(rule.startDate)} to{" "}
+														{formatDateDmyShort(rule.endDate)}
 													</span>
 												</div>
 												<div className="flex justify-between">
@@ -478,9 +473,9 @@ export function MentorRuleManagementPage() {
 							? `There is a conflict with: ${conflictSummaries
 									.map(
 										(c) =>
-											`${c.name} (${formatDateShort(
+											`${c.name} (${formatDateDmyShort(
 												c.startDate,
-											)} to ${formatDateShort(c.endDate)}, ${
+											)} to ${formatDateDmyShort(c.endDate)}, ${
 												c.startTime
 											}-${c.endTime})`,
 									)
@@ -491,9 +486,9 @@ export function MentorRuleManagementPage() {
 								? `There is a conflict with: ${conflictSummaries
 										.map(
 											(c) =>
-												`${c.name} (${formatDateShort(
+												`${c.name} (${formatDateDmyShort(
 													c.startDate,
-												)} to ${formatDateShort(c.endDate)}, ${
+												)} to ${formatDateDmyShort(c.endDate)}, ${
 													c.startTime
 												}-${c.endTime})`,
 										)
