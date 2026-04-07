@@ -63,7 +63,6 @@ export function useArticleCommentMutations() {
 			queryClient.invalidateQueries({
 				queryKey: ["articles", variables.articleId, "comments-infinite"],
 			});
-			toast.success("Comment posted successfully");
 		},
 	});
 
