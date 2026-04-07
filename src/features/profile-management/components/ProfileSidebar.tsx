@@ -4,7 +4,6 @@ import {
 	CalendarClock,
 	ChevronRight,
 	FileText,
-	LayoutDashboard,
 	LogOut,
 	Repeat,
 	ShieldCheck,
@@ -70,11 +69,6 @@ export function ProfileSidebar({ user, isMentor }: ProfileSidebarProps) {
 					{
 						title: "Mentoring",
 						items: [
-							{
-								to: "/mentor-dashboard",
-								label: "Dashboard",
-								icon: LayoutDashboard,
-							},
 							{
 								to: "/mentor-rule-management",
 								label: "Rule Management",

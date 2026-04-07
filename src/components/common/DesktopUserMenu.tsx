@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
+import { LogOut, User as UserIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -55,11 +55,11 @@ export default function DesktopUserMenu({
 					<DropdownMenuSeparator />
 					<DropdownMenuItem asChild>
 						<Link
-							to={user?.role === "MENTOR" ? "/mentor-dashboard" : "/profile"}
+							to="/profile"
 							className="cursor-pointer w-full flex items-center"
 						>
-							<LayoutDashboard className="mr-2 h-4 w-4" />
-							<span>Dashboard</span>
+							<UserIcon className="mr-2 h-4 w-4" />
+							<span>My Profile</span>
 						</Link>
 					</DropdownMenuItem>
 					<DropdownMenuSeparator />

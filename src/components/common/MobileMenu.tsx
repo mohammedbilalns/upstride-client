@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
+import { LogOut, User as UserIcon } from "lucide-react";
 import CoinBalanceLink from "@/components/common/CoinBalanceLink";
 import NavbarLinks from "@/components/common/NavbarLinks";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -74,12 +74,9 @@ export default function MobileMenu({
 						className="w-full justify-start text-xs h-9 rounded-lg"
 						asChild
 					>
-						<Link
-							to={user?.role === "MENTOR" ? "/mentor-dashboard" : "/profile"}
-							onClick={onClose}
-						>
-							<LayoutDashboard className="mr-2 h-3.5 w-3.5" />
-							Dashboard
+						<Link to="/profile" onClick={onClose}>
+							<UserIcon className="mr-2 h-3.5 w-3.5" />
+							My Profile
 						</Link>
 					</Button>
 					<Button

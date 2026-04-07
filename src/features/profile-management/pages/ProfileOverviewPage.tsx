@@ -1,11 +1,6 @@
-import {
-	Award,
-	Briefcase,
-	Mail,
-	Pencil,
-	Phone,
-	User as UserIcon,
-} from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useRouteContext } from "@tanstack/react-router";
+import { Coins, Mail, Pencil, Phone, User as UserIcon } from "lucide-react";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -17,12 +12,31 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { ProfileEditView, useProfile } from "@/features/profile-management";
+import { catalogService } from "@/features/catalog-management/services/catalog.service";
+import { mentorProfileService } from "@/features/mentor-profile";
+import { EditMentorProfileModal } from "@/features/mentor-profile/components/EditMentorProfileModal";
 
 export function ProfileOverviewPage() {
 	const { data: profile, isLoading } = useProfile();
 	const [isEditing, setIsEditing] = useState(false);
+	const [isMentorEditOpen, setIsMentorEditOpen] = useState(false);
+	const { auth } = useRouteContext({
+		from: "/_app-layout/_user-layout/profile",
+	});
+	const isMentor = auth.user?.role === "MENTOR";
+	const { data: mentorProfileResponse, isLoading: mentorProfileLoading } =
+		useQuery({
+			queryKey: ["mentor-profile"],
+			queryFn: () => mentorProfileService.getProfile(),
+			enabled: isMentor,
+		});
+	const { data: catalogData } = useQuery({
+		queryKey: ["catalog"],
+		queryFn: () => catalogService.fetchCatalog(),
+		enabled: isMentor,
+	});
+	const mentorProfile = mentorProfileResponse?.data.profile;
 
 	if (isLoading) {
 		return (
@@ -59,8 +73,8 @@ export function ProfileOverviewPage() {
 				</h2>
 			</div>
 
-			<div className="grid gap-6 lg:grid-cols-3">
-				<Card className="lg:col-span-1 shadow-md overflow-hidden border-none bg-gradient-to-b from-primary/5 to-background">
+			<div className="grid gap-6 lg:grid-cols-12">
+				<Card className="lg:col-span-12 shadow-md overflow-hidden border-none bg-gradient-to-b from-primary/5 to-background">
 					<CardHeader className="text-center pb-2 relative">
 						<Button
 							variant="ghost"
@@ -121,82 +135,126 @@ export function ProfileOverviewPage() {
 						</Button>
 					</CardContent>
 				</Card>
-
-				<Card className="lg:col-span-2 shadow-md border-none overflow-hidden">
-					<CardHeader className="bg-primary/5 border-b border-primary/10">
-						<div className="flex items-center gap-2">
-							<div className="p-2 rounded-lg bg-primary/10">
-								<Award className="h-5 w-5 text-primary" />
-							</div>
-							<div>
-								<CardTitle className="text-xl text-zinc-900 dark:text-zinc-50">
-									Expertise & Skills
-								</CardTitle>
-								<CardDescription>
-									Your areas of interest and associated proficiency levels.
-								</CardDescription>
-							</div>
-						</div>
-					</CardHeader>
-					<CardContent className="pt-6 space-y-8">
-						{profile.preferences?.interests &&
-						profile.preferences.interests.length > 0 ? (
-							<div className="grid gap-6">
-								{profile.preferences.interests.map((interest: any) => (
-									<div key={interest.id} className="space-y-4 group">
-										<div className="flex items-center gap-3">
-											<div className="h-8 w-1 rounded-full bg-primary" />
-											<h4 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">
-												{interest.name}
-											</h4>
-										</div>
-
-										<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-2 ml-4">
-											{interest.skills && interest.skills.length > 0 ? (
-												interest.skills.map((skill: any) => (
-													<div
-														key={skill.skillId}
-														className="flex items-center justify-between p-3 rounded-xl bg-secondary/30 border border-transparent hover:border-primary/20 hover:bg-secondary/50 transition-all duration-200"
-													>
-														<span className="font-medium text-sm">
-															{skill.name}
-														</span>
-														<Badge
-															variant={
-																skill.level === "ADVANCED"
-																	? "default"
-																	: "outline"
-															}
-															className="text-[10px] h-5 px-2 font-bold"
-														>
-															{skill.level}
-														</Badge>
-													</div>
-												))
-											) : (
-												<p className="text-sm text-muted-foreground italic col-span-full">
-													No specific skills listed for this interest.
-												</p>
-											)}
-										</div>
-										<Separator className="mt-6 opacity-50 last:hidden" />
-									</div>
-								))}
-							</div>
-						) : (
-							<div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
-								<div className="p-4 rounded-full bg-secondary/30 mb-4">
-									<Briefcase className="h-8 w-8 opacity-20" />
-								</div>
-								<p>You haven't added any interests or skills yet.</p>
-								<p className="text-sm">
-									Complete your profile to showcase your expertise.
-								</p>
-							</div>
-						)}
-					</CardContent>
-				</Card>
 			</div>
+
+			{isMentor && (
+				<div className="space-y-6">
+					<Card className="border-border/60 shadow-sm">
+						<CardHeader className="pb-3">
+							<CardTitle className="text-xl">Mentor Profile</CardTitle>
+						</CardHeader>
+						<CardContent className="space-y-4">
+							{mentorProfileLoading && (
+								<p className="text-sm text-muted-foreground">
+									Loading mentor profile...
+								</p>
+							)}
+							{mentorProfile && (
+								<div className="grid gap-6 md:grid-cols-[1.2fr_0.8fr] items-start">
+									<div className="space-y-5">
+										<div className="flex items-center gap-3 flex-wrap">
+											<Button
+												variant="outline"
+												size="sm"
+												onClick={() => setIsMentorEditOpen(true)}
+											>
+												Edit Mentor Profile
+											</Button>
+										</div>
+										<div className="space-y-2">
+											<p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+												Current Role
+											</p>
+											<p className="text-sm text-muted-foreground">
+												{mentorProfile.currentRole.name} •{" "}
+												{mentorProfile.organization}
+											</p>
+										</div>
+										{mentorProfile.personalWebsite && (
+											<div className="space-y-2">
+												<p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+													Website
+												</p>
+												<p className="text-sm text-muted-foreground">
+													{mentorProfile.personalWebsite}
+												</p>
+											</div>
+										)}
+										<div className="space-y-2">
+											<p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+												Bio
+											</p>
+											<p className="text-sm text-muted-foreground">
+												{mentorProfile.bio}
+											</p>
+										</div>
+										<div className="space-y-2">
+											<p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+												Expertises
+											</p>
+											<div className="flex flex-wrap gap-2">
+												{mentorProfile.expertises.map((exp) => (
+													<Badge key={exp.id} variant="outline">
+														{exp.name}
+													</Badge>
+												))}
+											</div>
+										</div>
+										<div className="space-y-2">
+											<p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+												Skills
+											</p>
+											<div className="flex flex-wrap gap-2">
+												{mentorProfile.skills.map((skill) => (
+													<Badge key={skill.id} variant="secondary">
+														{skill.name} • {skill.level}
+													</Badge>
+												))}
+											</div>
+										</div>
+										<div className="space-y-2">
+											<p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+												Education
+											</p>
+											<ul className="list-disc pl-6 text-sm text-muted-foreground">
+												{mentorProfile.educationalQualifications.map((item) => (
+													<li key={item}>{item}</li>
+												))}
+											</ul>
+										</div>
+									</div>
+									<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+										<div className="p-4 border border-border/60 rounded-lg">
+											<p className="text-xs text-muted-foreground">
+												Current Price
+											</p>
+											<p className="text-lg font-semibold flex items-center gap-2">
+												<Coins className="h-4 w-4 text-primary" />
+												<span>{mentorProfile.currentPricePer30Min ?? 0}</span>
+												<span className="text-sm text-muted-foreground">
+													/ 30m
+												</span>
+											</p>
+										</div>
+									</div>
+								</div>
+							)}
+							{!mentorProfile && !mentorProfileLoading && (
+								<p className="text-sm text-muted-foreground">
+									No mentor profile data found.
+								</p>
+							)}
+						</CardContent>
+					</Card>
+
+					<EditMentorProfileModal
+						isOpen={isMentorEditOpen}
+						onClose={setIsMentorEditOpen}
+						profile={mentorProfile}
+						catalogData={catalogData}
+					/>
+				</div>
+			)}
 		</div>
 	);
 }
