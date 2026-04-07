@@ -44,11 +44,9 @@ import { Route as AppLayoutUserLayoutChatsIndexRouteImport } from './routes/_app
 import { Route as AppLayoutUserLayoutArticlesIndexRouteImport } from './routes/_app-layout/_user-layout/articles/index'
 import { Route as AppLayoutUserLayoutSessionsSessionIdRouteImport } from './routes/_app-layout/_user-layout/sessions/$sessionId'
 import { Route as AppLayoutUserLayoutProfileSecurityRouteImport } from './routes/_app-layout/_user-layout/profile/security'
-import { Route as AppLayoutUserLayoutPaymentsSuccessRouteImport } from './routes/_app-layout/_user-layout/payments/success'
 import { Route as AppLayoutUserLayoutMentorsMentorIdRouteImport } from './routes/_app-layout/_user-layout/mentors/$mentorId'
 import { Route as AppLayoutUserLayoutMentorRegisterRouteImport } from './routes/_app-layout/_user-layout/mentor.register'
 import { Route as AppLayoutUserLayoutChatsChatIdRouteImport } from './routes/_app-layout/_user-layout/chats/$chatId'
-import { Route as AppLayoutUserLayoutBookingsSuccessRouteImport } from './routes/_app-layout/_user-layout/bookings/success'
 import { Route as AppLayoutUserLayoutProfileBookmarkedMentorsIndexRouteImport } from './routes/_app-layout/_user-layout/profile/bookmarked-mentors/index'
 import { Route as AppLayoutUserLayoutArticlesArticleIdIndexRouteImport } from './routes/_app-layout/_user-layout/articles/$articleId/index'
 import { Route as AppLayoutUserLayoutProfileBookmarkedMentorsListIdRouteImport } from './routes/_app-layout/_user-layout/profile/bookmarked-mentors/$listId'
@@ -250,12 +248,6 @@ const AppLayoutUserLayoutProfileSecurityRoute =
     path: '/security',
     getParentRoute: () => AppLayoutUserLayoutProfileRoute,
   } as any)
-const AppLayoutUserLayoutPaymentsSuccessRoute =
-  AppLayoutUserLayoutPaymentsSuccessRouteImport.update({
-    id: '/payments/success',
-    path: '/payments/success',
-    getParentRoute: () => AppLayoutUserLayoutRoute,
-  } as any)
 const AppLayoutUserLayoutMentorsMentorIdRoute =
   AppLayoutUserLayoutMentorsMentorIdRouteImport.update({
     id: '/$mentorId',
@@ -273,12 +265,6 @@ const AppLayoutUserLayoutChatsChatIdRoute =
     id: '/$chatId',
     path: '/$chatId',
     getParentRoute: () => AppLayoutUserLayoutChatsRoute,
-  } as any)
-const AppLayoutUserLayoutBookingsSuccessRoute =
-  AppLayoutUserLayoutBookingsSuccessRouteImport.update({
-    id: '/bookings/success',
-    path: '/bookings/success',
-    getParentRoute: () => AppLayoutUserLayoutRoute,
   } as any)
 const AppLayoutUserLayoutProfileBookmarkedMentorsIndexRoute =
   AppLayoutUserLayoutProfileBookmarkedMentorsIndexRouteImport.update({
@@ -335,11 +321,9 @@ export interface FileRoutesByFullPath {
   '/mentors': typeof AppLayoutUserLayoutMentorsRouteWithChildren
   '/profile': typeof AppLayoutUserLayoutProfileRouteWithChildren
   '/sessions': typeof AppLayoutUserLayoutSessionsRouteWithChildren
-  '/bookings/success': typeof AppLayoutUserLayoutBookingsSuccessRoute
   '/chats/$chatId': typeof AppLayoutUserLayoutChatsChatIdRoute
   '/mentor/register': typeof AppLayoutUserLayoutMentorRegisterRoute
   '/mentors/$mentorId': typeof AppLayoutUserLayoutMentorsMentorIdRoute
-  '/payments/success': typeof AppLayoutUserLayoutPaymentsSuccessRoute
   '/profile/security': typeof AppLayoutUserLayoutProfileSecurityRoute
   '/sessions/$sessionId': typeof AppLayoutUserLayoutSessionsSessionIdRoute
   '/articles/': typeof AppLayoutUserLayoutArticlesIndexRoute
@@ -373,11 +357,9 @@ export interface FileRoutesByTo {
   '/coins': typeof AppLayoutUserLayoutCoinsRoute
   '/home': typeof AppLayoutUserLayoutHomeRoute
   '/mentor': typeof AppLayoutUserLayoutMentorRouteWithChildren
-  '/bookings/success': typeof AppLayoutUserLayoutBookingsSuccessRoute
   '/chats/$chatId': typeof AppLayoutUserLayoutChatsChatIdRoute
   '/mentor/register': typeof AppLayoutUserLayoutMentorRegisterRoute
   '/mentors/$mentorId': typeof AppLayoutUserLayoutMentorsMentorIdRoute
-  '/payments/success': typeof AppLayoutUserLayoutPaymentsSuccessRoute
   '/profile/security': typeof AppLayoutUserLayoutProfileSecurityRoute
   '/sessions/$sessionId': typeof AppLayoutUserLayoutSessionsSessionIdRoute
   '/articles': typeof AppLayoutUserLayoutArticlesIndexRoute
@@ -421,11 +403,9 @@ export interface FileRoutesById {
   '/_app-layout/_user-layout/mentors': typeof AppLayoutUserLayoutMentorsRouteWithChildren
   '/_app-layout/_user-layout/profile': typeof AppLayoutUserLayoutProfileRouteWithChildren
   '/_app-layout/_user-layout/sessions': typeof AppLayoutUserLayoutSessionsRouteWithChildren
-  '/_app-layout/_user-layout/bookings/success': typeof AppLayoutUserLayoutBookingsSuccessRoute
   '/_app-layout/_user-layout/chats/$chatId': typeof AppLayoutUserLayoutChatsChatIdRoute
   '/_app-layout/_user-layout/mentor/register': typeof AppLayoutUserLayoutMentorRegisterRoute
   '/_app-layout/_user-layout/mentors/$mentorId': typeof AppLayoutUserLayoutMentorsMentorIdRoute
-  '/_app-layout/_user-layout/payments/success': typeof AppLayoutUserLayoutPaymentsSuccessRoute
   '/_app-layout/_user-layout/profile/security': typeof AppLayoutUserLayoutProfileSecurityRoute
   '/_app-layout/_user-layout/sessions/$sessionId': typeof AppLayoutUserLayoutSessionsSessionIdRoute
   '/_app-layout/_user-layout/articles/': typeof AppLayoutUserLayoutArticlesIndexRoute
@@ -465,11 +445,9 @@ export interface FileRouteTypes {
     | '/mentors'
     | '/profile'
     | '/sessions'
-    | '/bookings/success'
     | '/chats/$chatId'
     | '/mentor/register'
     | '/mentors/$mentorId'
-    | '/payments/success'
     | '/profile/security'
     | '/sessions/$sessionId'
     | '/articles/'
@@ -503,11 +481,9 @@ export interface FileRouteTypes {
     | '/coins'
     | '/home'
     | '/mentor'
-    | '/bookings/success'
     | '/chats/$chatId'
     | '/mentor/register'
     | '/mentors/$mentorId'
-    | '/payments/success'
     | '/profile/security'
     | '/sessions/$sessionId'
     | '/articles'
@@ -550,11 +526,9 @@ export interface FileRouteTypes {
     | '/_app-layout/_user-layout/mentors'
     | '/_app-layout/_user-layout/profile'
     | '/_app-layout/_user-layout/sessions'
-    | '/_app-layout/_user-layout/bookings/success'
     | '/_app-layout/_user-layout/chats/$chatId'
     | '/_app-layout/_user-layout/mentor/register'
     | '/_app-layout/_user-layout/mentors/$mentorId'
-    | '/_app-layout/_user-layout/payments/success'
     | '/_app-layout/_user-layout/profile/security'
     | '/_app-layout/_user-layout/sessions/$sessionId'
     | '/_app-layout/_user-layout/articles/'
@@ -823,13 +797,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLayoutUserLayoutProfileSecurityRouteImport
       parentRoute: typeof AppLayoutUserLayoutProfileRoute
     }
-    '/_app-layout/_user-layout/payments/success': {
-      id: '/_app-layout/_user-layout/payments/success'
-      path: '/payments/success'
-      fullPath: '/payments/success'
-      preLoaderRoute: typeof AppLayoutUserLayoutPaymentsSuccessRouteImport
-      parentRoute: typeof AppLayoutUserLayoutRoute
-    }
     '/_app-layout/_user-layout/mentors/$mentorId': {
       id: '/_app-layout/_user-layout/mentors/$mentorId'
       path: '/$mentorId'
@@ -850,13 +817,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/chats/$chatId'
       preLoaderRoute: typeof AppLayoutUserLayoutChatsChatIdRouteImport
       parentRoute: typeof AppLayoutUserLayoutChatsRoute
-    }
-    '/_app-layout/_user-layout/bookings/success': {
-      id: '/_app-layout/_user-layout/bookings/success'
-      path: '/bookings/success'
-      fullPath: '/bookings/success'
-      preLoaderRoute: typeof AppLayoutUserLayoutBookingsSuccessRouteImport
-      parentRoute: typeof AppLayoutUserLayoutRoute
     }
     '/_app-layout/_user-layout/profile/bookmarked-mentors/': {
       id: '/_app-layout/_user-layout/profile/bookmarked-mentors/'
@@ -1052,8 +1012,6 @@ interface AppLayoutUserLayoutRouteChildren {
   AppLayoutUserLayoutMentorsRoute: typeof AppLayoutUserLayoutMentorsRouteWithChildren
   AppLayoutUserLayoutProfileRoute: typeof AppLayoutUserLayoutProfileRouteWithChildren
   AppLayoutUserLayoutSessionsRoute: typeof AppLayoutUserLayoutSessionsRouteWithChildren
-  AppLayoutUserLayoutBookingsSuccessRoute: typeof AppLayoutUserLayoutBookingsSuccessRoute
-  AppLayoutUserLayoutPaymentsSuccessRoute: typeof AppLayoutUserLayoutPaymentsSuccessRoute
   AppLayoutUserLayoutArticlesIndexRoute: typeof AppLayoutUserLayoutArticlesIndexRoute
   AppLayoutUserLayoutArticlesArticleIdIndexRoute: typeof AppLayoutUserLayoutArticlesArticleIdIndexRoute
 }
@@ -1067,10 +1025,6 @@ const AppLayoutUserLayoutRouteChildren: AppLayoutUserLayoutRouteChildren = {
   AppLayoutUserLayoutProfileRoute: AppLayoutUserLayoutProfileRouteWithChildren,
   AppLayoutUserLayoutSessionsRoute:
     AppLayoutUserLayoutSessionsRouteWithChildren,
-  AppLayoutUserLayoutBookingsSuccessRoute:
-    AppLayoutUserLayoutBookingsSuccessRoute,
-  AppLayoutUserLayoutPaymentsSuccessRoute:
-    AppLayoutUserLayoutPaymentsSuccessRoute,
   AppLayoutUserLayoutArticlesIndexRoute: AppLayoutUserLayoutArticlesIndexRoute,
   AppLayoutUserLayoutArticlesArticleIdIndexRoute:
     AppLayoutUserLayoutArticlesArticleIdIndexRoute,

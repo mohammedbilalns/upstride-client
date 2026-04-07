@@ -17,7 +17,6 @@ function ChatsLayout() {
 	return (
 		<div className="container mx-auto px-4 h-[calc(100vh-8rem)] mb-4">
 			<div className="flex h-full overflow-hidden border rounded-xl shadow-sm bg-background">
-				{/* On mobile: show chat list only on /chats, hide on /chats/$chatId */}
 				<div
 					className={`w-full md:w-80 lg:w-96 border-r md:block bg-background ${
 						isRootChats ? "block" : "hidden"

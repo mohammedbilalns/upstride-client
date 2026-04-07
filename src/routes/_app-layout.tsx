@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import UserNavbar from "@/components/common/Navbar";
+import { GlobalSuccessHandler } from "@/components/common/GlobalSuccessHandler";
 
 /**
  * Shared layout for authenticated user and mentor routes.
@@ -20,6 +21,7 @@ function AppLayout() {
 	return (
 		<>
 			<UserNavbar />
+			<GlobalSuccessHandler />
 			<main className="flex-1 pt-20">
 				<Outlet />
 			</main>

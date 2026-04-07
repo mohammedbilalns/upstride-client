@@ -1,30 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
-import {
-	Calendar,
-	Clock,
-	Video,
-	XCircle,
-	History,
-	CreditCard,
-	Coins,
-} from "lucide-react";
+import { Calendar, History } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-	Dialog,
-	DialogClose,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
 import { sessionBookingService } from "@/features/session-booking-management";
 import type {
 	BookingDto,
@@ -35,11 +15,14 @@ import { Pagination } from "@/features/user-management/components/Pagination";
 import { Route } from "@/routes/_app-layout/_user-layout/sessions/index";
 import { useUserSessions } from "../hooks/use-sessions";
 import { SessionFilters } from "../components/SessionFilters";
+import { SessionCard } from "../components/SessionCard";
+import { CancelSessionDialog } from "../components/CancelSessionDialog";
+import { SessionDetailsDialog } from "../components/SessionDetailsDialog";
 
-const formatDate = (value: string) => format(new Date(value), "MMM dd, yyyy");
-const formatTime = (value: string) => format(new Date(value), "hh:mm a");
-const formatBookedDate = (value: string) =>
-	format(new Date(value), "MMM dd, yyyy");
+// const formatDate = (value: string) => format(new Date(value), "MMM dd, yyyy");
+// const formatTime = (value: string) => format(new Date(value), "hh:mm a");
+// const formatBookedDate = (value: string) =>
+// 	format(new Date(value), "MMM dd, yyyy");
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 const getRefundPreview = (
@@ -145,8 +128,12 @@ export function SessionsPage() {
 				return;
 			}
 			navigate({
-				to: "/bookings/success",
-				search: { id: response.data.bookingId },
+				to: "/sessions",
+				search: (prev: any) => ({
+					...prev,
+					booking_success: true,
+					booking_id: response.data.bookingId,
+				}),
 			});
 		},
 		onSettled: () => {
@@ -294,160 +281,25 @@ export function SessionsPage() {
 				</div>
 			</div>
 
-			<Dialog
-				open={isDetailsOpen}
-				onOpenChange={(open) => {
+			<SessionDetailsDialog
+				isOpen={isDetailsOpen}
+				onClose={(open) => {
 					if (!open) setSelectedBooking(null);
 				}}
-			>
-				<DialogContent className="sm:max-w-[560px]">
-					<DialogHeader>
-						<DialogTitle>Session Details</DialogTitle>
-						<DialogDescription>
-							Review the details for this session.
-						</DialogDescription>
-					</DialogHeader>
+				selectedBooking={selectedBooking}
+			/>
 
-					{selectedBooking && (
-						<div className="space-y-4 text-sm">
-							<div className="space-y-1">
-								<p className="text-xs uppercase tracking-wide text-muted-foreground">
-									Mentor
-								</p>
-								<p className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
-									{selectedBooking.mentorName || "Mentor"}
-								</p>
-							</div>
-
-							<div className="grid gap-3 sm:grid-cols-2">
-								<div className="rounded-xl border border-zinc-200/60 dark:border-zinc-800 p-3">
-									<p className="text-xs uppercase tracking-wide text-muted-foreground">
-										Session Date
-									</p>
-									<p className="mt-1 font-medium">
-										{formatDate(selectedBooking.startTime)}
-									</p>
-									<p className="text-xs text-muted-foreground">
-										{formatTime(selectedBooking.startTime)} -{" "}
-										{formatTime(selectedBooking.endTime)}
-									</p>
-								</div>
-								<div className="rounded-xl border border-zinc-200/60 dark:border-zinc-800 p-3">
-									<p className="text-xs uppercase tracking-wide text-muted-foreground">
-										Booked On
-									</p>
-									<p className="mt-1 font-medium">
-										{formatBookedDate(selectedBooking.createdAt)}
-									</p>
-								</div>
-							</div>
-
-							<div className="flex flex-wrap items-center gap-2">
-								<Badge variant="outline" className="text-[10px] uppercase">
-									{selectedBooking.status}
-								</Badge>
-								<Badge variant="secondary" className="text-[10px] uppercase">
-									{selectedBooking.paymentStatus}
-								</Badge>
-								<span className="flex items-center gap-1 text-xs font-semibold text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-900/50 px-2 py-0.5 rounded-md">
-									{selectedBooking.paymentType === "COINS" ? (
-										<Coins className="h-3 w-3 text-amber-500" />
-									) : (
-										<CreditCard className="h-3 w-3 text-blue-500" />
-									)}
-									{selectedBooking.totalAmount}{" "}
-									{selectedBooking.currency === "inr"
-										? "₹"
-										: selectedBooking.currency}
-								</span>
-							</div>
-
-							<div className="space-y-1">
-								<p className="text-xs uppercase tracking-wide text-muted-foreground">
-									Meeting Link
-								</p>
-								{selectedBooking.meetingLink &&
-								selectedBooking.meetingLink !== "Pending" ? (
-									<a
-										href={selectedBooking.meetingLink}
-										target="_blank"
-										rel="noreferrer"
-										className="text-primary font-medium hover:underline break-all"
-									>
-										{selectedBooking.meetingLink}
-									</a>
-								) : (
-									<p className="text-muted-foreground">Pending</p>
-								)}
-							</div>
-
-							{selectedBooking.notes && (
-								<div className="rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 p-3">
-									<p className="text-xs uppercase tracking-wide text-muted-foreground">
-										Notes
-									</p>
-									<p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">
-										{selectedBooking.notes}
-									</p>
-								</div>
-							)}
-						</div>
-					)}
-
-					<DialogFooter>
-						<DialogClose asChild>
-							<Button type="button" variant="outline">
-								Close
-							</Button>
-						</DialogClose>
-					</DialogFooter>
-				</DialogContent>
-			</Dialog>
-
-			<ConfirmModal
+			<CancelSessionDialog
 				isOpen={Boolean(pendingCancelId)}
 				onClose={() => setPendingCancelId(null)}
 				onConfirm={() => {
-					if (!cancelReason.trim()) return;
 					if (pendingCancelId) cancelMutation.mutate(pendingCancelId);
 				}}
-				title="Cancel session"
-				message="Confirm cancellation for this session."
-				confirmText="Confirm Cancel"
-				variant="destructive"
-				isLoading={cancelMutation.isPending}
-			>
-				<div className="mt-4 space-y-3">
-					<div className="rounded-xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/40 p-3 text-xs text-zinc-600 dark:text-zinc-300">
-						<p className="font-semibold text-zinc-800 dark:text-zinc-100">
-							Refund preview
-						</p>
-						{refundPreview.amount !== null ? (
-							<p className="mt-1">
-								Refund amount: {refundPreview.amount} coins (
-								{refundPreview.percentage}%).
-							</p>
-						) : (
-							<p className="mt-1">
-								Refund amount: {refundPreview.percentage}% (coin value
-								unavailable).
-							</p>
-						)}
-						<p className="mt-1 text-zinc-500 dark:text-zinc-400">
-							{refundPreview.reason}
-						</p>
-					</div>
-					<label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
-						Cancellation reason
-					</label>
-					<Textarea
-						value={cancelReason}
-						onChange={(e) => setCancelReason(e.target.value)}
-						placeholder="Please share why you're cancelling..."
-						className="min-h-[100px] rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-800 resize-none focus:ring-primary/20"
-					/>
-				</div>
-			</ConfirmModal>
+				cancelReason={cancelReason}
+				setCancelReason={setCancelReason}
+				refundPreview={refundPreview}
+				isCancelling={cancelMutation.isPending}
+			/>
 
 			<ConfirmModal
 				isOpen={Boolean(pendingRepayId)}
@@ -460,163 +312,6 @@ export function SessionsPage() {
 				confirmText="Pay now"
 				isLoading={repayMutation.isPending}
 			/>
-		</div>
-	);
-}
-
-function SessionCard({
-	booking,
-	showCancel,
-	onViewDetails,
-	onCancel,
-	onRepay,
-	isCancelling,
-	isRepaying,
-}: {
-	booking: BookingDto;
-	showCancel: boolean;
-	onViewDetails: () => void;
-	onCancel: () => void;
-	onRepay: () => void;
-	isCancelling: boolean;
-	isRepaying: boolean;
-}) {
-	const timeUntilStartMs = new Date(booking.startTime).getTime() - Date.now();
-	const isCancelled = booking.status.startsWith("CANCELLED");
-	const isUpcoming =
-		(booking.status === "CONFIRMED" || booking.status === "PENDING") &&
-		timeUntilStartMs >= 0;
-
-	const showMeetingInfo =
-		isUpcoming &&
-		!isCancelled &&
-		timeUntilStartMs <= 60 * 60 * 1000 &&
-		timeUntilStartMs >= 0;
-
-	const canCancel =
-		showCancel && !isCancelled && booking.status !== "COMPLETED";
-	const canRepay =
-		!isCancelled &&
-		booking.paymentType === "STRIPE" &&
-		booking.paymentStatus !== "COMPLETED" &&
-		timeUntilStartMs >= 0;
-
-	return (
-		<div className="group flex flex-col gap-4 rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-5 sm:flex-row sm:items-center sm:justify-between transition-all hover:border-zinc-300 dark:hover:border-zinc-700 shadow-sm hover:shadow-md">
-			<div className="flex gap-4">
-				<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-					{isCancelled ? (
-						<XCircle className="h-6 w-6" />
-					) : (
-						<Video className="h-6 w-6" />
-					)}
-				</div>
-				<div className="space-y-1.5 min-w-0">
-					<div className="flex items-center gap-2">
-						<Link
-							to="/mentors/$mentorId"
-							params={{ mentorId: booking.mentorId }}
-							className="text-base font-bold text-zinc-900 dark:text-zinc-50 hover:text-primary transition-colors truncate"
-						>
-							{booking.mentorName || "Mentor Profile"}
-						</Link>
-						{isCancelled && (
-							<Badge
-								variant="destructive"
-								className="h-5 text-[10px] px-2 rounded-full uppercase tracking-wider"
-							>
-								Cancelled
-							</Badge>
-						)}
-						{booking.status === "PENDING" && (
-							<Badge
-								variant="secondary"
-								className="h-5 text-[10px] px-2 rounded-full uppercase tracking-wider"
-							>
-								Payment Pending
-							</Badge>
-						)}
-					</div>
-
-					<div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
-						<div className="flex items-center gap-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-							<Calendar className="h-4 w-4 text-primary/70" />
-							{formatDate(booking.startTime)}
-						</div>
-						<div className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
-							<Clock className="h-3.5 w-3.5" />
-							{formatTime(booking.startTime)} - {formatTime(booking.endTime)}
-						</div>
-					</div>
-
-					<div className="flex items-center gap-3">
-						<span className="flex items-center gap-1 text-xs font-semibold text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-900/50 px-2 py-0.5 rounded-md">
-							{booking.paymentType === "COINS" ? (
-								<Coins className="h-3 w-3 text-amber-500" />
-							) : (
-								<CreditCard className="h-3 w-3 text-blue-500" />
-							)}
-							{booking.totalAmount}{" "}
-							{booking.currency === "inr" ? "₹" : booking.currency}
-						</span>
-						{showMeetingInfo && booking.meetingLink && (
-							<a
-								href={booking.meetingLink}
-								target="_blank"
-								rel="noreferrer"
-								className="flex items-center gap-1.5 text-xs text-primary font-medium hover:underline"
-							>
-								<Video className="h-3.5 w-3.5" />
-								<span>Join Session</span>
-							</a>
-						)}
-					</div>
-				</div>
-			</div>
-
-			<div className="flex items-center gap-3 sm:flex-col sm:items-end sm:gap-2">
-				<Button
-					asChild
-					variant="outline"
-					size="sm"
-					className="h-9 px-4 rounded-xl text-xs font-semibold"
-				>
-					<button type="button" onClick={onViewDetails}>
-						View details
-					</button>
-				</Button>
-
-				{isCancelled && booking.notes && (
-					<div className="hidden lg:block text-[10px] text-zinc-500 text-right max-w-[200px] line-clamp-1 italic">
-						"{booking.notes}"
-					</div>
-				)}
-
-				{canRepay && (
-					<Button
-						variant="default"
-						size="sm"
-						onClick={onRepay}
-						disabled={isRepaying}
-						className="h-9 px-4 rounded-xl text-xs font-semibold"
-					>
-						Pay now
-					</Button>
-				)}
-
-				{canCancel && (
-					<Button
-						variant="ghost"
-						size="sm"
-						onClick={onCancel}
-						disabled={isCancelling}
-						className="h-9 px-4 rounded-xl text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors border border-rose-100 dark:border-rose-900/30"
-					>
-						<XCircle className="h-3.5 w-3.5 mr-2" />
-						Cancel Session
-					</Button>
-				)}
-			</div>
 		</div>
 	);
 }

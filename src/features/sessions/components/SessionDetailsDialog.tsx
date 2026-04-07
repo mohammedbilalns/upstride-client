@@ -1,0 +1,138 @@
+import { format } from "date-fns";
+import { Coins, CreditCard } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
+import type { BookingDto } from "@/features/session-booking-management/types";
+
+const formatDate = (value: string) => format(new Date(value), "MMM dd, yyyy");
+const formatTime = (value: string) => format(new Date(value), "hh:mm a");
+const formatBookedDate = (value: string) =>
+	format(new Date(value), "MMM dd, yyyy");
+
+interface SessionDetailsDialogProps {
+	isOpen: boolean;
+	onClose: (open: boolean) => void;
+	selectedBooking: BookingDto | null;
+}
+
+export function SessionDetailsDialog({
+	isOpen,
+	onClose,
+	selectedBooking,
+}: SessionDetailsDialogProps) {
+	return (
+		<Dialog open={isOpen} onOpenChange={onClose}>
+			<DialogContent className="sm:max-w-[560px]">
+				<DialogHeader>
+					<DialogTitle>Session Details</DialogTitle>
+					<DialogDescription>
+						Review the details for this session.
+					</DialogDescription>
+				</DialogHeader>
+
+				{selectedBooking && (
+					<div className="space-y-4 text-sm">
+						<div className="space-y-1">
+							<p className="text-xs uppercase tracking-wide text-muted-foreground">
+								Mentor
+							</p>
+							<p className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
+								{selectedBooking.mentorName || "Mentor"}
+							</p>
+						</div>
+
+						<div className="grid gap-3 sm:grid-cols-2">
+							<div className="rounded-xl border border-zinc-200/60 dark:border-zinc-800 p-3">
+								<p className="text-xs uppercase tracking-wide text-muted-foreground">
+									Session Date
+								</p>
+								<p className="mt-1 font-medium">
+									{formatDate(selectedBooking.startTime)}
+								</p>
+								<p className="text-xs text-muted-foreground">
+									{formatTime(selectedBooking.startTime)} -{" "}
+									{formatTime(selectedBooking.endTime)}
+								</p>
+							</div>
+							<div className="rounded-xl border border-zinc-200/60 dark:border-zinc-800 p-3">
+								<p className="text-xs uppercase tracking-wide text-muted-foreground">
+									Booked On
+								</p>
+								<p className="mt-1 font-medium">
+									{formatBookedDate(selectedBooking.createdAt)}
+								</p>
+							</div>
+						</div>
+
+						<div className="flex flex-wrap items-center gap-2">
+							<Badge variant="outline" className="text-[10px] uppercase">
+								{selectedBooking.status}
+							</Badge>
+							<Badge variant="secondary" className="text-[10px] uppercase">
+								{selectedBooking.paymentStatus}
+							</Badge>
+							<span className="flex items-center gap-1 text-xs font-semibold text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-900/50 px-2 py-0.5 rounded-md">
+								{selectedBooking.paymentType === "COINS" ? (
+									<Coins className="h-3 w-3 text-amber-500" />
+								) : (
+									<CreditCard className="h-3 w-3 text-blue-500" />
+								)}
+								{selectedBooking.totalAmount}{" "}
+								{selectedBooking.currency === "inr"
+									? "₹"
+									: selectedBooking.currency}
+							</span>
+						</div>
+
+						<div className="space-y-1">
+							<p className="text-xs uppercase tracking-wide text-muted-foreground">
+								Meeting Link
+							</p>
+							{selectedBooking.meetingLink &&
+							selectedBooking.meetingLink !== "Pending" ? (
+								<a
+									href={selectedBooking.meetingLink}
+									target="_blank"
+									rel="noreferrer"
+									className="text-primary font-medium hover:underline break-all"
+								>
+									{selectedBooking.meetingLink}
+								</a>
+							) : (
+								<p className="text-muted-foreground">Pending</p>
+							)}
+						</div>
+
+						{selectedBooking.notes && (
+							<div className="rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 p-3">
+								<p className="text-xs uppercase tracking-wide text-muted-foreground">
+									Notes
+								</p>
+								<p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">
+									{selectedBooking.notes}
+								</p>
+							</div>
+						)}
+					</div>
+				)}
+
+				<DialogFooter>
+					<DialogClose asChild>
+						<Button type="button" variant="outline">
+							Close
+						</Button>
+					</DialogClose>
+				</DialogFooter>
+			</DialogContent>
+		</Dialog>
+	);
+}

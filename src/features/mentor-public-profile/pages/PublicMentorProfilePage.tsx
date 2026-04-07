@@ -5,14 +5,17 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ReportDialog } from "@/components/common/ReportDialog";
 import { useProfile } from "@/features/profile-management/hooks/use-profile";
 import { MentorArticlesSection } from "../components/MentorArticlesSection";
+import { MentorProfileDetails } from "../components/MentorProfileDetails";
+import { BookingCalendarSelector } from "../components/BookingCalendarSelector";
 import { toast } from "sonner";
 import type { ApiError } from "@/api/apiError";
 import { AddBalanceForm } from "@/components/common/AddBalanceForm";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
+import { cn } from "@/shared/utils/cn";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
 	Dialog,
@@ -122,8 +125,12 @@ export function PublicMentorProfilePage({
 			}
 			clearTopupState();
 			navigate({
-				to: "/bookings/success",
-				search: { id: response.data.bookingId },
+				to: "/sessions",
+				search: (prev: any) => ({
+					...prev,
+					booking_success: true,
+					booking_id: response.data.bookingId,
+				}),
 			});
 			setIsConfirmOpen(false);
 			setSelectedSlot(null);
@@ -277,207 +284,33 @@ export function PublicMentorProfilePage({
 					</Link>
 				</Button>
 			)}
-			<div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-6">
-				<Card className="border-border/60 shadow-sm">
-					<CardHeader className="space-y-4">
-						<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-							<div className="flex items-center gap-4">
-								<Avatar className="h-16 w-16 rounded-2xl border">
-									<AvatarImage
-										src={profile.user.avatar || ""}
-										alt={profile.user.name}
-										className="object-cover"
-									/>
-									<AvatarFallback className="rounded-2xl bg-amber-100 text-amber-700">
-										{profile.user.name.charAt(0).toUpperCase()}
-									</AvatarFallback>
-								</Avatar>
-								<div>
-									<h1 className="text-2xl font-semibold">
-										{profile.user.name}
-									</h1>
-									<p className="text-sm text-muted-foreground">
-										{profile.currentRole?.name || "Mentor"}
-									</p>
-									<p className="text-sm text-muted-foreground">
-										{profile.organization}
-									</p>
-								</div>
-							</div>
-							{!isAdminView && (
-								<div className="flex items-center gap-3">
-									<Button asChild className="px-6">
-										<Link
-											to="/chats/$chatId"
-											params={{ chatId: profile.user.id }}
-											state={{
-												receiver: {
-													id: profile.user.id,
-													name: profile.user.name,
-													profilePictureUrl: profile.user.avatar ?? null,
-												},
-											}}
-										>
-											Chat
-										</Link>
-									</Button>
-									{profile.personalWebsite && (
-										<Button variant="outline" className="px-6" asChild>
-											<a
-												href={profile.personalWebsite}
-												target="_blank"
-												rel="noreferrer"
-											>
-												Website
-											</a>
-										</Button>
-									)}
-									{currentUser?.id !== profile.user.id &&
-										(isReported ? (
-											<Button
-												variant="outline"
-												className="px-4 text-muted-foreground cursor-not-allowed"
-												disabled
-											>
-												<Flag className="h-4 w-4 mr-1" />
-												Report Submitted
-											</Button>
-										) : (
-											<ReportDialog
-												targetId={profile.user.id}
-												targetType="USER"
-												trigger={
-													<Button variant="outline" className="px-4">
-														<Flag className="h-4 w-4" />
-													</Button>
-												}
-											/>
-										))}
-								</div>
-							)}
-						</div>
-						<div className="flex flex-wrap gap-2">
-							<Badge variant="secondary">
-								{profile.yearsOfExperience} years experience
-							</Badge>
-							<Badge variant="secondary">
-								{profile.avgRating.toFixed(1)} rating
-							</Badge>
-						</div>
-					</CardHeader>
-					<CardContent className="space-y-6">
-						<p className="text-sm text-muted-foreground leading-relaxed">
-							{profile.bio}
-						</p>
-						<Separator />
-						<div className="space-y-3">
-							<h3 className="text-sm font-semibold">Expertise</h3>
-							<div className="flex flex-wrap gap-2">
-								{profile.expertises.map((expertise) => (
-									<Badge key={expertise.id} variant="secondary">
-										{expertise.name}
-									</Badge>
-								))}
-							</div>
-						</div>
-						<div className="space-y-3">
-							<h3 className="text-sm font-semibold">Skills</h3>
-							<div className="flex flex-wrap gap-2">
-								{profile.skills.map((skill) => (
-									<Badge key={skill.id} variant="outline">
-										{skill.name} · {skill.level.toLowerCase()}
-									</Badge>
-								))}
-							</div>
-						</div>
-						<div className="space-y-3">
-							<h3 className="text-sm font-semibold">Education</h3>
-							<ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
-								{profile.educationalQualifications.map((edu) => (
-									<li key={edu}>{edu}</li>
-								))}
-							</ul>
-						</div>
-					</CardContent>
-				</Card>
+			<div
+				className={cn(
+					"grid gap-6",
+					!isAdminView
+						? "grid-cols-1 lg:grid-cols-[1.2fr_1fr]"
+						: "grid-cols-1 max-w-4xl",
+				)}
+			>
+				<MentorProfileDetails
+					profile={profile}
+					isAdminView={isAdminView}
+					currentUser={currentUser}
+					isReported={isReported}
+				/>
+				{!isAdminView && (
+					<BookingCalendarSelector
+						today={today}
+						selectedDate={selectedDate}
+						setSelectedDate={setSelectedDate}
+						isLoading={slotsQuery.isLoading}
+						availableSlots={availableSlots}
+						handleBookClick={handleBookClick}
+						bookingSlotId={bookingSlotId}
+						isBooking={bookMutation.isPending}
+					/>
+				)}
 			</div>
-
-			{!isAdminView && (
-				<Card className="border-border/60 shadow-sm">
-					<CardHeader className="flex flex-col gap-2">
-						<CardTitle className="text-lg">Pick a day</CardTitle>
-						<p className="text-sm text-muted-foreground">
-							Choose a date to see available slots.
-						</p>
-					</CardHeader>
-					<CardContent className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6">
-						<div className="border border-border/60 rounded-lg p-3">
-							<Calendar
-								mode="single"
-								selected={selectedDate}
-								onSelect={(date) => setSelectedDate(date ?? undefined)}
-								fromDate={today}
-								disabled={(date) => date < today}
-								className="w-full"
-							/>
-						</div>
-						<div className="space-y-3">
-							<div className="flex items-center justify-between">
-								<h3 className="font-semibold">Available slots</h3>
-								{selectedDate && (
-									<span className="text-sm text-muted-foreground">
-										{formatDate(selectedDate)}
-									</span>
-								)}
-							</div>
-							{slotsQuery.isLoading && (
-								<p className="text-sm text-muted-foreground">
-									Loading slots...
-								</p>
-							)}
-							{!slotsQuery.isLoading && availableSlots.length === 0 && (
-								<p className="text-sm text-muted-foreground">
-									No available slots for this day.
-								</p>
-							)}
-							<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-								{availableSlots.map((slot) => (
-									<div
-										key={slot.startTime}
-										className="flex items-center justify-between rounded-lg border border-border/60 p-3"
-									>
-										<div>
-											<p className="font-medium">
-												{formatTime(slot.startTime)} -{" "}
-												{formatTime(slot.endTime)}
-											</p>
-											<p className="text-xs text-muted-foreground">
-												{slot.durationMinutes} mins · {slot.price} coins
-											</p>
-										</div>
-										<div className="flex items-center gap-2">
-											<Badge variant="secondary">Available</Badge>
-											<Button
-												size="sm"
-												onClick={() => handleBookClick(slot)}
-												disabled={
-													bookMutation.isPending &&
-													bookingSlotId === slot.startTime
-												}
-											>
-												{bookMutation.isPending &&
-												bookingSlotId === slot.startTime
-													? "Booking..."
-													: "Book"}
-											</Button>
-										</div>
-									</div>
-								))}
-							</div>
-						</div>
-					</CardContent>
-				</Card>
-			)}
 
 			<Card className="border-border/60 shadow-sm mt-8">
 				<CardHeader>
