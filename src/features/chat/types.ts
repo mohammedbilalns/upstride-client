@@ -18,6 +18,7 @@ export interface ChatUserDto {
 	id: string;
 	name: string;
 	profilePictureUrl?: string | null;
+	role?: "USER" | "MENTOR" | "ADMIN" | "SUPER_ADMIN";
 }
 
 export interface ChatLastMessageDto {

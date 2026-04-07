@@ -85,9 +85,27 @@ export const useMarkChatRead = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (chatId: string) => chatService.markMessagesRead(chatId),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: chatKeys.lists() });
+		mutationFn: ({ chatId, userId }: { chatId: string; userId: string }) =>
+			chatService.markMessagesRead(chatId),
+		onMutate: ({ chatId, userId }) => {
+			queryClient.setQueriesData({ queryKey: chatKeys.lists() }, (old: any) => {
+				if (!old?.pages) return old;
+				const pages = old.pages.map((page: any) => ({
+					...page,
+					chats: page.chats.map((chat: any) =>
+						chat.id === chatId
+							? {
+									...chat,
+									unreadCount: {
+										...chat.unreadCount,
+										[userId]: 0,
+									},
+								}
+							: chat,
+					),
+				}));
+				return { ...old, pages };
+			});
 		},
 	});
 };

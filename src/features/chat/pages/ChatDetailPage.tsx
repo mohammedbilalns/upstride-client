@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,6 +38,7 @@ import {
 	useMarkChatRead,
 	useSendMessage,
 } from "@/features/chat/hooks";
+import { chatKeys } from "@/features/chat/hooks/queries";
 import type { ChatMessageDto } from "@/features/chat/types";
 import { fileService } from "@/shared/services/file.service";
 
@@ -57,6 +59,7 @@ export function ChatDetailPage() {
 	>({});
 	const [isUploadingMedia, setIsUploadingMedia] = useState(false);
 	const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
+	const queryClient = useQueryClient();
 
 	useEffect(() => {
 		return () => {
@@ -135,10 +138,36 @@ export function ChatDetailPage() {
 	}, [data]);
 
 	useEffect(() => {
-		if (chat?.id) {
-			markRead.mutate(chat.id);
+		if (chat?.id && currentUserId) {
+			markRead.mutate({ chatId: chat.id, userId: currentUserId });
 		}
-	}, [chat?.id]);
+	}, [chat?.id, currentUserId]);
+
+	useEffect(() => {
+		if (!chat) return;
+		queryClient.setQueriesData({ queryKey: chatKeys.lists() }, (old: any) => {
+			if (!old?.pages?.length) return old;
+			const alreadyIncluded = old.pages.some((page: any) =>
+				page.chats?.some((item: any) => item.id === chat.id),
+			);
+			if (alreadyIncluded) return old;
+			const pages = [...old.pages];
+			const firstPage = pages[0];
+			const updatedFirst = {
+				...firstPage,
+				chats: [...(firstPage.chats ?? []), chat],
+			};
+			pages[0] = updatedFirst;
+			const limit = firstPage.limit ?? 10;
+			const total = (old.total ?? 0) + 1;
+			return {
+				...old,
+				pages,
+				total,
+				totalPages: limit ? Math.ceil(total / limit) : old.totalPages,
+			};
+		});
+	}, [chat, queryClient]);
 
 	const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
 		if (scrollRef.current) {

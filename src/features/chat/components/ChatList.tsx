@@ -1,5 +1,6 @@
 import { Link, useLocation, useRouteContext } from "@tanstack/react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useGetChats } from "@/features/chat/hooks";
@@ -93,9 +94,16 @@ export function ChatList() {
 								</div>
 								<div className="flex-1 overflow-hidden">
 									<div className="flex justify-between items-center mb-1">
-										<h3 className="font-medium truncate text-sm">
-											{otherUser?.name || otherUserId}
-										</h3>
+										<div className="flex items-center gap-2 min-w-0">
+											<h3 className="font-medium truncate text-sm">
+												{otherUser?.name || otherUserId}
+											</h3>
+											{otherUser?.role === "MENTOR" && (
+												<Badge className="bg-primary/10 text-primary text-[10px]">
+													Mentor
+												</Badge>
+											)}
+										</div>
 										<span className="text-xs text-muted-foreground whitespace-nowrap ml-2">
 											{formatChatTimestamp(lastMessageTime, {
 												showDateIfNotToday: true,
