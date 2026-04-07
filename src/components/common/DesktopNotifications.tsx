@@ -42,7 +42,7 @@ export default function DesktopNotifications({
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent
-					className="w-80 md:w-[22rem] p-0 border-border/80 shadow-2xl rounded-xl"
+					className="w-80 md:w-88 p-0 border-border/80 shadow-2xl rounded-xl"
 					align="end"
 					sideOffset={8}
 				>

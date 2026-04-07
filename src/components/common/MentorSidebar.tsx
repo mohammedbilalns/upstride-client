@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useLogout } from "@/features/authentication/hooks/use-logout";
 import { cn } from "@/shared/utils/cn";
+import { getInitials } from "@/shared/utils/get-initials";
 
 export default function MentorSidebar() {
 	const { auth } = useRouteContext({ from: "/_app-layout/_mentor-layout" });
@@ -21,15 +22,6 @@ export default function MentorSidebar() {
 
 	const handleLogout = () => {
 		logoutMutation.mutate();
-	};
-
-	const getInitials = (name: string) => {
-		return name
-			.split(" ")
-			.map((n) => n[0])
-			.join("")
-			.toUpperCase()
-			.substring(0, 2);
 	};
 
 	const navItems = [

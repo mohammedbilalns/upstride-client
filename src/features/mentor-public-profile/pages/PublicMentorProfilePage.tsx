@@ -34,6 +34,7 @@ import type { AvailabilitySlot } from "@/features/availability-management/types"
 import { sessionBookingService } from "@/features/session-booking-management";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { formatLocaleTimeShort } from "@/shared/utils/date";
 
 declare module "@tanstack/react-router" {
 	interface HistoryState {
@@ -169,22 +170,6 @@ export function PublicMentorProfilePage({
 		paymentType === "COINS" &&
 		!!selectedSlot &&
 		coinBalance < selectedSlot.price;
-
-	const formatDate = (value: Date) =>
-		value.toLocaleDateString(undefined, {
-			year: "numeric",
-			month: "long",
-			day: "numeric",
-		});
-
-	const formatTime = (value: string) => {
-		const date = new Date(value);
-		if (Number.isNaN(date.getTime())) return value;
-		return date.toLocaleTimeString(undefined, {
-			hour: "2-digit",
-			minute: "2-digit",
-		});
-	};
 
 	const handleBookClick = (slot: AvailabilitySlot) => {
 		setSelectedSlot(slot);
@@ -361,8 +346,8 @@ export function PublicMentorProfilePage({
 								</p>
 							)}
 							<p>
-								Time: {formatTime(selectedSlot.startTime)} -{" "}
-								{formatTime(selectedSlot.endTime)}
+								Time: {formatLocaleTimeShort(selectedSlot.startTime)} -{" "}
+								{formatLocaleTimeShort(selectedSlot.endTime)}
 							</p>
 							<p>Duration: {selectedSlot.durationMinutes} mins</p>
 							<p className="font-medium text-foreground">

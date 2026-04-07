@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { format } from "date-fns";
 import {
 	Calendar,
 	Clock,
@@ -27,9 +26,7 @@ import type { BookingDto } from "@/features/session-booking-management/types";
 import { Pagination } from "@/features/user-management/components/Pagination";
 import { Route } from "@/routes/_app-layout/_mentor-layout/mentor-sessions";
 import { useMentorSessions } from "../hooks/use-mentor-sessions";
-
-const formatDate = (value: string) => format(new Date(value), "MMM dd, yyyy");
-const formatTime = (value: string) => format(new Date(value), "hh:mm a");
+import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
 
 export function MentorSessionsPage() {
 	const navigate = useNavigate({ from: Route.fullPath });
@@ -208,7 +205,7 @@ function MentorSessionCard({
 				<div className="flex items-center gap-3">
 					<div className="flex items-center gap-2 text-sm font-semibold">
 						<Calendar className="h-4 w-4 text-primary" />
-						{formatDate(booking.startTime)}
+						{formatDateShort(booking.startTime)}
 					</div>
 					{isCancelled && <Badge variant="destructive">Cancelled</Badge>}
 					{booking.status === "PENDING" && (
@@ -218,7 +215,8 @@ function MentorSessionCard({
 				<div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
 					<div className="flex items-center gap-2">
 						<Clock className="h-4 w-4" />
-						{formatTime(booking.startTime)} - {formatTime(booking.endTime)}
+						{formatTimeShort(booking.startTime)} -{" "}
+						{formatTimeShort(booking.endTime)}
 					</div>
 					<div className="flex items-center gap-1.5 bg-zinc-100 dark:bg-zinc-800/50 px-2 py-0.5 rounded text-xs">
 						{booking.paymentType === "COINS" ? (

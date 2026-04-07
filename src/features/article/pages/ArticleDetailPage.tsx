@@ -14,7 +14,6 @@ import { Separator } from "@/components/ui/separator";
 import { ProgressiveImage } from "@/components/common/ProgressiveImage";
 import { articleQueries } from "../hooks/queries";
 import { ArticleManagement } from "../components/ArticleManagement";
-import { format } from "date-fns";
 import { Link } from "@tanstack/react-router";
 import { ReactionButtons } from "../components/ReactionButtons";
 import { ReportDialog } from "@/components/common/ReportDialog";
@@ -22,6 +21,7 @@ import { CommentsSection } from "../components/CommentsSection";
 import { useProfile } from "@/features/profile-management/hooks/use-profile";
 import { AppealDialog } from "../components/AppealDialog";
 import { useQueryClient } from "@tanstack/react-query";
+import { formatDateLong, formatDateMedium } from "@/shared/utils/date";
 
 export function ArticleDetailPage({
 	articleId,
@@ -88,7 +88,7 @@ export function ArticleDetailPage({
 									Appeal Submitted
 									{data.appealedAt && (
 										<span className="text-xs font-normal opacity-70 ml-auto">
-											{format(new Date(data.appealedAt), "MMM d, yyyy")}
+											{formatDateMedium(data.appealedAt)}
 										</span>
 									)}
 								</h4>
@@ -169,8 +169,7 @@ export function ArticleDetailPage({
 									{article.authorSnapshot.name}
 								</div>
 								<div className="text-xs text-zinc-500 font-medium">
-									Published on{" "}
-									{format(new Date(article.createdAt), "MMMM d, yyyy")}
+									Published on {formatDateLong(article.createdAt)}
 								</div>
 							</div>
 						</div>

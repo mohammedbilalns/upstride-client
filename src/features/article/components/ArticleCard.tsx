@@ -10,8 +10,8 @@ import {
 	CardFooter,
 	CardHeader,
 } from "@/components/ui/card";
-import { format } from "date-fns";
 import type { ArticleDto } from "../types";
+import { formatDateMedium } from "@/shared/utils/date";
 
 interface ArticleCardProps {
 	article: ArticleDto;
@@ -77,7 +77,7 @@ export function ArticleCard({
 					<span className="text-[10px] text-zinc-400">•</span>
 					<div className="flex items-center gap-1 text-[10px] text-zinc-400 font-medium uppercase tracking-tight">
 						<Calendar className="h-3 w-3" />
-						{format(new Date(article.createdAt), "MMM d, yyyy")}
+						{formatDateMedium(article.createdAt)}
 					</div>
 				</div>
 				<Link

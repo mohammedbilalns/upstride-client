@@ -7,8 +7,8 @@ import {
 	Calendar,
 	Clock,
 } from "lucide-react";
-import { format } from "date-fns";
 import type { ReportDto } from "../types";
+import { formatDateShort, formatTimeWithSeconds24 } from "@/shared/utils/date";
 
 interface ReportRowDetailsProps {
 	report: ReportDto;
@@ -32,11 +32,11 @@ export function ReportRowDetails({ report }: ReportRowDetailsProps) {
 							<div className="flex flex-col items-end text-[10px] text-muted-foreground/60 font-medium">
 								<span className="flex items-center gap-1">
 									<Calendar className="w-3 h-3" />
-									{format(new Date(report.createdAt), "MMM dd, yyyy")}
+									{formatDateShort(report.createdAt)}
 								</span>
 								<span className="flex items-center gap-1">
 									<Clock className="w-3 h-3" />
-									{format(new Date(report.createdAt), "HH:mm:ss")}
+									{formatTimeWithSeconds24(report.createdAt)}
 								</span>
 							</div>
 						</div>
@@ -62,11 +62,11 @@ export function ReportRowDetails({ report }: ReportRowDetailsProps) {
 								<div className="flex items-center gap-3 mt-3 pt-2 border-t border-blue-200/20">
 									<span className="text-[10px] text-blue-500/70 font-medium flex items-center gap-1">
 										<Calendar className="w-3 h-3" />
-										{format(new Date(report.appealedAt), "MMM dd, yyyy")}
+										{formatDateShort(report.appealedAt)}
 									</span>
 									<span className="text-[10px] text-blue-500/70 font-medium flex items-center gap-1">
 										<Clock className="w-3 h-3" />
-										{format(new Date(report.appealedAt), "HH:mm:ss")}
+										{formatTimeWithSeconds24(report.appealedAt)}
 									</span>
 								</div>
 							)}

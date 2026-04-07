@@ -10,8 +10,8 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getInitials } from "@/components/common/navbar.utils";
-import type { NavbarUser } from "@/components/common/navbar.types";
+import { getInitials } from "@/shared/utils/get-initials";
+import type { NavbarUser } from "./Navbar";
 
 export default function DesktopUserMenu({
 	user,

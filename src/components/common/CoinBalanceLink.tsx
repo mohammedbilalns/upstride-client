@@ -1,7 +1,16 @@
 import { Link } from "@tanstack/react-router";
 import { Coins } from "lucide-react";
 import { cn } from "@/shared/utils/cn";
-import { coinSearchParams } from "@/components/common/navbar.constants";
+
+const coinSearchParams = {
+	tab: "coins",
+	coinPage: 1,
+	coinLimit: 10,
+	coinSort: "recent",
+	paymentPage: 1,
+	paymentLimit: 10,
+	paymentSort: "recent",
+};
 
 export default function CoinBalanceLink({
 	coinBalance,

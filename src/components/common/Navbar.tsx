@@ -9,11 +9,22 @@ import MobileNotifications from "@/components/common/MobileNotifications";
 import NavbarLinks from "@/components/common/NavbarLinks";
 import NavbarLogo from "@/components/common/NavbarLogo";
 import ThemeToggle from "@/components/common/Theme-Toggle";
-import { navLinks } from "@/components/common/navbar.constants";
 import { useLogout } from "@/features/authentication/hooks/use-logout";
 import { useCoinBalance } from "@/features/coin-management";
 import { useGetUnreadCount } from "@/features/notifications/hooks";
 import { cn } from "@/shared/utils/cn";
+
+export const navLinks = [
+	{ to: "/mentors", label: "Find Mentors" },
+	{ to: "/articles", label: "Read Articles" },
+	{ to: "/sessions", label: "Sessions" },
+];
+
+export type NavbarUser = {
+	name?: string;
+	role?: string;
+	profilePictureUrl?: string;
+} | null;
 
 export default function UserNavbar() {
 	const { auth } = useRouteContext({ from: "__root__" });
@@ -52,7 +63,7 @@ export default function UserNavbar() {
 			className={cn(
 				"fixed top-3 left-1/2 -translate-x-1/2 z-50 rounded-xl animate-soft-in transition-all duration-300",
 				isScrolled
-					? "w-[calc(100%-4rem)] max-w-[60rem] glass bg-background/80 border border-primary/20 shadow-lg backdrop-blur-xl"
+					? "w-[calc(100%-4rem)] max-w-240 glass bg-background/80 border border-primary/20 shadow-lg backdrop-blur-xl"
 					: "w-[calc(100%-2rem)] max-w-6xl bg-transparent border border-transparent shadow-none backdrop-blur-0",
 			)}
 		>

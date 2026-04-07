@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { format } from "date-fns";
 import {
 	Calendar,
 	Clock,
@@ -11,9 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { BookingDto } from "@/features/session-booking-management/types";
-
-const formatDate = (value: string) => format(new Date(value), "MMM dd, yyyy");
-const formatTime = (value: string) => format(new Date(value), "hh:mm a");
+import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
 
 export function SessionCard({
 	booking,
@@ -92,11 +89,12 @@ export function SessionCard({
 					<div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
 						<div className="flex items-center gap-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300">
 							<Calendar className="h-4 w-4 text-primary/70" />
-							{formatDate(booking.startTime)}
+							{formatDateShort(booking.startTime)}
 						</div>
 						<div className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
 							<Clock className="h-3.5 w-3.5" />
-							{formatTime(booking.startTime)} - {formatTime(booking.endTime)}
+							{formatTimeShort(booking.startTime)} -{" "}
+							{formatTimeShort(booking.endTime)}
 						</div>
 					</div>
 

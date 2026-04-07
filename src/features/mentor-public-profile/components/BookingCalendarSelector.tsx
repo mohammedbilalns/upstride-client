@@ -3,6 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { AvailabilitySlot } from "@/features/availability-management/types";
+import {
+	formatLocaleDateLong,
+	formatLocaleTimeShort,
+} from "@/shared/utils/date";
 
 interface BookingCalendarSelectorProps {
 	today: Date;
@@ -14,22 +18,6 @@ interface BookingCalendarSelectorProps {
 	bookingSlotId: string | null;
 	isBooking: boolean;
 }
-
-const formatDate = (value: Date) =>
-	value.toLocaleDateString(undefined, {
-		year: "numeric",
-		month: "long",
-		day: "numeric",
-	});
-
-const formatTime = (value: string) => {
-	const date = new Date(value);
-	if (Number.isNaN(date.getTime())) return value;
-	return date.toLocaleTimeString(undefined, {
-		hour: "2-digit",
-		minute: "2-digit",
-	});
-};
 
 export function BookingCalendarSelector({
 	today,
@@ -65,7 +53,7 @@ export function BookingCalendarSelector({
 						<h3 className="font-semibold">Available slots</h3>
 						{selectedDate && (
 							<span className="text-sm text-muted-foreground">
-								{formatDate(selectedDate)}
+								{formatLocaleDateLong(selectedDate)}
 							</span>
 						)}
 					</div>
@@ -85,7 +73,8 @@ export function BookingCalendarSelector({
 							>
 								<div>
 									<p className="font-medium text-sm">
-										{formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+										{formatLocaleTimeShort(slot.startTime)} -{" "}
+										{formatLocaleTimeShort(slot.endTime)}
 									</p>
 									<p className="text-xs text-muted-foreground">
 										{slot.durationMinutes} mins · {slot.price} coins

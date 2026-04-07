@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { format } from "date-fns";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { BookingDto } from "@/features/session-booking-management/types";
+import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
 
 export function UpcomingSessionsWidget({
 	upcomingLoading,
@@ -45,12 +45,12 @@ export function UpcomingSessionsWidget({
 							<div className="space-y-1">
 								<div className="flex items-center gap-2 text-sm font-semibold">
 									<Calendar className="h-4 w-4 text-primary" />
-									{format(new Date(session.startTime), "MMM dd, yyyy")}
+									{formatDateShort(session.startTime)}
 								</div>
 								<div className="flex items-center gap-2 text-xs text-muted-foreground">
 									<Clock className="h-4 w-4" />
-									{format(new Date(session.startTime), "hh:mm a")} -{" "}
-									{format(new Date(session.endTime), "hh:mm a")}
+									{formatTimeShort(session.startTime)} -{" "}
+									{formatTimeShort(session.endTime)}
 								</div>
 							</div>
 							<Badge variant="secondary">{session.status}</Badge>

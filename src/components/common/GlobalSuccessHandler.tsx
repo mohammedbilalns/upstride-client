@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { PaymentSuccessModal } from "@/features/payment/components/PaymentSuccessModal";
 
 export function GlobalSuccessHandler() {

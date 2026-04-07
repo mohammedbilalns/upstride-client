@@ -1,18 +1,9 @@
 import { Link, useLocation, useRouteContext } from "@tanstack/react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useGetChats } from "@/features/chat/hooks";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-
-function formatTime(dateStr: string): string {
-	const date = new Date(dateStr);
-	const now = new Date();
-	const isToday = date.toDateString() === now.toDateString();
-	if (isToday) {
-		return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-	}
-	return date.toLocaleDateString([], { month: "short", day: "numeric" });
-}
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useGetChats } from "@/features/chat/hooks";
+import { formatChatTimestamp } from "@/shared/utils/date";
 
 export function ChatList() {
 	const location = useLocation();
@@ -106,7 +97,9 @@ export function ChatList() {
 											{otherUser?.name || otherUserId}
 										</h3>
 										<span className="text-xs text-muted-foreground whitespace-nowrap ml-2">
-											{formatTime(lastMessageTime)}
+											{formatChatTimestamp(lastMessageTime, {
+												showDateIfNotToday: true,
+											})}
 										</span>
 									</div>
 									<div className="flex justify-between items-center gap-2">

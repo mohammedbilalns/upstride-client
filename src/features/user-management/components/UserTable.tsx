@@ -1,4 +1,3 @@
-import { format } from "date-fns";
 import {
 	Calendar,
 	Loader2,
@@ -21,6 +20,7 @@ import {
 } from "@/components/ui/table";
 import { useBlockUser, useUnblockUser } from "../hooks/use-user-actions";
 import type { UserListItem } from "../types";
+import { formatDateShort } from "@/shared/utils/date";
 
 interface UserTableProps {
 	users: UserListItem[];
@@ -132,7 +132,7 @@ export function UserTable({ users }: UserTableProps) {
 								<TableCell>
 									<span className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
 										<Calendar className="w-3.5 h-3.5" />
-										{format(new Date(user.joinedAt), "MMM dd, yyyy")}
+										{formatDateShort(user.joinedAt)}
 									</span>
 								</TableCell>
 								<TableCell className="text-right">

@@ -1,4 +1,3 @@
-import { format } from "date-fns";
 import {
 	Calendar,
 	Loader2,
@@ -21,6 +20,7 @@ import {
 } from "@/components/ui/table";
 import { useBlockAdmin, useUnblockAdmin } from "../hooks/use-admin-actions";
 import type { AdminListItem } from "../types";
+import { formatDateShort } from "@/shared/utils/date";
 
 interface AdminTableProps {
 	admins: AdminListItem[];
@@ -120,7 +120,7 @@ export function AdminTable({ admins }: AdminTableProps) {
 								<TableCell>
 									<span className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
 										<Calendar className="w-3.5 h-3.5" />
-										{format(new Date(admin.addedAt), "MMM dd, yyyy")}
+										{formatDateShort(admin.addedAt)}
 									</span>
 								</TableCell>
 								<TableCell className="text-right">

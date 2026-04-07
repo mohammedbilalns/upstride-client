@@ -88,7 +88,7 @@ export function AddBalanceForm({
 												`Add at least ${minCoins} coins to cover this booking.`}
 										</p>
 									) : null}
-									<div className="min-h-[40px]">
+									<div className="min-h-10">
 										{coinValue && (field.state.value || 0) > 0 ? (
 											<div className="space-y-0.5 text-xs text-muted-foreground">
 												<p>
@@ -123,7 +123,7 @@ export function AddBalanceForm({
 					<form.Subscribe selector={(s) => [s.isSubmitting]}>
 						{([isSubmitting]) => (
 							<Button
-								className="h-10 px-4 flex-shrink-0 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-zinc-50 dark:text-zinc-900"
+								className="h-10 px-4 shrink-0 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-zinc-50 dark:text-zinc-900"
 								disabled={isSubmitting}
 							>
 								<CreditCard className="h-4 w-4 mr-2" />

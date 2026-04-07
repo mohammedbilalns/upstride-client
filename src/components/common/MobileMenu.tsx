@@ -1,11 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import CoinBalanceLink from "@/components/common/CoinBalanceLink";
 import NavbarLinks from "@/components/common/NavbarLinks";
-import { getInitials } from "@/components/common/navbar.utils";
-import type { NavLinkItem, NavbarUser } from "@/components/common/navbar.types";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { getInitials } from "@/shared/utils/get-initials";
+import type { NavbarUser, navLinks } from "./Navbar";
+
+type NavLinkItem = (typeof navLinks)[number];
 
 export default function MobileMenu({
 	isOpen,

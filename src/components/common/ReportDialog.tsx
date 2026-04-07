@@ -2,6 +2,7 @@ import { useForm } from "@tanstack/react-form";
 import { Flag, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
+import FieldError from "@/components/common/Field-Error";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -21,7 +22,6 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import FieldError from "@/components/common/Field-Error";
 import { useArticleMutations } from "@/features/article/hooks/mutations";
 
 const reportSchema = z.object({
@@ -101,7 +101,7 @@ export function ReportDialog({
 					</Button>
 				)}
 			</DialogTrigger>
-			<DialogContent className="sm:max-w-[425px]">
+			<DialogContent className="sm:max-w-106.25">
 				<DialogHeader>
 					<DialogTitle>
 						Report {targetType === "ARTICLE" ? "Article" : "User"}

@@ -1,4 +1,3 @@
-import { format } from "date-fns";
 import { Coins, CreditCard } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,11 +11,7 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import type { BookingDto } from "@/features/session-booking-management/types";
-
-const formatDate = (value: string) => format(new Date(value), "MMM dd, yyyy");
-const formatTime = (value: string) => format(new Date(value), "hh:mm a");
-const formatBookedDate = (value: string) =>
-	format(new Date(value), "MMM dd, yyyy");
+import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
 
 interface SessionDetailsDialogProps {
 	isOpen: boolean;
@@ -56,11 +51,11 @@ export function SessionDetailsDialog({
 									Session Date
 								</p>
 								<p className="mt-1 font-medium">
-									{formatDate(selectedBooking.startTime)}
+									{formatDateShort(selectedBooking.startTime)}
 								</p>
 								<p className="text-xs text-muted-foreground">
-									{formatTime(selectedBooking.startTime)} -{" "}
-									{formatTime(selectedBooking.endTime)}
+									{formatTimeShort(selectedBooking.startTime)} -{" "}
+									{formatTimeShort(selectedBooking.endTime)}
 								</p>
 							</div>
 							<div className="rounded-xl border border-zinc-200/60 dark:border-zinc-800 p-3">
@@ -68,7 +63,7 @@ export function SessionDetailsDialog({
 									Booked On
 								</p>
 								<p className="mt-1 font-medium">
-									{formatBookedDate(selectedBooking.createdAt)}
+									{formatDateShort(selectedBooking.createdAt)}
 								</p>
 							</div>
 						</div>

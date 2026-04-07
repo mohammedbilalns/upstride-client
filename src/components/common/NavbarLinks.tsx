@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { cn } from "@/shared/utils/cn";
 import type { NavLinkItem } from "@/components/common/navbar.types";
+import { cn } from "@/shared/utils/cn";
 
 export default function NavbarLinks({
 	links,
