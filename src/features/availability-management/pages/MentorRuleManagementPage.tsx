@@ -10,6 +10,7 @@ import type {
 	AvailabilityRule,
 	ConflictAvailabilitySummary,
 	CreateAvailabilityInput,
+	MentorAvailabilitiesResponse,
 } from "@/features/availability-management/types";
 import type { AvailabilityFormValues } from "@/features/availability-management/validators/rule.schema";
 import { useProfile } from "@/features/profile-management/hooks/use-profile";
@@ -56,6 +57,40 @@ export function MentorRuleManagementPage() {
 		date.setHours(0, 0, 0, 0);
 		return date;
 	}, []);
+
+	const updateAvailabilityCache = (
+		updater: (items: AvailabilityRule[]) => AvailabilityRule[],
+	) => {
+		queryClient.setQueriesData(
+			{ queryKey: ["mentor-availabilities"] },
+			(old) => {
+				if (!old) return old;
+				const typed = old as MentorAvailabilitiesResponse;
+				const availabilities = typed.data?.availabilities ?? [];
+				return {
+					...typed,
+					data: {
+						...typed.data,
+						availabilities: updater(availabilities),
+					},
+				};
+			},
+		);
+		setRules((prev) => updater(prev));
+	};
+
+	const snapshotAvailabilityCache = () =>
+		queryClient.getQueriesData<MentorAvailabilitiesResponse>({
+			queryKey: ["mentor-availabilities"],
+		});
+
+	const restoreAvailabilityCache = (
+		snapshots: Array<[unknown, MentorAvailabilitiesResponse | undefined]>,
+	) => {
+		for (const [key, data] of snapshots) {
+			queryClient.setQueryData(key, data);
+		}
+	};
 
 	const handleRuleSubmit = (parsedData: unknown) => {
 		setPendingRule(parsedData as CreateAvailabilityInput);
@@ -104,10 +139,48 @@ export function MentorRuleManagementPage() {
 	const addMutation = useMutation({
 		mutationFn: (data: CreateAvailabilityInput) =>
 			availabilityManagementService.checkAndCreateAvailability(data),
-		onSuccess: (response) => {
+		onMutate: (data) => {
+			const snapshots = snapshotAvailabilityCache();
+			const optimisticId = `temp-${Date.now()}`;
+			const mentorId = profile?.id ?? "temp";
+			const optimisticRule: AvailabilityRule = {
+				id: optimisticId,
+				mentorId,
+				name: data.name,
+				description: data.description,
+				days: data.days,
+				startTime: data.startTime,
+				endTime: data.endTime,
+				startDate: data.startDate,
+				endDate: data.endDate,
+				breakTimes: data.breakTimes ?? [],
+				slotDuration: data.slotDuration,
+				bufferTime: data.bufferTime ?? 5,
+				status: true,
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			};
+			updateAvailabilityCache((items) => [optimisticRule, ...items]);
+			return { snapshots, optimisticId };
+		},
+		onSuccess: (response, _variables, context) => {
 			if (response.data.created) {
+				const createdAvailability = response.data.availability;
+				if (createdAvailability) {
+					updateAvailabilityCache((items) => {
+						const filtered = context?.optimisticId
+							? items.filter((item) => item.id !== context.optimisticId)
+							: items.filter((item) => !item.id.startsWith("temp-"));
+						return [createdAvailability, ...filtered];
+					});
+				} else {
+					updateAvailabilityCache((items) =>
+						context?.optimisticId
+							? items.filter((item) => item.id !== context.optimisticId)
+							: items.filter((item) => !item.id.startsWith("temp-")),
+					);
+				}
 				toast.success("Availability rule added");
-				queryClient.invalidateQueries({ queryKey: ["mentor-availabilities"] });
 				setFormKey((prev) => prev + 1);
 				setPendingRule(null);
 				setPage(1);
@@ -115,26 +188,70 @@ export function MentorRuleManagementPage() {
 				return;
 			}
 
+			updateAvailabilityCache((items) =>
+				context?.optimisticId
+					? items.filter((item) => item.id !== context.optimisticId)
+					: items.filter((item) => !item.id.startsWith("temp-")),
+			);
 			setConflictSummaries(response.data.conflicts ?? []);
 			setConfirmAction({ type: "conflict" });
 		},
-		onError: (error: any) => {
+		onError: (error: any, _variables, context) => {
+			if (context?.snapshots) restoreAvailabilityCache(context.snapshots);
 			toast.error(error?.response?.data?.message || "Failed to add rule");
 		},
 	});
 	const forceCreateMutation = useMutation({
 		mutationFn: (data: CreateAvailabilityInput) =>
 			availabilityManagementService.createAvailability(data),
-		onSuccess: () => {
+		onMutate: (data) => {
+			const snapshots = snapshotAvailabilityCache();
+			const optimisticId = `temp-${Date.now()}`;
+			const mentorId = profile?.id ?? "temp";
+			const optimisticRule: AvailabilityRule = {
+				id: optimisticId,
+				mentorId,
+				name: data.name,
+				description: data.description,
+				days: data.days,
+				startTime: data.startTime,
+				endTime: data.endTime,
+				startDate: data.startDate,
+				endDate: data.endDate,
+				breakTimes: data.breakTimes ?? [],
+				slotDuration: data.slotDuration,
+				bufferTime: data.bufferTime ?? 5,
+				status: true,
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			};
+			updateAvailabilityCache((items) => [optimisticRule, ...items]);
+			return { snapshots, optimisticId };
+		},
+		onSuccess: (response, _variables, context) => {
+			const availabilityId = response?.data;
+			if (availabilityId && context?.optimisticId) {
+				updateAvailabilityCache((items) =>
+					items.map((item) =>
+						item.id === context.optimisticId
+							? { ...item, id: availabilityId }
+							: item,
+					),
+				);
+			} else {
+				updateAvailabilityCache((items) =>
+					items.filter((item) => !item.id.startsWith("temp-")),
+				);
+			}
 			toast.success("Availability rule added");
-			queryClient.invalidateQueries({ queryKey: ["mentor-availabilities"] });
 			setFormKey((prev) => prev + 1);
 			setPendingRule(null);
 			setConflictSummaries([]);
 			setPage(1);
 			setRules([]);
 		},
-		onError: (error: any) => {
+		onError: (error: any, _variables, context) => {
+			if (context?.snapshots) restoreAvailabilityCache(context.snapshots);
 			toast.error(error?.response?.data?.message || "Failed to add rule");
 		},
 	});
@@ -142,13 +259,21 @@ export function MentorRuleManagementPage() {
 	const deleteMutation = useMutation({
 		mutationFn: (id: string) =>
 			availabilityManagementService.deleteAvailability(id),
+		onMutate: (id) => {
+			const snapshots = snapshotAvailabilityCache();
+			updateAvailabilityCache((items) =>
+				items.map((item) =>
+					item.id === id ? { ...item, status: false } : item,
+				),
+			);
+			return { snapshots };
+		},
 		onSuccess: () => {
 			toast.success("Rule disabled/deleted");
-			queryClient.invalidateQueries({ queryKey: ["mentor-availabilities"] });
-			setPage(1);
-			setRules([]);
+			setConfirmAction(null);
 		},
-		onError: (error: any) => {
+		onError: (error: any, _variables, context) => {
+			if (context?.snapshots) restoreAvailabilityCache(context.snapshots);
 			toast.error(error?.response?.data?.message || "Failed to disable rule");
 		},
 	});
@@ -156,15 +281,22 @@ export function MentorRuleManagementPage() {
 	const enableMutation = useMutation({
 		mutationFn: (id: string) =>
 			availabilityManagementService.reenableAvailability(id),
+		onMutate: (id) => {
+			const snapshots = snapshotAvailabilityCache();
+			updateAvailabilityCache((items) =>
+				items.map((item) =>
+					item.id === id ? { ...item, status: true } : item,
+				),
+			);
+			return { snapshots };
+		},
 		onSuccess: () => {
 			toast.success("Rule re-enabled");
-			queryClient.invalidateQueries({ queryKey: ["mentor-availabilities"] });
 			setConfirmAction(null);
 			setConflictSummaries([]);
-			setPage(1);
-			setRules([]);
 		},
-		onError: (error: any) => {
+		onError: (error: any, _variables, context) => {
+			if (context?.snapshots) restoreAvailabilityCache(context.snapshots);
 			toast.error(error?.response?.data?.message || "Failed to enable rule");
 		},
 	});
@@ -173,10 +305,14 @@ export function MentorRuleManagementPage() {
 			availabilityManagementService.checkAndReenableAvailability(id),
 		onSuccess: (response, ruleId) => {
 			if (response.data.enabled) {
+				updateAvailabilityCache((items) =>
+					items.map((item) =>
+						item.id === ruleId ? { ...item, status: true } : item,
+					),
+				);
 				toast.success("Rule re-enabled");
-				queryClient.invalidateQueries({ queryKey: ["mentor-availabilities"] });
-				setPage(1);
-				setRules([]);
+				setConfirmAction(null);
+				setConflictSummaries([]);
 				return;
 			}
 			setConflictSummaries(response.data.conflicts ?? []);
