@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { articleSearchSchema } from "@/features/article/validators/article-search-params";
 import { articleQueries } from "@/features/article/hooks/queries";
 import { ArticlesPage } from "@/features/article/pages/ArticlesPage";
+import { articleSearchSchema } from "@/features/article/validators/article-search-params";
 
 export const Route = createFileRoute("/_app-layout/_user-layout/articles/")({
 	validateSearch: articleSearchSchema,
