@@ -49,7 +49,7 @@ export function MentorFilters({
 }: MentorFiltersProps) {
 	const hasFilters =
 		search.search ||
-		search.categoryId ||
+		search.category ||
 		search.minExperience !== undefined ||
 		search.maxExperience !== undefined;
 
@@ -87,9 +87,9 @@ export function MentorFilters({
 						CATEGORY
 					</p>
 					<Select
-						value={search.categoryId ?? "all"}
+						value={search.category ?? "all"}
 						onValueChange={(val) =>
-							onUpdate({ categoryId: val === "all" ? undefined : val })
+							onUpdate({ category: val === "all" ? undefined : val })
 						}
 						disabled={isLoadingCategories}
 					>
@@ -105,7 +105,7 @@ export function MentorFilters({
 						<SelectContent>
 							<SelectItem value="all">All categories</SelectItem>
 							{categories.map((category) => (
-								<SelectItem key={category.id} value={category.id}>
+								<SelectItem key={category.id} value={category.name}>
 									{category.name}
 								</SelectItem>
 							))}

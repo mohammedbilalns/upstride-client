@@ -3,7 +3,7 @@ import { searchSchema } from "@/shared/validators/pagination.schema";
 
 export const MentorDiscoverySearchSchema = z.object({
 	search: searchSchema,
-	categoryId: z.string().optional().catch(undefined),
+	category: z.string().optional().catch(undefined),
 	tierId: z.string().optional().catch(undefined),
 	minExperience: z.number().int().nonnegative().optional().catch(undefined),
 	maxExperience: z.number().int().nonnegative().optional().catch(undefined),

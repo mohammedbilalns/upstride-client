@@ -51,7 +51,7 @@ export function MentorDiscoveryPage() {
 		useInfiniteQuery(
 			getMentorsInfiniteQueryOptions({
 				search: search.search,
-				categoryId: search.categoryId,
+				category: search.category,
 				tierId: search.tierId,
 				minExperience: search.minExperience,
 				maxExperience: search.maxExperience,
