@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { Loader2, Plus, Save } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,8 +37,7 @@ export function ArticleForm({
 	const form = useForm({
 		defaultValues,
 		validators: {
-			onChange: articleSchema as any,
-			onBlur: articleSchema as any,
+			onSubmit: articleSchema as any,
 		},
 		onSubmit: async ({ value }) => {
 			const result = articleSchema.safeParse(value);
@@ -46,6 +45,7 @@ export function ArticleForm({
 			onSubmit(result.data);
 		},
 	});
+	const [hasSubmitted, setHasSubmitted] = useState(false);
 
 	useEffect(() => {
 		if (defaultValues.title || defaultValues.content) {
@@ -61,6 +61,7 @@ export function ArticleForm({
 			onSubmit={(e) => {
 				e.preventDefault();
 				e.stopPropagation();
+				setHasSubmitted(true);
 				form.handleSubmit();
 			}}
 			className="pb-20"
@@ -81,7 +82,7 @@ export function ArticleForm({
 								/>
 								{field.state.meta.errors &&
 								field.state.meta.errors.length > 0 &&
-								field.state.meta.isTouched ? (
+								hasSubmitted ? (
 									<p className="text-sm text-red-500/90 dark:text-red-400 mt-1">
 										{typeof field.state.meta.errors[0] === "string"
 											? field.state.meta.errors[0]
@@ -104,7 +105,7 @@ export function ArticleForm({
 								/>
 								{field.state.meta.errors &&
 								field.state.meta.errors.length > 0 &&
-								field.state.meta.isTouched ? (
+								hasSubmitted ? (
 									<p className="text-sm text-red-500/90 dark:text-red-400 mt-1">
 										{typeof field.state.meta.errors[0] === "string"
 											? field.state.meta.errors[0]
@@ -131,7 +132,7 @@ export function ArticleForm({
 									/>
 									{field.state.meta.errors &&
 									field.state.meta.errors.length > 0 &&
-									field.state.meta.isTouched ? (
+									hasSubmitted ? (
 										<p className="text-sm text-red-500/90 dark:text-red-400 mt-1">
 											{typeof field.state.meta.errors[0] === "string"
 												? field.state.meta.errors[0]
@@ -194,7 +195,7 @@ export function ArticleForm({
 									/>
 									{field.state.meta.errors &&
 									field.state.meta.errors.length > 0 &&
-									field.state.meta.isTouched ? (
+									hasSubmitted ? (
 										<p className="text-sm text-red-500/90 dark:text-red-400 mt-1">
 											{typeof field.state.meta.errors[0] === "string"
 												? field.state.meta.errors[0]

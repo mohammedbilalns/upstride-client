@@ -6,14 +6,15 @@ import { articleSearchSchema } from "@/features/article/validators/article-searc
 export const Route = createFileRoute("/_app-layout/_user-layout/articles/")({
 	validateSearch: articleSearchSchema,
 	loaderDeps: ({ search }) => ({
-		page: search.page,
 		search: search.search,
 		skill: search.skill,
 		category: search.category,
 	}),
 	loader: async ({ context: { queryClient }, deps }) => {
 		await Promise.all([
-			queryClient.ensureQueryData(articleQueries.list(deps as any)),
+			queryClient.ensureQueryData(
+				articleQueries.list({ page: 1, ...(deps as any) }),
+			),
 			queryClient.ensureQueryData(articleQueries.topTags()),
 		]);
 	},

@@ -106,7 +106,6 @@ export function ArticlesPage() {
 								onClear={() =>
 									navigate({
 										search: {
-											page: 1,
 											search: undefined,
 											skill: undefined,
 											category: undefined,
