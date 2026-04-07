@@ -40,7 +40,7 @@ export function ConfirmModal({
 			: undefined;
 
 	return (
-		<Dialog open={isOpen} onOpenChange={onClose}>
+		<Dialog open={isOpen} onOpenChange={onClose} modal={false}>
 			<DialogContent className="sm:max-w-106.25">
 				<DialogHeader>
 					<DialogTitle>{title}</DialogTitle>

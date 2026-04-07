@@ -46,7 +46,7 @@ export function MentorDashboardPage() {
 			<div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-6">
 				<Card className="border-border/60 shadow-sm">
 					<CardHeader className="pb-3">
-						<CardTitle className="text-xl">Profile Snapshot</CardTitle>
+						<CardTitle className="text-xl">Profile</CardTitle>
 					</CardHeader>
 					<CardContent className="space-y-4">
 						{isLoading && (
