@@ -12,7 +12,9 @@ import ThemeToggle from "@/components/common/Theme-Toggle";
 import { useLogout } from "@/features/authentication/hooks/use-logout";
 import { useCoinBalance } from "@/features/coin-management";
 import { useGetUnreadCount } from "@/features/notifications/hooks";
+import { profileQueryOptions } from "@/features/profile-management/hooks/use-profile";
 import { cn } from "@/shared/utils/cn";
+import { useQuery } from "@tanstack/react-query";
 
 export const navLinks = [
 	{ to: "/mentors", label: "Find Mentors" },
@@ -40,6 +42,18 @@ export default function UserNavbar() {
 	const [isMobileNotificationsOpen, setIsMobileNotificationsOpen] =
 		useState(false);
 	const [isScrolled, setIsScrolled] = useState(false);
+
+	const { data: profile } = useQuery({
+		...profileQueryOptions,
+		enabled: Boolean(user?.id),
+	});
+	const mergedUser = user
+		? {
+				...user,
+				name: profile?.name ?? user.name,
+				profilePictureUrl: profile?.profilePictureUrl ?? user.profilePictureUrl,
+			}
+		: user;
 
 	const handleLogout = () => {
 		logoutMutation.mutate();
@@ -86,7 +100,7 @@ export default function UserNavbar() {
 					<div className="hidden sm:block">
 						<ThemeToggle />
 					</div>
-					<DesktopUserMenu user={user} onLogout={handleLogout} />
+					<DesktopUserMenu user={mergedUser} onLogout={handleLogout} />
 
 					<MobileControls
 						isMenuOpen={isMenuOpen}
@@ -111,7 +125,7 @@ export default function UserNavbar() {
 			<MobileMenu
 				isOpen={isMenuOpen}
 				links={navLinks}
-				user={user}
+				user={mergedUser}
 				coinBalance={coinBalance}
 				onClose={() => setIsMenuOpen(false)}
 				onLogout={handleLogout}

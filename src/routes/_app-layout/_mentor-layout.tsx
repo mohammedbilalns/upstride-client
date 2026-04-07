@@ -4,6 +4,8 @@ import {
 	redirect,
 	useRouteContext,
 } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { profileQueryOptions } from "@/features/profile-management/hooks/use-profile";
 import { ProfileSidebar } from "@/features/profile-management/components/ProfileSidebar";
 
 export const Route = createFileRoute("/_app-layout/_mentor-layout")({
@@ -20,6 +22,10 @@ export const Route = createFileRoute("/_app-layout/_mentor-layout")({
 function MentorLayout() {
 	const { auth } = useRouteContext({ from: "/_app-layout/_mentor-layout" });
 	const { user } = auth;
+	const { data: profile } = useQuery({
+		...profileQueryOptions,
+		enabled: Boolean(user?.id),
+	});
 
 	if (!user) return null;
 
@@ -32,10 +38,11 @@ function MentorLayout() {
 						<div className="lg:sticky top-0">
 							<ProfileSidebar
 								user={{
-									name: user.name,
+									name: profile?.name ?? user.name,
 									email: user.email,
 									role: user.role,
-									profilePictureUrl: user.profilePictureUrl,
+									profilePictureUrl:
+										profile?.profilePictureUrl ?? user.profilePictureUrl,
 								}}
 								isMentor={true}
 							/>

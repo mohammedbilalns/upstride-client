@@ -3,6 +3,8 @@ import {
 	Outlet,
 	useRouteContext,
 } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { profileQueryOptions } from "@/features/profile-management/hooks/use-profile";
 import { ProfileSidebar } from "@/features/profile-management/components/ProfileSidebar";
 
 export const Route = createFileRoute("/_app-layout/_user-layout/profile")({
@@ -15,6 +17,10 @@ function ProfileLayout() {
 	});
 	const { user } = auth;
 	const isMentor = user?.role === "MENTOR";
+	const { data: profile } = useQuery({
+		...profileQueryOptions,
+		enabled: Boolean(user?.id),
+	});
 
 	if (!user) return null;
 
@@ -27,10 +33,11 @@ function ProfileLayout() {
 						<div className="lg:sticky top-0">
 							<ProfileSidebar
 								user={{
-									name: user.name,
+									name: profile?.name ?? user.name,
 									email: user.email,
 									role: user.role,
-									profilePictureUrl: user.profilePictureUrl,
+									profilePictureUrl:
+										profile?.profilePictureUrl ?? user.profilePictureUrl,
 								}}
 								isMentor={isMentor}
 							/>
