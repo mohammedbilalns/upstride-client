@@ -78,6 +78,7 @@ export function PublicMentorProfilePage({
 		queryKey: ["public-mentor-profile", mentorId],
 		queryFn: () => publicMentorProfileService.getPublicProfile(mentorId),
 	});
+	const mentorProfileId = profileQuery.data?.data.profile.id;
 
 	const coinBalanceQuery = useCoinBalance();
 
@@ -90,13 +91,18 @@ export function PublicMentorProfilePage({
 	}, [selectedDate]);
 
 	const slotsQuery = useQuery({
-		queryKey: ["public-mentor-available-slots", mentorId, selectedDateKey],
+		queryKey: [
+			"public-mentor-available-slots",
+			mentorProfileId,
+			selectedDateKey,
+		],
 		queryFn: () =>
 			publicMentorProfileService.getAvailableSlotsForDay(
-				mentorId,
+				mentorProfileId ?? mentorId,
 				selectedDateKey,
 			),
-		enabled: Boolean(selectedDateKey) && !isAdminView,
+		enabled:
+			Boolean(selectedDateKey) && !isAdminView && Boolean(mentorProfileId),
 	});
 
 	const clearTopupState = useCallback(() => {
@@ -186,19 +192,26 @@ export function PublicMentorProfilePage({
 		}
 
 		bookMutation.mutate({
-			mentorId,
+			mentorId: mentorProfileId ?? mentorId,
 			startTime: selectedSlot.startTime,
 			endTime: selectedSlot.endTime,
 			paymentType,
 		});
-	}, [selectedSlot, paymentType, coinBalance, mentorId, bookMutation]);
+	}, [
+		selectedSlot,
+		paymentType,
+		coinBalance,
+		mentorProfileId,
+		mentorId,
+		bookMutation,
+	]);
 
 	const handleCheckout = async (coins: number) => {
 		if (selectedSlot) {
 			localStorage.setItem(
 				"pending_booking_topup",
 				JSON.stringify({
-					mentorId,
+					mentorId: mentorProfileId ?? mentorId,
 					slot: selectedSlot,
 				}),
 			);
@@ -227,7 +240,8 @@ export function PublicMentorProfilePage({
 				mentorId: string;
 				slot: AvailabilitySlot;
 			};
-			if (parsed?.mentorId !== mentorId || !parsed?.slot) return;
+			if (parsed?.mentorId !== (mentorProfileId ?? mentorId) || !parsed?.slot)
+				return;
 			setSelectedSlot(parsed.slot);
 			setPaymentType("COINS");
 			setIsTopUpOpen(false);
@@ -235,7 +249,7 @@ export function PublicMentorProfilePage({
 		} catch {
 			// ignore
 		}
-	}, [mentorId, selectedSlot]);
+	}, [mentorProfileId, mentorId, selectedSlot]);
 
 	if (profileQuery.isLoading) {
 		return (
