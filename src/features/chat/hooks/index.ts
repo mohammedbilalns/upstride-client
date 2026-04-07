@@ -4,12 +4,12 @@ import {
 	useQueryClient,
 } from "@tanstack/react-query";
 import { chatService } from "../services/chat.service";
+import type { ChatMessageDto, GetChatsInput, SendMessageInput } from "../types";
 import {
 	chatKeys,
-	getChatsInfiniteQueryOptions,
 	getChatInfiniteQueryOptions,
+	getChatsInfiniteQueryOptions,
 } from "./queries";
-import type { GetChatsInput, SendMessageInput, ChatMessageDto } from "../types";
 
 /**
  * Hook to get the paginated list of all chats.

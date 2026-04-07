@@ -1,4 +1,7 @@
+import { MessageSquareText } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -8,11 +11,8 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
 import { articleService } from "../services/article.service";
-import { MessageSquareText } from "lucide-react";
 
 interface AppealDialogProps {
 	articleId: string;

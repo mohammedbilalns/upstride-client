@@ -20,11 +20,11 @@ import type {
 	ReactToCommentResponse,
 	ReportInput,
 	ReportResponse,
+	SubmitAppealInput,
 	UpdateArticleInput,
 	UpdateArticleResponse,
 	UpdateCommentInput,
 	UpdateCommentResponse,
-	SubmitAppealInput,
 } from "../types";
 
 export const articleService = {

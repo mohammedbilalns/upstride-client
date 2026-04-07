@@ -1,6 +1,6 @@
 import type { QueryClient } from "@tanstack/react-query";
-import type { ArticleCommentDto } from "../types";
 import { articleQueries } from "../hooks/queries";
+import type { ArticleCommentDto } from "../types";
 
 export const updateCommentsInfiniteCache = (
 	queryClient: QueryClient,

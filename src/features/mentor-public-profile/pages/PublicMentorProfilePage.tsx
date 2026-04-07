@@ -1,21 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Flag, CreditCard, Coins } from "lucide-react";
+import { ArrowLeft, Coins, CreditCard, Flag } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ReportDialog } from "@/components/common/ReportDialog";
-import { useProfile } from "@/features/profile-management/hooks/use-profile";
-import { MentorArticlesSection } from "../components/MentorArticlesSection";
-import { MentorProfileDetails } from "../components/MentorProfileDetails";
-import { BookingCalendarSelector } from "../components/BookingCalendarSelector";
 import { toast } from "sonner";
 import type { ApiError } from "@/api/apiError";
 import { AddBalanceForm } from "@/components/common/AddBalanceForm";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { cn } from "@/shared/utils/cn";
+import { ReportDialog } from "@/components/common/ReportDialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
 	Dialog,
@@ -24,17 +19,22 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
+import type { AvailabilitySlot } from "@/features/availability-management/types";
 import {
 	coinManagementService,
 	useCoinBalance,
 } from "@/features/coin-management";
 import { publicMentorProfileService } from "@/features/mentor-public-profile";
-import type { AvailabilitySlot } from "@/features/availability-management/types";
+import { useProfile } from "@/features/profile-management/hooks/use-profile";
 import { sessionBookingService } from "@/features/session-booking-management";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+import { cn } from "@/shared/utils/cn";
 import { formatLocaleTimeShort } from "@/shared/utils/date";
+import { BookingCalendarSelector } from "../components/BookingCalendarSelector";
+import { MentorArticlesSection } from "../components/MentorArticlesSection";
+import { MentorProfileDetails } from "../components/MentorProfileDetails";
 
 declare module "@tanstack/react-router" {
 	interface HistoryState {

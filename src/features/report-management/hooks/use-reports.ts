@@ -3,8 +3,8 @@ import {
 	queryOptions,
 	useQuery,
 } from "@tanstack/react-query";
-import type { GetReportsInput } from "../types";
 import { ReportManagementService } from "../services/report-management.service";
+import type { GetReportsInput } from "../types";
 
 export const reportManagementQueryOptions = (params: GetReportsInput) =>
 	queryOptions({

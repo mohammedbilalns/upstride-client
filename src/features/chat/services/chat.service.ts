@@ -1,10 +1,10 @@
 import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
 import type {
+	GetChatInput,
 	GetChatOutput,
 	GetChatsInput,
 	GetChatsOutput,
-	GetChatInput,
 	MarkMessagesReadOutput,
 	SendMessageInput,
 	SendMessageOutput,

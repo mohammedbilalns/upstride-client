@@ -4,7 +4,17 @@ import {
 	useParams,
 	useRouteContext,
 } from "@tanstack/react-router";
+import type { Emoji } from "frimousse";
+import {
+	ArrowLeft,
+	Image as ImageIcon,
+	Loader2,
+	Paperclip,
+	Send,
+	Smile,
+} from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,24 +31,14 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChatMessage } from "@/features/chat/components/ChatMessage";
-import { fileService } from "@/shared/services/file.service";
+import { ChatNotFound } from "@/features/chat/components/ChatNotFound";
 import {
 	useGetChat,
-	useSendMessage,
 	useMarkChatRead,
+	useSendMessage,
 } from "@/features/chat/hooks";
-import {
-	ArrowLeft,
-	Smile,
-	Send,
-	Paperclip,
-	Image as ImageIcon,
-	Loader2,
-} from "lucide-react";
-import { toast } from "sonner";
 import type { ChatMessageDto } from "@/features/chat/types";
-import type { Emoji } from "frimousse";
-import { ChatNotFound } from "@/features/chat/components/ChatNotFound";
+import { fileService } from "@/shared/services/file.service";
 
 export function ChatDetailPage() {
 	const { chatId } = useParams({

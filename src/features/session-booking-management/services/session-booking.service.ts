@@ -5,9 +5,9 @@ import type {
 	BookSessionResponse,
 	CancelBookingInput,
 	CancelBookingResponse,
+	GetBookingDetailsResponse,
 	GetBookingsInput,
 	GetBookingsResponse,
-	GetBookingDetailsResponse,
 } from "../types";
 
 export const sessionBookingService = {

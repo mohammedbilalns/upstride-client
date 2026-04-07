@@ -1,6 +1,8 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, ShieldAlert } from "lucide-react";
 import { useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
+import { Label } from "@/components/ui/label";
 import {
 	Table,
 	TableBody,
@@ -9,16 +11,14 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
 import { useBlockUser } from "@/features/user-management/hooks/use-user-actions";
-import { useQueryClient } from "@tanstack/react-query";
 import {
 	useBlockArticle,
 	useResolveReport,
 	useUnblockArticle,
 } from "../hooks/use-report-actions";
 import type { ReportDto } from "../types";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { ReportTableRow } from "./ReportTableRow";
 
 interface ReportTableProps {

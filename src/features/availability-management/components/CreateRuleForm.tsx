@@ -1,5 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { format, parseISO } from "date-fns";
+import { Calendar as CalendarIcon, Plus, X } from "lucide-react";
 import { useMemo } from "react";
 import FieldError from "@/components/common/Field-Error";
 import { Button } from "@/components/ui/button";
@@ -12,17 +13,19 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Calendar as CalendarIcon, Plus, X } from "lucide-react";
+import type {
+	BreakTime,
+	DayOfWeek,
+} from "@/features/availability-management/types";
+import {
+	type AvailabilityFormValues,
+	availabilityRuleSchema,
+} from "@/features/availability-management/validators/rule.schema";
+import { cn } from "@/shared/utils/cn";
 import {
 	buildEmptyStringErrors,
 	buildFieldErrorsFromIssues,
 } from "@/shared/utils/form-validation";
-import { cn } from "@/shared/utils/cn";
-import { DayOfWeek, BreakTime } from "@/features/availability-management/types";
-import {
-	availabilityRuleSchema,
-	type AvailabilityFormValues,
-} from "@/features/availability-management/validators/rule.schema";
 
 const DAYS: DayOfWeek[] = [
 	"Monday",

@@ -13,8 +13,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { useProfessions } from "../hooks/use-catalog";
 import { formatDateInput } from "@/shared/utils/date";
+import { useProfessions } from "../hooks/use-catalog";
 
 interface ExperienceSectionProps {
 	form: any;

@@ -1,9 +1,9 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { Loader2, Plus, FileText } from "lucide-react";
+import { FileText, Loader2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { articleQueries } from "../hooks/queries";
 import { ArticleCard } from "../components/ArticleCard";
+import { articleQueries } from "../hooks/queries";
 import type { ArticleDto } from "../types";
 
 export function MentorArticlesPage() {

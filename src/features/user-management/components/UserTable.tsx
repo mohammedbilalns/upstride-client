@@ -18,9 +18,9 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { formatDateShort } from "@/shared/utils/date";
 import { useBlockUser, useUnblockUser } from "../hooks/use-user-actions";
 import type { UserListItem } from "../types";
-import { formatDateShort } from "@/shared/utils/date";
 
 interface UserTableProps {
 	users: UserListItem[];
@@ -59,7 +59,7 @@ export function UserTable({ users }: UserTableProps) {
 			<Table>
 				<TableHeader className="bg-muted/50">
 					<TableRow>
-						<TableHead className="w-[300px] py-4">User Details</TableHead>
+						<TableHead className="w-75 py-4">User Details</TableHead>
 						<TableHead>Role</TableHead>
 						<TableHead>Status</TableHead>
 						<TableHead>Joined Date</TableHead>

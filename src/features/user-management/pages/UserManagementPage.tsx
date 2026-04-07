@@ -52,6 +52,24 @@ export function UserManagementPage() {
 		});
 	};
 
+	const handleRoleChange = (value: string) => {
+		if (value === "all" || value === "USER" || value === "MENTOR") {
+			handleFilterChange("role", value);
+		}
+	};
+
+	const handleStatusChange = (value: string) => {
+		if (value === "all" || value === "active" || value === "blocked") {
+			handleFilterChange("status", value);
+		}
+	};
+
+	const handleSortChange = (value: string) => {
+		if (value === "recent" || value === "old") {
+			handleFilterChange("sort", value);
+		}
+	};
+
 	if (!usersData) return null;
 
 	return (
@@ -83,9 +101,9 @@ export function UserManagementPage() {
 						</span>
 						<Select
 							value={searchParams.role || "all"}
-							onValueChange={(v) => handleFilterChange("role", v as any)}
+							onValueChange={handleRoleChange}
 						>
-							<SelectTrigger className="w-[130px] h-10">
+							<SelectTrigger className="w-32.5 h-10">
 								<SelectValue placeholder="All Roles" />
 							</SelectTrigger>
 							<SelectContent>
@@ -102,9 +120,9 @@ export function UserManagementPage() {
 						</span>
 						<Select
 							value={searchParams.status || "all"}
-							onValueChange={(v) => handleFilterChange("status", v as any)}
+							onValueChange={handleStatusChange}
 						>
-							<SelectTrigger className="w-[130px] h-10">
+							<SelectTrigger className="w-32.5 h-10">
 								<SelectValue placeholder="All Status" />
 							</SelectTrigger>
 							<SelectContent>
@@ -121,9 +139,9 @@ export function UserManagementPage() {
 						</span>
 						<Select
 							value={searchParams.sort || "recent"}
-							onValueChange={(v) => handleFilterChange("sort", v as any)}
+							onValueChange={handleSortChange}
 						>
-							<SelectTrigger className="w-[140px] h-10">
+							<SelectTrigger className="w-35 h-10">
 								<SelectValue placeholder="Sort By" />
 							</SelectTrigger>
 							<SelectContent>

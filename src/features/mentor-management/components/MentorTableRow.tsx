@@ -4,8 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import type { Mentor } from "@/shared/types/mentor";
-import { MentorRowDetails } from "./MentorRowDetails";
 import { formatDateShort } from "@/shared/utils/date";
+import { MentorRowDetails } from "./MentorRowDetails";
 
 interface MentorTableRowProps {
 	mentor: Mentor;

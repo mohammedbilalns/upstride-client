@@ -1,19 +1,19 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import {
-	User,
-	ShieldCheck,
 	Bookmark,
-	LayoutDashboard,
 	CalendarClock,
-	Repeat,
-	FileText,
 	ChevronRight,
+	FileText,
+	LayoutDashboard,
 	LogOut,
+	Repeat,
+	ShieldCheck,
+	User,
 } from "lucide-react";
-import { cn } from "@/shared/utils/cn";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useLogout } from "@/features/authentication/hooks/use-logout";
 import { Button } from "@/components/ui/button";
+import { useLogout } from "@/features/authentication/hooks/use-logout";
+import { cn } from "@/shared/utils/cn";
 
 interface SidebarItem {
 	to: string;

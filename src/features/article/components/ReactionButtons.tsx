@@ -1,6 +1,6 @@
 import { Heart } from "lucide-react";
-import { useArticleMutations } from "../hooks/mutations";
 import { cn } from "@/shared/utils/cn";
+import { useArticleMutations } from "../hooks/mutations";
 
 interface ReactionButtonsProps {
 	articleId: string;

@@ -1,14 +1,14 @@
-import { Badge } from "@/components/ui/badge";
 import {
-	CheckCircle,
-	MessageSquareText,
-	ShieldAlert,
 	AlertCircle,
 	Calendar,
+	CheckCircle,
 	Clock,
+	MessageSquareText,
+	ShieldAlert,
 } from "lucide-react";
-import type { ReportDto } from "../types";
+import { Badge } from "@/components/ui/badge";
 import { formatDateShort, formatTimeWithSeconds24 } from "@/shared/utils/date";
+import type { ReportDto } from "../types";
 
 interface ReportRowDetailsProps {
 	report: ReportDto;

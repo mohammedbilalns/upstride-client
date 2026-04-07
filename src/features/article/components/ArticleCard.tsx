@@ -1,17 +1,17 @@
-import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Calendar, Eye, MessageSquare, Image as ImageIcon } from "lucide-react";
+import { Calendar, Eye, Image as ImageIcon, MessageSquare } from "lucide-react";
+import { useState } from "react";
+import { ProgressiveImage } from "@/components/common/ProgressiveImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { ProgressiveImage } from "@/components/common/ProgressiveImage";
 import {
 	Card,
 	CardContent,
 	CardFooter,
 	CardHeader,
 } from "@/components/ui/card";
-import type { ArticleDto } from "../types";
 import { formatDateMedium } from "@/shared/utils/date";
+import type { ArticleDto } from "../types";
 
 interface ArticleCardProps {
 	article: ArticleDto;

@@ -1,13 +1,16 @@
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { formatDistanceToNow } from "date-fns";
 import {
-	MoreVertical,
-	Trash2,
-	Pencil,
-	Reply,
 	ChevronDown,
 	ChevronUp,
-	MessageSquare,
 	Loader2,
+	MessageSquare,
+	MoreVertical,
+	Pencil,
+	Reply,
+	Trash2,
 } from "lucide-react";
+import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,13 +19,10 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { formatDistanceToNow } from "date-fns";
-import { useState } from "react";
-import { articleQueries } from "../hooks/queries";
-import { CommentForm } from "./CommentForm";
-import type { ArticleCommentDto } from "../types";
 import { cn } from "@/shared/utils/cn";
+import { articleQueries } from "../hooks/queries";
+import type { ArticleCommentDto } from "../types";
+import { CommentForm } from "./CommentForm";
 
 interface CommentItemProps {
 	articleId: string;

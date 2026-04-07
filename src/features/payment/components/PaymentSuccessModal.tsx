@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
-	DialogTitle,
 	DialogDescription,
+	DialogTitle,
 } from "@/components/ui/dialog";
 
 type PaymentSuccessModalProps = {

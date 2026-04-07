@@ -1,20 +1,20 @@
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
+import Placeholder from "@tiptap/extension-placeholder";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 import {
 	Bold,
+	Heading1,
+	Heading2,
 	Italic,
 	List,
 	ListOrdered,
 	Quote,
-	Heading1,
-	Heading2,
-	Undo,
 	Redo,
+	Undo,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 interface ArticleEditorProps {
 	content?: string;

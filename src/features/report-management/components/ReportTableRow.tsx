@@ -1,5 +1,5 @@
-import { ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";

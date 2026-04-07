@@ -1,4 +1,4 @@
-import { io, Socket } from "socket.io-client";
+import { io, type Socket } from "socket.io-client";
 import { env } from "@/shared/config/env";
 
 export class SocketService {
@@ -9,13 +9,13 @@ export class SocketService {
 	 * @param token The JWT access token for authentication.
 	 */
 	public static getInstance(token: string): Socket {
-		if (this.instance) {
-			return this.instance;
+		if (SocketService.instance) {
+			return SocketService.instance;
 		}
 
 		const socketUrl = new URL(env.API_URL).origin;
 
-		this.instance = io(socketUrl, {
+		SocketService.instance = io(socketUrl, {
 			auth: {
 				token,
 			},
@@ -24,16 +24,16 @@ export class SocketService {
 			reconnectionAttempts: 5,
 		});
 
-		return this.instance;
+		return SocketService.instance;
 	}
 
 	/**
 	 * Disconnects the socket and clears the instance.
 	 */
 	public static disconnect(): void {
-		if (this.instance) {
-			this.instance.disconnect();
-			this.instance = null;
+		if (SocketService.instance) {
+			SocketService.instance.disconnect();
+			SocketService.instance = null;
 		}
 	}
 }

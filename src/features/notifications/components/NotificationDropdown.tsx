@@ -1,17 +1,17 @@
-import { useState } from "react";
-import { Bell, CheckCircle2, CircleDashed, Loader2 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "@tanstack/react-router";
-import { cn } from "@/shared/utils/cn";
+import { formatDistanceToNow } from "date-fns";
+import { Bell, CheckCircle2, CircleDashed, Loader2 } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/shared/utils/cn";
 import {
 	useGetNotifications,
 	useMarkAllNotificationsRead,
 	useMarkNotificationRead,
 } from "../hooks";
 import type { NotificationDto, NotificationReadFilter } from "../types";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function NotificationDropdown({ onClose }: { onClose?: () => void }) {
 	const [activeTab, setActiveTab] = useState<NotificationReadFilter>("all");

@@ -2,10 +2,10 @@ import { Link } from "@tanstack/react-router";
 import {
 	Calendar,
 	Clock,
+	Coins,
+	CreditCard,
 	Video,
 	XCircle,
-	CreditCard,
-	Coins,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

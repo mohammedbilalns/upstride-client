@@ -1,27 +1,26 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 import {
 	ArrowLeft,
 	Eye,
 	Flag,
-	ShieldAlert,
 	MessageSquareText,
+	ShieldAlert,
 } from "lucide-react";
+import { ProgressiveImage } from "@/components/common/ProgressiveImage";
+import { ReportDialog } from "@/components/common/ReportDialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { ProgressiveImage } from "@/components/common/ProgressiveImage";
-import { articleQueries } from "../hooks/queries";
-import { ArticleManagement } from "../components/ArticleManagement";
-import { Link } from "@tanstack/react-router";
-import { ReactionButtons } from "../components/ReactionButtons";
-import { ReportDialog } from "@/components/common/ReportDialog";
-import { CommentsSection } from "../components/CommentsSection";
 import { useProfile } from "@/features/profile-management/hooks/use-profile";
-import { AppealDialog } from "../components/AppealDialog";
-import { useQueryClient } from "@tanstack/react-query";
 import { formatDateLong, formatDateMedium } from "@/shared/utils/date";
+import { AppealDialog } from "../components/AppealDialog";
+import { ArticleManagement } from "../components/ArticleManagement";
+import { CommentsSection } from "../components/CommentsSection";
+import { ReactionButtons } from "../components/ReactionButtons";
+import { articleQueries } from "../hooks/queries";
 
 export function ArticleDetailPage({
 	articleId,
