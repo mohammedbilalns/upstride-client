@@ -157,20 +157,26 @@ export function ArticleDetailPage({
 
 					<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800">
 						<div className="flex items-center gap-4">
-							<Avatar className="h-12 w-12 border-2 border-white dark:border-zinc-800 shadow-sm">
-								<AvatarImage src={article.authorSnapshot.avatarUrl} />
-								<AvatarFallback>
-									{article.authorSnapshot.name.charAt(0)}
-								</AvatarFallback>
-							</Avatar>
-							<div>
-								<div className="font-bold text-zinc-900 dark:text-zinc-50">
-									{article.authorSnapshot.name}
+							<Link
+								to="/mentors/$mentorId"
+								params={{ mentorId: article.authorId }}
+								className="flex items-center gap-4 group"
+							>
+								<Avatar className="h-12 w-12 border-2 border-white dark:border-zinc-800 shadow-sm transition-transform duration-300 group-hover:scale-105">
+									<AvatarImage src={article.authorSnapshot.avatarUrl} />
+									<AvatarFallback>
+										{article.authorSnapshot.name.charAt(0)}
+									</AvatarFallback>
+								</Avatar>
+								<div>
+									<div className="font-bold text-zinc-900 dark:text-zinc-50 group-hover:text-primary transition-colors">
+										{article.authorSnapshot.name}
+									</div>
+									<div className="text-xs text-zinc-500 font-medium">
+										Published on {formatDateLong(article.createdAt)}
+									</div>
 								</div>
-								<div className="text-xs text-zinc-500 font-medium">
-									Published on {formatDateLong(article.createdAt)}
-								</div>
-							</div>
+							</Link>
 						</div>
 						<div className="flex items-center gap-6">
 							<div className="flex flex-col items-center sm:items-end">
