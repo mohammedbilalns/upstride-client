@@ -24,6 +24,10 @@ export function SessionDetailsDialog({
 	onClose,
 	selectedBooking,
 }: SessionDetailsDialogProps) {
+	const isCancelled =
+		selectedBooking?.status === "CANCELLED_BY_MENTEE" ||
+		selectedBooking?.status === "CANCELLED_BY_MENTOR";
+
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
 			<DialogContent className="sm:max-w-[560px]">
@@ -88,24 +92,26 @@ export function SessionDetailsDialog({
 							</span>
 						</div>
 
-						<div className="space-y-1">
-							<p className="text-xs uppercase tracking-wide text-muted-foreground">
-								Meeting Link
-							</p>
-							{selectedBooking.meetingLink &&
-							selectedBooking.meetingLink !== "Pending" ? (
-								<a
-									href={selectedBooking.meetingLink}
-									target="_blank"
-									rel="noreferrer"
-									className="text-primary font-medium hover:underline break-all"
-								>
-									{selectedBooking.meetingLink}
-								</a>
-							) : (
-								<p className="text-muted-foreground">Pending</p>
-							)}
-						</div>
+						{!isCancelled && (
+							<div className="space-y-1">
+								<p className="text-xs uppercase tracking-wide text-muted-foreground">
+									Meeting Link
+								</p>
+								{selectedBooking.meetingLink &&
+								selectedBooking.meetingLink !== "Pending" ? (
+									<a
+										href={selectedBooking.meetingLink}
+										target="_blank"
+										rel="noreferrer"
+										className="text-primary font-medium hover:underline break-all"
+									>
+										{selectedBooking.meetingLink}
+									</a>
+								) : (
+									<p className="text-muted-foreground">Pending</p>
+								)}
+							</div>
+						)}
 
 						{selectedBooking.notes && (
 							<div className="rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 p-3">
