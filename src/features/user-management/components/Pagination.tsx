@@ -73,6 +73,7 @@ export function Pagination({
 					<Select
 						value={limit.toString()}
 						onValueChange={(v) => onLimitChange(Number(v))}
+						modal={false}
 					>
 						<SelectTrigger className="w-18.75 h-9 border-muted-foreground/20">
 							<SelectValue placeholder={limit} />
