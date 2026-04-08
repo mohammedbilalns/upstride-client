@@ -121,6 +121,7 @@ export function ChatDetailPage() {
 				name: mentorProfileResponse.data.profile.user.name,
 				profilePictureUrl:
 					mentorProfileResponse.data.profile.user.avatar ?? null,
+				role: "MENTOR" as const,
 			}
 		: null;
 
@@ -130,6 +131,9 @@ export function ChatDetailPage() {
 		locationState?.receiver ??
 		receiverFromProfile ??
 		null;
+	const isMentor =
+		otherUser?.role === "MENTOR" || receiverFromProfile?.role === "MENTOR";
+	const mentorProfileId = otherUser?.id ?? receiverFromProfile?.id ?? chatId;
 
 	const isNewChat =
 		!isLoading && (isError || !data?.pages?.length) && !chat && !!otherUser;
@@ -323,19 +327,45 @@ export function ChatDetailPage() {
 					</Link>
 				</Button>
 
-				<Avatar className="w-10 h-10">
-					<AvatarImage
-						src={otherUser?.profilePictureUrl || ""}
-						alt={otherUser?.name}
-					/>
-					<AvatarFallback>
-						{(otherUser?.name || chatId).slice(0, 2).toUpperCase()}
-					</AvatarFallback>
-				</Avatar>
-
-				<div className="flex-1">
-					<h2 className="font-semibold text-sm">{otherUser?.name || chatId}</h2>
-				</div>
+				{isMentor ? (
+					<Link
+						to="/mentors/$mentorId"
+						params={{ mentorId: mentorProfileId }}
+						className="flex flex-1 items-center gap-3 rounded-md px-2 py-1 -mx-2 transition-colors hover:bg-muted/30"
+					>
+						<Avatar className="w-10 h-10">
+							<AvatarImage
+								src={otherUser?.profilePictureUrl || ""}
+								alt={otherUser?.name}
+							/>
+							<AvatarFallback>
+								{(otherUser?.name || chatId).slice(0, 2).toUpperCase()}
+							</AvatarFallback>
+						</Avatar>
+						<div className="flex-1 min-w-0">
+							<h2 className="font-semibold text-sm truncate">
+								{otherUser?.name || chatId}
+							</h2>
+						</div>
+					</Link>
+				) : (
+					<>
+						<Avatar className="w-10 h-10">
+							<AvatarImage
+								src={otherUser?.profilePictureUrl || ""}
+								alt={otherUser?.name}
+							/>
+							<AvatarFallback>
+								{(otherUser?.name || chatId).slice(0, 2).toUpperCase()}
+							</AvatarFallback>
+						</Avatar>
+						<div className="flex-1">
+							<h2 className="font-semibold text-sm">
+								{otherUser?.name || chatId}
+							</h2>
+						</div>
+					</>
+				)}
 			</div>
 
 			<ScrollArea
