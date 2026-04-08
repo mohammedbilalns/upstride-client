@@ -76,7 +76,7 @@ export function ProfileSidebar({ user, isMentor }: ProfileSidebarProps) {
 							},
 							{
 								to: "/mentor-sessions",
-								label: "Mentor Sessions",
+								label: "Hosting Sessions",
 								icon: CalendarClock,
 							},
 							{

@@ -1,13 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import {
-	Calendar,
-	Clock,
-	Coins,
-	CreditCard,
-	Video,
-	XCircle,
-} from "lucide-react";
+import { Calendar, Clock, Coins, CreditCard, XCircle } from "lucide-react";
 import { useMemo, useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +19,7 @@ import type { BookingDto } from "@/features/session-booking-management/types";
 import { Pagination } from "@/features/user-management/components/Pagination";
 import { Route } from "@/routes/_app-layout/_mentor-layout/mentor-sessions";
 import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
+import { SessionDetailsDialog } from "@/features/sessions/components/SessionDetailsDialog";
 import { useMentorSessions } from "../hooks/use-mentor-sessions";
 
 export function MentorSessionsPage() {
@@ -34,6 +28,9 @@ export function MentorSessionsPage() {
 	const search = Route.useSearch();
 	const [pendingCancelId, setPendingCancelId] = useState<string | null>(null);
 	const [cancelReason, setCancelReason] = useState("");
+	const [selectedBooking, setSelectedBooking] = useState<BookingDto | null>(
+		null,
+	);
 
 	const params = useMemo(
 		() => ({
@@ -136,6 +133,7 @@ export function MentorSessionsPage() {
 								booking={session}
 								showCancel={search.filter === "upcoming"}
 								onCancel={() => setPendingCancelId(session.id)}
+								onViewDetails={() => setSelectedBooking(session)}
 								isCancelling={cancelMutation.isPending}
 							/>
 						))}
@@ -180,6 +178,15 @@ export function MentorSessionsPage() {
 					/>
 				</div>
 			</ConfirmModal>
+			<SessionDetailsDialog
+				isOpen={Boolean(selectedBooking)}
+				onClose={(open) => {
+					if (!open) setSelectedBooking(null);
+				}}
+				selectedBooking={selectedBooking}
+				personLabel="Mentee"
+				personName={selectedBooking?.menteeName}
+			/>
 		</div>
 	);
 }
@@ -188,11 +195,13 @@ function MentorSessionCard({
 	booking,
 	showCancel,
 	onCancel,
+	onViewDetails,
 	isCancelling,
 }: {
 	booking: BookingDto;
 	showCancel: boolean;
 	onCancel: () => void;
+	onViewDetails: () => void;
 	isCancelling: boolean;
 }) {
 	const isCancelled = booking.status.startsWith("CANCELLED");
@@ -227,17 +236,6 @@ function MentorSessionCard({
 						{booking.totalAmount} {booking.currency.toUpperCase()}
 					</div>
 				</div>
-				{booking.meetingLink && !isCancelled && (
-					<a
-						href={booking.meetingLink}
-						target="_blank"
-						rel="noreferrer"
-						className="inline-flex items-center gap-1.5 text-xs text-primary font-medium hover:underline"
-					>
-						<Video className="h-3.5 w-3.5" />
-						Join Session
-					</a>
-				)}
 			</div>
 			<div className="flex items-center gap-3">
 				{isCancelled && booking.notes && (
@@ -245,6 +243,14 @@ function MentorSessionCard({
 						"{booking.notes}"
 					</div>
 				)}
+				<Button
+					variant="ghost"
+					size="sm"
+					onClick={onViewDetails}
+					className="text-xs"
+				>
+					View details
+				</Button>
 				{canCancel && (
 					<Button
 						variant="outline"

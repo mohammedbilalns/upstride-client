@@ -16,12 +16,16 @@ interface SessionDetailsDialogProps {
 	isOpen: boolean;
 	onClose: (open: boolean) => void;
 	selectedBooking: BookingDto | null;
+	personLabel?: string;
+	personName?: string | null;
 }
 
 export function SessionDetailsDialog({
 	isOpen,
 	onClose,
 	selectedBooking,
+	personLabel = "Mentor",
+	personName,
 }: SessionDetailsDialogProps) {
 	const isCancelled =
 		selectedBooking?.status === "CANCELLED_BY_MENTEE" ||
@@ -47,10 +51,10 @@ export function SessionDetailsDialog({
 					<div className="space-y-4 text-sm">
 						<div className="space-y-1">
 							<p className="text-xs uppercase tracking-wide text-muted-foreground">
-								Mentor
+								{personLabel}
 							</p>
 							<p className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
-								{selectedBooking.mentorName || "Mentor"}
+								{personName ?? selectedBooking.mentorName ?? personLabel}
 							</p>
 						</div>
 
