@@ -35,7 +35,7 @@ export const Route = createFileRoute("/_app-layout/_user-layout/home")({
 				queryKey: ["home", "recommended-articles"],
 				queryFn: () => articleService.getArticles({ page: 1, limit: 3 }),
 			}),
-			queryClient.ensureQueryData(articleQueries.list({ page: 1, limit: 10 })),
+			queryClient.ensureQueryData(articleQueries.list({ page: 1, limit: 3 })),
 		]);
 	},
 	component: RouteComponent,
@@ -66,7 +66,7 @@ function RouteComponent() {
 	});
 
 	const { data: feedArticlesData } = useSuspenseQuery(
-		articleQueries.list({ page: 1, limit: 10 }),
+		articleQueries.list({ page: 1, limit: 3 }),
 	);
 
 	return (
@@ -88,7 +88,7 @@ function RouteComponent() {
 					) : (
 						<div className="flex flex-col space-y-6">
 							<div className="grid grid-cols-1 gap-6">
-								{feedArticlesData.items.map((article) => (
+								{feedArticlesData.items.slice(0, 3).map((article) => (
 									<FeedArticleCard key={article.id} article={article} />
 								))}
 							</div>

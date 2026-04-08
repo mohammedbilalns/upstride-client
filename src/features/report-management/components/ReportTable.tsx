@@ -18,6 +18,7 @@ import {
 	useResolveReport,
 	useUnblockArticle,
 } from "../hooks/use-report-actions";
+import { ReportManagementService } from "../services/report-management.service";
 import type { ReportDto } from "../types";
 import { ReportTableRow } from "./ReportTableRow";
 
@@ -102,7 +103,12 @@ export function ReportTable({ reports }: ReportTableProps) {
 		await blockUserMutation.mutateAsync(
 			{ userId: selectedReport.targetId },
 			{
-				onSuccess: () => {
+				onSuccess: async () => {
+					await ReportManagementService.updateReportStatus({
+						reportId: targetReportId,
+						status: "RESOLVED",
+						actionTaken: "Blocked user",
+					});
 					queryClient.invalidateQueries({ queryKey: ["reports"] });
 					setSelectedReport(null);
 					setActionType(null);

@@ -9,17 +9,19 @@ interface RecommendedArticlesWidgetProps {
 export function RecommendedArticlesWidget({
 	articles = [],
 }: RecommendedArticlesWidgetProps) {
+	const visibleArticles = articles.slice(0, 3);
+
 	return (
 		<div className="rounded-xl bg-card border border-border p-6 flex flex-col space-y-4">
 			<h3 className="font-semibold text-lg">Recommended Articles</h3>
-			{articles.length === 0 ? (
+			{visibleArticles.length === 0 ? (
 				<div className="flex flex-col items-center justify-center text-center py-6 text-muted-foreground space-y-2">
 					<FileText className="h-8 w-8 opacity-50" />
 					<span className="text-sm">No articles available.</span>
 				</div>
 			) : (
 				<div className="space-y-4">
-					{articles.map((article) => (
+					{visibleArticles.map((article) => (
 						<Link
 							to="/articles/$articleId"
 							params={{ articleId: article.slug }}

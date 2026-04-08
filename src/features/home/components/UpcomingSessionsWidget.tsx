@@ -29,7 +29,6 @@ export function UpcomingSessionsWidget({
 									<h4 className="font-semibold text-sm">
 										{session.mentorName || "Unknown Mentor"}
 									</h4>
-									<p className="text-xs text-muted-foreground">Mentor</p>
 								</div>
 								<span className="bg-primary/20 text-primary text-[10px] uppercase font-bold px-2 py-0.5 rounded-full">
 									Upcoming
@@ -49,9 +48,6 @@ export function UpcomingSessionsWidget({
 									})}
 								</span>
 							</div>
-							<button className="w-full bg-secondary hover:bg-secondary/80 text-secondary-foreground text-sm font-medium py-1.5 rounded-md transition-colors">
-								Join Session
-							</button>
 						</div>
 					))}
 				</div>
