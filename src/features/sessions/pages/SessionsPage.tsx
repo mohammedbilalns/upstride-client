@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { Calendar, History } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { useCoinBalance } from "@/features/coin-management/hooks/use-coin-management";
@@ -92,6 +92,18 @@ export function SessionsPage() {
 	);
 
 	const { data, isLoading } = useUserSessions(params);
+
+	useEffect(() => {
+		if (search.booking_success || search.booking_id) {
+			navigate({
+				search: (prev) => {
+					const { booking_success, booking_id, ...rest } = prev;
+					return rest;
+				},
+				replace: true,
+			});
+		}
+	}, [navigate, search.booking_id, search.booking_success]);
 	const cancelMutation = useMutation({
 		mutationFn: (bookingId: string) =>
 			sessionBookingService.cancelBooking({ bookingId, reason: cancelReason }),

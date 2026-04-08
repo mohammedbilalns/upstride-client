@@ -5,7 +5,6 @@ import {
 	Dialog,
 	DialogClose,
 	DialogContent,
-	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
@@ -27,15 +26,21 @@ export function SessionDetailsDialog({
 	const isCancelled =
 		selectedBooking?.status === "CANCELLED_BY_MENTEE" ||
 		selectedBooking?.status === "CANCELLED_BY_MENTOR";
+	const paymentStatusLabel = selectedBooking
+		? selectedBooking.paymentStatus === "COMPLETED"
+			? "Payment completed"
+			: selectedBooking.paymentStatus === "PENDING"
+				? "Payment pending"
+				: selectedBooking.paymentStatus === "FAILED"
+					? "Payment failed"
+					: "Payment refunded"
+		: "";
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="sm:max-w-[560px]">
+			<DialogContent className="sm:max-w-140">
 				<DialogHeader>
 					<DialogTitle>Session Details</DialogTitle>
-					<DialogDescription>
-						Review the details for this session.
-					</DialogDescription>
 				</DialogHeader>
 
 				{selectedBooking && (
@@ -77,7 +82,7 @@ export function SessionDetailsDialog({
 								{selectedBooking.status}
 							</Badge>
 							<Badge variant="secondary" className="text-[10px] uppercase">
-								{selectedBooking.paymentStatus}
+								{paymentStatusLabel}
 							</Badge>
 							<span className="flex items-center gap-1 text-xs font-semibold text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-900/50 px-2 py-0.5 rounded-md">
 								{selectedBooking.paymentType === "COINS" ? (

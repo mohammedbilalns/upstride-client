@@ -1,8 +1,6 @@
 import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
 import type {
-	GetPlatformCoinTransactionsInput,
-	GetPlatformCoinTransactionsResponse,
 	GetPlatformPaymentTransactionsInput,
 	GetPlatformPaymentTransactionsResponse,
 	GetPlatformWalletResponse,
@@ -13,17 +11,6 @@ export const platformTransactionsService = {
 		const response = await api.get<{ data: GetPlatformWalletResponse }>(
 			`${ROUTES.WALLET.BASE}${ROUTES.WALLET.PLATFORM_BALANCE}`,
 		);
-		return response.data.data;
-	},
-
-	getPlatformCoinTransactions: async (
-		params: GetPlatformCoinTransactionsInput,
-	): Promise<GetPlatformCoinTransactionsResponse> => {
-		const response = await api.get<{
-			data: GetPlatformCoinTransactionsResponse;
-		}>(`${ROUTES.WALLET.BASE}${ROUTES.WALLET.PLATFORM_COIN_TRANSACTIONS}`, {
-			params,
-		});
 		return response.data.data;
 	},
 

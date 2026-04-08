@@ -16,6 +16,8 @@ interface PaymentTransactionsTableProps {
 	data?: GetPaymentTransactionsResponse;
 	onPageChange: (page: number) => void;
 	onLimitChange: (limit: number) => void;
+	showCoins?: boolean;
+	sessionDebitLabel?: string;
 }
 
 export function PaymentTransactionsTable({
@@ -23,6 +25,8 @@ export function PaymentTransactionsTable({
 	data,
 	onPageChange,
 	onLimitChange,
+	showCoins = true,
+	sessionDebitLabel = "Session refund",
 }: PaymentTransactionsTableProps) {
 	return (
 		<Card className="bg-card rounded-xl border shadow-sm overflow-hidden">
@@ -45,7 +49,11 @@ export function PaymentTransactionsTable({
 									<TableHead className="w-[14%] py-2 text-xs">
 										Purpose
 									</TableHead>
-									<TableHead className="w-[12%] py-2 text-xs">Coins</TableHead>
+									{showCoins && (
+										<TableHead className="w-[12%] py-2 text-xs">
+											Coins
+										</TableHead>
+									)}
 									<TableHead className="w-[12%] py-2 text-xs">
 										Direction
 									</TableHead>
@@ -68,13 +76,17 @@ export function PaymentTransactionsTable({
 										<TableCell className="text-xs py-2">
 											<Badge variant="outline" className="text-[10px]">
 												{item.purpose === "session"
-													? "Session spend"
+													? item.direction === "debit"
+														? sessionDebitLabel
+														: "Session spend"
 													: "Coin purchase"}
 											</Badge>
 										</TableCell>
-										<TableCell className="text-xs py-2">
-											{item.coinsGranted}
-										</TableCell>
+										{showCoins && (
+											<TableCell className="text-xs py-2">
+												{item.coinsGranted}
+											</TableCell>
+										)}
 										<TableCell className="text-xs py-2">
 											<Badge
 												variant="outline"

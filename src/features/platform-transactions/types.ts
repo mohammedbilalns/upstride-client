@@ -1,7 +1,4 @@
 import type {
-	CoinTransaction,
-	CoinTransactionType,
-	GetCoinTransactionsResponse,
 	GetPaymentTransactionsResponse,
 	PaginationInput,
 	PaymentStatus,
@@ -10,13 +7,6 @@ import type {
 export interface GetPlatformWalletResponse {
 	balance: number;
 }
-
-export interface GetPlatformCoinTransactionsInput extends PaginationInput {
-	type?: CoinTransactionType;
-}
-
-export type GetPlatformCoinTransactionsResponse = GetCoinTransactionsResponse;
-export type PlatformCoinTransaction = CoinTransaction;
 
 export interface GetPlatformPaymentTransactionsInput extends PaginationInput {
 	status?: PaymentStatus;

@@ -115,6 +115,7 @@ export function PlatformTransactionsPage() {
 			<PaymentTransactionsTable
 				isLoading={paymentLoading}
 				data={paymentTransactions}
+				showCoins={false}
 				onPageChange={(page) =>
 					navigate({
 						search: buildPaymentSearch({ paymentPage: page }),
