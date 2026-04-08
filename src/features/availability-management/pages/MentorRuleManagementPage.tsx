@@ -134,46 +134,11 @@ export function MentorRuleManagementPage() {
 	const addMutation = useMutation({
 		mutationFn: (data: CreateAvailabilityInput) =>
 			availabilityManagementService.checkAndCreateAvailability(data),
-		onMutate: (data) => {
-			const snapshots = snapshotAvailabilityCache();
-			const optimisticId = `temp-${Date.now()}`;
-			const mentorId = profile?.id ?? "temp";
-			const optimisticRule: AvailabilityRule = {
-				id: optimisticId,
-				mentorId,
-				name: data.name,
-				description: data.description,
-				days: data.days,
-				startTime: data.startTime,
-				endTime: data.endTime,
-				startDate: data.startDate,
-				endDate: data.endDate,
-				breakTimes: data.breakTimes ?? [],
-				slotDuration: data.slotDuration,
-				bufferTime: data.bufferTime ?? 5,
-				status: true,
-				createdAt: new Date(),
-				updatedAt: new Date(),
-			};
-			updateAvailabilityCache((items) => [optimisticRule, ...items]);
-			return { snapshots, optimisticId };
-		},
-		onSuccess: (response, _variables, context) => {
+		onSuccess: (response) => {
 			if (response.data.created) {
 				const createdAvailability = response.data.availability;
 				if (createdAvailability) {
-					updateAvailabilityCache((items) => {
-						const filtered = context?.optimisticId
-							? items.filter((item) => item.id !== context.optimisticId)
-							: items.filter((item) => !item.id.startsWith("temp-"));
-						return [createdAvailability, ...filtered];
-					});
-				} else {
-					updateAvailabilityCache((items) =>
-						context?.optimisticId
-							? items.filter((item) => item.id !== context.optimisticId)
-							: items.filter((item) => !item.id.startsWith("temp-")),
-					);
+					updateAvailabilityCache((items) => [createdAvailability, ...items]);
 				}
 				toast.success("Availability rule added");
 				setFormKey((prev) => prev + 1);
@@ -183,18 +148,12 @@ export function MentorRuleManagementPage() {
 				return;
 			}
 
-			updateAvailabilityCache((items) =>
-				context?.optimisticId
-					? items.filter((item) => item.id !== context.optimisticId)
-					: items.filter((item) => !item.id.startsWith("temp-")),
-			);
 			toast.error(
 				"This rule overlaps with an existing active rule. Please adjust the schedule.",
 			);
 			setPendingRule(null);
 		},
-		onError: (error: any, _variables, context) => {
-			if (context?.snapshots) restoreAvailabilityCache(context.snapshots);
+		onError: (error: any) => {
 			toast.error(error?.response?.data?.message || "Failed to add rule");
 		},
 	});
