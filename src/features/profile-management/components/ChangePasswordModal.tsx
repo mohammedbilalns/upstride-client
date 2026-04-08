@@ -22,6 +22,7 @@ import { ChangePasswordChangeStep } from "./ChangePasswordChangeStep";
 import { ChangePasswordRequestStep } from "./ChangePasswordRequestStep";
 import { ChangePasswordSuccessStep } from "./ChangePasswordSuccessStep";
 import { ChangePasswordVerifyStep } from "./ChangePasswordVerifyStep";
+import { ApiError } from "@/api/apiError";
 
 export type ChangePasswordStep = "request" | "verify" | "change" | "success";
 export type RequestForm = ReturnType<typeof useForm>;
@@ -51,7 +52,7 @@ export function ChangePasswordModal({
 			setStep("verify");
 			resetTimers();
 		},
-		onError: (error: any) => {
+		onError: (error: ApiError) => {
 			if (error.response?.status === 429) {
 				toast.error(
 					error.response?.data?.message ||
@@ -71,7 +72,7 @@ export function ChangePasswordModal({
 			setResetToken(response.data.resetToken);
 			setStep("change");
 		},
-		onError: (error: any) => {
+		onError: (error: ApiError) => {
 			if (error.response?.status === 429) {
 				toast.error(
 					error.response?.data?.message ||
@@ -88,7 +89,7 @@ export function ChangePasswordModal({
 		onSuccess: () => {
 			setStep("success");
 		},
-		onError: (error: any) => {
+		onError: (error: ApiError) => {
 			toast.error(error.response?.data?.message || "Failed to change password");
 		},
 	});

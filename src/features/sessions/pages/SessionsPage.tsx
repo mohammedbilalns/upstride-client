@@ -18,6 +18,7 @@ import { SessionCard } from "../components/SessionCard";
 import { SessionDetailsDialog } from "../components/SessionDetailsDialog";
 import { SessionFilters } from "../components/SessionFilters";
 import { useUserSessions } from "../hooks/use-sessions";
+import { ApiError } from "@/api/apiError";
 
 // const formatDate = (value: string) => format(new Date(value), "MMM dd, yyyy");
 // const formatTime = (value: string) => format(new Date(value), "hh:mm a");
@@ -123,7 +124,7 @@ export function SessionsPage() {
 				}
 			}
 		},
-		onError: (error: any) => {
+		onError: (error: ApiError) => {
 			setPendingCancelId(null);
 			setCancelReason("");
 			toast.error(

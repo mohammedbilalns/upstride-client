@@ -13,6 +13,7 @@ import type {
 } from "@/features/availability-management/types";
 import type { AvailabilityFormValues } from "@/features/availability-management/validators/rule.schema";
 import { useProfile } from "@/features/profile-management/hooks/use-profile";
+import { ApiError } from "@/api/apiError";
 
 export function MentorRuleManagementPage() {
 	const { data: profile } = useProfile();
@@ -153,7 +154,7 @@ export function MentorRuleManagementPage() {
 			);
 			setPendingRule(null);
 		},
-		onError: (error: any) => {
+		onError: (error: ApiError) => {
 			toast.error(error?.response?.data?.message || "Failed to add rule");
 		},
 	});
@@ -174,7 +175,7 @@ export function MentorRuleManagementPage() {
 			toast.success("Rule disabled/deleted");
 			setConfirmAction(null);
 		},
-		onError: (error: any, _variables, context) => {
+		onError: (error: ApiError, _variables, context) => {
 			if (context?.snapshots) restoreAvailabilityCache(context.snapshots);
 			toast.error(error?.response?.data?.message || "Failed to disable rule");
 		},
@@ -196,7 +197,7 @@ export function MentorRuleManagementPage() {
 			toast.success("Rule re-enabled");
 			setConfirmAction(null);
 		},
-		onError: (error: any, _variables, context) => {
+		onError: (error: ApiError, _variables, context) => {
 			if (context?.snapshots) restoreAvailabilityCache(context.snapshots);
 			toast.error(error?.response?.data?.message || "Failed to enable rule");
 		},
@@ -220,7 +221,7 @@ export function MentorRuleManagementPage() {
 			);
 			setConfirmAction(null);
 		},
-		onError: (error: any) => {
+		onError: (error: ApiError) => {
 			toast.error(error?.response?.data?.message || "Failed to enable rule");
 		},
 	});
