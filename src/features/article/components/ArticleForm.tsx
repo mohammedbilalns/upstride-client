@@ -9,6 +9,7 @@ import {
 	type ArticleFormValues,
 	articleSchema,
 } from "@/features/article/validators/article-form.schema";
+import { getErrorMessage } from "@/shared/utils/form-validation";
 import { ArticleEditor } from "./ArticleEditor";
 import { ArticleImageUpload } from "./ArticleImageUpload";
 
@@ -37,7 +38,7 @@ export function ArticleForm({
 	const form = useForm({
 		defaultValues,
 		validators: {
-			onSubmit: articleSchema as any,
+			onSubmit: articleSchema,
 		},
 		onSubmit: async ({ value }) => {
 			const result = articleSchema.safeParse(value);
@@ -54,7 +55,13 @@ export function ArticleForm({
 			form.setFieldValue("featuredImageUrl", defaultValues.featuredImageUrl);
 			form.setFieldValue("tags", defaultValues.tags);
 		}
-	}, [defaultValues.title]);
+	}, [
+		defaultValues.title,
+		defaultValues.content,
+		defaultValues.featuredImageUrl,
+		defaultValues.tags,
+		form,
+	]);
 
 	return (
 		<form
@@ -84,10 +91,8 @@ export function ArticleForm({
 								field.state.meta.errors.length > 0 &&
 								hasSubmitted ? (
 									<p className="text-sm text-red-500/90 dark:text-red-400 mt-1">
-										{typeof field.state.meta.errors[0] === "string"
-											? field.state.meta.errors[0]
-											: (field.state.meta.errors[0] as any)?.message ||
-												"Invalid input"}
+										{getErrorMessage(field.state.meta.errors?.[0]) ||
+											"Invalid input"}
 									</p>
 								) : null}
 							</div>
@@ -107,10 +112,8 @@ export function ArticleForm({
 								field.state.meta.errors.length > 0 &&
 								hasSubmitted ? (
 									<p className="text-sm text-red-500/90 dark:text-red-400 mt-1">
-										{typeof field.state.meta.errors[0] === "string"
-											? field.state.meta.errors[0]
-											: (field.state.meta.errors[0] as any)?.message ||
-												"Invalid input"}
+										{getErrorMessage(field.state.meta.errors?.[0]) ||
+											"Invalid input"}
 									</p>
 								) : null}
 							</div>
@@ -134,10 +137,8 @@ export function ArticleForm({
 									field.state.meta.errors.length > 0 &&
 									hasSubmitted ? (
 										<p className="text-sm text-red-500/90 dark:text-red-400 mt-1">
-											{typeof field.state.meta.errors[0] === "string"
-												? field.state.meta.errors[0]
-												: (field.state.meta.errors[0] as any)?.message ||
-													"Invalid input"}
+											{getErrorMessage(field.state.meta.errors?.[0]) ||
+												"Invalid input"}
 										</p>
 									) : null}
 								</div>
@@ -197,10 +198,8 @@ export function ArticleForm({
 									field.state.meta.errors.length > 0 &&
 									hasSubmitted ? (
 										<p className="text-sm text-red-500/90 dark:text-red-400 mt-1">
-											{typeof field.state.meta.errors[0] === "string"
-												? field.state.meta.errors[0]
-												: (field.state.meta.errors[0] as any)?.message ||
-													"Invalid input"}
+											{getErrorMessage(field.state.meta.errors?.[0]) ||
+												"Invalid input"}
 										</p>
 									) : (
 										<p className="text-xs text-zinc-500">
@@ -217,7 +216,8 @@ export function ArticleForm({
 			<div className="fixed bottom-8 right-8 z-50">
 				<form.Subscribe
 					selector={(state) => [state.canSubmit, state.isSubmitting]}
-					children={([canSubmit, isSubmitting]) => (
+				>
+					{([canSubmit, isSubmitting]) => (
 						<Button
 							type="submit"
 							size="lg"
@@ -232,7 +232,7 @@ export function ArticleForm({
 							{isSubmitting || isPending ? submittingText : submitText}
 						</Button>
 					)}
-				/>
+				</form.Subscribe>
 			</div>
 		</form>
 	);

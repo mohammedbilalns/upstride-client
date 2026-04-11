@@ -131,7 +131,7 @@ export function MentorSettings({
 									</div>
 
 									<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-										<form.Field name={`${tier.key}.name` as any}>
+										<form.Field name={`${tier.key}.name`}>
 											{(subField) => (
 												<div className="space-y-2">
 													<Label className="text-xs">Tier Name</Label>
@@ -151,7 +151,7 @@ export function MentorSettings({
 												</div>
 											)}
 										</form.Field>
-										<form.Field name={`${tier.key}.minScore` as any}>
+										<form.Field name={`${tier.key}.minScore`}>
 											{(subField) => (
 												<div className="space-y-2">
 													<Label className="text-xs">Min Score</Label>
@@ -174,7 +174,7 @@ export function MentorSettings({
 												</div>
 											)}
 										</form.Field>
-										<form.Field name={`${tier.key}.maxScore` as any}>
+										<form.Field name={`${tier.key}.maxScore`}>
 											{(subField) => (
 												<div className="space-y-2">
 													<Label className="text-xs">Max Score</Label>
@@ -197,7 +197,7 @@ export function MentorSettings({
 												</div>
 											)}
 										</form.Field>
-										<form.Field name={`${tier.key}.maxPricePer30Min` as any}>
+										<form.Field name={`${tier.key}.maxPricePer30Min`}>
 											{(subField) => (
 												<div className="space-y-2">
 													<Label className="text-xs">Max Price / 30 Min</Label>

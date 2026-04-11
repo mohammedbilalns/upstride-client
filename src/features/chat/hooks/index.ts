@@ -1,10 +1,17 @@
 import {
+	type InfiniteData,
 	useInfiniteQuery,
 	useMutation,
 	useQueryClient,
 } from "@tanstack/react-query";
 import { chatService } from "../services/chat.service";
-import type { ChatMessageDto, GetChatsInput, SendMessageInput } from "../types";
+import type {
+	ChatMessageDto,
+	GetChatOutput,
+	GetChatsInput,
+	GetChatsOutput,
+	SendMessageInput,
+} from "../types";
 import {
 	chatKeys,
 	getChatInfiniteQueryOptions,
@@ -39,9 +46,9 @@ export const useSendMessage = (chatId: string, otherUserId: string) => {
 				queryKey: chatKeys.detail(otherUserId),
 			});
 
-			const previousChatData = queryClient.getQueryData(
-				chatKeys.detail(otherUserId),
-			);
+			const previousChatData = queryClient.getQueryData<
+				InfiniteData<GetChatOutput>
+			>(chatKeys.detail(otherUserId));
 
 			const optimisticMessage: ChatMessageDto = {
 				id: `optimistic-${Date.now()}`,
@@ -57,16 +64,26 @@ export const useSendMessage = (chatId: string, otherUserId: string) => {
 				updatedAt: new Date().toISOString(),
 			};
 
-			queryClient.setQueryData(chatKeys.detail(otherUserId), (old: any) => {
-				if (!old) return old;
-				const pages = [...old.pages];
-				pages[0].messages = [optimisticMessage, ...pages[0].messages];
-				return { ...old, pages };
-			});
+			queryClient.setQueryData<InfiniteData<GetChatOutput> | undefined>(
+				chatKeys.detail(otherUserId),
+				(old) => {
+					if (!old) return old;
+					const pages = [...old.pages];
+					pages[0] = {
+						...pages[0],
+						messages: [optimisticMessage, ...pages[0].messages],
+					};
+					return { ...old, pages };
+				},
+			);
 
 			return { previousChatData };
 		},
-		onError: (_err, _newMessage, context: any) => {
+		onError: (
+			_err,
+			_newMessage,
+			context: { previousChatData?: InfiniteData<GetChatOutput> } | undefined,
+		) => {
 			if (context?.previousChatData) {
 				queryClient.setQueryData(
 					chatKeys.detail(otherUserId),
@@ -85,27 +102,30 @@ export const useMarkChatRead = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: ({ chatId, userId }: { chatId: string; userId: string }) =>
-			chatService.markMessagesRead(chatId),
+		mutationFn: (payload: { chatId: string; userId: string }) =>
+			chatService.markMessagesRead(payload.chatId),
 		onMutate: ({ chatId, userId }) => {
-			queryClient.setQueriesData({ queryKey: chatKeys.lists() }, (old: any) => {
-				if (!old?.pages) return old;
-				const pages = old.pages.map((page: any) => ({
-					...page,
-					chats: page.chats.map((chat: any) =>
-						chat.id === chatId
-							? {
-									...chat,
-									unreadCount: {
-										...chat.unreadCount,
-										[userId]: 0,
-									},
-								}
-							: chat,
-					),
-				}));
-				return { ...old, pages };
-			});
+			queryClient.setQueriesData<InfiniteData<GetChatsOutput> | undefined>(
+				{ queryKey: chatKeys.lists() },
+				(old) => {
+					if (!old?.pages) return old;
+					const pages = old.pages.map((page) => ({
+						...page,
+						chats: page.chats.map((chat) =>
+							chat.id === chatId
+								? {
+										...chat,
+										unreadCount: {
+											...chat.unreadCount,
+											[userId]: 0,
+										},
+									}
+								: chat,
+						),
+					}));
+					return { ...old, pages };
+				},
+			);
 		},
 	});
 };

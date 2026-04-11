@@ -54,10 +54,14 @@ export function CancelSessionDialog({
 						{refundPreview.reason}
 					</p>
 				</div>
-				<label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+				<label
+					htmlFor="cancel-reason"
+					className="text-sm font-semibold text-zinc-700 dark:text-zinc-300"
+				>
 					Cancellation reason
 				</label>
 				<Textarea
+					id="cancel-reason"
 					value={cancelReason}
 					onChange={(e) => setCancelReason(e.target.value)}
 					placeholder="Please share why you're cancelling..."

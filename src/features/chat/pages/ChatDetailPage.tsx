@@ -1,3 +1,4 @@
+import type { InfiniteData } from "@tanstack/react-query";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
 	Link,
@@ -39,7 +40,7 @@ import {
 	useSendMessage,
 } from "@/features/chat/hooks";
 import { chatKeys } from "@/features/chat/hooks/queries";
-import type { ChatMessageDto } from "@/features/chat/types";
+import type { ChatMessageDto, GetChatsOutput } from "@/features/chat/types";
 import { publicMentorProfileService } from "@/features/mentor-public-profile/services/public-mentor-profile.service";
 import { fileService } from "@/shared/services/file.service";
 
@@ -64,9 +65,9 @@ export function ChatDetailPage() {
 
 	useEffect(() => {
 		return () => {
-			Object.values(localMediaPreviews).forEach((url) =>
-				URL.revokeObjectURL(url),
-			);
+			Object.values(localMediaPreviews).forEach((url) => {
+				URL.revokeObjectURL(url);
+			});
 		};
 	}, [localMediaPreviews]);
 
@@ -159,9 +160,10 @@ export function ChatDetailPage() {
 				});
 			});
 		}
-	}, [allMessages.length, currentUserId]);
+	}, [allMessages, currentUserId]);
 
 	useLayoutEffect(() => {
+		void data;
 		if (!pendingRestoreRef.current || !scrollRef.current) return;
 		const el = scrollRef.current;
 		const newHeight = el.scrollHeight;
@@ -174,17 +176,23 @@ export function ChatDetailPage() {
 		if (chat?.id && currentUserId) {
 			markRead.mutate({ chatId: chat.id, userId: currentUserId });
 		}
-	}, [chat?.id, currentUserId]);
+	}, [chat?.id, currentUserId, markRead.mutate]);
 
 	useEffect(() => {
 		if (!chat) return;
-		queryClient.setQueriesData({ queryKey: chatKeys.lists() }, (old: any) => {
-			if (!old?.pages?.length) return old;
-			const alreadyIncluded = old.pages.some((page: any) =>
-				page.chats?.some((item: any) => item.id === chat.id),
+		queryClient.setQueriesData({ queryKey: chatKeys.lists() }, (old) => {
+			const typed = old as
+				| (InfiniteData<GetChatsOutput> & {
+						total?: number;
+						totalPages?: number;
+				  })
+				| undefined;
+			if (!typed?.pages?.length) return typed;
+			const alreadyIncluded = typed.pages.some((page) =>
+				page.chats?.some((item) => item.id === chat.id),
 			);
 			if (alreadyIncluded) return old;
-			const pages = [...old.pages];
+			const pages = [...typed.pages];
 			const firstPage = pages[0];
 			const updatedFirst = {
 				...firstPage,
@@ -192,12 +200,12 @@ export function ChatDetailPage() {
 			};
 			pages[0] = updatedFirst;
 			const limit = firstPage.limit ?? 10;
-			const total = (old.total ?? 0) + 1;
+			const total = (typed.total ?? 0) + 1;
 			return {
-				...old,
+				...typed,
 				pages,
 				total,
-				totalPages: limit ? Math.ceil(total / limit) : old.totalPages,
+				totalPages: limit ? Math.ceil(total / limit) : typed.totalPages,
 			};
 		});
 	}, [chat, queryClient]);

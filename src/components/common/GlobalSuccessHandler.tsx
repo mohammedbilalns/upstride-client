@@ -1,8 +1,15 @@
+import type { ComponentProps } from "react";
 import { useCallback, useEffect, useState } from "react";
 import { PaymentSuccessModal } from "@/features/payment/components/PaymentSuccessModal";
 
+type PaymentSuccessModalConfig = Omit<
+	ComponentProps<typeof PaymentSuccessModal>,
+	"isOpen" | "onClose"
+>;
+
 export function GlobalSuccessHandler() {
-	const [modalConfig, setModalConfig] = useState<any>(null);
+	const [modalConfig, setModalConfig] =
+		useState<PaymentSuccessModalConfig | null>(null);
 
 	const handleLocationChange = useCallback(() => {
 		const search = window.location.search;

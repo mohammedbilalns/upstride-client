@@ -1,39 +1,37 @@
 import { io, type Socket } from "socket.io-client";
 import { env } from "@/shared/config/env";
 
-export class SocketService {
-	private static instance: Socket | null = null;
+let socketInstance: Socket | null = null;
 
-	/**
-	 * Creates or returns the existing Socket.io instance.
-	 * @param token The JWT access token for authentication.
-	 */
-	public static getInstance(token: string): Socket {
-		if (SocketService.instance) {
-			return SocketService.instance;
-		}
-
-		const socketUrl = new URL(env.API_URL).origin;
-
-		SocketService.instance = io(socketUrl, {
-			auth: {
-				token,
-			},
-			transports: ["websocket"],
-			reconnection: true,
-			reconnectionAttempts: 5,
-		});
-
-		return SocketService.instance;
+/**
+ * Creates or returns the existing Socket.io instance.
+ * @param token The JWT access token for authentication.
+ */
+export const getSocketInstance = (token: string): Socket => {
+	if (socketInstance) {
+		return socketInstance;
 	}
 
-	/**
-	 * Disconnects the socket and clears the instance.
-	 */
-	public static disconnect(): void {
-		if (SocketService.instance) {
-			SocketService.instance.disconnect();
-			SocketService.instance = null;
-		}
+	const socketUrl = new URL(env.API_URL).origin;
+
+	socketInstance = io(socketUrl, {
+		auth: {
+			token,
+		},
+		transports: ["websocket"],
+		reconnection: true,
+		reconnectionAttempts: 5,
+	});
+
+	return socketInstance;
+};
+
+/**
+ * Disconnects the socket and clears the instance.
+ */
+export const disconnectSocket = (): void => {
+	if (socketInstance) {
+		socketInstance.disconnect();
+		socketInstance = null;
 	}
-}
+};

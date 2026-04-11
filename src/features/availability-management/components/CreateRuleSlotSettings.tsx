@@ -31,7 +31,15 @@ export function CreateRuleSlotSettings({ form }: CreateRuleSlotSettingsProps) {
 								<Label htmlFor="r60">60 min</Label>
 							</div>
 						</RadioGroup>
-						<FieldError message={field.state.meta.errors?.[0] as any} />
+						<FieldError
+							message={
+								typeof field.state.meta.errors?.[0] === "string"
+									? field.state.meta.errors[0]
+									: field.state.meta.errors?.[0]
+										? String(field.state.meta.errors[0])
+										: undefined
+							}
+						/>
 					</div>
 				)}
 			</form.Field>
@@ -53,7 +61,15 @@ export function CreateRuleSlotSettings({ form }: CreateRuleSlotSettingsProps) {
 							}
 							onBlur={field.handleBlur}
 						/>
-						<FieldError message={field.state.meta.errors?.[0] as any} />
+						<FieldError
+							message={
+								typeof field.state.meta.errors?.[0] === "string"
+									? field.state.meta.errors[0]
+									: field.state.meta.errors?.[0]
+										? String(field.state.meta.errors[0])
+										: undefined
+							}
+						/>
 					</div>
 				)}
 			</form.Field>

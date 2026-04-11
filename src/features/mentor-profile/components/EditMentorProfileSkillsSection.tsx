@@ -11,14 +11,26 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import type {
+	CatalogInterest,
+	CatalogSkill,
+} from "@/features/onboarding/types";
+import type { MentorProfileResponse } from "../types";
+import type {
 	EditMentorProfileForm,
 	PendingSkill,
 } from "./EditMentorProfileModal";
 
 interface EditMentorProfileSkillsSectionProps {
 	form: EditMentorProfileForm;
-	profile: any;
-	catalogData: any;
+	profile: MentorProfileResponse["data"]["profile"] | null | undefined;
+	catalogData:
+		| {
+				data: {
+					interests: CatalogInterest[];
+				};
+		  }
+		| null
+		| undefined;
 	pendingSkills: PendingSkill[];
 	setPendingSkills: Dispatch<SetStateAction<PendingSkill[]>>;
 	skillError: string | null;
@@ -55,22 +67,20 @@ export function EditMentorProfileSkillsSection({
 								</SelectTrigger>
 								<SelectContent>
 									{catalogData?.data.interests
-										.filter((interest: any) =>
-											profile?.expertises.some(
-												(exp: any) => exp.id === interest.id,
-											),
+										.filter((interest: CatalogInterest) =>
+											profile?.expertises.some((exp) => exp.id === interest.id),
 										)
-										.flatMap((interest: any) => interest.skills)
+										.flatMap((interest: CatalogInterest) => interest.skills)
 										.filter(
-											(skill: any) =>
+											(skill: CatalogSkill) =>
 												!profile?.skills.some(
-													(existing: any) => existing.id === skill.id,
+													(existing) => existing.id === skill.id,
 												) &&
 												!pendingSkills.some(
 													(pending) => pending.skillId === skill.id,
 												),
 										)
-										.map((skill: any) => (
+										.map((skill: CatalogSkill) => (
 											<SelectItem key={skill.id} value={skill.id}>
 												{skill.name}
 											</SelectItem>

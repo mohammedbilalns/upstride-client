@@ -1,3 +1,4 @@
+import type { useForm } from "@tanstack/react-form";
 import {
 	Eye,
 	FileText,
@@ -14,15 +15,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import type { Mentor } from "@/features/mentor-registration/types";
+import type { MentorRegistrationValues } from "@/features/mentor-registration/validators/mentor-registration.schema";
 import { useDeleteFile } from "@/shared/hooks/use-delete-file";
 import { fileService } from "@/shared/services/file.service";
 
 interface EducationSectionProps {
-	form: any;
+	form: ReturnType<typeof useForm<MentorRegistrationValues>>;
 	isUploading: boolean;
 	setIsUploading: (val: boolean) => void;
-	getErrorMessage: (errors: any[]) => string | undefined;
-	existingProfile?: any;
+	getErrorMessage: (errors: unknown[]) => string | undefined;
+	existingProfile?: Mentor | null;
 }
 
 const MAX_EDUCATION_ITEMS = 5;
@@ -41,7 +44,7 @@ export function EducationSection({
 
 	useEffect(() => {
 		return () => {
-			if (previewUrl && previewUrl.startsWith("blob:")) {
+			if (previewUrl?.startsWith("blob:")) {
 				URL.revokeObjectURL(previewUrl);
 			}
 		};
@@ -57,50 +60,54 @@ export function EducationSection({
 			</CardHeader>
 			<CardContent className="pt-6 space-y-8">
 				<form.Field name="educationalQualifications">
-					{(field: any) => (
+					{(field) => (
 						<div className="space-y-4">
 							<Label>Educational Qualifications</Label>
 							<div className="space-y-3">
-								{field.state.value.map((_: string, index: number) => (
-									<form.Field
-										key={index}
-										name={`educationalQualifications[${index}]`}
-									>
-										{(subField: any) => (
-											<div className="space-y-1">
-												<div className="flex gap-2">
-													<Input
-														placeholder="e.g. B.Tech in Computer Science, Stanford University"
-														value={subField.state.value}
-														onChange={(e) =>
-															subField.handleChange(e.target.value)
-														}
-														onBlur={subField.handleBlur}
+								{field.state.value.map(
+									(qualification: string, index: number) => (
+										<form.Field
+											key={qualification}
+											name={`educationalQualifications[${index}]`}
+										>
+											{(subField) => (
+												<div className="space-y-1">
+													<div className="flex gap-2">
+														<Input
+															placeholder="e.g. B.Tech in Computer Science, Stanford University"
+															value={subField.state.value}
+															onChange={(e) =>
+																subField.handleChange(e.target.value)
+															}
+															onBlur={subField.handleBlur}
+														/>
+														{field.state.value.length > 1 && (
+															<Button
+																type="button"
+																variant="ghost"
+																size="icon"
+																className="text-muted-foreground hover:text-destructive"
+																onClick={() => {
+																	const newValue = field.state.value.filter(
+																		(_value, i: number) => i !== index,
+																	);
+																	field.handleChange(newValue);
+																}}
+															>
+																<Trash2 className="h-4 w-4" />
+															</Button>
+														)}
+													</div>
+													<FieldError
+														message={getErrorMessage(
+															subField.state.meta.errors,
+														)}
 													/>
-													{field.state.value.length > 1 && (
-														<Button
-															type="button"
-															variant="ghost"
-															size="icon"
-															className="text-muted-foreground hover:text-destructive"
-															onClick={() => {
-																const newValue = field.state.value.filter(
-																	(_: any, i: number) => i !== index,
-																);
-																field.handleChange(newValue);
-															}}
-														>
-															<Trash2 className="h-4 w-4" />
-														</Button>
-													)}
 												</div>
-												<FieldError
-													message={getErrorMessage(subField.state.meta.errors)}
-												/>
-											</div>
-										)}
-									</form.Field>
-								))}
+											)}
+										</form.Field>
+									),
+								)}
 							</div>
 							<Button
 								type="button"
@@ -124,7 +131,7 @@ export function EducationSection({
 				</form.Field>
 
 				<form.Field name="resumeId">
-					{(field: any) => (
+					{(field) => (
 						<div className="space-y-3">
 							<Label>Resume / CV</Label>
 							<div
@@ -175,8 +182,9 @@ export function EducationSection({
 										</div>
 									</div>
 								) : (
-									<div
-										className={`cursor-pointer ${isUploading ? "pointer-events-none opacity-50" : ""}`}
+									<button
+										type="button"
+										className={`cursor-pointer w-full ${isUploading ? "pointer-events-none opacity-50" : ""}`}
 										onClick={() =>
 											document.getElementById("resume-upload")?.click()
 										}
@@ -198,7 +206,7 @@ export function EducationSection({
 												PDF, DOC, DOCX up to 10MB
 											</p>
 										</div>
-									</div>
+									</button>
 								)}
 								<input
 									id="resume-upload"
@@ -234,7 +242,7 @@ export function EducationSection({
 											}
 
 											field.handleChange(key);
-										} catch (err) {
+										} catch (_err) {
 											toast.error(
 												"Failed to process resume. Please try again.",
 											);

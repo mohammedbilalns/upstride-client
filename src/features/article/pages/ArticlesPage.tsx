@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Loader2, Newspaper, Plus, Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getMentorCategoriesQueryOptions } from "@/features/mentor-discovery/hooks/queries";
@@ -11,6 +11,7 @@ import { ArticleCard } from "../components/ArticleCard";
 import { ArticleFilters } from "../components/ArticleFilters";
 import { articleQueries } from "../hooks/queries";
 import type { ArticleDto } from "../types";
+import type { ArticleSearch } from "../validators/article-search-params";
 
 export function ArticlesPage() {
 	const navigate = useNavigate({ from: Route.fullPath });
@@ -21,20 +22,28 @@ export function ArticlesPage() {
 	const { auth } = Route.useRouteContext();
 	const isMentor = auth.user?.role === "MENTOR";
 
-	const updateSearch = (updates: any) => {
-		navigate({
-			search: (prev: any) => ({
-				...prev,
-				...updates,
-			}),
-		});
-	};
+	const updateSearch = useCallback(
+		(updates: Partial<ArticleSearch>) => {
+			navigate({
+				search: (prev: ArticleSearch) => ({
+					...prev,
+					...updates,
+				}),
+			});
+		},
+		[navigate],
+	);
+
+	const skeletonKeys = useMemo(
+		() => Array.from({ length: 9 }, (_unused, index) => `skeleton-${index}`),
+		[],
+	);
 
 	useEffect(() => {
 		if ((search.search ?? "") !== debouncedSearch) {
 			updateSearch({ search: debouncedSearch || undefined });
 		}
-	}, [debouncedSearch]);
+	}, [debouncedSearch, search.search, updateSearch]);
 
 	const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
 		useInfiniteQuery(
@@ -141,9 +150,9 @@ export function ArticlesPage() {
 						<div className="mt-4 min-w-0 min-h-0 space-y-6">
 							{isLoading && (
 								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5">
-									{Array.from({ length: 9 }).map((_, i) => (
+									{skeletonKeys.map((key) => (
 										<div
-											key={i}
+											key={key}
 											className="h-72 rounded-2xl bg-zinc-100 dark:bg-zinc-900 animate-pulse"
 										/>
 									))}

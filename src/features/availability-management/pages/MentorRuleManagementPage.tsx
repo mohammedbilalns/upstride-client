@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { ApiError } from "@/api/apiError";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
@@ -48,12 +48,6 @@ export function MentorRuleManagementPage() {
 	} | null>(null);
 	const [pendingRule, setPendingRule] =
 		useState<CreateAvailabilityInput | null>(null);
-	const todayDate = useMemo(() => {
-		const date = new Date();
-		date.setHours(0, 0, 0, 0);
-		return date;
-	}, []);
-
 	const updateAvailabilityCache = (
 		updater: (items: AvailabilityRule[]) => AvailabilityRule[],
 	) => {

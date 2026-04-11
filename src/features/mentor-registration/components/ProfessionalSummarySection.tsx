@@ -1,3 +1,4 @@
+import type { useForm } from "@tanstack/react-form";
 import { User } from "lucide-react";
 import FieldError from "@/components/common/Field-Error";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,11 +11,17 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import type { Profession } from "@/features/mentor-registration/services/catalog.service";
+import type { MentorRegistrationValues } from "@/features/mentor-registration/validators/mentor-registration.schema";
 import { useProfessions } from "../hooks/use-catalog";
 
+type MentorRegistrationForm = ReturnType<
+	typeof useForm<MentorRegistrationValues>
+>;
+
 interface ProfessionalSummarySectionProps {
-	form: any;
-	getErrorMessage: (errors: any[]) => string | undefined;
+	form: MentorRegistrationForm;
+	getErrorMessage: (errors: unknown[]) => string | undefined;
 }
 
 export function ProfessionalSummarySection({
@@ -33,7 +40,7 @@ export function ProfessionalSummarySection({
 			<CardContent className="pt-6 space-y-6">
 				<div className="grid sm:grid-cols-2 gap-4">
 					<form.Field name="currentRoleId">
-						{(field: any) => (
+						{(field) => (
 							<div className="space-y-1.5">
 								<Label htmlFor={field.name}>Current Role</Label>
 								<Select
@@ -44,7 +51,7 @@ export function ProfessionalSummarySection({
 										<SelectValue placeholder="Select current role" />
 									</SelectTrigger>
 									<SelectContent>
-										{professions?.map((prof: any) => (
+										{professions?.map((prof: Profession) => (
 											<SelectItem key={prof.id} value={prof.id}>
 												{prof.name}
 											</SelectItem>
@@ -58,7 +65,7 @@ export function ProfessionalSummarySection({
 						)}
 					</form.Field>
 					<form.Field name="organization">
-						{(field: any) => (
+						{(field) => (
 							<div className="space-y-1.5">
 								<Label htmlFor={field.name}>Company / Organization</Label>
 								<Input
@@ -78,7 +85,7 @@ export function ProfessionalSummarySection({
 
 				<div className="grid sm:grid-cols-2 gap-4">
 					<form.Field name="yearsOfExperience">
-						{(field: any) => (
+						{(field) => (
 							<div className="space-y-1.5">
 								<Label htmlFor={field.name}>Years of Experience</Label>
 								<Input
@@ -95,7 +102,7 @@ export function ProfessionalSummarySection({
 						)}
 					</form.Field>
 					<form.Field name="personalWebsite">
-						{(field: any) => (
+						{(field) => (
 							<div className="space-y-1.5">
 								<Label htmlFor={field.name}>
 									Personal Website / Portfolio (Optional)
@@ -116,7 +123,7 @@ export function ProfessionalSummarySection({
 				</div>
 
 				<form.Field name="bio">
-					{(field: any) => (
+					{(field) => (
 						<div className="space-y-1.5">
 							<Label htmlFor={field.name}>Professional Bio</Label>
 							<textarea

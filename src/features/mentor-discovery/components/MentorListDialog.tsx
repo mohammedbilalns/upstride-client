@@ -48,7 +48,7 @@ export function MentorListDialog({
 				setLists(data.items);
 			},
 		});
-	}, [open]);
+	}, [open, fetchLists.mutate]);
 
 	const resetCreateForm = () => {
 		setName("");

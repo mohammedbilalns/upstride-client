@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { format } from "date-fns";
 import { Calendar, History } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -142,7 +141,7 @@ export function SessionsPage() {
 			}
 			navigate({
 				to: "/sessions",
-				search: (prev: any) => ({
+				search: (prev) => ({
 					...prev,
 					booking_success: true,
 					booking_id: response.data.bookingId,

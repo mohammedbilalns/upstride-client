@@ -57,7 +57,15 @@ export function CreateRuleScheduleFields({
 								/>
 							</PopoverContent>
 						</Popover>
-						<FieldError message={field.state.meta.errors?.[0] as any} />
+						<FieldError
+							message={
+								typeof field.state.meta.errors?.[0] === "string"
+									? field.state.meta.errors[0]
+									: field.state.meta.errors?.[0]
+										? String(field.state.meta.errors[0])
+										: undefined
+							}
+						/>
 					</div>
 				)}
 			</form.Field>
@@ -102,7 +110,15 @@ export function CreateRuleScheduleFields({
 								/>
 							</PopoverContent>
 						</Popover>
-						<FieldError message={field.state.meta.errors?.[0] as any} />
+						<FieldError
+							message={
+								typeof field.state.meta.errors?.[0] === "string"
+									? field.state.meta.errors[0]
+									: field.state.meta.errors?.[0]
+										? String(field.state.meta.errors[0])
+										: undefined
+							}
+						/>
 					</div>
 				)}
 			</form.Field>
@@ -117,7 +133,15 @@ export function CreateRuleScheduleFields({
 							onChange={(e) => field.handleChange(e.target.value)}
 							onBlur={field.handleBlur}
 						/>
-						<FieldError message={field.state.meta.errors?.[0] as any} />
+						<FieldError
+							message={
+								typeof field.state.meta.errors?.[0] === "string"
+									? field.state.meta.errors[0]
+									: field.state.meta.errors?.[0]
+										? String(field.state.meta.errors[0])
+										: undefined
+							}
+						/>
 					</div>
 				)}
 			</form.Field>
@@ -132,7 +156,15 @@ export function CreateRuleScheduleFields({
 							onChange={(e) => field.handleChange(e.target.value)}
 							onBlur={field.handleBlur}
 						/>
-						<FieldError message={field.state.meta.errors?.[0] as any} />
+						<FieldError
+							message={
+								typeof field.state.meta.errors?.[0] === "string"
+									? field.state.meta.errors[0]
+									: field.state.meta.errors?.[0]
+										? String(field.state.meta.errors[0])
+										: undefined
+							}
+						/>
 					</div>
 				)}
 			</form.Field>

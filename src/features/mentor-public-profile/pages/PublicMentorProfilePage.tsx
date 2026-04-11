@@ -1,16 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Coins, CreditCard, Flag } from "lucide-react";
+import { ArrowLeft, Coins, CreditCard } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import type { ApiError } from "@/api/apiError";
 import { AddBalanceForm } from "@/components/common/AddBalanceForm";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { ReportDialog } from "@/components/common/ReportDialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
 	Dialog,
@@ -133,7 +129,7 @@ export function PublicMentorProfilePage({
 			clearTopupState();
 			navigate({
 				to: "/sessions",
-				search: (prev: any) => ({
+				search: (prev) => ({
 					...prev,
 					booking_success: true,
 					booking_id: response.data.bookingId,

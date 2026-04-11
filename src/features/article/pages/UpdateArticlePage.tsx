@@ -16,6 +16,8 @@ export function UpdateArticlePage() {
 	const { articleId } = Route.useParams();
 	const { data } = useQuery(articleQueries.detail(articleId));
 
+	const updateMutation = useUpdateArticleMutation();
+
 	const [showUpdateConfirm, setShowUpdateConfirm] = useState(false);
 	const [pendingValues, setPendingValues] = useState<ArticleFormValues | null>(
 		null,
@@ -32,8 +34,6 @@ export function UpdateArticlePage() {
 			);
 		}
 	}
-
-	const updateMutation = useUpdateArticleMutation();
 
 	const defaultValues = {
 		title: data?.article?.title || "",

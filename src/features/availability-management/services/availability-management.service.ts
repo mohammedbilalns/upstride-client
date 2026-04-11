@@ -9,7 +9,9 @@ import type {
 } from "../types";
 
 export const availabilityManagementService = {
-	createAvailability: async (data: CreateAvailabilityInput): Promise<any> => {
+	createAvailability: async (
+		data: CreateAvailabilityInput,
+	): Promise<unknown> => {
 		const response = await api.post(
 			`${ROUTES.AVAILABILITY.BASE}${ROUTES.AVAILABILITY.ROOT}`,
 			data,
@@ -61,14 +63,14 @@ export const availabilityManagementService = {
 		return response.data;
 	},
 
-	deleteAvailability: async (id: string): Promise<any> => {
+	deleteAvailability: async (id: string): Promise<unknown> => {
 		const response = await api.delete(
 			`${ROUTES.AVAILABILITY.BASE}${ROUTES.AVAILABILITY.DELETE(id)}`,
 		);
 		return response.data;
 	},
 
-	reenableAvailability: async (id: string): Promise<any> => {
+	reenableAvailability: async (id: string): Promise<unknown> => {
 		const response = await api.patch(
 			`${ROUTES.AVAILABILITY.BASE}${ROUTES.AVAILABILITY.REENABLE(id)}`,
 		);

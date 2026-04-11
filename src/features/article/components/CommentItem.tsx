@@ -176,6 +176,7 @@ export function CommentItem({
 					<div className="flex items-center gap-4 px-2">
 						{!isEditing && comment.isActive && (
 							<button
+								type="button"
 								onClick={() => setIsReplying(!isReplying)}
 								className={cn(
 									"flex items-center gap-1.5 text-xs font-semibold transition-colors py-1 px-2 rounded-lg",
@@ -191,6 +192,7 @@ export function CommentItem({
 
 						{comment.repliesCount > 0 && (
 							<button
+								type="button"
 								onClick={() => setShowReplies(!showReplies)}
 								className="flex items-center gap-1.5 text-xs font-semibold text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 py-1 px-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
 							>
@@ -241,6 +243,7 @@ export function CommentItem({
 									))}
 									{hasNextReplies && (
 										<button
+											type="button"
 											onClick={() => fetchNextReplies()}
 											disabled={isFetchingNextReplies}
 											className="text-[11px] font-bold text-primary hover:underline py-1 px-4 rounded-full bg-primary/5 hover:bg-primary/10 transition-all border border-primary/10"

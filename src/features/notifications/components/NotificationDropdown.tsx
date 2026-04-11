@@ -185,11 +185,12 @@ function NotificationList({
 	return (
 		<div className="flex flex-col">
 			{notifications.map((notification) => (
-				<div
+				<button
+					type="button"
 					key={notification.id}
 					onClick={() => handleNotificationClick(notification)}
 					className={cn(
-						"flex flex-col gap-3 p-4 transition-colors hover:bg-muted/50 cursor-pointer relative group border-b border-border/20 last:border-0",
+						"flex flex-col gap-3 p-4 text-left transition-colors hover:bg-muted/50 cursor-pointer relative group border-b border-border/20 last:border-0",
 						!notification.isRead && "bg-primary/5",
 					)}
 				>
@@ -226,7 +227,7 @@ function NotificationList({
 							</Button>
 						</div>
 					)}
-				</div>
+				</button>
 			))}
 
 			{hasNextPage && (

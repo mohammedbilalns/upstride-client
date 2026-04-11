@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { articleService } from "../../services/article.service";
+import type { GetArticleResponse } from "../../types";
 import { articleQueries } from "../queries";
 
 export function useArticleReactionMutation() {
@@ -15,13 +16,13 @@ export function useArticleReactionMutation() {
 				queryKey: articleQueries.detail(variables.slug).queryKey,
 			});
 
-			const previousData = queryClient.getQueryData(
+			const previousData = queryClient.getQueryData<GetArticleResponse>(
 				articleQueries.detail(variables.slug).queryKey,
 			);
 
-			queryClient.setQueryData(
+			queryClient.setQueryData<GetArticleResponse | undefined>(
 				articleQueries.detail(variables.slug).queryKey,
-				(old: any) => {
+				(old) => {
 					if (!old) return old;
 					const { article, userReaction } = old;
 					const isLiked = userReaction === "LIKE";

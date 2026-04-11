@@ -61,3 +61,5 @@ export const RegisterMentorSchema = z.object({
 });
 
 export const ResubmitMentorSchema = RegisterMentorSchema.partial();
+
+export type MentorRegistrationValues = z.infer<typeof RegisterMentorSchema>;

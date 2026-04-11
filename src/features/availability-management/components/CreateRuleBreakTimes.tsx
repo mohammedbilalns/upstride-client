@@ -36,9 +36,8 @@ export function CreateRuleBreakTimes({
 					<Plus className="h-4 w-4 mr-2" /> Add Break
 				</Button>
 			</div>
-			<form.Subscribe
-				selector={(state) => state.values.breakTimes}
-				children={(breakTimes) =>
+			<form.Subscribe selector={(state) => state.values.breakTimes}>
+				{(breakTimes) =>
 					!breakTimes?.length ? (
 						<p className="text-sm text-muted-foreground">
 							No breaks configured. You will be available consecutively.
@@ -47,7 +46,7 @@ export function CreateRuleBreakTimes({
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 							{breakTimes.map((bt, i) => (
 								<div
-									key={i}
+									key={`${bt.startTime}-${bt.endTime}`}
 									className="flex items-center gap-2 p-3 bg-background border rounded-lg"
 								>
 									<Input
@@ -81,7 +80,7 @@ export function CreateRuleBreakTimes({
 						</div>
 					)
 				}
-			/>
+			</form.Subscribe>
 		</div>
 	);
 }

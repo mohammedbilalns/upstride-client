@@ -15,6 +15,7 @@ export function ProgressiveImage({
 	className,
 	onLoad,
 	onError,
+	alt = "",
 	...props
 }: ProgressiveImageProps) {
 	const [isLoaded, setIsLoaded] = React.useState(false);
@@ -46,6 +47,7 @@ export function ProgressiveImage({
 			{!hasError && (
 				<img
 					{...props}
+					alt={alt}
 					onLoad={handleLoad}
 					onError={handleError}
 					className={cn(

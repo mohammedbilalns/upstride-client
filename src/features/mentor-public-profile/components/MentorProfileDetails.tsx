@@ -6,11 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import type { UserProfile } from "@/features/profile-management/types";
+import type { PublicMentorProfile } from "../types";
 
 interface MentorProfileDetailsProps {
-	profile: any;
+	profile: PublicMentorProfile;
 	isAdminView: boolean;
-	currentUser: any;
+	currentUser: UserProfile | null | undefined;
 	isReported: boolean;
 }
 
@@ -114,7 +116,7 @@ export function MentorProfileDetails({
 				<div className="space-y-3">
 					<h3 className="text-sm font-semibold">Expertise</h3>
 					<div className="flex flex-wrap gap-2">
-						{profile.expertises.map((expertise: any) => (
+						{profile.expertises.map((expertise) => (
 							<Badge key={expertise.id} variant="secondary">
 								{expertise.name}
 							</Badge>
@@ -124,7 +126,7 @@ export function MentorProfileDetails({
 				<div className="space-y-3">
 					<h3 className="text-sm font-semibold">Skills</h3>
 					<div className="flex flex-wrap gap-2">
-						{profile.skills.map((skill: any) => (
+						{profile.skills.map((skill) => (
 							<Badge key={skill.id} variant="outline">
 								{skill.name} · {skill.level.toLowerCase()}
 							</Badge>
@@ -134,7 +136,7 @@ export function MentorProfileDetails({
 				<div className="space-y-3">
 					<h3 className="text-sm font-semibold">Education</h3>
 					<ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
-						{profile.educationalQualifications.map((edu: any) => (
+						{profile.educationalQualifications.map((edu) => (
 							<li key={edu}>{edu}</li>
 						))}
 					</ul>

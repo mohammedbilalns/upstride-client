@@ -1,3 +1,4 @@
+import type { useForm } from "@tanstack/react-form";
 import { Award, Plus, Trash2 } from "lucide-react";
 import FieldError from "@/components/common/Field-Error";
 import { Button } from "@/components/ui/button";
@@ -11,12 +12,14 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import type { MentorSkill } from "@/features/mentor-registration/types";
+import type { MentorRegistrationValues } from "@/features/mentor-registration/validators/mentor-registration.schema";
+import type { CatalogInterest } from "@/features/onboarding/types";
 import { SkillLevelValues } from "@/shared/types/user";
 
 interface ExpertiseSectionProps {
-	form: any;
-	interests: any[];
-	getErrorMessage: (errors: any[]) => string | undefined;
+	form: ReturnType<typeof useForm<MentorRegistrationValues>>;
+	interests: CatalogInterest[];
+	getErrorMessage: (errors: unknown[]) => string | undefined;
 }
 
 export function ExpertiseSection({
@@ -34,7 +37,7 @@ export function ExpertiseSection({
 			</CardHeader>
 			<CardContent className="pt-6 space-y-8">
 				<form.Field name="areasOfExpertise">
-					{(field: any) => (
+					{(field) => (
 						<div className="space-y-4">
 							<Label>Areas of Expertise (Select up to 2)</Label>
 							<div className="flex flex-wrap gap-2">
@@ -78,10 +81,10 @@ export function ExpertiseSection({
 					)}
 				</form.Field>
 
-				<form.Subscribe selector={(s: any) => [s.values.areasOfExpertise]}>
+				<form.Subscribe selector={(s) => [s.values.areasOfExpertise]}>
 					{([selectedExpertiseIds]: [string[]]) => (
 						<form.Field name="toolsAndSkills">
-							{(field: any) => {
+							{(field) => {
 								const allRelevantSkills = interests
 									.filter((i) => selectedExpertiseIds.includes(i.id))
 									.flatMap((i) => i.skills);
@@ -119,16 +122,16 @@ export function ExpertiseSection({
 										) : (
 											<div className="space-y-3">
 												{field.state.value.map(
-													(_: MentorSkill, index: number) => (
+													(skill: MentorSkill, index: number) => (
 														<div
-															key={index}
+															key={`${skill.skillId}-${skill.level}`}
 															className="flex flex-col gap-2 p-3 rounded-xl bg-muted/20 border border-border/50"
 														>
 															<div className="flex gap-3">
 																<form.Field
 																	name={`toolsAndSkills[${index}].skillId`}
 																>
-																	{(subField: any) => (
+																	{(subField) => (
 																		<div className="flex-1 space-y-1">
 																			<Select
 																				value={subField.state.value}
@@ -158,7 +161,7 @@ export function ExpertiseSection({
 																<form.Field
 																	name={`toolsAndSkills[${index}].level`}
 																>
-																	{(subField: any) => (
+																	{(subField) => (
 																		<div className="w-1/3 space-y-1">
 																			<Select
 																				value={subField.state.value}

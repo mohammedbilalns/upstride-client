@@ -1,5 +1,6 @@
 import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
+import type { MentorRegistrationValues } from "@/features/mentor-registration/validators/mentor-registration.schema";
 import type { MentorRegistrationInfoResponse } from "../types";
 
 export const mentorRegistrationService = {
@@ -14,7 +15,7 @@ export const mentorRegistrationService = {
 	},
 
 	register: async (
-		data: any,
+		data: MentorRegistrationValues,
 	): Promise<{
 		message: string;
 	}> => {
@@ -26,7 +27,7 @@ export const mentorRegistrationService = {
 	},
 
 	resubmit: async (
-		data: any,
+		data: Partial<MentorRegistrationValues>,
 	): Promise<{
 		message: string;
 	}> => {

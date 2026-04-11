@@ -34,7 +34,7 @@ export function EconomySettingsPlatformCommissionsCard({
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-				<form.Field name={"platformCommissions.sessionPercentage" as any}>
+				<form.Field name="platformCommissions.sessionPercentage">
 					{(field) => (
 						<div className="space-y-2">
 							<Label>Session Commission %</Label>
@@ -42,7 +42,7 @@ export function EconomySettingsPlatformCommissionsCard({
 								type="number"
 								value={field.state.value ?? ""}
 								onChange={(e) =>
-									(field.handleChange as any)(parseNumberInput(e.target.value))
+									field.handleChange(parseNumberInput(e.target.value))
 								}
 								onBlur={field.handleBlur}
 							/>
@@ -52,7 +52,7 @@ export function EconomySettingsPlatformCommissionsCard({
 						</div>
 					)}
 				</form.Field>
-				<form.Field name={"platformCommissions.userTipRewardPercentage" as any}>
+				<form.Field name="platformCommissions.userTipRewardPercentage">
 					{(field) => (
 						<div className="space-y-2">
 							<Label>Tip/Reward Commission %</Label>
@@ -60,7 +60,7 @@ export function EconomySettingsPlatformCommissionsCard({
 								type="number"
 								value={field.state.value ?? ""}
 								onChange={(e) =>
-									(field.handleChange as any)(parseNumberInput(e.target.value))
+									field.handleChange(parseNumberInput(e.target.value))
 								}
 								onBlur={field.handleBlur}
 							/>

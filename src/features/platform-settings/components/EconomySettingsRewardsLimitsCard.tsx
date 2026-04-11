@@ -29,9 +29,7 @@ export function EconomySettingsRewardsLimitsCard({
 									type="number"
 									value={field.state.value ?? ""}
 									onChange={(e) =>
-										(field.handleChange as any)(
-											parseNumberInput(e.target.value),
-										)
+										field.handleChange(parseNumberInput(e.target.value))
 									}
 									onBlur={field.handleBlur}
 								/>
@@ -49,9 +47,7 @@ export function EconomySettingsRewardsLimitsCard({
 									type="number"
 									value={field.state.value ?? ""}
 									onChange={(e) =>
-										(field.handleChange as any)(
-											parseNumberInput(e.target.value),
-										)
+										field.handleChange(parseNumberInput(e.target.value))
 									}
 									onBlur={field.handleBlur}
 								/>
@@ -69,9 +65,7 @@ export function EconomySettingsRewardsLimitsCard({
 									type="number"
 									value={field.state.value ?? ""}
 									onChange={(e) =>
-										(field.handleChange as any)(
-											parseNumberInput(e.target.value),
-										)
+										field.handleChange(parseNumberInput(e.target.value))
 									}
 									onBlur={field.handleBlur}
 								/>
@@ -89,9 +83,7 @@ export function EconomySettingsRewardsLimitsCard({
 									type="number"
 									value={field.state.value ?? ""}
 									onChange={(e) =>
-										(field.handleChange as any)(
-											parseNumberInput(e.target.value),
-										)
+										field.handleChange(parseNumberInput(e.target.value))
 									}
 									onBlur={field.handleBlur}
 								/>

@@ -48,7 +48,7 @@ export function ArticleManagement({
 				onClick={() =>
 					navigate({
 						to: "/mentor/articles/$articleId/update",
-						params: { articleId: slug } as any,
+						params: { articleId: slug },
 					})
 				}
 				className="h-9 px-4 rounded-xl border-primary/30 text-primary hover:bg-primary/10 dark:border-primary/40 dark:hover:bg-primary/20"

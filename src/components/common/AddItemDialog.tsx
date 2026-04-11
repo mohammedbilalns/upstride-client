@@ -41,13 +41,18 @@ export function AddItemDialog({
 	confirmText,
 	schema,
 }: AddItemDialogProps) {
-	const form = useForm({
+	const validationSchema = schema ? z.object({ name: schema }) : undefined;
+	const form = useForm<{ name: string }>({
 		defaultValues: {
 			name: "",
 		},
-		validators: {
-			onSubmit: (schema ? z.object({ name: schema }) : undefined) as any,
-		},
+		...(validationSchema
+			? {
+					validators: {
+						onSubmit: validationSchema,
+					},
+				}
+			: {}),
 		onSubmit: async ({ value }) => {
 			if (schema) {
 				const res = schema.safeParse(value.name);

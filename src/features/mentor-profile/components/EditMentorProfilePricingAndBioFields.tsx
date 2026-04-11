@@ -3,11 +3,12 @@ import FieldError from "@/components/common/Field-Error";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import type { MentorProfileResponse } from "../types";
 import type { EditMentorProfileForm } from "./EditMentorProfileModal";
 
 interface EditMentorProfilePricingAndBioFieldsProps {
 	form: EditMentorProfileForm;
-	profile: any;
+	profile: MentorProfileResponse["data"]["profile"] | null | undefined;
 }
 
 export function EditMentorProfilePricingAndBioFields({
@@ -44,7 +45,15 @@ export function EditMentorProfilePricingAndBioFields({
 							onChange={(e) => field.handleChange(e.target.value)}
 							onBlur={field.handleBlur}
 						/>
-						<FieldError message={field.state.meta.errors?.[0] as any} />
+						<FieldError
+							message={
+								typeof field.state.meta.errors?.[0] === "string"
+									? field.state.meta.errors[0]
+									: field.state.meta.errors?.[0]
+										? String(field.state.meta.errors[0])
+										: undefined
+							}
+						/>
 					</div>
 				)}
 			</form.Field>
@@ -58,7 +67,15 @@ export function EditMentorProfilePricingAndBioFields({
 							onChange={(e) => field.handleChange(e.target.value)}
 							onBlur={field.handleBlur}
 						/>
-						<FieldError message={field.state.meta.errors?.[0] as any} />
+						<FieldError
+							message={
+								typeof field.state.meta.errors?.[0] === "string"
+									? field.state.meta.errors[0]
+									: field.state.meta.errors?.[0]
+										? String(field.state.meta.errors[0])
+										: undefined
+							}
+						/>
 					</div>
 				)}
 			</form.Field>

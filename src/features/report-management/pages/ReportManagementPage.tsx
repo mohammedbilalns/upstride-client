@@ -10,15 +10,16 @@ import { Pagination } from "@/features/user-management/components/Pagination";
 import { Route } from "@/routes/_admin-layout/report-management";
 import { ReportTable } from "../components/ReportTable";
 import { useReports } from "../hooks/use-reports";
+import type { ReportManagementSearch } from "../validators/report-management-params";
 
 export function ReportManagementPage() {
 	const navigate = useNavigate({ from: Route.fullPath });
 	const searchParams = Route.useSearch();
 	const { data: reportsData } = useReports(searchParams);
 
-	const handleFilterChange = <K extends keyof typeof searchParams>(
+	const handleFilterChange = <K extends keyof ReportManagementSearch>(
 		key: K,
-		value: (typeof searchParams)[K] | "all",
+		value: ReportManagementSearch[K] | "all",
 	) => {
 		navigate({
 			search: (prev) => ({
@@ -51,7 +52,17 @@ export function ReportManagementPage() {
 					</span>
 					<Select
 						value={searchParams.status || "all"}
-						onValueChange={(v) => handleFilterChange("status", v as any)}
+						onValueChange={(value) => {
+							const status =
+								value === "all" ||
+								value === "PENDING" ||
+								value === "RESOLVED" ||
+								value === "REJECTED" ||
+								value === "CLOSED"
+									? value
+									: "all";
+							handleFilterChange("status", status);
+						}}
 					>
 						<SelectTrigger className="w-[160px] h-10">
 							<SelectValue placeholder="All Status" />
@@ -72,7 +83,13 @@ export function ReportManagementPage() {
 					</span>
 					<Select
 						value={searchParams.targetType || "all"}
-						onValueChange={(v) => handleFilterChange("targetType", v as any)}
+						onValueChange={(value) => {
+							const targetType =
+								value === "all" || value === "USER" || value === "ARTICLE"
+									? value
+									: "all";
+							handleFilterChange("targetType", targetType);
+						}}
 					>
 						<SelectTrigger className="w-[160px] h-10">
 							<SelectValue placeholder="All Targets" />
@@ -124,10 +141,10 @@ export function ReportManagementPage() {
 				totalItems={reportsData.total}
 				limit={reportsData.limit}
 				onPageChange={(page: number) =>
-					navigate({ search: (prev: any) => ({ ...prev, page }) })
+					navigate({ search: (prev) => ({ ...prev, page }) })
 				}
 				onLimitChange={(limit: number) =>
-					navigate({ search: (prev: any) => ({ ...prev, limit, page: 1 }) })
+					navigate({ search: (prev) => ({ ...prev, limit, page: 1 }) })
 				}
 			/>
 		</div>

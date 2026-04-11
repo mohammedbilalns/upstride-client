@@ -59,8 +59,8 @@ export function EditMentorProfileQualificationsSection({
 			</form.Field>
 			{pendingQualifications.length > 0 && (
 				<div className="flex flex-wrap gap-2">
-					{pendingQualifications.map((item, index) => (
-						<Badge key={`${item}-${index}`} variant="secondary">
+					{pendingQualifications.map((item) => (
+						<Badge key={item} variant="secondary">
 							{item}
 						</Badge>
 					))}

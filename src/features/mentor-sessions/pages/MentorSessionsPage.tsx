@@ -169,8 +169,11 @@ export function MentorSessionsPage() {
 				isLoading={cancelMutation.isPending}
 			>
 				<div className="mt-4 space-y-2">
-					<label className="text-sm font-medium">Cancellation reason</label>
+					<label htmlFor="mentor-cancel-reason" className="text-sm font-medium">
+						Cancellation reason
+					</label>
 					<Textarea
+						id="mentor-cancel-reason"
 						value={cancelReason}
 						onChange={(e) => setCancelReason(e.target.value)}
 						placeholder="Share why you're cancelling..."

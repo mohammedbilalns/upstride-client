@@ -90,8 +90,11 @@ export function AvailabilityRuleCard({
 							Break Times
 						</span>
 						<div className="space-y-1">
-							{rule.breakTimes.map((bt, i) => (
-								<div key={i} className="text-xs flex items-center gap-1.5">
+							{rule.breakTimes.map((bt) => (
+								<div
+									key={`${bt.startTime}-${bt.endTime}`}
+									className="text-xs flex items-center gap-1.5"
+								>
 									<Clock className="w-3 h-3" /> {bt.startTime} - {bt.endTime}
 								</div>
 							))}

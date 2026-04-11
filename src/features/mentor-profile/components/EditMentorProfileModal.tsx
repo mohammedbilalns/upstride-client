@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/dialog";
 import { mentorProfileService } from "@/features/mentor-profile";
 import { mentorProfileSchema } from "@/features/mentor-profile/validators/mentor-profile.schema";
+import type { CatalogInterest } from "@/features/onboarding/types";
+import type { MentorProfileResponse } from "../types";
 import { EditMentorProfilePricingAndBioFields } from "./EditMentorProfilePricingAndBioFields";
 import { EditMentorProfileQualificationsSection } from "./EditMentorProfileQualificationsSection";
 import { EditMentorProfileSkillsSection } from "./EditMentorProfileSkillsSection";
@@ -31,8 +33,15 @@ export function EditMentorProfileModal({
 }: {
 	isOpen: boolean;
 	onClose: (open: boolean) => void;
-	profile: any;
-	catalogData: any;
+	profile: MentorProfileResponse["data"]["profile"] | null | undefined;
+	catalogData:
+		| {
+				data: {
+					interests: CatalogInterest[];
+				};
+		  }
+		| null
+		| undefined;
 }) {
 	const queryClient = useQueryClient();
 	const [skillError, setSkillError] = useState<string | null>(null);
@@ -107,13 +116,13 @@ export function EditMentorProfileModal({
 			setSkillError(null);
 			setQualificationError(null);
 		}
-	}, [isOpen, profile]);
+	}, [isOpen, profile, form.reset, form.setFieldValue]);
 
 	const skillNameById = useMemo(() => {
 		const map = new Map<string, string>();
 		catalogData?.data.interests
-			.flatMap((interest: any) => interest.skills)
-			.forEach((skill: any) => {
+			.flatMap((interest) => interest.skills)
+			.forEach((skill) => {
 				map.set(skill.id, skill.name);
 			});
 		return map;

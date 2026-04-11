@@ -95,7 +95,7 @@ function RouteComponent() {
 							{feedArticlesData.items.length > 0 && (
 								<Link
 									to="/articles"
-									search={(prev: any) => prev}
+									search={(prev) => prev}
 									className="w-full text-sm text-primary font-medium hover:underline pt-2 text-center"
 								>
 									View More Items in Feed

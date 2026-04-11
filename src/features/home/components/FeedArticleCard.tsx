@@ -22,7 +22,7 @@ export function FeedArticleCard({ article }: FeedArticleCardProps) {
 
 	const formatNumber = (num: number) => {
 		if (num >= 1000) {
-			return (num / 1000).toFixed(1) + "k";
+			return `${(num / 1000).toFixed(1)}k`;
 		}
 		return num.toString();
 	};
@@ -50,7 +50,10 @@ export function FeedArticleCard({ article }: FeedArticleCardProps) {
 						</span>
 					</div>
 				</div>
-				<button className="text-muted-foreground hover:text-foreground">
+				<button
+					type="button"
+					className="text-muted-foreground hover:text-foreground"
+				>
 					<MoreHorizontal className="h-5 w-5" />
 				</button>
 			</div>
@@ -74,17 +77,26 @@ export function FeedArticleCard({ article }: FeedArticleCardProps) {
 			{/* Footer Stats */}
 			<div className="flex items-center justify-between pt-2">
 				<div className="flex items-center gap-6 text-muted-foreground">
-					<button className="flex items-center gap-2 hover:text-foreground transition-colors">
+					<button
+						type="button"
+						className="flex items-center gap-2 hover:text-foreground transition-colors"
+					>
 						<Heart className="h-4 w-4" />
 						<span className="text-xs font-medium">{formatNumber(likes)}</span>
 					</button>
-					<button className="flex items-center gap-2 hover:text-foreground transition-colors">
+					<button
+						type="button"
+						className="flex items-center gap-2 hover:text-foreground transition-colors"
+					>
 						<MessageSquare className="h-4 w-4" />
 						<span className="text-xs font-medium">
 							{formatNumber(comments)}
 						</span>
 					</button>
-					<button className="flex items-center hover:text-foreground transition-colors">
+					<button
+						type="button"
+						className="flex items-center hover:text-foreground transition-colors"
+					>
 						<Bookmark className="h-4 w-4" />
 					</button>
 				</div>

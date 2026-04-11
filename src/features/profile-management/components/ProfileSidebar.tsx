@@ -17,7 +17,7 @@ import { cn } from "@/shared/utils/cn";
 interface SidebarItem {
 	to: string;
 	label: string;
-	icon: any;
+	icon: React.ComponentType<{ className?: string }>;
 }
 
 interface SidebarSection {

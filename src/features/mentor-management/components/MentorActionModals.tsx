@@ -23,8 +23,8 @@ export function MentorActionModals({
 	onConfirm,
 	onReasonChange,
 }: MentorActionModalsProps) {
-	if (!selectedMentor) return null;
 	const rejectionReasonId = useId();
+	if (!selectedMentor) return null;
 
 	return (
 		<>

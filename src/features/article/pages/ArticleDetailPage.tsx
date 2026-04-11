@@ -1,5 +1,8 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
+import LinkExtension from "@tiptap/extension-link";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 import {
 	ArrowLeft,
 	Eye,
@@ -7,6 +10,7 @@ import {
 	MessageSquareText,
 	ShieldAlert,
 } from "lucide-react";
+import { useEffect } from "react";
 import { ProgressiveImage } from "@/components/common/ProgressiveImage";
 import { ReportDialog } from "@/components/common/ReportDialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -32,6 +36,31 @@ export function ArticleDetailPage({
 	const { data: profile } = useProfile();
 	const queryClient = useQueryClient();
 	const { data } = useQuery(articleQueries.detail(articleId));
+	const viewer = useEditor({
+		extensions: [
+			StarterKit.configure({
+				link: false,
+			}),
+			LinkExtension.configure({
+				openOnClick: false,
+			}),
+		],
+		content: data?.article?.description ?? "",
+		editable: false,
+		editorProps: {
+			attributes: {
+				class:
+					"prose prose-zinc dark:prose-invert max-w-none prose-headings:font-bold prose-p:text-zinc-600 dark:prose-p:text-zinc-400 prose-p:leading-relaxed prose-p:text-lg focus:outline-none",
+			},
+		},
+	});
+
+	useEffect(() => {
+		if (!viewer) return;
+		if (data?.article?.description !== undefined) {
+			viewer.commands.setContent(data.article.description);
+		}
+	}, [data?.article?.description, viewer]);
 
 	if (!data) return null;
 
@@ -204,10 +233,7 @@ export function ArticleDetailPage({
 				)}
 
 				<div className="pt-8">
-					<div
-						className="prose prose-zinc dark:prose-invert max-w-none prose-headings:font-bold prose-p:text-zinc-600 dark:prose-p:text-zinc-400 prose-p:leading-relaxed prose-p:text-lg"
-						dangerouslySetInnerHTML={{ __html: article.description }}
-					/>
+					<EditorContent editor={viewer} />
 				</div>
 
 				<Separator className="my-12" />

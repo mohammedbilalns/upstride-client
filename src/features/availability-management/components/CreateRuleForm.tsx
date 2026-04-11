@@ -35,7 +35,7 @@ const DAYS: DayOfWeek[] = [
 
 interface CreateRuleFormProps {
 	defaultValues: AvailabilityFormValues;
-	onSubmit: (data: any) => void;
+	onSubmit: (data: AvailabilityFormValues) => void;
 	isPending: boolean;
 }
 
@@ -155,7 +155,8 @@ export function CreateRuleForm({
 
 			<form.Subscribe
 				selector={(state) => [state.canSubmit, state.isSubmitting]}
-				children={([canSubmit, isSubmitting]) => (
+			>
+				{([canSubmit, isSubmitting]) => (
 					<Button
 						type="submit"
 						className="mt-6 h-11 px-8 w-full md:w-auto"
@@ -164,7 +165,7 @@ export function CreateRuleForm({
 						Submit Rule Configuration
 					</Button>
 				)}
-			/>
+			</form.Subscribe>
 		</form>
 	);
 }

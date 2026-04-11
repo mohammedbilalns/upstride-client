@@ -36,9 +36,9 @@ export function EconomySettingsSubscriptionPlansCard({
 				<form.Field name="subscriptions" mode="array">
 					{(field) => (
 						<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-							{field.state.value.map((_, i) => (
+							{field.state.value.map((plan, i) => (
 								<div
-									key={i}
+									key={plan.type}
 									className="p-4 rounded-xl border border-border/40 bg-muted/5 space-y-4"
 								>
 									<div className="flex items-center justify-between">
@@ -46,7 +46,7 @@ export function EconomySettingsSubscriptionPlansCard({
 											{field.state.value[i].type}
 										</span>
 									</div>
-									<form.Field name={`subscriptions[${i}].coinsCost` as any}>
+									<form.Field name={`subscriptions[${i}].coinsCost`}>
 										{(subField) => (
 											<div className="space-y-2">
 												<Label className="text-xs uppercase font-bold text-muted-foreground">
@@ -56,7 +56,7 @@ export function EconomySettingsSubscriptionPlansCard({
 													type="number"
 													value={subField.state.value ?? ""}
 													onChange={(e) =>
-														(subField.handleChange as any)(
+														subField.handleChange(
 															parseNumberInput(e.target.value),
 														)
 													}

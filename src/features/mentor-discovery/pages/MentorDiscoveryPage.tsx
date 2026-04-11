@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { GraduationCap, Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Route } from "@/routes/_app-layout/_user-layout/mentors/index";
@@ -20,14 +20,17 @@ export function MentorDiscoveryPage() {
 	const [searchInput, setSearchInput] = useState(search.search ?? "");
 	const debouncedSearch = useDebounce(searchInput, 400);
 
-	const updateSearch = (updates: Partial<MentorDiscoverySearch>) => {
-		navigate({
-			search: (prev) => ({
-				...prev,
-				...updates,
-			}),
-		});
-	};
+	const updateSearch = useCallback(
+		(updates: Partial<MentorDiscoverySearch>) => {
+			navigate({
+				search: (prev) => ({
+					...prev,
+					...updates,
+				}),
+			});
+		},
+		[navigate],
+	);
 
 	const clearFilters = () => {
 		navigate({
@@ -45,7 +48,7 @@ export function MentorDiscoveryPage() {
 		if ((search.search ?? "") !== debouncedSearch) {
 			updateSearch({ search: debouncedSearch || undefined });
 		}
-	}, [debouncedSearch, search.search]);
+	}, [debouncedSearch, search.search, updateSearch]);
 
 	const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
 		useInfiniteQuery(
