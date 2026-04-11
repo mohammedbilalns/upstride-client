@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { Calendar, History } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import type { ApiError } from "@/api/apiError";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { useCoinBalance } from "@/features/coin-management/hooks/use-coin-management";
 import { sessionBookingService } from "@/features/session-booking-management";
@@ -18,7 +19,6 @@ import { SessionCard } from "../components/SessionCard";
 import { SessionDetailsDialog } from "../components/SessionDetailsDialog";
 import { SessionFilters } from "../components/SessionFilters";
 import { useUserSessions } from "../hooks/use-sessions";
-import { ApiError } from "@/api/apiError";
 
 // const formatDate = (value: string) => format(new Date(value), "MMM dd, yyyy");
 // const formatTime = (value: string) => format(new Date(value), "hh:mm a");

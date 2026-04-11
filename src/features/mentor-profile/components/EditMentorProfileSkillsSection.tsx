@@ -1,3 +1,5 @@
+import type { Dispatch, SetStateAction } from "react";
+import FieldError from "@/components/common/Field-Error";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -8,8 +10,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import FieldError from "@/components/common/Field-Error";
-import type { Dispatch, SetStateAction } from "react";
 import type {
 	EditMentorProfileForm,
 	PendingSkill,

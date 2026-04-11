@@ -12,10 +12,10 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { ProfileEditView, useProfile } from "@/features/profile-management";
 import { catalogService } from "@/features/catalog-management/services/catalog.service";
 import { mentorProfileService } from "@/features/mentor-profile";
 import { EditMentorProfileModal } from "@/features/mentor-profile/components/EditMentorProfileModal";
+import { ProfileEditView, useProfile } from "@/features/profile-management";
 
 export function ProfileOverviewPage() {
 	const { data: profile, isLoading } = useProfile();

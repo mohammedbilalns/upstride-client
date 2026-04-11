@@ -5,8 +5,8 @@ import {
 } from "@/features/platform-transactions/hooks/use-platform-transactions";
 import { PlatformTransactionsPage } from "@/features/platform-transactions/pages/PlatformTransactionsPage";
 import {
-	PlatformTransactionsSearchSchema,
 	type PlatformTransactionsSearch,
+	PlatformTransactionsSearchSchema,
 } from "@/features/platform-transactions/validators/platform-transactions-params";
 
 export const Route = createFileRoute("/_admin-layout/platform-transactions")({

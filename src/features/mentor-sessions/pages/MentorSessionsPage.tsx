@@ -16,10 +16,10 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { sessionBookingService } from "@/features/session-booking-management";
 import type { BookingDto } from "@/features/session-booking-management/types";
+import { SessionDetailsDialog } from "@/features/sessions/components/SessionDetailsDialog";
 import { Pagination } from "@/features/user-management/components/Pagination";
 import { Route } from "@/routes/_app-layout/_mentor-layout/mentor-sessions";
 import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
-import { SessionDetailsDialog } from "@/features/sessions/components/SessionDetailsDialog";
 import { useMentorSessions } from "../hooks/use-mentor-sessions";
 
 export function MentorSessionsPage() {

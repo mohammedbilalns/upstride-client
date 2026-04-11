@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import type { ApiError } from "@/api/apiError";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { RuleManagementHeader } from "@/features/availability-management/components/RuleManagementHeader";
-import { RuleCreationCard } from "@/features/availability-management/components/RuleCreationCard";
 import { AvailabilityRulesSection } from "@/features/availability-management/components/AvailabilityRulesSection";
+import { RuleCreationCard } from "@/features/availability-management/components/RuleCreationCard";
+import { RuleManagementHeader } from "@/features/availability-management/components/RuleManagementHeader";
 import { availabilityManagementService } from "@/features/availability-management/services/availability-management.service";
 import type {
 	AvailabilityRule,
@@ -13,7 +14,6 @@ import type {
 } from "@/features/availability-management/types";
 import type { AvailabilityFormValues } from "@/features/availability-management/validators/rule.schema";
 import { useProfile } from "@/features/profile-management/hooks/use-profile";
-import { ApiError } from "@/api/apiError";
 
 export function MentorRuleManagementPage() {
 	const { data: profile } = useProfile();

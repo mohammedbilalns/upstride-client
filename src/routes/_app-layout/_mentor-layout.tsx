@@ -1,12 +1,12 @@
+import { useQuery } from "@tanstack/react-query";
 import {
 	createFileRoute,
 	Outlet,
 	redirect,
 	useRouteContext,
 } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { profileQueryOptions } from "@/features/profile-management/hooks/use-profile";
 import { ProfileSidebar } from "@/features/profile-management/components/ProfileSidebar";
+import { profileQueryOptions } from "@/features/profile-management/hooks/use-profile";
 
 export const Route = createFileRoute("/_app-layout/_mentor-layout")({
 	beforeLoad: async ({ context }) => {

@@ -1,6 +1,6 @@
+import { Link } from "@tanstack/react-router";
 import { FileText } from "lucide-react";
 import type { ArticleDto } from "@/features/article/types";
-import { Link } from "@tanstack/react-router";
 
 interface RecommendedArticlesWidgetProps {
 	articles?: ArticleDto[];

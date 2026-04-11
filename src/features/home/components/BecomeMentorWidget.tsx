@@ -1,5 +1,5 @@
-import { GraduationCap, ArrowRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { ArrowRight, GraduationCap } from "lucide-react";
 
 export function BecomeMentorWidget() {
 	return (

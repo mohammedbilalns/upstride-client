@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import CoinBalanceLink from "@/components/common/CoinBalanceLink";
@@ -14,7 +15,6 @@ import { useCoinBalance } from "@/features/coin-management";
 import { useGetUnreadCount } from "@/features/notifications/hooks";
 import { profileQueryOptions } from "@/features/profile-management/hooks/use-profile";
 import { cn } from "@/shared/utils/cn";
-import { useQuery } from "@tanstack/react-query";
 
 export const navLinks = [
 	{ to: "/mentors", label: "Find Mentors" },

@@ -1,5 +1,5 @@
-import { useRouter } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "@tanstack/react-router";
 import { setAuthSession } from "@/features/authentication/utils/set-auth-session";
 import { profileService } from "../services/profile.service";
 import type { UpdateProfileInput } from "../types";

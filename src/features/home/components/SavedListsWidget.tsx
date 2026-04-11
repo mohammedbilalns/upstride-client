@@ -1,6 +1,6 @@
+import { Link } from "@tanstack/react-router";
 import { Folder } from "lucide-react";
 import type { MentorList } from "@/features/mentor-discovery/types";
-import { Link } from "@tanstack/react-router";
 
 interface SavedListsWidgetProps {
 	lists?: MentorList[];

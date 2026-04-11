@@ -25,7 +25,7 @@ export const mentorSkillSchema = z.object({
 	}),
 });
 
-export const registerMentorSchema = z.object({
+export const RegisterMentorSchema = z.object({
 	bio: z.string().trim().min(10, "Bio must be at least 10 characters long"),
 	currentRoleId: z.string().trim().min(1, "Please select your current role"),
 	organization: z.string().trim().min(1, "Organization name is required"),
@@ -60,4 +60,4 @@ export const registerMentorSchema = z.object({
 		),
 });
 
-export const resubmitMentorSchema = registerMentorSchema.partial();
+export const ResubmitMentorSchema = RegisterMentorSchema.partial();

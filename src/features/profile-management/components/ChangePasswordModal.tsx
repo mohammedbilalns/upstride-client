@@ -2,6 +2,7 @@ import { useForm } from "@tanstack/react-form";
 import { KeyRound } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import type { ApiError } from "@/api/apiError";
 import {
 	Dialog,
 	DialogContent,
@@ -22,7 +23,6 @@ import { ChangePasswordChangeStep } from "./ChangePasswordChangeStep";
 import { ChangePasswordRequestStep } from "./ChangePasswordRequestStep";
 import { ChangePasswordSuccessStep } from "./ChangePasswordSuccessStep";
 import { ChangePasswordVerifyStep } from "./ChangePasswordVerifyStep";
-import { ApiError } from "@/api/apiError";
 
 export type ChangePasswordStep = "request" | "verify" | "change" | "success";
 export type RequestForm = ReturnType<typeof useForm>;

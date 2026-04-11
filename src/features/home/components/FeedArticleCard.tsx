@@ -1,14 +1,14 @@
 import { Link } from "@tanstack/react-router";
+import { formatDistanceToNow } from "date-fns";
 import {
-	Heart,
-	MessageSquare,
 	Bookmark,
 	Eye,
+	Heart,
+	MessageSquare,
 	MoreHorizontal,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { ArticleDto } from "@/features/article/types";
-import { formatDistanceToNow } from "date-fns";
 
 interface FeedArticleCardProps {
 	article: ArticleDto;

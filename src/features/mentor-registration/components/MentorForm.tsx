@@ -13,8 +13,8 @@ import type {
 	MentorSkill,
 } from "@/features/mentor-registration/types";
 import {
-	registerMentorSchema,
-	resubmitMentorSchema,
+	RegisterMentorSchema,
+	ResubmitMentorSchema,
 } from "@/features/mentor-registration/validators/mentor-registration.schema";
 import { useOnboardingCatalog } from "@/features/onboarding/hooks/use-catalog";
 import { EducationSection } from "./EducationSection";
@@ -58,8 +58,8 @@ export function MentorForm({ existingProfile, onCancel }: MentorFormProps) {
 		},
 		validators: {
 			onSubmit: (existingProfile
-				? resubmitMentorSchema
-				: registerMentorSchema) as any,
+				? ResubmitMentorSchema
+				: RegisterMentorSchema) as any,
 		},
 		onSubmit: async ({ value }) => {
 			if (existingProfile) {

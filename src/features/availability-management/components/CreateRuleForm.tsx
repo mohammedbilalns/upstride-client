@@ -1,5 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { useMemo } from "react";
+import { Button } from "@/components/ui/button";
 import type {
 	BreakTime,
 	DayOfWeek,
@@ -13,11 +14,10 @@ import {
 	buildFieldErrorsFromIssues,
 } from "@/shared/utils/form-validation";
 import { CreateRuleBasicsFields } from "./CreateRuleBasicsFields";
-import { CreateRuleScheduleFields } from "./CreateRuleScheduleFields";
-import { CreateRuleDaysSelector } from "./CreateRuleDaysSelector";
 import { CreateRuleBreakTimes } from "./CreateRuleBreakTimes";
+import { CreateRuleDaysSelector } from "./CreateRuleDaysSelector";
+import { CreateRuleScheduleFields } from "./CreateRuleScheduleFields";
 import { CreateRuleSlotSettings } from "./CreateRuleSlotSettings";
-import { Button } from "@/components/ui/button";
 
 export type AvailabilityFormApi = ReturnType<
 	typeof useForm<AvailabilityFormValues>
