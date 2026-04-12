@@ -19,7 +19,10 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { formatDateShort } from "@/shared/utils/date";
-import { useBlockAdmin, useUnblockAdmin } from "../hooks/use-admin-actions";
+import {
+	useBlockAdmin,
+	useUnblockAdmin,
+} from "../hooks/admin-management-mutations";
 import type { AdminListItem } from "../types";
 
 interface AdminTableProps {

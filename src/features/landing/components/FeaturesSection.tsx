@@ -30,12 +30,12 @@ export default function FeaturesSection() {
 				{features.map((feature) => (
 					<Card
 						key={feature.title}
-						className="group relative border border-border/60 bg-gradient-to-b from-card to-muted/40 backdrop-blur-sm hover:border-primary/40
+						className="group relative border border-border/60 bg-linear-to-b from-card to-muted/40 backdrop-blur-sm hover:border-primary/40
 							transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1.5
 							rounded-2xl overflow-hidden"
 					>
 						{/* Top accent bar */}
-						<div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+						<div className="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
 						<CardHeader className="pb-2">
 							<div
