@@ -36,6 +36,10 @@ export function AdminTable({ admins }: AdminTableProps) {
 	const [actionType, setActionType] = useState<"block" | "unblock" | null>(
 		null,
 	);
+	const [processing, setProcessing] = useState<{
+		adminId: string;
+		action: "block" | "unblock";
+	} | null>(null);
 
 	const blockMutation = useBlockAdmin();
 	const unblockMutation = useUnblockAdmin();
@@ -45,18 +49,26 @@ export function AdminTable({ admins }: AdminTableProps) {
 
 		const mutation = actionType === "block" ? blockMutation : unblockMutation;
 
-		await mutation.mutateAsync(
-			{ adminId: selectedAdmin.id },
-			{
-				onSuccess: () => {
-					setSelectedAdmin(null);
-					setActionType(null);
+		setProcessing({ adminId: selectedAdmin.id, action: actionType });
+
+		try {
+			await mutation.mutateAsync(
+				{ adminId: selectedAdmin.id },
+				{
+					onSuccess: () => {
+						setSelectedAdmin(null);
+						setActionType(null);
+					},
 				},
-			},
-		);
+			);
+		} finally {
+			setProcessing(null);
+		}
 	};
 
-	const isProcessing = blockMutation.isPending || unblockMutation.isPending;
+	const isProcessing =
+		(processing?.action === "block" && blockMutation.isPending) ||
+		(processing?.action === "unblock" && unblockMutation.isPending);
 
 	return (
 		<div className="bg-card rounded-xl border shadow-sm overflow-hidden">
@@ -136,7 +148,7 @@ export function AdminTable({ admins }: AdminTableProps) {
 												setSelectedAdmin(admin);
 												setActionType("block");
 											}}
-											disabled={isProcessing}
+											disabled={processing?.adminId === admin.id}
 										>
 											<ShieldAlert className="w-4 h-4 mr-2" />
 											Block
@@ -150,7 +162,7 @@ export function AdminTable({ admins }: AdminTableProps) {
 												setSelectedAdmin(admin);
 												setActionType("unblock");
 											}}
-											disabled={isProcessing}
+											disabled={processing?.adminId === admin.id}
 										>
 											<ShieldCheck className="w-4 h-4 mr-2" />
 											Unblock
