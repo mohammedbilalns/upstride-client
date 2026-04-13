@@ -55,7 +55,7 @@ export function AppealDialog({ articleId, onSuccess }: AppealDialogProps) {
 					Submit an Appeal
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="sm:max-w-[500px]">
+			<DialogContent className="sm:max-w-125">
 				<DialogHeader>
 					<DialogTitle>Submit Article Appeal</DialogTitle>
 					<DialogDescription>
@@ -68,7 +68,7 @@ export function AppealDialog({ articleId, onSuccess }: AppealDialogProps) {
 						placeholder="Explain your appeal here..."
 						value={message}
 						onChange={(e) => setMessage(e.target.value)}
-						className="min-h-[150px]"
+						className="min-h-37.5"
 					/>
 					<p className="text-xs text-muted-foreground mt-2">
 						Min 10 characters. Max 1000 characters.

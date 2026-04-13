@@ -77,7 +77,7 @@ export function CommentForm({
 						<Textarea
 							id={field.name}
 							placeholder="Write a comment..."
-							className="min-h-[100px] resize-none focus:ring-primary shadow-sm rounded-xl p-4"
+							className="min-h-25 resize-none focus:ring-primary shadow-sm rounded-xl p-4"
 							value={field.state.value}
 							maxLength={500}
 							onBlur={field.handleBlur}

@@ -52,11 +52,11 @@ export function ArticleImageCropper({
 
 	return (
 		<Dialog open onOpenChange={onCancel}>
-			<DialogContent className="sm:max-w-[600px]">
+			<DialogContent className="sm:max-w-150">
 				<DialogHeader>
 					<DialogTitle>Crop Featured Image</DialogTitle>
 				</DialogHeader>
-				<div className="relative h-[300px] w-full bg-slate-100 overflow-hidden rounded-xl">
+				<div className="relative h-75 w-full bg-slate-100 overflow-hidden rounded-xl">
 					<Cropper
 						image={image}
 						crop={crop}

@@ -5,10 +5,11 @@ import { useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { Button } from "@/components/ui/button";
 import { Route } from "@/routes/_app-layout/_user-layout/mentor/articles/$articleId/update";
-import { ArticleForm, type ArticleFormValues } from "../components/ArticleForm";
+import { ArticleForm } from "../components/ArticleForm";
 import { ArticleNotFound } from "../components/ArticleNotFound";
 import { useUpdateArticleMutation } from "../hooks/mutations";
 import { articleQueries } from "../hooks/queries";
+import type { ArticleFormValues } from "../validators/article-form.schema";
 
 export function UpdateArticlePage() {
 	const navigate = useNavigate({ from: Route.fullPath });

@@ -64,7 +64,7 @@ export function ArticlesPage() {
 
 	return (
 		<div className="relative">
-			<div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-zinc-50 to-transparent dark:from-zinc-950 dark:to-transparent" />
+			<div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-zinc-50 to-transparent dark:from-zinc-950 dark:to-transparent" />
 			<div className="container mx-auto px-4 md:px-6 py-8 flex flex-col min-h-screen gap-6 relative">
 				<div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
 					<div className="flex flex-col gap-1">
@@ -88,7 +88,7 @@ export function ArticlesPage() {
 				</div>
 
 				<div className="flex flex-col lg:flex-row gap-6 flex-1 min-h-0">
-					<aside className="lg:w-[300px] shrink-0">
+					<aside className="lg:w-75 shrink-0">
 						<div className="lg:sticky top-6 space-y-4">
 							<div className="rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-4 space-y-3">
 								<p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">

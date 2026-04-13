@@ -38,6 +38,7 @@ export function ArticleForm({
 	const form = useForm({
 		defaultValues,
 		validators: {
+			//FIX: type error
 			onSubmit: articleSchema,
 		},
 		onSubmit: async ({ value }) => {
@@ -121,7 +122,7 @@ export function ArticleForm({
 					</form.Field>
 				</div>
 
-				<div className="w-full lg:w-[360px] space-y-6">
+				<div className="w-full lg:w-90 space-y-6">
 					<div className="p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950/50 space-y-6">
 						<form.Field name="featuredImageUrl">
 							{(field) => (

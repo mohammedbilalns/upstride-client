@@ -20,6 +20,7 @@ import { CreateRuleScheduleFields } from "./CreateRuleScheduleFields";
 import { CreateRuleSlotSettings } from "./CreateRuleSlotSettings";
 
 export type AvailabilityFormApi = ReturnType<
+	//FIX: type error
 	typeof useForm<AvailabilityFormValues>
 >;
 

@@ -12,6 +12,7 @@ export function CreateRuleSlotSettings({ form }: CreateRuleSlotSettingsProps) {
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
 			<form.Field name="slotDuration">
+				{/* FIX: Type error */}
 				{(field) => (
 					<div className="space-y-3">
 						<Label>Slot Duration (minutes)</Label>
@@ -44,6 +45,7 @@ export function CreateRuleSlotSettings({ form }: CreateRuleSlotSettingsProps) {
 				)}
 			</form.Field>
 			<form.Field name="bufferTime">
+				{/* FIX: type error  */}
 				{(field) => (
 					<div className="space-y-2">
 						<Label htmlFor={field.name}>Buffer Between Sessions (min)</Label>

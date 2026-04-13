@@ -17,6 +17,7 @@ export function CreateRuleDaysSelector({
 }: CreateRuleDaysSelectorProps) {
 	return (
 		<form.Field name="days">
+			{/* FIX: type error */}
 			{(field) => (
 				<div className="space-y-3">
 					<Label>Active Days</Label>

@@ -12,7 +12,7 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import { useBlockUser } from "@/features/user-management/hooks/use-user-actions";
+import { useBlockUser } from "@/features/user-management/hooks/user-management-mutations";
 import {
 	useBlockArticle,
 	useResolveReport,

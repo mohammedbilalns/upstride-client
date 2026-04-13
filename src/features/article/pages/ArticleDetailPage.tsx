@@ -222,7 +222,7 @@ export function ArticleDetailPage({
 				</div>
 
 				{article.featuredImageUrl && (
-					<div className="relative aspect-[21/9] overflow-hidden rounded-3xl shadow-2xl">
+					<div className="relative aspect-21/9 overflow-hidden rounded-3xl shadow-2xl">
 						<ProgressiveImage
 							src={article.featuredImageUrl}
 							alt={article.title}

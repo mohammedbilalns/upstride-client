@@ -12,10 +12,7 @@ import type {
 
 export const AdminManagementService = {
 	getAdmins: async (params: GetAdminsInput): Promise<GetAdminsResponse> => {
-		const response = await api.get<{
-			message: string;
-			data: GetAdminsResponse;
-		}>(
+		const response = await api.get(
 			`${ROUTES.ADMIN_MANAGEMENT.BASE}${ROUTES.ADMIN_MANAGEMENT.FETCH_ADMINS}`,
 			{
 				params,

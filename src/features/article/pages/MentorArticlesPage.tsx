@@ -51,7 +51,7 @@ export function MentorArticlesPage() {
 					</div>
 				</div>
 				<div className="flex flex-wrap items-center gap-3">
-					<div className="min-w-[160px]">
+					<div className="min-w-40">
 						<Select
 							value={status}
 							onValueChange={(value) =>

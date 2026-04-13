@@ -24,6 +24,7 @@ export function CreateRuleScheduleFields({
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
 			<form.Field name="startDate">
+				{/* FIX: type error  */}
 				{(field) => (
 					<div className="space-y-2">
 						<Label htmlFor={field.name}>Start Date</Label>
@@ -146,6 +147,7 @@ export function CreateRuleScheduleFields({
 				)}
 			</form.Field>
 			<form.Field name="endTime">
+				{/* FIX: type error */}
 				{(field) => (
 					<div className="space-y-2">
 						<Label htmlFor={field.name}>Daily End Time</Label>

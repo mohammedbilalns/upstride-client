@@ -36,6 +36,7 @@ export function CreateRuleBreakTimes({
 					<Plus className="h-4 w-4 mr-2" /> Add Break
 				</Button>
 			</div>
+			{/* FIX: type error  */}
 			<form.Subscribe selector={(state) => state.values.breakTimes}>
 				{(breakTimes) =>
 					!breakTimes?.length ? (

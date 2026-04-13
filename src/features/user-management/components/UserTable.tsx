@@ -19,7 +19,10 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { formatDateShort } from "@/shared/utils/date";
-import { useBlockUser, useUnblockUser } from "../hooks/use-user-actions";
+import {
+	useBlockUser,
+	useUnblockUser,
+} from "../hooks/user-management-mutations";
 import type { UserListItem } from "../types";
 
 interface UserTableProps {

@@ -161,7 +161,7 @@ export function CommentItem({
 						) : (
 							<p
 								className={cn(
-									"text-[15px] leading-relaxed whitespace-pre-wrap break-words",
+									"text-[15px] leading-relaxed whitespace-pre-wrap wrap-break-word",
 									comment.isActive
 										? "text-zinc-700 dark:text-zinc-300"
 										: "text-zinc-500 italic",

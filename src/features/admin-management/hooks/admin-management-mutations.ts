@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import type { ApiError } from "@/api/apiError";
 import { updateQueryCache } from "@/shared/utils/update-query-cache";
 import { AdminManagementService } from "../services/admin-management.service";
 import type { GetAdminsResponse } from "../types";
@@ -40,7 +41,7 @@ export function useBlockAdmin() {
 				updateAdminStatus(oldData, variables.adminId, "blocked"),
 			);
 		},
-		onError: (error: Error) => {
+		onError: (error: ApiError) => {
 			toast.error(error.message ?? "Failed to block admin");
 		},
 	});

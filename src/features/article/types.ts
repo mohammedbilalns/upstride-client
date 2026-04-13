@@ -1,6 +1,6 @@
-export type ArticleReactionType = "LIKE";
+type ArticleReactionType = "LIKE";
 
-export interface ArticleAuthorSnapshot {
+interface ArticleAuthorSnapshot {
 	name: string;
 	avatarUrl?: string;
 	isBlocked?: boolean;

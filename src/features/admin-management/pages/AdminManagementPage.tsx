@@ -111,7 +111,7 @@ export function AdminManagementPage() {
 							value={searchParams.status || "all"}
 							onValueChange={(v) => handleStatusChange(parseStatusValue(v))}
 						>
-							<SelectTrigger className="w-[140px] h-10">
+							<SelectTrigger className="w-35 h-10">
 								<SelectValue placeholder="All Status" />
 							</SelectTrigger>
 							<SelectContent>
@@ -130,7 +130,7 @@ export function AdminManagementPage() {
 							value={searchParams.sort || "recent"}
 							onValueChange={(v) => handleSortChange(parseSortValue(v))}
 						>
-							<SelectTrigger className="w-[140px] h-10">
+							<SelectTrigger className="w-35 h-10">
 								<SelectValue placeholder="Sort By" />
 							</SelectTrigger>
 							<SelectContent>

@@ -32,7 +32,7 @@ export function AvailabilityRuleCard({
 						<CardTitle className="text-base line-clamp-1">
 							{rule.name}
 						</CardTitle>
-						<p className="text-xs text-muted-foreground mt-1 line-clamp-2 min-h-[32px]">
+						<p className="text-xs text-muted-foreground mt-1 line-clamp-2 min-h-8">
 							{rule.description || "No description provided."}
 						</p>
 					</div>
