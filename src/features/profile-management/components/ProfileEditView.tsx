@@ -79,7 +79,7 @@ export function ProfileEditView({ profile, onCancel }: Props) {
 			form.setFieldValue("profilePictureId", key);
 			setPreviewUrl(URL.createObjectURL(croppedBlob));
 			toast.success("Profile picture cropped and uploaded");
-		} catch (error) {
+		} catch (_error) {
 			toast.error("Failed to upload image");
 		} finally {
 			setIsUploading(false);

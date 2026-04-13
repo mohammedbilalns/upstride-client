@@ -16,6 +16,8 @@ interface PaymentTransactionsTableProps {
 	data?: GetPaymentTransactionsResponse;
 	onPageChange: (page: number) => void;
 	onLimitChange: (limit: number) => void;
+	showCoins?: boolean;
+	sessionDebitLabel?: string;
 }
 
 export function PaymentTransactionsTable({
@@ -23,6 +25,8 @@ export function PaymentTransactionsTable({
 	data,
 	onPageChange,
 	onLimitChange,
+	showCoins = true,
+	sessionDebitLabel = "Session refund",
 }: PaymentTransactionsTableProps) {
 	return (
 		<Card className="bg-card rounded-xl border shadow-sm overflow-hidden">
@@ -42,12 +46,20 @@ export function PaymentTransactionsTable({
 									<TableHead className="w-[28%] py-2 pl-3 md:pl-5 text-xs">
 										Date
 									</TableHead>
-									<TableHead className="w-[14%] py-2 text-xs">Coins</TableHead>
 									<TableHead className="w-[14%] py-2 text-xs">
+										Purpose
+									</TableHead>
+									{showCoins && (
+										<TableHead className="w-[12%] py-2 text-xs">
+											Coins
+										</TableHead>
+									)}
+									<TableHead className="w-[12%] py-2 text-xs">
 										Direction
 									</TableHead>
-									<TableHead className="w-[16%] py-2 text-xs">Amount</TableHead>
-									<TableHead className="hidden md:table-cell w-[28%] py-2 pr-4 md:pr-5 text-xs">
+									<TableHead className="w-[12%] py-2 text-xs">Method</TableHead>
+									<TableHead className="w-[14%] py-2 text-xs">Amount</TableHead>
+									<TableHead className="hidden md:table-cell w-[24%] py-2 pr-4 md:pr-5 text-xs">
 										Reference
 									</TableHead>
 								</TableRow>
@@ -62,8 +74,19 @@ export function PaymentTransactionsTable({
 											{new Date(item.createdAt).toLocaleString()}
 										</TableCell>
 										<TableCell className="text-xs py-2">
-											{item.coinsGranted}
+											<Badge variant="outline" className="text-[10px]">
+												{item.purpose === "session"
+													? item.direction === "debit"
+														? sessionDebitLabel
+														: "Session spend"
+													: "Coin purchase"}
+											</Badge>
 										</TableCell>
+										{showCoins && (
+											<TableCell className="text-xs py-2">
+												{item.coinsGranted}
+											</TableCell>
+										)}
 										<TableCell className="text-xs py-2">
 											<Badge
 												variant="outline"
@@ -74,6 +97,11 @@ export function PaymentTransactionsTable({
 												}
 											>
 												{item.direction}
+											</Badge>
+										</TableCell>
+										<TableCell className="text-xs py-2">
+											<Badge variant="secondary" className="text-[10px]">
+												{item.paymentType === "STRIPE" ? "Stripe" : "Coins"}
 											</Badge>
 										</TableCell>
 										<TableCell className="text-xs py-2">

@@ -1,12 +1,13 @@
-type IssueLike = { path: Array<string | number>; message: string };
+type IssueLike = { path: Array<string | number | symbol>; message: string };
 
-export const pathToKey = (path: Array<string | number>) =>
-	path.reduce((acc, segment) => {
+export const pathToKey = (path: Array<string | number | symbol>): string =>
+	path.reduce((acc: string, segment) => {
+		const segmentStr = String(segment);
 		if (typeof segment === "number") {
-			return `${acc}[${segment}]`;
+			return `${acc}[${segmentStr}]`;
 		}
-		if (!acc) return segment;
-		return `${acc}.${segment}`;
+		if (!acc) return segmentStr;
+		return `${acc}.${segmentStr}`;
 	}, "");
 
 export const buildFieldErrorsFromIssues = (issues: IssueLike[]) => {
@@ -50,6 +51,10 @@ export const buildEmptyStringErrors = (
 };
 
 export const getErrorMessage = (error: unknown): string | undefined => {
+	if (Array.isArray(error)) {
+		const first = error[0] as { message?: string } | undefined;
+		return first?.message || first?.toString() || undefined;
+	}
 	if (typeof error === "string") return error;
 	if (error && typeof error === "object" && "message" in error) {
 		const message = (error as { message?: unknown }).message;
@@ -57,3 +62,6 @@ export const getErrorMessage = (error: unknown): string | undefined => {
 	}
 	return undefined;
 };
+
+export const parseNumberInput = (value: string): number | "" =>
+	value === "" ? "" : Number(value);

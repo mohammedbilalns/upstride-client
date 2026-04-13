@@ -5,6 +5,8 @@ interface PendingComponentProps {
 }
 
 export default function PendingComponent({ resource }: PendingComponentProps) {
+	const loadingLabel = resource ? `Loading ${resource}...` : "Loading...";
+
 	return (
 		<div className="fixed inset-0 z-9999 flex flex-col justify-center items-center bg-background/80 backdrop-blur-md">
 			<div className="relative flex flex-col items-center gap-6">
@@ -17,7 +19,7 @@ export default function PendingComponent({ resource }: PendingComponentProps) {
 				{/*  Dynamic Text */}
 				<div className="flex flex-col items-center gap-2">
 					<span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] animate-pulse">
-						{resource ? `Loading ${resource}...` : "Loading..."}
+						{loadingLabel}
 					</span>
 
 					{/* Progress Dots */}

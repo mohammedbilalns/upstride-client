@@ -1,16 +1,17 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { Loader2, Plus, Search, Newspaper } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Loader2, Newspaper, Plus, Search } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getMentorCategoriesQueryOptions } from "@/features/mentor-discovery/hooks/queries";
+import { Route } from "@/routes/_app-layout/_user-layout/articles/index";
 import { useDebounce } from "@/shared/hooks/use-debounce";
 import { ArticleCard } from "../components/ArticleCard";
 import { ArticleFilters } from "../components/ArticleFilters";
 import { articleQueries } from "../hooks/queries";
-import { getMentorCategoriesQueryOptions } from "@/features/mentor-discovery/hooks/queries";
-import { Route } from "@/routes/_app-layout/_user-layout/articles/index";
 import type { ArticleDto } from "../types";
+import type { ArticleSearch } from "../validators/article-search-params";
 
 export function ArticlesPage() {
 	const navigate = useNavigate({ from: Route.fullPath });
@@ -21,20 +22,28 @@ export function ArticlesPage() {
 	const { auth } = Route.useRouteContext();
 	const isMentor = auth.user?.role === "MENTOR";
 
-	const updateSearch = (updates: any) => {
-		navigate({
-			search: (prev: any) => ({
-				...prev,
-				...updates,
-			}),
-		});
-	};
+	const updateSearch = useCallback(
+		(updates: Partial<ArticleSearch>) => {
+			navigate({
+				search: (prev: ArticleSearch) => ({
+					...prev,
+					...updates,
+				}),
+			});
+		},
+		[navigate],
+	);
+
+	const skeletonKeys = useMemo(
+		() => Array.from({ length: 9 }, (_unused, index) => `skeleton-${index}`),
+		[],
+	);
 
 	useEffect(() => {
 		if ((search.search ?? "") !== debouncedSearch) {
 			updateSearch({ search: debouncedSearch || undefined });
 		}
-	}, [debouncedSearch]);
+	}, [debouncedSearch, search.search, updateSearch]);
 
 	const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
 		useInfiniteQuery(
@@ -55,7 +64,7 @@ export function ArticlesPage() {
 
 	return (
 		<div className="relative">
-			<div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-zinc-50 to-transparent dark:from-zinc-950 dark:to-transparent" />
+			<div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-zinc-50 to-transparent dark:from-zinc-950 dark:to-transparent" />
 			<div className="container mx-auto px-4 md:px-6 py-8 flex flex-col min-h-screen gap-6 relative">
 				<div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
 					<div className="flex flex-col gap-1">
@@ -79,7 +88,7 @@ export function ArticlesPage() {
 				</div>
 
 				<div className="flex flex-col lg:flex-row gap-6 flex-1 min-h-0">
-					<aside className="lg:w-[300px] shrink-0">
+					<aside className="lg:w-75 shrink-0">
 						<div className="lg:sticky top-6 space-y-4">
 							<div className="rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-4 space-y-3">
 								<p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">
@@ -106,7 +115,6 @@ export function ArticlesPage() {
 								onClear={() =>
 									navigate({
 										search: {
-											page: 1,
 											search: undefined,
 											skill: undefined,
 											category: undefined,
@@ -142,9 +150,9 @@ export function ArticlesPage() {
 						<div className="mt-4 min-w-0 min-h-0 space-y-6">
 							{isLoading && (
 								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5">
-									{Array.from({ length: 9 }).map((_, i) => (
+									{skeletonKeys.map((key) => (
 										<div
-											key={i}
+											key={key}
 											className="h-72 rounded-2xl bg-zinc-100 dark:bg-zinc-900 animate-pulse"
 										/>
 									))}

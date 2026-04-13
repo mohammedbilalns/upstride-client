@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { format } from "date-fns";
-import { Calendar, Clock } from "lucide-react";
+import { Calendar, Clock, Coins, CreditCard, XCircle } from "lucide-react";
 import { useMemo, useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { Badge } from "@/components/ui/badge";
@@ -16,13 +15,12 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { sessionBookingService } from "@/features/session-booking-management";
-import type { BookingListItem } from "@/features/session-booking-management/types";
+import type { BookingDto } from "@/features/session-booking-management/types";
+import { SessionDetailsDialog } from "@/features/sessions/components/SessionDetailsDialog";
 import { Pagination } from "@/features/user-management/components/Pagination";
 import { Route } from "@/routes/_app-layout/_mentor-layout/mentor-sessions";
+import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
 import { useMentorSessions } from "../hooks/use-mentor-sessions";
-
-const formatDate = (value: string) => format(new Date(value), "MMM dd, yyyy");
-const formatTime = (value: string) => format(new Date(value), "hh:mm a");
 
 export function MentorSessionsPage() {
 	const navigate = useNavigate({ from: Route.fullPath });
@@ -30,6 +28,9 @@ export function MentorSessionsPage() {
 	const search = Route.useSearch();
 	const [pendingCancelId, setPendingCancelId] = useState<string | null>(null);
 	const [cancelReason, setCancelReason] = useState("");
+	const [selectedBooking, setSelectedBooking] = useState<BookingDto | null>(
+		null,
+	);
 
 	const params = useMemo(
 		() => ({
@@ -63,7 +64,7 @@ export function MentorSessionsPage() {
 
 	const handlePageChange = (page: number) => {
 		navigate({
-			search: (prev: any) => ({
+			search: (prev) => ({
 				...prev,
 				page,
 			}),
@@ -72,7 +73,7 @@ export function MentorSessionsPage() {
 
 	const handleLimitChange = (limit: number) => {
 		navigate({
-			search: (prev: any) => ({
+			search: (prev) => ({
 				...prev,
 				limit,
 				page: 1,
@@ -82,9 +83,9 @@ export function MentorSessionsPage() {
 
 	const handleFilterChange = (value: string) => {
 		navigate({
-			search: (prev: any) => ({
+			search: (prev) => ({
 				...prev,
-				filter: value as "upcoming" | "cancelled",
+				filter: value as "upcoming" | "past" | "cancelled",
 				page: 1,
 			}),
 		});
@@ -94,7 +95,7 @@ export function MentorSessionsPage() {
 		<div className="p-4 md:p-6 space-y-6 max-w-[90rem] mx-auto animate-in fade-in duration-500">
 			<Card className="border-border/60 shadow-sm">
 				<CardHeader className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-					<CardTitle className="text-2xl">Upcoming Sessions</CardTitle>
+					<CardTitle className="text-2xl">Mentoring Sessions</CardTitle>
 					<div className="flex items-center gap-3">
 						<span className="text-sm text-muted-foreground">Show</span>
 						<Select value={search.filter} onValueChange={handleFilterChange}>
@@ -103,6 +104,7 @@ export function MentorSessionsPage() {
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem value="upcoming">Upcoming</SelectItem>
+								<SelectItem value="past">Past</SelectItem>
 								<SelectItem value="cancelled">Cancelled</SelectItem>
 							</SelectContent>
 						</Select>
@@ -110,19 +112,17 @@ export function MentorSessionsPage() {
 				</CardHeader>
 				<CardContent className="space-y-2">
 					<p className="text-sm text-muted-foreground">
-						Sessions booked by other users or mentors.
+						Sessions booked by mentees for your guidance.
 					</p>
 				</CardContent>
 				<CardContent className="space-y-4">
 					{isLoading && (
-						<p className="text-sm text-muted-foreground">
-							Loading upcoming sessions...
-						</p>
+						<p className="text-sm text-muted-foreground">Loading sessions...</p>
 					)}
 
 					{!isLoading && sessions.length === 0 && (
 						<div className="border border-dashed border-border/60 rounded-xl p-8 text-center text-sm text-muted-foreground">
-							No upcoming sessions found.
+							No sessions found for this filter.
 						</div>
 					)}
 
@@ -133,12 +133,13 @@ export function MentorSessionsPage() {
 								booking={session}
 								showCancel={search.filter === "upcoming"}
 								onCancel={() => setPendingCancelId(session.id)}
+								onViewDetails={() => setSelectedBooking(session)}
 								isCancelling={cancelMutation.isPending}
 							/>
 						))}
 					</div>
 
-					{data?.data && (
+					{data?.data && data.data.totalPages > 1 && (
 						<Pagination
 							currentPage={data.data.page}
 							totalPages={data.data.totalPages}
@@ -162,20 +163,33 @@ export function MentorSessionsPage() {
 					}
 				}}
 				title="Cancel session"
-				message="Cancelling this session will refund the user fully."
+				message="Confirm cancellation for this mentoring session."
 				confirmText="Confirm Cancel"
 				variant="destructive"
 				isLoading={cancelMutation.isPending}
 			>
 				<div className="mt-4 space-y-2">
-					<label className="text-sm font-medium">Cancellation reason</label>
+					<label htmlFor="mentor-cancel-reason" className="text-sm font-medium">
+						Cancellation reason
+					</label>
 					<Textarea
+						id="mentor-cancel-reason"
 						value={cancelReason}
 						onChange={(e) => setCancelReason(e.target.value)}
-						placeholder="Share a short reason..."
+						placeholder="Share why you're cancelling..."
+						className="min-h-[100px] resize-none"
 					/>
 				</div>
 			</ConfirmModal>
+			<SessionDetailsDialog
+				isOpen={Boolean(selectedBooking)}
+				onClose={(open) => {
+					if (!open) setSelectedBooking(null);
+				}}
+				selectedBooking={selectedBooking}
+				personLabel="Mentee"
+				personName={selectedBooking?.menteeName}
+			/>
 		</div>
 	);
 }
@@ -184,51 +198,71 @@ function MentorSessionCard({
 	booking,
 	showCancel,
 	onCancel,
+	onViewDetails,
 	isCancelling,
 }: {
-	booking: BookingListItem;
+	booking: BookingDto;
 	showCancel: boolean;
 	onCancel: () => void;
+	onViewDetails: () => void;
 	isCancelling: boolean;
 }) {
+	const isCancelled = booking.status.startsWith("CANCELLED");
 	const canCancel =
-		showCancel &&
-		(booking.status === "confirmed" || booking.status === "pending");
+		showCancel && !isCancelled && booking.status !== "COMPLETED";
 
 	return (
-		<div className="flex flex-col gap-3 rounded-xl border border-border/60 bg-card/40 p-4 sm:flex-row sm:items-center sm:justify-between">
-			<div className="space-y-2">
-				<div className="flex items-center gap-2 text-sm font-semibold">
-					<Calendar className="h-4 w-4 text-primary" />
-					{formatDate(booking.startTime)}
+		<div className="flex flex-col gap-3 rounded-xl border border-border/60 bg-card/40 p-4 sm:flex-row sm:items-center sm:justify-between hover:border-border transition-colors">
+			<div className="space-y-2 flex-1">
+				<div className="flex items-center gap-3">
+					<div className="flex items-center gap-2 text-sm font-semibold">
+						<Calendar className="h-4 w-4 text-primary" />
+						{formatDateShort(booking.startTime)}
+					</div>
+					{isCancelled && <Badge variant="destructive">Cancelled</Badge>}
+					{booking.status === "PENDING" && (
+						<Badge variant="secondary">Payment Pending</Badge>
+					)}
 				</div>
-				<div className="flex items-center gap-2 text-sm text-muted-foreground">
-					<Clock className="h-4 w-4" />
-					{formatTime(booking.startTime)} - {formatTime(booking.endTime)}
-				</div>
-				<div className="text-xs text-muted-foreground">
-					Price: {booking.price} coins
+				<div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+					<div className="flex items-center gap-2">
+						<Clock className="h-4 w-4" />
+						{formatTimeShort(booking.startTime)} -{" "}
+						{formatTimeShort(booking.endTime)}
+					</div>
+					<div className="flex items-center gap-1.5 bg-zinc-100 dark:bg-zinc-800/50 px-2 py-0.5 rounded text-xs">
+						{booking.paymentType === "COINS" ? (
+							<Coins className="h-3 w-3 text-amber-500" />
+						) : (
+							<CreditCard className="h-3 w-3 text-blue-500" />
+						)}
+						{booking.totalAmount} {booking.currency.toUpperCase()}
+					</div>
 				</div>
 			</div>
 			<div className="flex items-center gap-3">
-				{booking.status === "cancelled" && (
-					<Badge variant="destructive">Cancelled</Badge>
-				)}
-				{booking.status === "cancelled" && booking.cancellationReason && (
-					<div className="text-xs text-muted-foreground">
-						Cancelled by {booking.cancelledBy ?? "mentor"}:{" "}
-						<span className="text-foreground">
-							{booking.cancellationReason}
-						</span>
+				{isCancelled && booking.notes && (
+					<div className="text-xs text-muted-foreground italic max-w-[200px] truncate">
+						"{booking.notes}"
 					</div>
 				)}
+				<Button
+					variant="ghost"
+					size="sm"
+					onClick={onViewDetails}
+					className="text-xs"
+				>
+					View details
+				</Button>
 				{canCancel && (
 					<Button
 						variant="outline"
 						size="sm"
 						onClick={onCancel}
 						disabled={isCancelling}
+						className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 border-rose-100 dark:border-rose-900/30"
 					>
+						<XCircle className="h-4 w-4 mr-2" />
 						Cancel
 					</Button>
 				)}

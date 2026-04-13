@@ -5,18 +5,15 @@ import type {
 	BookSessionResponse,
 	CancelBookingInput,
 	CancelBookingResponse,
+	GetBookingDetailsResponse,
 	GetBookingsInput,
 	GetBookingsResponse,
-	HandleRescheduleInput,
-	HandleRescheduleResponse,
-	RequestRescheduleInput,
-	RequestRescheduleResponse,
 } from "../types";
 
 export const sessionBookingService = {
 	bookSession: async (data: BookSessionInput): Promise<BookSessionResponse> => {
 		const response = await api.post<BookSessionResponse>(
-			`${ROUTES.SESSION_BOOKINGS.BASE}${ROUTES.SESSION_BOOKINGS.BOOK}`,
+			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.ROOT}`,
 			data,
 		);
 		return response.data;
@@ -25,10 +22,8 @@ export const sessionBookingService = {
 	cancelBooking: async (
 		data: CancelBookingInput,
 	): Promise<CancelBookingResponse> => {
-		const response = await api.patch<CancelBookingResponse>(
-			`${ROUTES.SESSION_BOOKINGS.BASE}${ROUTES.SESSION_BOOKINGS.CANCEL(
-				data.bookingId,
-			)}`,
+		const response = await api.put<CancelBookingResponse>(
+			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.CANCEL(data.bookingId)}`,
 			{ reason: data.reason },
 		);
 		return response.data;
@@ -37,34 +32,9 @@ export const sessionBookingService = {
 	cancelBookingByMentor: async (
 		data: CancelBookingInput,
 	): Promise<CancelBookingResponse> => {
-		const response = await api.patch<CancelBookingResponse>(
-			`${ROUTES.SESSION_BOOKINGS.BASE}${ROUTES.SESSION_BOOKINGS.MENTOR_CANCEL(
-				data.bookingId,
-			)}`,
+		const response = await api.put<CancelBookingResponse>(
+			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.MENTOR_CANCEL(data.bookingId)}`,
 			{ reason: data.reason },
-		);
-		return response.data;
-	},
-
-	requestReschedule: async (
-		data: RequestRescheduleInput,
-	): Promise<RequestRescheduleResponse> => {
-		const response = await api.patch<RequestRescheduleResponse>(
-			`${ROUTES.SESSION_BOOKINGS.BASE}${ROUTES.SESSION_BOOKINGS.REQUEST_RESCHEDULE(
-				data.bookingId,
-			)}`,
-		);
-		return response.data;
-	},
-
-	handleReschedule: async (
-		data: HandleRescheduleInput,
-	): Promise<HandleRescheduleResponse> => {
-		const response = await api.patch<HandleRescheduleResponse>(
-			`${ROUTES.SESSION_BOOKINGS.BASE}${ROUTES.SESSION_BOOKINGS.HANDLE_RESCHEDULE(
-				data.bookingId,
-			)}`,
-			{ newSlotId: data.newSlotId },
 		);
 		return response.data;
 	},
@@ -73,7 +43,7 @@ export const sessionBookingService = {
 		params: GetBookingsInput = {},
 	): Promise<GetBookingsResponse> => {
 		const response = await api.get<GetBookingsResponse>(
-			`${ROUTES.SESSION_BOOKINGS.BASE}${ROUTES.SESSION_BOOKINGS.USER}`,
+			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.USER}`,
 			{ params },
 		);
 		return response.data;
@@ -83,8 +53,22 @@ export const sessionBookingService = {
 		params: GetBookingsInput = {},
 	): Promise<GetBookingsResponse> => {
 		const response = await api.get<GetBookingsResponse>(
-			`${ROUTES.SESSION_BOOKINGS.BASE}${ROUTES.SESSION_BOOKINGS.MENTOR}`,
+			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.MENTOR}`,
 			{ params },
+		);
+		return response.data;
+	},
+	getBookingDetails: async (
+		bookingId: string,
+	): Promise<GetBookingDetailsResponse> => {
+		const response = await api.get<GetBookingDetailsResponse>(
+			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.BY_ID(bookingId)}`,
+		);
+		return response.data;
+	},
+	repayBooking: async (bookingId: string): Promise<BookSessionResponse> => {
+		const response = await api.post<BookSessionResponse>(
+			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.REPAY(bookingId)}`,
 		);
 		return response.data;
 	},

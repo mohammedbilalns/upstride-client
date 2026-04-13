@@ -13,6 +13,7 @@ import type {
 	GetArticlesResponse,
 	GetCommentsInput,
 	GetCommentsResponse,
+	GetMentorArticlesInput,
 	GetTopTagsResponse,
 	ReactToArticleInput,
 	ReactToArticleResponse,
@@ -20,11 +21,11 @@ import type {
 	ReactToCommentResponse,
 	ReportInput,
 	ReportResponse,
+	SubmitAppealInput,
 	UpdateArticleInput,
 	UpdateArticleResponse,
 	UpdateCommentInput,
 	UpdateCommentResponse,
-	SubmitAppealInput,
 } from "../types";
 
 export const articleService = {
@@ -47,6 +48,7 @@ export const articleService = {
 	getMentorArticles: async (params: {
 		page: number;
 		search?: string;
+		status?: GetMentorArticlesInput["status"];
 	}): Promise<GetArticlesResponse> => {
 		const response = await api.get<{ data: GetArticlesResponse }>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.MENTOR}`,

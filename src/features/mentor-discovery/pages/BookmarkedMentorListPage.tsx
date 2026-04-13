@@ -1,22 +1,52 @@
-import { Link, useParams } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { ArrowLeft, Bookmark } from "lucide-react";
 import { useMemo, useState } from "react";
+import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { Button } from "@/components/ui/button";
 import { BookmarkMentorCard } from "../components/BookmarkMentorCard";
-import { useMentorList } from "../hooks/use-mentor-lists";
+import { useDeleteMentorList } from "../hooks/use-mentor-list-mutations";
+import { mentorListKeys, useMentorList } from "../hooks/use-mentor-lists";
+import type { GetMentorListsResponse } from "../types";
 
 export function BookmarkedMentorListPage() {
 	const { listId } = useParams({
 		from: "/_app-layout/_user-layout/profile/bookmarked-mentors/$listId",
 	});
+	const navigate = useNavigate();
 	const { data, isLoading } = useMentorList(listId);
 	const list = data?.list;
 	const [removedMentorIds, setRemovedMentorIds] = useState<string[]>([]);
+	const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+	const deleteList = useDeleteMentorList();
+	const queryClient = useQueryClient();
 	const mentors = useMemo(() => {
 		const items = list?.mentors ?? [];
 		if (removedMentorIds.length === 0) return items;
 		return items.filter((mentor) => !removedMentorIds.includes(mentor.id));
 	}, [list?.mentors, removedMentorIds]);
+
+	const handleDelete = () => {
+		deleteList.mutate(
+			{ listId },
+			{
+				onSuccess: () => {
+					queryClient.setQueryData<GetMentorListsResponse>(
+						mentorListKeys.lists(),
+						(prev) => {
+							if (!prev) return prev;
+							return {
+								...prev,
+								items: prev.items.filter((item) => item.id !== listId),
+							};
+						},
+					);
+					queryClient.removeQueries({ queryKey: mentorListKeys.list(listId) });
+					navigate({ to: "/profile/bookmarked-mentors" });
+				},
+			},
+		);
+	};
 
 	return (
 		<div className="container mx-auto px-6 py-8 space-y-6">
@@ -44,9 +74,20 @@ export function BookmarkedMentorListPage() {
 						)}
 					</div>
 				</div>
-				<Button asChild variant="outline">
-					<Link to="/mentors">Find more mentors</Link>
-				</Button>
+				<div className="flex items-center gap-2">
+					<Button
+						variant="outline"
+						onClick={() => setIsDeleteOpen(true)}
+						disabled={deleteList.isPending}
+					>
+						Delete list
+					</Button>
+					<Button asChild variant="outline">
+						<Link to="/mentors" search={{ sort: "rating" }}>
+							Find more mentors
+						</Link>
+					</Button>
+				</div>
 			</div>
 
 			{isLoading && (
@@ -89,6 +130,17 @@ export function BookmarkedMentorListPage() {
 					))}
 				</div>
 			)}
+
+			<ConfirmModal
+				isOpen={isDeleteOpen}
+				onClose={() => setIsDeleteOpen(false)}
+				onConfirm={handleDelete}
+				title="Delete Mentor List"
+				message="Are you sure you want to delete this mentor list? This cannot be undone."
+				variant="destructive"
+				isLoading={deleteList.isPending}
+				confirmText="Delete"
+			/>
 		</div>
 	);
 }

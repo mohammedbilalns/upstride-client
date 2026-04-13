@@ -1,6 +1,8 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, ShieldAlert } from "lucide-react";
 import { useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
+import { Label } from "@/components/ui/label";
 import {
 	Table,
 	TableBody,
@@ -9,16 +11,15 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { useBlockUser } from "@/features/user-management/hooks/use-user-actions";
-import { useQueryClient } from "@tanstack/react-query";
+import { Textarea } from "@/components/ui/textarea";
+import { useBlockUser } from "@/features/user-management/hooks/user-management-mutations";
 import {
 	useBlockArticle,
 	useResolveReport,
 	useUnblockArticle,
 } from "../hooks/use-report-actions";
+import { ReportManagementService } from "../services/report-management.service";
 import type { ReportDto } from "../types";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { ReportTableRow } from "./ReportTableRow";
 
 interface ReportTableProps {
@@ -102,7 +103,12 @@ export function ReportTable({ reports }: ReportTableProps) {
 		await blockUserMutation.mutateAsync(
 			{ userId: selectedReport.targetId },
 			{
-				onSuccess: () => {
+				onSuccess: async () => {
+					await ReportManagementService.updateReportStatus({
+						reportId: targetReportId,
+						status: "RESOLVED",
+						actionTaken: "Blocked user",
+					});
 					queryClient.invalidateQueries({ queryKey: ["reports"] });
 					setSelectedReport(null);
 					setActionType(null);

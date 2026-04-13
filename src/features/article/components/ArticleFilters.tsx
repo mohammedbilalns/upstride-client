@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+import { useId } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +29,8 @@ export function ArticleFilters({
 	onUpdate,
 	onClear,
 }: ArticleFiltersProps) {
+	const categoryId = useId();
+
 	return (
 		<div className="space-y-6">
 			<div className="rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-4 space-y-3">
@@ -39,7 +42,10 @@ export function ArticleFilters({
 
 				<div className="space-y-4">
 					<div className="space-y-2">
-						<label className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+						<label
+							htmlFor={categoryId}
+							className="text-xs font-medium text-zinc-700 dark:text-zinc-300"
+						>
 							Category
 						</label>
 						<Select
@@ -48,7 +54,10 @@ export function ArticleFilters({
 								onUpdate({ category: value === "all" ? undefined : value })
 							}
 						>
-							<SelectTrigger className="h-10 rounded-xl bg-white/60 dark:bg-zinc-950/40">
+							<SelectTrigger
+								id={categoryId}
+								className="h-10 rounded-xl bg-white/60 dark:bg-zinc-950/40"
+							>
 								<SelectValue placeholder="Select Category" />
 							</SelectTrigger>
 							<SelectContent>

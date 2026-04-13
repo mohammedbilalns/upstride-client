@@ -45,7 +45,7 @@ export interface MentorListDetails extends MentorList {
 export interface GetMentorsDiscoveryInput {
 	page: number;
 	search?: string;
-	categoryId?: string;
+	category?: string;
 	tierId?: string;
 	minExperience?: number;
 	maxExperience?: number;

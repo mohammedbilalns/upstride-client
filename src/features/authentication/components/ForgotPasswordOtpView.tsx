@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { toast } from "sonner";
 import type { ApiError } from "@/api/apiError";
 import { useOtpFlow } from "../hooks/use-otp-flow";
 import { useResendPasswordResetOtp } from "../hooks/use-resend-password-reset-otp";
@@ -36,19 +37,48 @@ export function ForgotPasswordOtpView({ email, onNavigate }: Props) {
 
 	const resendMutation = useResendPasswordResetOtp();
 
+	const getErrorMessage = useCallback((err: ApiError, fallback: string) => {
+		return err.response?.data?.message || fallback;
+	}, []);
+
+	const shouldRedirectToLogin = useCallback((message: string) => {
+		const normalized = message.toLowerCase();
+		return (
+			(normalized.includes("attempt") &&
+				(normalized.includes("maximum") ||
+					normalized.includes("exceeded") ||
+					normalized.includes("too many") ||
+					normalized.includes("max"))) ||
+			normalized.includes("maximum attempts")
+		);
+	}, []);
+
 	const handleVerify = useCallback(async () => {
 		if (otp.length < OTP_LENGTH) return;
 		setError(null);
 		try {
 			await verifyMutation.mutateAsync({ email, otp });
 		} catch (err) {
-			const error = err as ApiError;
-			setError(
-				error.response?.data?.message ||
-					"Invalid or expired OTP. Please try again.",
+			const message = getErrorMessage(
+				err as ApiError,
+				"Invalid or expired OTP. Please try again.",
 			);
+			if (shouldRedirectToLogin(message)) {
+				toast.error(message);
+				onNavigate("login");
+				return;
+			}
+			setError(message);
 		}
-	}, [email, otp, setError, verifyMutation]);
+	}, [
+		email,
+		getErrorMessage,
+		onNavigate,
+		otp,
+		setError,
+		shouldRedirectToLogin,
+		verifyMutation,
+	]);
 
 	const handleResend = useCallback(async () => {
 		if (!canResend) return;
@@ -58,10 +88,25 @@ export function ForgotPasswordOtpView({ email, onNavigate }: Props) {
 			setOtp("");
 			resetTimers();
 		} catch (err) {
-			const error = err as ApiError;
-			setError(error.response?.data?.message || "Failed to resend OTP.");
+			const message = getErrorMessage(err as ApiError, "Failed to resend OTP.");
+			if (shouldRedirectToLogin(message)) {
+				toast.error(message);
+				onNavigate("login");
+				return;
+			}
+			setError(message);
 		}
-	}, [canResend, email, resetTimers, resendMutation, setError, setOtp]);
+	}, [
+		canResend,
+		email,
+		getErrorMessage,
+		onNavigate,
+		resetTimers,
+		resendMutation,
+		setError,
+		setOtp,
+		shouldRedirectToLogin,
+	]);
 
 	return (
 		<OtpVerificationPanel

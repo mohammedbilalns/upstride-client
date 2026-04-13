@@ -1,6 +1,6 @@
-export type ArticleReactionType = "LIKE";
+type ArticleReactionType = "LIKE";
 
-export interface ArticleAuthorSnapshot {
+interface ArticleAuthorSnapshot {
 	name: string;
 	avatarUrl?: string;
 	isBlocked?: boolean;
@@ -66,6 +66,14 @@ export interface GetArticlesInput {
 	category?: string;
 	authorId?: string;
 	limit?: number;
+}
+
+export type MentorArticlesStatus = "active" | "blocked";
+
+export interface GetMentorArticlesInput {
+	page: number;
+	search?: string;
+	status?: MentorArticlesStatus;
 }
 
 export interface GetTopTagsResponse {

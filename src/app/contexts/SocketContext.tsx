@@ -1,9 +1,19 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { Socket } from "socket.io-client";
-import { useLocation, useRouter } from "@tanstack/react-router";
+import type { InfiniteData } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
-import { SocketService } from "@/shared/services/socket.service";
+import { useLocation, useRouter } from "@tanstack/react-router";
+import type React from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import type { Socket } from "socket.io-client";
 import { toast } from "sonner";
+import type { ChatMessageDto, GetChatOutput } from "@/features/chat/types";
+import type {
+	GetUnreadNotificationCountOutput,
+	NotificationDto,
+} from "@/features/notifications/types";
+import {
+	disconnectSocket,
+	getSocketInstance,
+} from "@/shared/services/socket.service";
 
 interface SocketContextType {
 	socket: Socket | null;
@@ -25,6 +35,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 	const queryClient = useQueryClient();
 	const location = useLocation();
 	const router = useRouter();
+	const pathnameRef = useRef(location.pathname);
 
 	// Get auth state from router context
 	const auth = router.options.context?.auth;
@@ -34,9 +45,13 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 	const isAdminRole = userRole === "ADMIN" || userRole === "SUPER_ADMIN";
 
 	useEffect(() => {
+		pathnameRef.current = location.pathname;
+	}, [location.pathname]);
+
+	useEffect(() => {
 		if (isAuthenticated && token && !isAdminRole) {
 			console.log("[WS] Initializing connection with token");
-			const socketInstance = SocketService.getInstance(token);
+			const socketInstance = getSocketInstance(token);
 			setSocket(socketInstance);
 
 			socketInstance.on("connect", () => {
@@ -58,31 +73,34 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 			// New Chat Message
 			socketInstance.on(
 				"chat:message",
-				(data: { chatId: string; message: any }) => {
+				(data: { chatId: string; message: ChatMessageDto }) => {
 					console.log("[WS] Received chat:message", data);
 
 					//  Update chat history if we are currently in that chat
-					const currentChatId = location.pathname.split("/").pop();
+					const currentChatId = pathnameRef.current.split("/").pop();
 					if (
 						currentChatId === data.chatId ||
 						currentChatId === data.message.senderId
 					) {
 						console.log("[WS] Updating current chat messages cache");
-						queryClient.setQueryData(["chats", data.chatId], (oldData: any) => {
-							if (!oldData) return oldData;
-							return {
-								...oldData,
-								pages: oldData.pages.map((page: any, index: number) => {
-									if (index === 0) {
-										return {
-											...page,
-											messages: [data.message, ...page.messages],
-										};
-									}
-									return page;
-								}),
-							};
-						});
+						queryClient.setQueryData<InfiniteData<GetChatOutput>>(
+							["chats", data.chatId],
+							(oldData) => {
+								if (!oldData) return oldData;
+								return {
+									...oldData,
+									pages: oldData.pages.map((page, index) => {
+										if (index === 0) {
+											return {
+												...page,
+												messages: [data.message, ...page.messages],
+											};
+										}
+										return page;
+									}),
+								};
+							},
+						);
 					}
 
 					// Invalidate/Update Chat List to show last message and unread count
@@ -92,25 +110,28 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 			);
 
 			// New Notification
-			socketInstance.on("notification:new", (data: { notification: any }) => {
-				console.log("[WS] Received notification:new", data);
+			socketInstance.on(
+				"notification:new",
+				(data: { notification: NotificationDto }) => {
+					console.log("[WS] Received notification:new", data);
 
-				// Update notification count badge
-				queryClient.setQueryData(
-					["notifications", "unread-count"],
-					(old: any) => {
-						const currentCount = old?.data || 0;
-						return { ...old, data: currentCount + 1 };
-					},
-				);
+					// Update notification count badge
+					queryClient.setQueryData<GetUnreadNotificationCountOutput>(
+						["notifications", "unread-count"],
+						(old) => {
+							const currentCount = old?.count ?? 0;
+							return { count: currentCount + 1 };
+						},
+					);
 
-				// Invalidate notifications list
-				queryClient.invalidateQueries({ queryKey: ["notifications"] });
+					// Invalidate notifications list
+					queryClient.invalidateQueries({ queryKey: ["notifications"] });
 
-				toast.info(data.notification.title, {
-					description: data.notification.description,
-				});
-			});
+					toast.info(data.notification.title, {
+						description: data.notification.description,
+					});
+				},
+			);
 
 			return () => {
 				socketInstance.off("connect");
@@ -125,11 +146,11 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 			} else {
 				console.log("[WS] No auth found, disconnecting if necessary");
 			}
-			SocketService.disconnect();
+			disconnectSocket();
 			setSocket(null);
 			setIsConnected(false);
 		}
-	}, [isAuthenticated, token, isAdminRole, queryClient, location.pathname]);
+	}, [isAuthenticated, token, isAdminRole, queryClient]);
 
 	return (
 		<SocketContext.Provider value={{ socket, isConnected }}>

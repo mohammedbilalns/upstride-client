@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import { cn } from "@/shared/utils/cn";
 
 interface ProgressiveImageProps
@@ -16,6 +15,7 @@ export function ProgressiveImage({
 	className,
 	onLoad,
 	onError,
+	alt = "",
 	...props
 }: ProgressiveImageProps) {
 	const [isLoaded, setIsLoaded] = React.useState(false);
@@ -47,6 +47,7 @@ export function ProgressiveImage({
 			{!hasError && (
 				<img
 					{...props}
+					alt={alt}
 					onLoad={handleLoad}
 					onError={handleError}
 					className={cn(

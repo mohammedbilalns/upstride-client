@@ -1,3 +1,4 @@
+import type { ApiSuccess } from "@/api/apiSuccess";
 import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
 import type {
@@ -16,15 +17,17 @@ export const UserManagementService = {
 		return response.data.data;
 	},
 
-	blockUser: async (input: BlockUserInput): Promise<void> => {
-		await api.patch(
+	blockUser: async (input: BlockUserInput): Promise<ApiSuccess> => {
+		const response = await api.patch(
 			`${ROUTES.USER_MANAGEMENT.BASE}${ROUTES.USER_MANAGEMENT.BLOCK(input.userId)}`,
 		);
+		return response.data;
 	},
 
-	unblockUser: async (input: UnblockUserInput): Promise<void> => {
-		await api.patch(
+	unblockUser: async (input: UnblockUserInput): Promise<ApiSuccess> => {
+		const response = await api.patch(
 			`${ROUTES.USER_MANAGEMENT.BASE}${ROUTES.USER_MANAGEMENT.UNBLOCK(input.userId)}`,
 		);
+		return response.data;
 	},
 };

@@ -1,17 +1,17 @@
-import { useState } from "react";
-import { Bell, CheckCircle2, CircleDashed, Loader2 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "@tanstack/react-router";
-import { cn } from "@/shared/utils/cn";
+import { formatDistanceToNow } from "date-fns";
+import { Bell, CheckCircle2, CircleDashed, Loader2 } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/shared/utils/cn";
 import {
 	useGetNotifications,
 	useMarkAllNotificationsRead,
 	useMarkNotificationRead,
 } from "../hooks";
 import type { NotificationDto, NotificationReadFilter } from "../types";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function NotificationDropdown({ onClose }: { onClose?: () => void }) {
 	const [activeTab, setActiveTab] = useState<NotificationReadFilter>("all");
@@ -185,11 +185,12 @@ function NotificationList({
 	return (
 		<div className="flex flex-col">
 			{notifications.map((notification) => (
-				<div
+				<button
+					type="button"
 					key={notification.id}
 					onClick={() => handleNotificationClick(notification)}
 					className={cn(
-						"flex flex-col gap-3 p-4 transition-colors hover:bg-muted/50 cursor-pointer relative group border-b border-border/20 last:border-0",
+						"flex flex-col gap-3 p-4 text-left transition-colors hover:bg-muted/50 cursor-pointer relative group border-b border-border/20 last:border-0",
 						!notification.isRead && "bg-primary/5",
 					)}
 				>
@@ -226,7 +227,7 @@ function NotificationList({
 							</Button>
 						</div>
 					)}
-				</div>
+				</button>
 			))}
 
 			{hasNextPage && (

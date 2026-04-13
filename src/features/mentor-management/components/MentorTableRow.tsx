@@ -1,10 +1,10 @@
-import { format } from "date-fns";
 import { Calendar, ChevronDown, ChevronUp, Mail } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import type { Mentor } from "@/shared/types/mentor";
+import { formatDateShort } from "@/shared/utils/date";
 import { MentorRowDetails } from "./MentorRowDetails";
 
 interface MentorTableRowProps {
@@ -87,7 +87,7 @@ export function MentorTableRow({
 				<TableCell>
 					<span className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
 						<Calendar className="w-3.5 h-3.5" />
-						{format(new Date(mentor.appliedAt), "MMM dd, yyyy")}
+						{formatDateShort(mentor.appliedAt)}
 					</span>
 				</TableCell>
 				<TableCell className="text-right">

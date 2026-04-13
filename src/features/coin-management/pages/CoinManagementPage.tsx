@@ -275,6 +275,7 @@ export function CoinManagementPage() {
 									<PaymentTransactionsTable
 										isLoading={paymentLoading}
 										data={paymentTransactions}
+										sessionDebitLabel="Session booking"
 										onPageChange={(page: number) =>
 											navigate({
 												search: buildPaymentSearch({ paymentPage: page }),

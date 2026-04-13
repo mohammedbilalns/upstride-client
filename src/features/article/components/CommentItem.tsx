@@ -1,13 +1,16 @@
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { formatDistanceToNow } from "date-fns";
 import {
-	MoreVertical,
-	Trash2,
-	Pencil,
-	Reply,
 	ChevronDown,
 	ChevronUp,
-	MessageSquare,
 	Loader2,
+	MessageSquare,
+	MoreVertical,
+	Pencil,
+	Reply,
+	Trash2,
 } from "lucide-react";
+import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,13 +19,10 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { formatDistanceToNow } from "date-fns";
-import { useState } from "react";
-import { articleQueries } from "../hooks/queries";
-import { CommentForm } from "./CommentForm";
-import type { ArticleCommentDto } from "../types";
 import { cn } from "@/shared/utils/cn";
+import { articleQueries } from "../hooks/queries";
+import type { ArticleCommentDto } from "../types";
+import { CommentForm } from "./CommentForm";
 
 interface CommentItemProps {
 	articleId: string;
@@ -161,7 +161,7 @@ export function CommentItem({
 						) : (
 							<p
 								className={cn(
-									"text-[15px] leading-relaxed whitespace-pre-wrap break-words",
+									"text-[15px] leading-relaxed whitespace-pre-wrap wrap-break-word",
 									comment.isActive
 										? "text-zinc-700 dark:text-zinc-300"
 										: "text-zinc-500 italic",
@@ -176,6 +176,7 @@ export function CommentItem({
 					<div className="flex items-center gap-4 px-2">
 						{!isEditing && comment.isActive && (
 							<button
+								type="button"
 								onClick={() => setIsReplying(!isReplying)}
 								className={cn(
 									"flex items-center gap-1.5 text-xs font-semibold transition-colors py-1 px-2 rounded-lg",
@@ -191,6 +192,7 @@ export function CommentItem({
 
 						{comment.repliesCount > 0 && (
 							<button
+								type="button"
 								onClick={() => setShowReplies(!showReplies)}
 								className="flex items-center gap-1.5 text-xs font-semibold text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 py-1 px-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
 							>
@@ -241,6 +243,7 @@ export function CommentItem({
 									))}
 									{hasNextReplies && (
 										<button
+											type="button"
 											onClick={() => fetchNextReplies()}
 											disabled={isFetchingNextReplies}
 											className="text-[11px] font-bold text-primary hover:underline py-1 px-4 rounded-full bg-primary/5 hover:bg-primary/10 transition-all border border-primary/10"

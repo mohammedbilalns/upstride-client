@@ -46,8 +46,8 @@ export function AuthQuoteCarousel() {
 	return (
 		<div className="hidden md:flex md:w-2/5 relative overflow-hidden flex-col justify-between p-12 bg-linear-to-br from-blue-950 via-blue-900 to-indigo-950">
 			{/* Soft radial glow blobs */}
-			<div className="absolute top-[-80px] left-[-60px] w-72 h-72 rounded-full bg-white/10 blur-3xl pointer-events-none" />
-			<div className="absolute bottom-[-60px] right-[-40px] w-64 h-64 rounded-full bg-white/8 blur-2xl pointer-events-none" />
+			<div className="absolute -top-20 -left-15 w-72 h-72 rounded-full bg-white/10 blur-3xl pointer-events-none" />
+			<div className="absolute -bottom-15 -right-10 w-64 h-64 rounded-full bg-white/8 blur-2xl pointer-events-none" />
 
 			{/* Fine dot grid texture */}
 			<div
@@ -91,7 +91,7 @@ export function AuthQuoteCarousel() {
 						<span className="relative inline-block">
 							{currentQuote.line3}
 							{/* Underline accent */}
-							<span className="absolute -bottom-1 left-0 right-0 h-[3px] rounded-full bg-white/40" />
+							<span className="absolute -bottom-1 left-0 right-0 h-0.75 rounded-full bg-white/40" />
 						</span>
 					</blockquote>
 

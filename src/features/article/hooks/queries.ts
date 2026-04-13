@@ -1,6 +1,6 @@
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import { articleService } from "../services/article.service";
-import type { GetArticlesInput } from "../types";
+import type { GetArticlesInput, MentorArticlesStatus } from "../types";
 
 export const articleQueries = {
 	all: ["articles"] as const,
@@ -22,7 +22,9 @@ export const articleQueries = {
 			getNextPageParam: (lastPage) =>
 				lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
 		}),
-	mentorListInfinite: (params: { search?: string } = {}) =>
+	mentorListInfinite: (
+		params: { search?: string; status?: MentorArticlesStatus } = {},
+	) =>
 		infiniteQueryOptions({
 			queryKey: [...articleQueries.lists(), "mentor-infinite", params],
 			queryFn: ({ pageParam }) =>

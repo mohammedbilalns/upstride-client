@@ -1,6 +1,6 @@
-import type { QueryClient } from "@tanstack/react-query";
-import type { ArticleCommentDto } from "../types";
+import type { InfiniteData, QueryClient } from "@tanstack/react-query";
 import { articleQueries } from "../hooks/queries";
+import type { ArticleCommentDto, GetCommentsResponse } from "../types";
 
 export const updateCommentsInfiniteCache = (
 	queryClient: QueryClient,
@@ -11,7 +11,7 @@ export const updateCommentsInfiniteCache = (
 	}: {
 		articleId: string;
 		parentId: string | null;
-		updateFn: (oldPages: any[]) => any[];
+		updateFn: (oldPages: GetCommentsResponse[]) => GetCommentsResponse[];
 	},
 ) => {
 	const queryKey = articleQueries.commentsInfinite({
@@ -19,13 +19,16 @@ export const updateCommentsInfiniteCache = (
 		parentId,
 	}).queryKey;
 
-	queryClient.setQueryData(queryKey, (old: any) => {
-		if (!old) return old;
-		return {
-			...old,
-			pages: updateFn(old.pages),
-		};
-	});
+	queryClient.setQueryData<InfiniteData<GetCommentsResponse> | undefined>(
+		queryKey,
+		(old) => {
+			if (!old) return old;
+			return {
+				...old,
+				pages: updateFn(old.pages),
+			};
+		},
+	);
 };
 
 export const addCommentOptimistically = (

@@ -1,5 +1,4 @@
 import { QuoteIcon, Star } from "lucide-react";
-import { useId } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { testimonials } from "../data";
@@ -32,7 +31,7 @@ export default function TestimonialsSection() {
 					>
 						<CardContent className="p-7 flex flex-col h-full">
 							{/* Quote Icon */}
-							<QuoteIcon className="h-7 w-7 text-primary/30 mb-4 flex-shrink-0 group-hover:text-primary/50 transition-colors" />
+							<QuoteIcon className="h-7 w-7 text-primary/30 mb-4 shrink-0 group-hover:text-primary/50 transition-colors" />
 
 							<p className="text-muted-foreground leading-relaxed mb-6 flex-1 italic text-sm">
 								"{testimonial.content}"
@@ -43,7 +42,7 @@ export default function TestimonialsSection() {
 								{[...Array(testimonial.rating)].map((_, i) => (
 									<Star
 										key={`${testimonial.name}-star-${i}`}
-										className="h-4 w-4 text-[var(--rating)] fill-[var(--rating)]"
+										className="h-4 w-4 text-(--rating) fill-(--rating)"
 									/>
 								))}
 							</div>

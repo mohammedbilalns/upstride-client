@@ -1,20 +1,21 @@
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
+import Placeholder from "@tiptap/extension-placeholder";
+import type { Editor } from "@tiptap/react";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 import {
 	Bold,
+	Heading1,
+	Heading2,
 	Italic,
 	List,
 	ListOrdered,
 	Quote,
-	Heading1,
-	Heading2,
-	Undo,
 	Redo,
+	Undo,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 interface ArticleEditorProps {
 	content?: string;
@@ -22,7 +23,7 @@ interface ArticleEditorProps {
 	onBlur?: () => void;
 }
 
-const MenuBar = ({ editor }: { editor: any }) => {
+const MenuBar = ({ editor }: { editor: Editor | null }) => {
 	if (!editor) return null;
 
 	return (
@@ -146,7 +147,9 @@ export function ArticleEditor({
 }: ArticleEditorProps) {
 	const editor = useEditor({
 		extensions: [
-			StarterKit,
+			StarterKit.configure({
+				link: false,
+			}),
 			Placeholder.configure({
 				placeholder: "Start writing your article masterpiece...",
 			}),

@@ -16,6 +16,8 @@ import { Label } from "@/components/ui/label";
 import {
 	buildEmptyStringErrors,
 	buildFieldErrorsFromIssues,
+	getErrorMessage,
+	parseNumberInput,
 } from "@/shared/utils/form-validation";
 import type { SessionSettingsConfig } from "../types";
 import { sessionSettingsSchema } from "../validators/platform-settings.schema";
@@ -82,21 +84,8 @@ export function SessionSettings({
 		}
 	};
 
-	const parseNumberInput = (value: string): number | "" =>
-		value === "" ? "" : Number(value);
-	const getErrorMessage = (errors: unknown) => {
-		if (!errors) return undefined;
-		if (Array.isArray(errors)) {
-			const first = errors[0] as { message?: string } | undefined;
-			return first?.message || first?.toString() || undefined;
-		}
-		if (typeof errors === "string") return errors;
-		if (typeof errors === "object") {
-			const message = (errors as { message?: string }).message;
-			return message || String(errors);
-		}
-		return String(errors);
-	};
+	const getFieldErrorMessage = (errors: unknown) =>
+		getErrorMessage(errors) || String(errors);
 
 	return (
 		<div className="space-y-6">
@@ -133,7 +122,7 @@ export function SessionSettings({
 											onBlur={field.handleBlur}
 										/>
 										<FieldError
-											message={getErrorMessage(field.state.meta.errors)}
+											message={getFieldErrorMessage(field.state.meta.errors)}
 										/>
 									</div>
 								)}
@@ -151,7 +140,7 @@ export function SessionSettings({
 											onBlur={field.handleBlur}
 										/>
 										<FieldError
-											message={getErrorMessage(field.state.meta.errors)}
+											message={getFieldErrorMessage(field.state.meta.errors)}
 										/>
 									</div>
 								)}
@@ -183,7 +172,7 @@ export function SessionSettings({
 											onBlur={field.handleBlur}
 										/>
 										<FieldError
-											message={getErrorMessage(field.state.meta.errors)}
+											message={getFieldErrorMessage(field.state.meta.errors)}
 										/>
 									</div>
 								)}

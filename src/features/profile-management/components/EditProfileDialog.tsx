@@ -80,7 +80,7 @@ export function EditProfileDialog({ profile, open, onOpenChange }: Props) {
 			const url = URL.createObjectURL(file);
 			setPreviewUrl(url);
 			toast.success("Profile picture uploaded");
-		} catch (error) {
+		} catch (_error) {
 			toast.error("Failed to upload image");
 		} finally {
 			setIsUploading(false);

@@ -11,15 +11,16 @@ import { Route } from "@/routes/_admin-layout/mentor-management";
 import { Pagination } from "../../user-management/components/Pagination";
 import { MentorTable } from "../components/MentorTable";
 import { useMentors } from "../hooks/use-mentors";
+import type { MentorManagementSearch } from "../validators/mentor-management-params";
 
 export function MentorManagementPage() {
 	const navigate = useNavigate({ from: Route.fullPath });
 	const searchParams = Route.useSearch();
 	const { data: mentorsData } = useMentors(searchParams);
 
-	const handleFilterChange = <K extends keyof typeof searchParams>(
+	const handleFilterChange = <K extends keyof MentorManagementSearch>(
 		key: K,
-		value: (typeof searchParams)[K] | "all",
+		value: MentorManagementSearch[K] | "all",
 	) => {
 		navigate({
 			search: (prev) => ({
@@ -52,7 +53,16 @@ export function MentorManagementPage() {
 					</span>
 					<Select
 						value={searchParams.status || "all"}
-						onValueChange={(v) => handleFilterChange("status", v as any)}
+						onValueChange={(value) => {
+							const status =
+								value === "all" ||
+								value === "pending" ||
+								value === "approved" ||
+								value === "rejected"
+									? value
+									: "all";
+							handleFilterChange("status", status);
+						}}
 					>
 						<SelectTrigger className="w-[150px] h-10">
 							<SelectValue placeholder="All Status" />
@@ -72,7 +82,13 @@ export function MentorManagementPage() {
 					</span>
 					<Select
 						value={searchParams.sort || "recent"}
-						onValueChange={(v) => handleFilterChange("sort", v as any)}
+						onValueChange={(value) => {
+							const sort =
+								value === "recent" || value === "old" || value === "status"
+									? value
+									: "recent";
+							handleFilterChange("sort", sort);
+						}}
 					>
 						<SelectTrigger className="w-[160px] h-10">
 							<SelectValue placeholder="Sort By" />
@@ -109,10 +125,10 @@ export function MentorManagementPage() {
 				totalItems={mentorsData.total}
 				limit={mentorsData.limit}
 				onPageChange={(page: number) =>
-					navigate({ search: (prev: any) => ({ ...prev, page }) })
+					navigate({ search: (prev) => ({ ...prev, page }) })
 				}
 				onLimitChange={(limit: number) =>
-					navigate({ search: (prev: any) => ({ ...prev, limit, page: 1 }) })
+					navigate({ search: (prev) => ({ ...prev, limit, page: 1 }) })
 				}
 			/>
 		</div>

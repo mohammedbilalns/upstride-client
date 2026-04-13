@@ -7,6 +7,7 @@ import {
 	Library,
 	LogOut,
 	Users,
+	Wallet,
 	Zap,
 } from "lucide-react";
 import ThemeToggle from "@/components/common/Theme-Toggle";
@@ -14,8 +15,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useLogout } from "@/features/authentication/hooks/use-logout";
 import { cn } from "@/shared/utils/cn";
+import { getInitials } from "@/shared/utils/get-initials";
 
-export default function AdminSidebar() {
+interface AdminSidebarProps {
+	isOpen?: boolean;
+	onClose?: () => void;
+}
+
+export default function AdminSidebar({
+	isOpen = true,
+	onClose,
+}: AdminSidebarProps) {
 	const { auth } = useRouteContext({ from: "/_admin-layout" });
 	const user = auth.user;
 	const location = useLocation();
@@ -23,15 +33,6 @@ export default function AdminSidebar() {
 
 	const handleLogout = () => {
 		logoutMutation.mutate();
-	};
-
-	const getInitials = (name: string) => {
-		return name
-			.split(" ")
-			.map((n) => n[0])
-			.join("")
-			.toUpperCase()
-			.substring(0, 2);
 	};
 
 	const navItems = [
@@ -61,6 +62,11 @@ export default function AdminSidebar() {
 			label: "Report Management",
 			icon: Flag,
 		},
+		{
+			to: "/platform-transactions",
+			label: "Platform Transactions",
+			icon: Wallet,
+		},
 		...(user?.role === "SUPER_ADMIN"
 			? [
 					{
@@ -73,15 +79,29 @@ export default function AdminSidebar() {
 	];
 
 	return (
-		<aside className="w-72 h-[calc(100vh-1.5rem)] sticky top-3 m-3 rounded-xl glass-dark shadow-soft flex flex-col pt-6 pb-4 animate-soft-in">
+		<aside
+			className={cn(
+				"w-72 h-[calc(100vh-1.5rem)] fixed top-3 left-3 rounded-xl glass-dark shadow-soft flex flex-col pt-6 pb-4 animate-soft-in transition-transform duration-200 z-50",
+				isOpen ? "translate-x-0" : "-translate-x-[110%]",
+				"lg:translate-x-0",
+			)}
+		>
 			{/* Brand Logo */}
-			<div className="px-6 mb-10">
+			<div className="px-6 mb-10 flex items-start justify-between gap-3">
 				<Link to="/dashboard" className="flex items-center gap-2.5 group">
 					<div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-md shadow-primary/20 group-hover:shadow-primary/40 transition-all">
 						<Zap className="h-5 w-5 text-primary-foreground" />
 					</div>
 					<span className="text-2xl font-bold tracking-tight">UpStride</span>
 				</Link>
+				<button
+					type="button"
+					onClick={onClose}
+					className="lg:hidden text-muted-foreground hover:text-foreground transition-colors"
+					aria-label="Close sidebar"
+				>
+					<span className="text-xl leading-none">×</span>
+				</button>
 			</div>
 
 			{/* Navigation Links */}

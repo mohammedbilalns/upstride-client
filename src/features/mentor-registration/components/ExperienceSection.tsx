@@ -1,4 +1,5 @@
-import { format, isValid, parse } from "date-fns";
+import type { useForm } from "@tanstack/react-form";
+import { isValid, parse } from "date-fns";
 import { Briefcase, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import FieldError from "@/components/common/Field-Error";
@@ -13,23 +14,17 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import type { Profession } from "@/features/mentor-registration/services/catalog.service";
+import type { MentorRegistrationValues } from "@/features/mentor-registration/validators/mentor-registration.schema";
+import { formatDateInput } from "@/shared/utils/date";
 import { useProfessions } from "../hooks/use-catalog";
 
 interface ExperienceSectionProps {
-	form: any;
-	getErrorMessage: (errors: any[]) => string | undefined;
+	form: ReturnType<typeof useForm<MentorRegistrationValues>>;
+	getErrorMessage: (errors: unknown[]) => string | undefined;
 }
 
 const MAX_EXPERIENCE_ITEMS = 7;
-
-const formatDateForDisplay = (isoString: string | null) => {
-	if (!isoString) return "";
-	try {
-		return format(new Date(isoString), "yyyy-MM-dd");
-	} catch {
-		return "";
-	}
-};
 
 export function ExperienceSection({
 	form,
@@ -38,7 +33,10 @@ export function ExperienceSection({
 	const { data: professions } = useProfessions();
 
 	const handleDateChange = (
-		field: any,
+		field: {
+			state: { value: MentorRegistrationValues["experience"] };
+			handleChange: (value: MentorRegistrationValues["experience"]) => void;
+		},
 		index: number,
 		type: "from" | "to",
 		value: string,
@@ -109,10 +107,13 @@ export function ExperienceSection({
 			</CardHeader>
 			<CardContent className="pt-6 space-y-6">
 				<form.Field name="experience">
-					{(field: any) => (
+					{(field) => (
 						<div className="space-y-6">
-							{field.state.value.map((_: any, index: number) => (
-								<Card key={index} className="border-border/50 bg-background/50">
+							{field.state.value.map((entry, index: number) => (
+								<Card
+									key={`${entry.company}-${entry.role}-${entry.from}-${entry.to}-${entry.description}`}
+									className="border-border/50 bg-background/50"
+								>
 									<CardHeader className="py-3 px-4 flex flex-row items-center justify-between border-b border-border/10">
 										<span className="text-sm font-semibold opacity-70">
 											Experience {index + 1}
@@ -125,7 +126,7 @@ export function ExperienceSection({
 												className="h-8 w-8 text-muted-foreground hover:text-destructive"
 												onClick={() => {
 													const newValue = field.state.value.filter(
-														(_: any, i: number) => i !== index,
+														(_entry, i: number) => i !== index,
 													);
 													field.handleChange(newValue);
 												}}
@@ -137,7 +138,7 @@ export function ExperienceSection({
 									<CardContent className="p-4 space-y-4">
 										<div className="grid sm:grid-cols-2 gap-4">
 											<form.Field name={`experience[${index}].company`}>
-												{(subField: any) => (
+												{(subField) => (
 													<div className="space-y-1.5">
 														<Label className="text-xs">Company</Label>
 														<Input
@@ -157,7 +158,7 @@ export function ExperienceSection({
 												)}
 											</form.Field>
 											<form.Field name={`experience[${index}].role`}>
-												{(subField: any) => (
+												{(subField) => (
 													<div className="space-y-1.5">
 														<Label className="text-xs">Role</Label>
 														<Select
@@ -170,7 +171,7 @@ export function ExperienceSection({
 																<SelectValue placeholder="Select Role" />
 															</SelectTrigger>
 															<SelectContent>
-																{professions?.map((prof: any) => (
+																{professions?.map((prof: Profession) => (
 																	<SelectItem key={prof.id} value={prof.id}>
 																		{prof.name}
 																	</SelectItem>
@@ -188,12 +189,12 @@ export function ExperienceSection({
 										</div>
 										<div className="grid sm:grid-cols-2 gap-4">
 											<form.Field name={`experience[${index}].from`}>
-												{(subField: any) => (
+												{(subField) => (
 													<div className="space-y-1.5">
 														<Label className="text-xs">From Date</Label>
 														<Input
 															type="date"
-															value={formatDateForDisplay(subField.state.value)}
+															value={formatDateInput(subField.state.value)}
 															onChange={(e) => {
 																handleDateChange(
 																	field,
@@ -213,14 +214,14 @@ export function ExperienceSection({
 												)}
 											</form.Field>
 											<form.Field name={`experience[${index}].to`}>
-												{(subField: any) => (
+												{(subField) => (
 													<div className="space-y-1.5">
 														<Label className="text-xs">
 															To Date (or empty for current)
 														</Label>
 														<Input
 															type="date"
-															value={formatDateForDisplay(subField.state.value)}
+															value={formatDateInput(subField.state.value)}
 															onChange={(e) => {
 																handleDateChange(
 																	field,
@@ -241,7 +242,7 @@ export function ExperienceSection({
 											</form.Field>
 										</div>
 										<form.Field name={`experience[${index}].description`}>
-											{(subField: any) => (
+											{(subField) => (
 												<div className="space-y-1.5">
 													<Label className="text-xs">Description</Label>
 													<Input

@@ -1,9 +1,7 @@
 import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
-import type {
-	PublicMentorAvailableSlotsResponse,
-	PublicMentorProfileResponse,
-} from "../types";
+import type { PublicMentorAvailableSlotsResponse } from "../../availability-management/types";
+import type { PublicMentorProfileResponse } from "../types";
 
 export const publicMentorProfileService = {
 	getPublicProfile: async (
@@ -20,9 +18,7 @@ export const publicMentorProfileService = {
 		date: string,
 	): Promise<PublicMentorAvailableSlotsResponse> => {
 		const response = await api.get<PublicMentorAvailableSlotsResponse>(
-			`${ROUTES.SESSION_SLOTS.BASE}${ROUTES.SESSION_SLOTS.PUBLIC_AVAILABLE(
-				mentorId,
-			)}`,
+			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.SLOTS(mentorId)}`,
 			{ params: { date } },
 		);
 		return response.data;

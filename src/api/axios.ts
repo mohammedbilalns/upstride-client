@@ -6,7 +6,7 @@ import { clearAuthSession } from "@/features/authentication/utils/clear-auth-ses
 import { env } from "@/shared/config/env";
 
 /**
- * Axios request config type with retry flag
+ * Axios request config type with retry flags
  */
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 	_retry?: boolean;
@@ -32,11 +32,6 @@ api.interceptors.request.use((config) => {
 	const auth = routerInstance?.options.context?.auth;
 	const token = auth?.accessToken;
 	const csrfToken = auth?.csrfToken;
-	console.debug(
-		"AXIOS INTERCEPTOR: csrf token from the router context: ",
-		csrfToken,
-	);
-
 	if (token) {
 		config.headers.Authorization = `Bearer ${token}`;
 	}
@@ -132,7 +127,7 @@ api.interceptors.response.use(
 		}
 
 		if (error.response?.status === 403) {
-			// Handle forbidden access (403) — blocked users
+			// Handle forbidden access (403)
 			const data = error.response.data as { message?: string };
 			if (data?.message?.toLowerCase().includes("blocked")) {
 				if (routerInstance) {

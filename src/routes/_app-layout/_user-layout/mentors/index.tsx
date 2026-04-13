@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_app-layout/_user-layout/mentors/")({
 		await queryClient.ensureInfiniteQueryData(
 			getMentorsInfiniteQueryOptions({
 				search: search.search,
-				categoryId: search.categoryId,
+				category: search.category,
 				tierId: search.tierId,
 				minExperience: search.minExperience,
 				maxExperience: search.maxExperience,

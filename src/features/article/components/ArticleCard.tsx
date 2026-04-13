@@ -1,16 +1,16 @@
-import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Calendar, Eye, MessageSquare, Image as ImageIcon } from "lucide-react";
+import { Calendar, Eye, Image as ImageIcon, MessageSquare } from "lucide-react";
+import { useState } from "react";
+import { ProgressiveImage } from "@/components/common/ProgressiveImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { ProgressiveImage } from "@/components/common/ProgressiveImage";
 import {
 	Card,
 	CardContent,
 	CardFooter,
 	CardHeader,
 } from "@/components/ui/card";
-import { format } from "date-fns";
+import { formatDateMedium } from "@/shared/utils/date";
 import type { ArticleDto } from "../types";
 
 interface ArticleCardProps {
@@ -26,7 +26,7 @@ export function ArticleCard({
 
 	return (
 		<Card className="group flex flex-col h-full overflow-hidden bg-white dark:bg-zinc-950/50 hover:border-zinc-300 dark:hover:border-zinc-800 border-zinc-200/70 dark:border-zinc-800/50 transition-all duration-300">
-			<div className="relative aspect-[16/10] overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+			<div className="relative aspect-16/10 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
 				{article.featuredImageUrl && !imageError ? (
 					<ProgressiveImage
 						src={article.featuredImageUrl}
@@ -49,7 +49,7 @@ export function ArticleCard({
 						/>
 					</div>
 				)}
-				<div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+				<div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
 					<div className="flex items-center gap-3 text-white text-xs font-medium">
 						<div className="flex items-center gap-1">
 							<Eye className="h-3.5 w-3.5" />
@@ -77,7 +77,7 @@ export function ArticleCard({
 					<span className="text-[10px] text-zinc-400">•</span>
 					<div className="flex items-center gap-1 text-[10px] text-zinc-400 font-medium uppercase tracking-tight">
 						<Calendar className="h-3 w-3" />
-						{format(new Date(article.createdAt), "MMM d, yyyy")}
+						{formatDateMedium(article.createdAt)}
 					</div>
 				</div>
 				<Link
@@ -87,7 +87,7 @@ export function ArticleCard({
 					params={{ articleId: article.slug }}
 					className="block group-hover:text-primary transition-colors"
 				>
-					<h3 className="text-lg font-bold leading-tight text-zinc-900 dark:text-zinc-50 line-clamp-2 min-h-[3rem]">
+					<h3 className="text-lg font-bold leading-tight text-zinc-900 dark:text-zinc-50 line-clamp-2 min-h-12">
 						{article.title}
 					</h3>
 				</Link>

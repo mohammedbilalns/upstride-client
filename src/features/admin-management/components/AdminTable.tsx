@@ -1,4 +1,3 @@
-import { format } from "date-fns";
 import {
 	Calendar,
 	Loader2,
@@ -19,7 +18,11 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { useBlockAdmin, useUnblockAdmin } from "../hooks/use-admin-actions";
+import { formatDateShort } from "@/shared/utils/date";
+import {
+	useBlockAdmin,
+	useUnblockAdmin,
+} from "../hooks/admin-management-mutations";
 import type { AdminListItem } from "../types";
 
 interface AdminTableProps {
@@ -33,6 +36,10 @@ export function AdminTable({ admins }: AdminTableProps) {
 	const [actionType, setActionType] = useState<"block" | "unblock" | null>(
 		null,
 	);
+	const [processing, setProcessing] = useState<{
+		adminId: string;
+		action: "block" | "unblock";
+	} | null>(null);
 
 	const blockMutation = useBlockAdmin();
 	const unblockMutation = useUnblockAdmin();
@@ -42,18 +49,26 @@ export function AdminTable({ admins }: AdminTableProps) {
 
 		const mutation = actionType === "block" ? blockMutation : unblockMutation;
 
-		await mutation.mutateAsync(
-			{ adminId: selectedAdmin.id },
-			{
-				onSuccess: () => {
-					setSelectedAdmin(null);
-					setActionType(null);
+		setProcessing({ adminId: selectedAdmin.id, action: actionType });
+
+		try {
+			await mutation.mutateAsync(
+				{ adminId: selectedAdmin.id },
+				{
+					onSuccess: () => {
+						setSelectedAdmin(null);
+						setActionType(null);
+					},
 				},
-			},
-		);
+			);
+		} finally {
+			setProcessing(null);
+		}
 	};
 
-	const isProcessing = blockMutation.isPending || unblockMutation.isPending;
+	const isProcessing =
+		(processing?.action === "block" && blockMutation.isPending) ||
+		(processing?.action === "unblock" && unblockMutation.isPending);
 
 	return (
 		<div className="bg-card rounded-xl border shadow-sm overflow-hidden">
@@ -120,7 +135,7 @@ export function AdminTable({ admins }: AdminTableProps) {
 								<TableCell>
 									<span className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
 										<Calendar className="w-3.5 h-3.5" />
-										{format(new Date(admin.addedAt), "MMM dd, yyyy")}
+										{formatDateShort(admin.addedAt)}
 									</span>
 								</TableCell>
 								<TableCell className="text-right">
@@ -133,7 +148,7 @@ export function AdminTable({ admins }: AdminTableProps) {
 												setSelectedAdmin(admin);
 												setActionType("block");
 											}}
-											disabled={isProcessing}
+											disabled={processing?.adminId === admin.id}
 										>
 											<ShieldAlert className="w-4 h-4 mr-2" />
 											Block
@@ -147,7 +162,7 @@ export function AdminTable({ admins }: AdminTableProps) {
 												setSelectedAdmin(admin);
 												setActionType("unblock");
 											}}
-											disabled={isProcessing}
+											disabled={processing?.adminId === admin.id}
 										>
 											<ShieldCheck className="w-4 h-4 mr-2" />
 											Unblock

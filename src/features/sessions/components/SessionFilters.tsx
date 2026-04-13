@@ -65,7 +65,10 @@ export function SessionFilters({
 							value={search.upcomingFilter}
 							onValueChange={(val) =>
 								onUpdate({
-									upcomingFilter: val as "upcoming" | "cancelled",
+									upcomingFilter: val as
+										| "upcoming"
+										| "cancelled"
+										| "payment_pending",
 									page: 1,
 								})
 							}
@@ -75,6 +78,7 @@ export function SessionFilters({
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem value="upcoming">Active Sessions</SelectItem>
+								<SelectItem value="payment_pending">Payment Pending</SelectItem>
 								<SelectItem value="cancelled">Cancelled</SelectItem>
 							</SelectContent>
 						</Select>

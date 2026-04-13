@@ -13,8 +13,9 @@ import type {
 	MentorSkill,
 } from "@/features/mentor-registration/types";
 import {
-	registerMentorSchema,
-	resubmitMentorSchema,
+	type MentorRegistrationValues,
+	RegisterMentorSchema,
+	ResubmitMentorSchema,
 } from "@/features/mentor-registration/validators/mentor-registration.schema";
 import { useOnboardingCatalog } from "@/features/onboarding/hooks/use-catalog";
 import { EducationSection } from "./EducationSection";
@@ -33,7 +34,7 @@ export function MentorForm({ existingProfile, onCancel }: MentorFormProps) {
 	const resubmitMutation = useResubmitMentor();
 	const [isUploading, setIsUploading] = useState(false);
 
-	const form = useForm({
+	const form = useForm<MentorRegistrationValues>({
 		defaultValues: {
 			bio: existingProfile?.bio || "",
 			currentRoleId: existingProfile?.currentRoleId || "",
@@ -57,9 +58,7 @@ export function MentorForm({ existingProfile, onCancel }: MentorFormProps) {
 			],
 		},
 		validators: {
-			onSubmit: (existingProfile
-				? resubmitMentorSchema
-				: registerMentorSchema) as any,
+			onSubmit: existingProfile ? ResubmitMentorSchema : RegisterMentorSchema,
 		},
 		onSubmit: async ({ value }) => {
 			if (existingProfile) {
@@ -73,7 +72,7 @@ export function MentorForm({ existingProfile, onCancel }: MentorFormProps) {
 		},
 	});
 
-	const getErrorMessage = (errors: any[]) => {
+	const getErrorMessage = (errors: unknown[]) => {
 		return errors?.[0]?.message || errors?.[0]?.toString() || undefined;
 	};
 

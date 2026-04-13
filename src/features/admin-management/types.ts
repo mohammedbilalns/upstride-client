@@ -7,6 +7,9 @@ export interface GetAdminsInput {
 	status?: UserStatus;
 	sort?: "recent" | "old";
 }
+export interface CreateAdminResponse {
+	newAdminId: string;
+}
 
 export interface AdminListItem {
 	id: string;

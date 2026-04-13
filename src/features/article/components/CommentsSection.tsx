@@ -1,4 +1,6 @@
-import { MessageSquare, AlertTriangle, Loader2 } from "lucide-react";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { AlertTriangle, Loader2, MessageSquare } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -8,10 +10,8 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { articleQueries } from "../hooks/queries";
 import { useArticleMutations } from "../hooks/mutations";
+import { articleQueries } from "../hooks/queries";
 import { CommentForm } from "./CommentForm";
 import { CommentItem } from "./CommentItem";
 
@@ -108,14 +108,14 @@ export function CommentsSection({
 
 			<div className="space-y-2">
 				{comments.length === 0 ? (
-					<div className="flex flex-col items-center justify-center py-20 text-center bg-zinc-50/50 dark:bg-zinc-900/20 rounded-[32px] border border-dashed border-zinc-200/60 dark:border-zinc-800/60">
+					<div className="flex flex-col items-center justify-center py-20 text-center bg-zinc-50/50 dark:bg-zinc-900/20 rounded-4xl border border-dashed border-zinc-200/60 dark:border-zinc-800/60">
 						<div className="h-14 w-14 rounded-full bg-white dark:bg-zinc-900 shadow-sm flex items-center justify-center mb-4 text-zinc-300">
 							<MessageSquare className="h-7 w-7" />
 						</div>
 						<h4 className="text-sm font-bold text-zinc-800 dark:text-zinc-200">
 							No comments yet
 						</h4>
-						<p className="text-xs text-zinc-500 max-w-[180px] mt-1 mx-auto">
+						<p className="text-xs text-zinc-500 max-w-45 mt-1 mx-auto">
 							Join the conversation and be the first to share your perspective!
 						</p>
 					</div>
@@ -139,7 +139,7 @@ export function CommentsSection({
 				open={!!deletingComment}
 				onOpenChange={() => setDeletingComment(null)}
 			>
-				<DialogContent className="sm:max-w-[425px]">
+				<DialogContent className="sm:max-w-106.25">
 					<DialogHeader>
 						<DialogTitle className="flex items-center gap-2 text-red-600">
 							<AlertTriangle className="h-5 w-5" />

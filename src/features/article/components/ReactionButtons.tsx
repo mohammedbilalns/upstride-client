@@ -1,6 +1,6 @@
 import { Heart } from "lucide-react";
-import { useArticleMutations } from "../hooks/mutations";
 import { cn } from "@/shared/utils/cn";
+import { useArticleMutations } from "../hooks/mutations";
 
 interface ReactionButtonsProps {
 	articleId: string;
@@ -24,11 +24,9 @@ export function ReactionButtons({
 
 	if (isReadOnly) {
 		return (
-			<div
-				className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl text-zinc-500 select-none"
-				aria-label="Likes count"
-			>
+			<div className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl text-zinc-500 select-none">
 				<Heart className="h-5 w-5" />
+				<span className="sr-only">Likes:</span>
 				<span className="text-sm font-semibold tabular-nums">{likesCount}</span>
 			</div>
 		);

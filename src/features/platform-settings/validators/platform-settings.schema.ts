@@ -5,32 +5,32 @@ import {
 	positiveIntSchema,
 } from "@/shared/validators/number.schema";
 
-const positiveNumberSchema = z.coerce
+const PositiveNumberSchema = z.coerce
 	.number("Please enter a valid number")
 	.positive("Value must be greater than 0");
 
-export const platformCommissionsSchema = z.object({
+export const PlatformCommissionsSchema = z.object({
 	sessionPercentage: percentageSchema,
 	userTipRewardPercentage: percentageSchema,
 });
 
-export const subscriptionPlanSchema = z.object({
+export const SubscriptionPlanSchema = z.object({
 	id: z.string().min(1),
 	coinsCost: positiveIntSchema,
 	type: z.enum(["monthly", "quarterly", "yearly"]),
 });
 
 export const economySettingsSchema = z.object({
-	coinValue: positiveNumberSchema,
-	platformCommissions: platformCommissionsSchema,
-	subscriptions: z.array(subscriptionPlanSchema),
+	coinValue: PositiveNumberSchema,
+	platformCommissions: PlatformCommissionsSchema,
+	subscriptions: z.array(SubscriptionPlanSchema),
 	userJoinRewardCoinCount: nonNegativeIntSchema,
 	maxCoinsEarnablePerDay: nonNegativeIntSchema,
 	maxCoinsFromReadingPerDay: nonNegativeIntSchema,
 	maxCoinsFromEngagementPerDay: nonNegativeIntSchema,
 });
 
-export const mentorTierSchema = z.object({
+export const MentorTierSchema = z.object({
 	level: z.number().int().min(1).max(3),
 	name: z.string().trim().min(1, "Name is required"),
 	minScore: nonNegativeIntSchema.max(100, "Min score must be at most 100"),
@@ -42,9 +42,9 @@ export const mentorTierSchema = z.object({
 
 export const mentorSettingsSchema = z
 	.object({
-		starter: mentorTierSchema,
-		rising: mentorTierSchema,
-		expert: mentorTierSchema,
+		starter: MentorTierSchema,
+		rising: MentorTierSchema,
+		expert: MentorTierSchema,
 	})
 	.refine(
 		(value) =>

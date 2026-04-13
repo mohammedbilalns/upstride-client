@@ -21,13 +21,13 @@ export default function HeroSection() {
 			<h1 className="text-5xl md:text-7xl font-extrabold mb-5 tracking-tight leading-[1.1] text-foreground">
 				Connect with Expert
 				<br />
-				<span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+				<span className="bg-linear-to-r from-primary to-primary/70 bg-clip-text text-transparent">
 					Mentors &amp; Grow
 				</span>
 			</h1>
 
 			<div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-5">
-				<span className="text-[color:var(--rating)]">★</span>
+				<span className="text-(--rating)">★</span>
 				<span className="font-medium text-foreground">4.9</span>
 				<span>rating from 2000+ users</span>
 			</div>
@@ -76,7 +76,7 @@ export default function HeroSection() {
 				{stats.map((stat) => (
 					<div key={stat.number} className="text-center group">
 						<div
-							className="text-3xl font-bold bg-gradient-to-br from-primary to-primary/70 bg-clip-text text-transparent
+							className="text-3xl font-bold bg-linear-to-br from-primary to-primary/70 bg-clip-text text-transparent
 								mb-1 group-hover:scale-110 transition-transform duration-200"
 						>
 							{stat.number}

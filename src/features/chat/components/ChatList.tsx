@@ -1,18 +1,10 @@
 import { Link, useLocation, useRouteContext } from "@tanstack/react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useGetChats } from "@/features/chat/hooks";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
-function formatTime(dateStr: string): string {
-	const date = new Date(dateStr);
-	const now = new Date();
-	const isToday = date.toDateString() === now.toDateString();
-	if (isToday) {
-		return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-	}
-	return date.toLocaleDateString([], { month: "short", day: "numeric" });
-}
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useGetChats } from "@/features/chat/hooks";
+import { formatChatTimestamp } from "@/shared/utils/date";
 
 export function ChatList() {
 	const location = useLocation();
@@ -102,11 +94,20 @@ export function ChatList() {
 								</div>
 								<div className="flex-1 overflow-hidden">
 									<div className="flex justify-between items-center mb-1">
-										<h3 className="font-medium truncate text-sm">
-											{otherUser?.name || otherUserId}
-										</h3>
+										<div className="flex items-center gap-2 min-w-0">
+											<h3 className="font-medium truncate text-sm">
+												{otherUser?.name || otherUserId}
+											</h3>
+											{otherUser?.role === "MENTOR" && (
+												<Badge className="bg-primary/10 text-primary text-[10px]">
+													Mentor
+												</Badge>
+											)}
+										</div>
 										<span className="text-xs text-muted-foreground whitespace-nowrap ml-2">
-											{formatTime(lastMessageTime)}
+											{formatChatTimestamp(lastMessageTime, {
+												showDateIfNotToday: true,
+											})}
 										</span>
 									</div>
 									<div className="flex justify-between items-center gap-2">
@@ -114,7 +115,7 @@ export function ChatList() {
 											{lastMessageLabel}
 										</p>
 										{unreadCount > 0 && (
-											<span className="flex items-center justify-center w-5 h-5 bg-primary text-primary-foreground text-[10px] font-bold rounded-full flex-shrink-0">
+											<span className="flex items-center justify-center w-5 h-5 bg-primary text-primary-foreground text-[10px] font-bold rounded-full shrink-0">
 												{unreadCount}
 											</span>
 										)}

@@ -40,7 +40,7 @@ export default function FooterCTA() {
 							size="lg"
 							variant="outline"
 							className="cursor-pointer border-2 border-primary-foreground/30 text-base px-10 h-12
-								rounded-xl font-semibold !bg-transparent !text-primary-foreground hover:!bg-primary-foreground/10 transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98]"
+								rounded-xl font-semibold bg-transparent! text-primary-foreground! hover:bg-primary-foreground/10! transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98]"
 						>
 							Learn More
 						</Button>

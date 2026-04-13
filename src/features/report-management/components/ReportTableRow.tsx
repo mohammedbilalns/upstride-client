@@ -1,5 +1,5 @@
-import { ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
@@ -143,39 +143,36 @@ export function ReportTableRow({
 								Resolve
 							</Button>
 						)}
-						{report.status === "PENDING" && (
-							<>
-								{report.targetType === "USER" ? (
+						{report.status === "PENDING" &&
+							(report.targetType === "USER" ? (
+								<Button
+									variant="ghost"
+									size="sm"
+									className="h-8 px-3 text-rose-600 hover:text-rose-700 hover:bg-rose-50/50 transition-all font-bold text-[11px] rounded-lg"
+									onClick={(e) => {
+										e.stopPropagation();
+										onAction(report, "block-user");
+									}}
+									disabled={isProcessing}
+								>
+									Block User
+								</Button>
+							) : (
+								!report.isAppealSubmitted && (
 									<Button
 										variant="ghost"
 										size="sm"
 										className="h-8 px-3 text-rose-600 hover:text-rose-700 hover:bg-rose-50/50 transition-all font-bold text-[11px] rounded-lg"
 										onClick={(e) => {
 											e.stopPropagation();
-											onAction(report, "block-user");
+											onAction(report, "block-article");
 										}}
 										disabled={isProcessing}
 									>
-										Block User
+										Block Article
 									</Button>
-								) : (
-									!report.isAppealSubmitted && (
-										<Button
-											variant="ghost"
-											size="sm"
-											className="h-8 px-3 text-rose-600 hover:text-rose-700 hover:bg-rose-50/50 transition-all font-bold text-[11px] rounded-lg"
-											onClick={(e) => {
-												e.stopPropagation();
-												onAction(report, "block-article");
-											}}
-											disabled={isProcessing}
-										>
-											Block Article
-										</Button>
-									)
-								)}
-							</>
-						)}
+								)
+							))}
 						{canUnblock && (
 							<Button
 								variant="ghost"

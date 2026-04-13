@@ -9,7 +9,9 @@ export type CoinTransactionType =
 	| "refund";
 
 export type PaymentStatus = "pending" | "completed" | "failed" | "refunded";
-export type PaymentProvider = "stripe";
+export type PaymentProvider = "stripe" | "internal";
+export type PaymentPurpose = "coins" | "session";
+export type PaymentType = "STRIPE" | "COINS";
 
 export interface GetCoinBalanceResponse {
 	coinBalance: number;
@@ -55,6 +57,8 @@ export interface PaymentTransaction {
 	currency: string;
 	coinsGranted: number;
 	direction: "credit" | "debit";
+	purpose: PaymentPurpose;
+	paymentType: PaymentType;
 	createdAt: string;
 }
 
@@ -68,6 +72,8 @@ export interface GetPaymentTransactionsResponse {
 
 export interface CreateCheckoutSessionInput {
 	coins: number;
+	successPath?: string;
+	cancelPath?: string;
 }
 
 export interface CreateCheckoutSessionResponse {

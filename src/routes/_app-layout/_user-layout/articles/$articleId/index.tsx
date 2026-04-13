@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { articleQueries } from "@/features/article/hooks/queries";
-import { ArticleDetailPage } from "@/features/article/pages/ArticleDetailPage";
 import ErrorComponent from "@/components/common/Error-Component";
 import { ArticleNotFound } from "@/features/article/components/ArticleNotFound";
+import { articleQueries } from "@/features/article/hooks/queries";
+import { ArticleDetailPage } from "@/features/article/pages/ArticleDetailPage";
 
 export const Route = createFileRoute(
 	"/_app-layout/_user-layout/articles/$articleId/",
@@ -14,7 +14,7 @@ export const Route = createFileRoute(
 		const status =
 			(error as { response?: { status?: number } })?.response?.status ??
 			(error as { status?: number })?.status;
-		if (status === 404) {
+		if (status === 404 || status === 400) {
 			return (
 				<ArticleNotFound backTo="/articles" backLabel="Back to Articles" />
 			);

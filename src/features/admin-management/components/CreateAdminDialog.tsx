@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCreateAdmin } from "../hooks/use-admin-actions";
+import { useCreateAdmin } from "../hooks/admin-management-mutations";
 import { createAdminSchema } from "../validators/create-admin.schema";
 
 interface CreateAdminDialogProps {
@@ -45,7 +45,7 @@ export function CreateAdminDialog({
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="sm:max-w-[520px]">
+			<DialogContent className="sm:max-w-130">
 				<DialogHeader>
 					<DialogTitle>Create Admin</DialogTitle>
 					<DialogDescription>

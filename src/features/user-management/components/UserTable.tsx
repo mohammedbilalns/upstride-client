@@ -1,4 +1,3 @@
-import { format } from "date-fns";
 import {
 	Calendar,
 	Loader2,
@@ -19,7 +18,11 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { useBlockUser, useUnblockUser } from "../hooks/use-user-actions";
+import { formatDateShort } from "@/shared/utils/date";
+import {
+	useBlockUser,
+	useUnblockUser,
+} from "../hooks/user-management-mutations";
 import type { UserListItem } from "../types";
 
 interface UserTableProps {
@@ -32,6 +35,10 @@ export function UserTable({ users }: UserTableProps) {
 	const [actionType, setActionType] = useState<"block" | "unblock" | null>(
 		null,
 	);
+	const [processing, setProcessing] = useState<{
+		userId: string;
+		action: "block" | "unblock";
+	} | null>(null);
 
 	const blockMutation = useBlockUser();
 	const unblockMutation = useUnblockUser();
@@ -41,25 +48,33 @@ export function UserTable({ users }: UserTableProps) {
 
 		const mutation = actionType === "block" ? blockMutation : unblockMutation;
 
-		await mutation.mutateAsync(
-			{ userId: selectedUser.id },
-			{
-				onSuccess: () => {
-					setSelectedUser(null);
-					setActionType(null);
+		setProcessing({ userId: selectedUser.id, action: actionType });
+
+		try {
+			await mutation.mutateAsync(
+				{ userId: selectedUser.id },
+				{
+					onSuccess: () => {
+						setSelectedUser(null);
+						setActionType(null);
+					},
 				},
-			},
-		);
+			);
+		} finally {
+			setProcessing(null);
+		}
 	};
 
-	const isProcessing = blockMutation.isPending || unblockMutation.isPending;
+	const isProcessing =
+		(processing?.action === "block" && blockMutation.isPending) ||
+		(processing?.action === "unblock" && unblockMutation.isPending);
 
 	return (
 		<div className="bg-card rounded-xl border shadow-sm overflow-hidden">
 			<Table>
 				<TableHeader className="bg-muted/50">
 					<TableRow>
-						<TableHead className="w-[300px] py-4">User Details</TableHead>
+						<TableHead className="w-75 py-4">User Details</TableHead>
 						<TableHead>Role</TableHead>
 						<TableHead>Status</TableHead>
 						<TableHead>Joined Date</TableHead>
@@ -132,7 +147,7 @@ export function UserTable({ users }: UserTableProps) {
 								<TableCell>
 									<span className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
 										<Calendar className="w-3.5 h-3.5" />
-										{format(new Date(user.joinedAt), "MMM dd, yyyy")}
+										{formatDateShort(user.joinedAt)}
 									</span>
 								</TableCell>
 								<TableCell className="text-right">
@@ -145,7 +160,7 @@ export function UserTable({ users }: UserTableProps) {
 												setSelectedUser(user);
 												setActionType("block");
 											}}
-											disabled={isProcessing}
+											disabled={processing?.userId === user.id}
 										>
 											<ShieldAlert className="w-4 h-4 mr-2" />
 											Block
@@ -159,7 +174,7 @@ export function UserTable({ users }: UserTableProps) {
 												setSelectedUser(user);
 												setActionType("unblock");
 											}}
-											disabled={isProcessing}
+											disabled={processing?.userId === user.id}
 										>
 											<ShieldCheck className="w-4 h-4 mr-2" />
 											Unblock

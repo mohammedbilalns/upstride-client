@@ -1,6 +1,6 @@
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import { chatService } from "../services/chat.service";
-import type { GetChatsInput, GetChatInput } from "../types";
+import type { GetChatInput, GetChatsInput } from "../types";
 
 export const chatKeys = {
 	all: ["chats"] as const,

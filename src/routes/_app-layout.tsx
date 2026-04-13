@@ -1,4 +1,5 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { GlobalSuccessHandler } from "@/components/common/GlobalSuccessHandler";
 import UserNavbar from "@/components/common/Navbar";
 
 /**
@@ -20,6 +21,7 @@ function AppLayout() {
 	return (
 		<>
 			<UserNavbar />
+			<GlobalSuccessHandler />
 			<main className="flex-1 pt-20">
 				<Outlet />
 			</main>

@@ -1,18 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
-import { ArrowLeft, Flag } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { ReportDialog } from "@/components/common/ReportDialog";
-import { useProfile } from "@/features/profile-management/hooks/use-profile";
-import { MentorArticlesSection } from "../components/MentorArticlesSection";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft, Coins, CreditCard } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import type { ApiError } from "@/api/apiError";
 import { AddBalanceForm } from "@/components/common/AddBalanceForm";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
 	Dialog,
@@ -21,42 +15,66 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
+import type { AvailabilitySlot } from "@/features/availability-management/types";
 import {
 	coinManagementService,
 	useCoinBalance,
 } from "@/features/coin-management";
 import { publicMentorProfileService } from "@/features/mentor-public-profile";
-import type { PublicMentorSlot } from "@/features/mentor-public-profile/types";
+import { useProfile } from "@/features/profile-management/hooks/use-profile";
 import { sessionBookingService } from "@/features/session-booking-management";
+import { cn } from "@/shared/utils/cn";
+import { formatLocaleTimeShort } from "@/shared/utils/date";
+import { BookingCalendarSelector } from "../components/BookingCalendarSelector";
+import { MentorArticlesSection } from "../components/MentorArticlesSection";
+import { MentorProfileDetails } from "../components/MentorProfileDetails";
+
+declare module "@tanstack/react-router" {
+	interface HistoryState {
+		receiver?: {
+			id: string;
+			name: string;
+			profilePictureUrl?: string | null;
+		};
+	}
+}
 
 interface PublicMentorProfilePageProps {
 	mentorId: string;
 	isAdminView?: boolean;
 }
 
-const PENDING_BOOKING_STORAGE_KEY = "pending-booking-slot";
-
 export function PublicMentorProfilePage({
 	mentorId,
 	isAdminView = false,
 }: PublicMentorProfilePageProps) {
+	const navigate = useNavigate();
 	const { data: currentUser } = useProfile();
 	const queryClient = useQueryClient();
 	const [selectedDate, setSelectedDate] = useState<Date | undefined>(
 		new Date(),
 	);
 	const [bookingSlotId, setBookingSlotId] = useState<string | null>(null);
-	const [selectedSlot, setSelectedSlot] = useState<PublicMentorSlot | null>(
+	const [selectedSlot, setSelectedSlot] = useState<AvailabilitySlot | null>(
 		null,
 	);
 	const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 	const [isTopUpOpen, setIsTopUpOpen] = useState(false);
+	const [paymentType, setPaymentType] = useState<"COINS" | "STRIPE">("COINS");
+	const today = useMemo(() => {
+		const d = new Date();
+		d.setHours(0, 0, 0, 0);
+		return d;
+	}, []);
 
 	const profileQuery = useQuery({
 		queryKey: ["public-mentor-profile", mentorId],
 		queryFn: () => publicMentorProfileService.getPublicProfile(mentorId),
 	});
+	const mentorProfileId = profileQuery.data?.data.profile.id;
 
 	const coinBalanceQuery = useCoinBalance();
 
@@ -69,23 +87,54 @@ export function PublicMentorProfilePage({
 	}, [selectedDate]);
 
 	const slotsQuery = useQuery({
-		queryKey: ["public-mentor-available-slots", mentorId, selectedDateKey],
+		queryKey: [
+			"public-mentor-available-slots",
+			mentorProfileId,
+			selectedDateKey,
+		],
 		queryFn: () =>
 			publicMentorProfileService.getAvailableSlotsForDay(
-				mentorId,
+				mentorProfileId ?? mentorId,
 				selectedDateKey,
 			),
-		enabled: Boolean(selectedDateKey) && !isAdminView,
+		enabled:
+			Boolean(selectedDateKey) && !isAdminView && Boolean(mentorProfileId),
 	});
 
+	const clearTopupState = useCallback(() => {
+		localStorage.removeItem("pending_booking_topup");
+		const params = new URLSearchParams(window.location.search);
+		if (!params.has("topup")) return;
+		params.delete("topup");
+		const next = params.toString();
+		const url = `${window.location.pathname}${next ? `?${next}` : ""}`;
+		window.history.replaceState({}, "", url);
+	}, []);
+
 	const bookMutation = useMutation({
-		mutationFn: (slotId: string) =>
-			sessionBookingService.bookSession({ slotId }),
-		onMutate: (slotId) => {
-			setBookingSlotId(slotId);
+		mutationFn: (data: {
+			mentorId: string;
+			startTime: string;
+			endTime: string;
+			paymentType: "COINS" | "STRIPE";
+		}) => sessionBookingService.bookSession(data),
+		onMutate: (data) => {
+			setBookingSlotId(data.startTime);
 		},
 		onSuccess: (response) => {
-			toast.success(response.message || "Session booked successfully");
+			if (response.data.paymentUrl) {
+				window.location.href = response.data.paymentUrl;
+				return;
+			}
+			clearTopupState();
+			navigate({
+				to: "/sessions",
+				search: (prev) => ({
+					...prev,
+					booking_success: true,
+					booking_id: response.data.bookingId,
+				}),
+			});
 			setIsConfirmOpen(false);
 			setSelectedSlot(null);
 			queryClient.invalidateQueries({ queryKey: ["wallet", "balance"] });
@@ -102,6 +151,7 @@ export function PublicMentorProfilePage({
 				"Failed to book session";
 			toast.error(message);
 			setIsConfirmOpen(false);
+			clearTopupState();
 		},
 		onSettled: () => {
 			setBookingSlotId(null);
@@ -109,104 +159,93 @@ export function PublicMentorProfilePage({
 	});
 
 	const profile = profileQuery.data?.data.profile;
-	const nextAvailableSessions =
-		profileQuery.data?.data.nextAvailableSessions ?? [];
 	const isReported = profileQuery.data?.data.isReported ?? false;
 	const availableSlots = slotsQuery.data?.data.slots ?? [];
 	const coinBalance = coinBalanceQuery.data?.coinBalance ?? 0;
 	const coinValue = coinBalanceQuery.data?.coinValue;
+	const directPaymentAmount =
+		selectedSlot && coinValue ? selectedSlot.price / coinValue : undefined;
+	const requiredCoins = selectedSlot
+		? Math.max(selectedSlot.price - coinBalance, 0)
+		: 0;
+	const insufficientCoins =
+		paymentType === "COINS" &&
+		!!selectedSlot &&
+		coinBalance < selectedSlot.price;
 
-	const formatDate = (value: Date) =>
-		value.toLocaleDateString(undefined, {
-			year: "numeric",
-			month: "long",
-			day: "numeric",
-		});
-
-	const formatTime = (value: string) => {
-		const date = new Date(value);
-		if (Number.isNaN(date.getTime())) return value;
-		return date.toLocaleTimeString(undefined, {
-			hour: "2-digit",
-			minute: "2-digit",
-		});
-	};
-
-	const storePendingSlot = (slot: PublicMentorSlot) => {
-		try {
-			localStorage.setItem(
-				PENDING_BOOKING_STORAGE_KEY,
-				JSON.stringify({ mentorId, slot, source: "mentor" }),
-			);
-		} catch {
-			// Ignore storage failures.
-		}
-	};
-
-	const loadPendingSlot = () => {
-		try {
-			const raw = localStorage.getItem(PENDING_BOOKING_STORAGE_KEY);
-			if (!raw) return null;
-			const parsed = JSON.parse(raw) as {
-				mentorId: string;
-				slot: PublicMentorSlot;
-				source?: string;
-			};
-			if (parsed.mentorId !== mentorId) return null;
-			if (parsed.source !== "mentor") return null;
-			return parsed.slot;
-		} catch {
-			return null;
-		}
-	};
-
-	const clearPendingSlot = () => {
-		try {
-			localStorage.removeItem(PENDING_BOOKING_STORAGE_KEY);
-		} catch {
-			// Ignore storage failures.
-		}
-	};
-
-	useEffect(() => {
-		if (!coinBalanceQuery.data) return;
-		const pending = loadPendingSlot();
-		if (!pending) return;
-		if (coinBalance >= pending.price) {
-			setSelectedSlot(pending);
-			setIsConfirmOpen(true);
-			clearPendingSlot();
-		}
-	}, [coinBalance, coinBalanceQuery.data, mentorId]);
-
-	const handleBookClick = (slot: PublicMentorSlot) => {
+	const handleBookClick = (slot: AvailabilitySlot) => {
 		setSelectedSlot(slot);
-		if (coinBalanceQuery.isLoading) {
-			toast.info("Checking your coin balance...");
-			return;
-		}
-		if (coinBalance < slot.price) {
-			setIsTopUpOpen(true);
-			return;
-		}
 		setIsConfirmOpen(true);
 	};
 
-	const handleConfirmBooking = () => {
+	const handleConfirmBooking = useCallback(() => {
 		if (!selectedSlot) return;
-		bookMutation.mutate(selectedSlot.id);
-	};
+
+		if (paymentType === "COINS" && coinBalance < selectedSlot.price) {
+			setIsTopUpOpen(true);
+			setIsConfirmOpen(false);
+			return;
+		}
+
+		bookMutation.mutate({
+			mentorId: mentorProfileId ?? mentorId,
+			startTime: selectedSlot.startTime,
+			endTime: selectedSlot.endTime,
+			paymentType,
+		});
+	}, [
+		selectedSlot,
+		paymentType,
+		coinBalance,
+		mentorProfileId,
+		mentorId,
+		bookMutation,
+	]);
 
 	const handleCheckout = async (coins: number) => {
-		if (!selectedSlot) return;
-		storePendingSlot(selectedSlot);
+		if (selectedSlot) {
+			localStorage.setItem(
+				"pending_booking_topup",
+				JSON.stringify({
+					mentorId: mentorProfileId ?? mentorId,
+					slot: selectedSlot,
+				}),
+			);
+		}
+		const params = new URLSearchParams(window.location.search);
+		params.set("topup", "1");
+		const successPath = `${window.location.pathname}?${params.toString()}`;
 		const session = await coinManagementService.createCheckoutSession({
 			coins,
+			successPath,
+			cancelPath: successPath,
 		});
 		if (session.url) {
 			window.location.href = session.url;
 		}
 	};
+
+	useEffect(() => {
+		const params = new URLSearchParams(window.location.search);
+		if (params.get("topup") !== "1") return;
+		if (selectedSlot) return;
+		const raw = localStorage.getItem("pending_booking_topup");
+		if (!raw) return;
+		try {
+			const parsed = JSON.parse(raw) as {
+				mentorId: string;
+				slot: AvailabilitySlot;
+			};
+			if (parsed?.mentorId !== (mentorProfileId ?? mentorId) || !parsed?.slot)
+				return;
+			setSelectedSlot(parsed.slot);
+			setPaymentType("COINS");
+			setIsTopUpOpen(false);
+			setIsConfirmOpen(true);
+		} catch {
+			// ignore
+		}
+	}, [mentorProfileId, mentorId, selectedSlot]);
 
 	if (profileQuery.isLoading) {
 		return (
@@ -240,245 +279,33 @@ export function PublicMentorProfilePage({
 					</Link>
 				</Button>
 			)}
-			<div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-6">
-				<Card className="border-border/60 shadow-sm">
-					<CardHeader className="space-y-4">
-						<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-							<div className="flex items-center gap-4">
-								<Avatar className="h-16 w-16 rounded-2xl border">
-									<AvatarImage
-										src={profile.user.avatar || ""}
-										alt={profile.user.name}
-										className="object-cover"
-									/>
-									<AvatarFallback className="rounded-2xl bg-amber-100 text-amber-700">
-										{profile.user.name.charAt(0).toUpperCase()}
-									</AvatarFallback>
-								</Avatar>
-								<div>
-									<h1 className="text-2xl font-semibold">
-										{profile.user.name}
-									</h1>
-									<p className="text-sm text-muted-foreground">
-										{profile.currentRole?.name || "Mentor"}
-									</p>
-									<p className="text-sm text-muted-foreground">
-										{profile.organization}
-									</p>
-								</div>
-							</div>
-							{!isAdminView && (
-								<div className="flex items-center gap-3">
-									<Button asChild className="px-6">
-										<Link
-											to="/chats/$chatId"
-											params={{ chatId: profile.user.id }}
-											state={{
-												receiver: {
-													id: profile.user.id,
-													name: profile.user.name,
-													profilePictureUrl: profile.user.avatar ?? null,
-												},
-											}}
-										>
-											Chat
-										</Link>
-									</Button>
-									{profile.personalWebsite && (
-										<Button variant="outline" className="px-6" asChild>
-											<a
-												href={profile.personalWebsite}
-												target="_blank"
-												rel="noreferrer"
-											>
-												Website
-											</a>
-										</Button>
-									)}
-									{currentUser?.id !== profile.user.id &&
-										(isReported ? (
-											<Button
-												variant="outline"
-												className="px-4 text-muted-foreground cursor-not-allowed"
-												disabled
-											>
-												<Flag className="h-4 w-4 mr-1" />
-												Report Submitted
-											</Button>
-										) : (
-											<ReportDialog
-												targetId={profile.user.id}
-												targetType="USER"
-												trigger={
-													<Button variant="outline" className="px-4">
-														<Flag className="h-4 w-4" />
-													</Button>
-												}
-											/>
-										))}
-								</div>
-							)}
-						</div>
-						<div className="flex flex-wrap gap-2">
-							<Badge variant="secondary">
-								{profile.yearsOfExperience} years experience
-							</Badge>
-							<Badge variant="secondary">
-								{profile.avgRating.toFixed(1)} rating
-							</Badge>
-						</div>
-					</CardHeader>
-					<CardContent className="space-y-6">
-						<p className="text-sm text-muted-foreground leading-relaxed">
-							{profile.bio}
-						</p>
-						<Separator />
-						<div className="space-y-3">
-							<h3 className="text-sm font-semibold">Expertise</h3>
-							<div className="flex flex-wrap gap-2">
-								{profile.expertises.map((expertise) => (
-									<Badge key={expertise.id} variant="secondary">
-										{expertise.name}
-									</Badge>
-								))}
-							</div>
-						</div>
-						<div className="space-y-3">
-							<h3 className="text-sm font-semibold">Skills</h3>
-							<div className="flex flex-wrap gap-2">
-								{profile.skills.map((skill) => (
-									<Badge key={skill.id} variant="outline">
-										{skill.name} · {skill.level.toLowerCase()}
-									</Badge>
-								))}
-							</div>
-						</div>
-						<div className="space-y-3">
-							<h3 className="text-sm font-semibold">Education</h3>
-							<ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
-								{profile.educationalQualifications.map((edu) => (
-									<li key={edu}>{edu}</li>
-								))}
-							</ul>
-						</div>
-					</CardContent>
-				</Card>
-
+			<div
+				className={cn(
+					"grid gap-6",
+					!isAdminView
+						? "grid-cols-1 lg:grid-cols-[1.2fr_1fr]"
+						: "grid-cols-1 max-w-4xl",
+				)}
+			>
+				<MentorProfileDetails
+					profile={profile}
+					isAdminView={isAdminView}
+					currentUser={currentUser}
+					isReported={isReported}
+				/>
 				{!isAdminView && (
-					<Card className="border-border/60 shadow-sm">
-						<CardHeader>
-							<CardTitle className="text-lg">Next available sessions</CardTitle>
-						</CardHeader>
-						<CardContent className="space-y-3">
-							{nextAvailableSessions.length === 0 && (
-								<p className="text-sm text-muted-foreground">
-									No upcoming sessions yet.
-								</p>
-							)}
-							{nextAvailableSessions.map((slot) => (
-								<div
-									key={slot.id}
-									className="flex items-center justify-between rounded-lg border border-border/60 p-3"
-								>
-									<div>
-										<p className="font-medium">
-											{formatTime(slot.startTime)} - {formatTime(slot.endTime)}
-										</p>
-										<p className="text-xs text-muted-foreground">
-											{new Date(slot.startTime).toLocaleDateString()} ·{" "}
-											{slot.durationMinutes} mins · {slot.price} coins
-										</p>
-									</div>
-									<div className="flex items-center gap-2">
-										<Badge variant="secondary">Available</Badge>
-										<Button
-											size="sm"
-											onClick={() => handleBookClick(slot)}
-											disabled={
-												bookMutation.isPending && bookingSlotId === slot.id
-											}
-										>
-											{bookMutation.isPending && bookingSlotId === slot.id
-												? "Booking..."
-												: "Book"}
-										</Button>
-									</div>
-								</div>
-							))}
-						</CardContent>
-					</Card>
+					<BookingCalendarSelector
+						today={today}
+						selectedDate={selectedDate}
+						setSelectedDate={setSelectedDate}
+						isLoading={slotsQuery.isLoading}
+						availableSlots={availableSlots}
+						handleBookClick={handleBookClick}
+						bookingSlotId={bookingSlotId}
+						isBooking={bookMutation.isPending}
+					/>
 				)}
 			</div>
-
-			{!isAdminView && (
-				<Card className="border-border/60 shadow-sm">
-					<CardHeader className="flex flex-col gap-2">
-						<CardTitle className="text-lg">Pick a day</CardTitle>
-						<p className="text-sm text-muted-foreground">
-							Choose a date to see available slots.
-						</p>
-					</CardHeader>
-					<CardContent className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6">
-						<div className="border border-border/60 rounded-lg p-3">
-							<Calendar
-								mode="single"
-								selected={selectedDate}
-								onSelect={(date) => setSelectedDate(date ?? undefined)}
-								className="w-full"
-							/>
-						</div>
-						<div className="space-y-3">
-							<div className="flex items-center justify-between">
-								<h3 className="font-semibold">Available slots</h3>
-								{selectedDate && (
-									<span className="text-sm text-muted-foreground">
-										{formatDate(selectedDate)}
-									</span>
-								)}
-							</div>
-							{slotsQuery.isLoading && (
-								<p className="text-sm text-muted-foreground">
-									Loading slots...
-								</p>
-							)}
-							{!slotsQuery.isLoading && availableSlots.length === 0 && (
-								<p className="text-sm text-muted-foreground">
-									No available slots for this day.
-								</p>
-							)}
-							{availableSlots.map((slot) => (
-								<div
-									key={slot.id}
-									className="flex items-center justify-between rounded-lg border border-border/60 p-3"
-								>
-									<div>
-										<p className="font-medium">
-											{formatTime(slot.startTime)} - {formatTime(slot.endTime)}
-										</p>
-										<p className="text-xs text-muted-foreground">
-											{slot.durationMinutes} mins · {slot.price} coins
-										</p>
-									</div>
-									<div className="flex items-center gap-2">
-										<Badge variant="secondary">Available</Badge>
-										<Button
-											size="sm"
-											onClick={() => handleBookClick(slot)}
-											disabled={
-												bookMutation.isPending && bookingSlotId === slot.id
-											}
-										>
-											{bookMutation.isPending && bookingSlotId === slot.id
-												? "Booking..."
-												: "Book"}
-										</Button>
-									</div>
-								</div>
-							))}
-						</div>
-					</CardContent>
-				</Card>
-			)}
 
 			<Card className="border-border/60 shadow-sm mt-8">
 				<CardHeader>
@@ -497,41 +324,106 @@ export function PublicMentorProfilePage({
 			<ConfirmModal
 				isOpen={isConfirmOpen}
 				onClose={() => {
+					clearTopupState();
 					setIsConfirmOpen(false);
 					setSelectedSlot(null);
 				}}
 				onConfirm={handleConfirmBooking}
-				title="Confirm booking"
+				title={insufficientCoins ? "Insufficient coins" : "Confirm booking"}
 				message={
-					selectedSlot
-						? `Book this session for ${selectedSlot.price} coins?`
-						: "Book this session?"
+					insufficientCoins
+						? "You don't have enough coins to pay."
+						: selectedSlot
+							? "Book this session?"
+							: "Book this session?"
 				}
-				confirmText="Confirm booking"
+				confirmText={
+					insufficientCoins
+						? "Add more coins"
+						: paymentType === "STRIPE"
+							? "Pay and book"
+							: "Confirm booking"
+				}
 				isLoading={bookMutation.isPending}
 			>
 				{selectedSlot && (
-					<div className="mt-3 space-y-1 text-sm text-muted-foreground">
-						<p>
-							Time: {formatTime(selectedSlot.startTime)} -{" "}
-							{formatTime(selectedSlot.endTime)}
-						</p>
-						<p>Duration: {selectedSlot.durationMinutes} mins</p>
-						<p>
-							Balance after booking:{" "}
-							{Math.max(coinBalance - selectedSlot.price, 0)}
-						</p>
+					<div className="mt-4 space-y-4">
+						<div className="space-y-1 text-sm text-muted-foreground">
+							{insufficientCoins && (
+								<p className="rounded-md border border-amber-200/80 bg-amber-50/70 px-3 py-2 text-xs text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300">
+									You don&apos;t have enough coins to pay. Add more coins to
+									continue.
+								</p>
+							)}
+							<p>
+								Time: {formatLocaleTimeShort(selectedSlot.startTime)} -{" "}
+								{formatLocaleTimeShort(selectedSlot.endTime)}
+							</p>
+							<p>Duration: {selectedSlot.durationMinutes} mins</p>
+							<p className="font-medium text-foreground">
+								Price:{" "}
+								{paymentType === "STRIPE" && directPaymentAmount !== undefined
+									? `₹${directPaymentAmount.toFixed(2)}`
+									: `${selectedSlot.price} coins`}
+							</p>
+						</div>
+
+						<Separator />
+
+						<div className="space-y-3">
+							<Label className="text-sm font-semibold">Payment Method</Label>
+							<RadioGroup
+								value={paymentType}
+								onValueChange={(val: "COINS" | "STRIPE") => setPaymentType(val)}
+								className="grid grid-cols-2 gap-4"
+							>
+								<div className="flex items-center space-x-2">
+									<RadioGroupItem value="COINS" id="coins" />
+									<Label
+										htmlFor="coins"
+										className="flex items-center gap-2 cursor-pointer"
+									>
+										<Coins className="h-4 w-4 text-amber-500" />
+										Coins ({coinBalance})
+									</Label>
+								</div>
+								<div className="flex items-center space-x-2">
+									<RadioGroupItem value="STRIPE" id="stripe" />
+									<Label
+										htmlFor="stripe"
+										className="flex items-center gap-2 cursor-pointer"
+									>
+										<CreditCard className="h-4 w-4 text-blue-500" />
+										Direct Payment
+										{directPaymentAmount !== undefined
+											? ` (₹${directPaymentAmount.toFixed(2)})`
+											: ""}
+									</Label>
+								</div>
+							</RadioGroup>
+						</div>
+
+						{paymentType === "COINS" && (
+							<p className="text-xs text-muted-foreground">
+								Balance after booking:{" "}
+								<span
+									className={
+										coinBalance < selectedSlot.price ? "text-red-500" : ""
+									}
+								>
+									{Math.max(coinBalance - selectedSlot.price, 0)} coins
+								</span>
+							</p>
+						)}
 					</div>
 				)}
 			</ConfirmModal>
 			<Dialog open={isTopUpOpen} onOpenChange={setIsTopUpOpen}>
 				<DialogContent className="sm:max-w-[520px]">
 					<DialogHeader>
-						<DialogTitle>Insufficient coins</DialogTitle>
+						<DialogTitle>Add more coins</DialogTitle>
 						<DialogDescription>
-							You need{" "}
-							{selectedSlot ? Math.max(selectedSlot.price - coinBalance, 0) : 0}{" "}
-							more coins to book this session.
+							Add coins to continue booking this session.
 						</DialogDescription>
 					</DialogHeader>
 					<div className="mt-2 space-y-4">
@@ -543,15 +435,17 @@ export function PublicMentorProfilePage({
 								</span>
 							</p>
 						</div>
+						<Separator />
 						<AddBalanceForm
+							key={requiredCoins || 0}
 							onSubmit={handleCheckout}
 							coinValue={coinValue}
 							label="Purchase coins"
 							placeholder="Enter Coins"
+							defaultCoins={requiredCoins}
+							minCoins={requiredCoins}
+							minCoinsWarning="The amount is below what you need to complete this booking."
 						/>
-						<div className="text-xs text-muted-foreground">
-							After payment, you will be redirected back to continue booking.
-						</div>
 					</div>
 				</DialogContent>
 			</Dialog>

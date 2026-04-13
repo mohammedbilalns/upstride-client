@@ -1,18 +1,12 @@
-import { FileIcon, FileText, Clock } from "lucide-react";
-import type { ChatMessageDto } from "@/features/chat/types";
+import { Clock, FileIcon, FileText } from "lucide-react";
 import { ProgressiveImage } from "@/components/common/ProgressiveImage";
+import type { ChatMessageDto } from "@/features/chat/types";
+import { formatChatTimestamp } from "@/shared/utils/date";
 
 interface ChatMessageProps {
 	message: ChatMessageDto;
 	isMe: boolean;
 	localMediaPreviews?: Record<string, string>;
-}
-
-function formatTime(dateStr: string): string {
-	return new Date(dateStr).toLocaleTimeString([], {
-		hour: "2-digit",
-		minute: "2-digit",
-	});
 }
 
 export function ChatMessage({
@@ -90,7 +84,7 @@ export function ChatMessage({
 
 				<div className="flex items-center gap-1 mt-0.5 mx-1">
 					<span className="text-[10px] text-muted-foreground ">
-						{formatTime(message.createdAt)}
+						{formatChatTimestamp(message.createdAt)}
 					</span>
 					{message.status === "sending" && (
 						<Clock className="w-2.5 h-2.5 text-muted-foreground animate-pulse" />

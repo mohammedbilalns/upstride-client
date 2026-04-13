@@ -16,6 +16,8 @@ import { Label } from "@/components/ui/label";
 import {
 	buildEmptyStringErrors,
 	buildFieldErrorsFromIssues,
+	getErrorMessage,
+	parseNumberInput,
 } from "@/shared/utils/form-validation";
 import type { MentorSettingsConfig } from "../types";
 import { mentorSettingsSchema } from "../validators/platform-settings.schema";
@@ -91,21 +93,8 @@ export function MentorSettings({
 		}
 	};
 
-	const parseNumberInput = (value: string): number | "" =>
-		value === "" ? "" : Number(value);
-	const getErrorMessage = (errors: unknown) => {
-		if (!errors) return undefined;
-		if (Array.isArray(errors)) {
-			const first = errors[0] as { message?: string } | undefined;
-			return first?.message || first?.toString() || undefined;
-		}
-		if (typeof errors === "string") return errors;
-		if (typeof errors === "object") {
-			const message = (errors as { message?: string }).message;
-			return message || String(errors);
-		}
-		return String(errors);
-	};
+	const getFieldErrorMessage = (errors: unknown) =>
+		getErrorMessage(errors) || String(errors);
 
 	return (
 		<div className="space-y-6">
@@ -142,7 +131,7 @@ export function MentorSettings({
 									</div>
 
 									<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-										<form.Field name={`${tier.key}.name` as any}>
+										<form.Field name={`${tier.key}.name`}>
 											{(subField) => (
 												<div className="space-y-2">
 													<Label className="text-xs">Tier Name</Label>
@@ -155,14 +144,14 @@ export function MentorSettings({
 														onBlur={subField.handleBlur}
 													/>
 													<FieldError
-														message={getErrorMessage(
+														message={getFieldErrorMessage(
 															subField.state.meta.errors,
 														)}
 													/>
 												</div>
 											)}
 										</form.Field>
-										<form.Field name={`${tier.key}.minScore` as any}>
+										<form.Field name={`${tier.key}.minScore`}>
 											{(subField) => (
 												<div className="space-y-2">
 													<Label className="text-xs">Min Score</Label>
@@ -178,14 +167,14 @@ export function MentorSettings({
 														onBlur={subField.handleBlur}
 													/>
 													<FieldError
-														message={getErrorMessage(
+														message={getFieldErrorMessage(
 															subField.state.meta.errors,
 														)}
 													/>
 												</div>
 											)}
 										</form.Field>
-										<form.Field name={`${tier.key}.maxScore` as any}>
+										<form.Field name={`${tier.key}.maxScore`}>
 											{(subField) => (
 												<div className="space-y-2">
 													<Label className="text-xs">Max Score</Label>
@@ -201,14 +190,14 @@ export function MentorSettings({
 														onBlur={subField.handleBlur}
 													/>
 													<FieldError
-														message={getErrorMessage(
+														message={getFieldErrorMessage(
 															subField.state.meta.errors,
 														)}
 													/>
 												</div>
 											)}
 										</form.Field>
-										<form.Field name={`${tier.key}.maxPricePer30Min` as any}>
+										<form.Field name={`${tier.key}.maxPricePer30Min`}>
 											{(subField) => (
 												<div className="space-y-2">
 													<Label className="text-xs">Max Price / 30 Min</Label>
@@ -223,7 +212,7 @@ export function MentorSettings({
 														onBlur={subField.handleBlur}
 													/>
 													<FieldError
-														message={getErrorMessage(
+														message={getFieldErrorMessage(
 															subField.state.meta.errors,
 														)}
 													/>

@@ -1,11 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
+import type { ApiError } from "@/api/apiError";
 import { profileService } from "../services/profile.service";
-
 import type { ChangePasswordInput, ChangePasswordOutput } from "../types";
 
 export function useChangePassword(options?: {
 	onSuccess?: (response: ChangePasswordOutput) => void;
-	onError?: (error: any) => void;
+	onError?: (error: ApiError) => void;
 }) {
 	return useMutation({
 		mutationFn: (data: ChangePasswordInput) =>

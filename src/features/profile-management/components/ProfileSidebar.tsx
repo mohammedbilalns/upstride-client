@@ -1,24 +1,23 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import {
-	User,
-	ShieldCheck,
 	Bookmark,
-	LayoutDashboard,
 	CalendarClock,
-	Repeat,
-	FileText,
 	ChevronRight,
+	FileText,
 	LogOut,
+	Repeat,
+	ShieldCheck,
+	User,
 } from "lucide-react";
-import { cn } from "@/shared/utils/cn";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useLogout } from "@/features/authentication/hooks/use-logout";
 import { Button } from "@/components/ui/button";
+import { useLogout } from "@/features/authentication/hooks/use-logout";
+import { cn } from "@/shared/utils/cn";
 
 interface SidebarItem {
 	to: string;
 	label: string;
-	icon: any;
+	icon: React.ComponentType<{ className?: string }>;
 }
 
 interface SidebarSection {
@@ -71,23 +70,13 @@ export function ProfileSidebar({ user, isMentor }: ProfileSidebarProps) {
 						title: "Mentoring",
 						items: [
 							{
-								to: "/mentor-dashboard",
-								label: "Dashboard",
-								icon: LayoutDashboard,
-							},
-							{
-								to: "/mentor-slot-management",
-								label: "Slot Management",
-								icon: CalendarClock,
-							},
-							{
 								to: "/mentor-rule-management",
 								label: "Rule Management",
 								icon: Repeat,
 							},
 							{
 								to: "/mentor-sessions",
-								label: "Mentor Sessions",
+								label: "Hosting Sessions",
 								icon: CalendarClock,
 							},
 							{
