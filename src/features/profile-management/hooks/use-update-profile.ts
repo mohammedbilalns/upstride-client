@@ -44,9 +44,7 @@ export function useUpdateProfile(options?: {
 						authContext.accessToken,
 						authContext.csrfToken ?? "",
 					);
-				} catch {
-					// If refresh fails, keep current auth context to avoid breaking UI.
-				}
+				} catch {}
 			}
 			options?.onSuccess?.(response);
 		},

@@ -45,6 +45,12 @@ export function ArticlesPage() {
 		}
 	}, [debouncedSearch, search.search, updateSearch]);
 
+	useEffect(() => {
+		if ((search.search ?? "") !== searchInput) {
+			setSearchInput(search.search ?? "");
+		}
+	}, [search.search, searchInput]);
+
 	const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
 		useInfiniteQuery(
 			articleQueries.listInfinite({
