@@ -10,20 +10,23 @@ export const Route = createFileRoute("/_app-layout/call/$bookingId")({
 		// current user is either the mentor or the mentee.
 		try {
 			const me = await authService.getMe();
-			const booking = await sessionBookingService.getBookingDetails(
+			const userId = me.data.user.id;
+			const bookingResponse = await sessionBookingService.getBookingDetails(
 				params.bookingId,
 			);
+			const booking = bookingResponse.data.booking;
+
 			if (
 				!booking ||
-				(booking.mentorId !== me.data.id && booking.menteeId !== me.data.id)
+				(booking.mentorUserId !== userId && booking.menteeId !== userId)
 			) {
 				throw redirect({ to: "/" });
 			}
 
 			return {
 				booking,
-				userId: me.data.id,
-				isMentor: booking.mentorId === me.data.id,
+				userId: userId,
+				isMentor: booking.mentorUserId === userId,
 				menteeId: booking.menteeId,
 			};
 		} catch (error) {

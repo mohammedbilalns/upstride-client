@@ -80,6 +80,7 @@ export interface GetBookingsInput {
 export interface BookingDto {
 	id: string;
 	mentorId: string;
+	mentorUserId: string | null;
 	menteeId: string;
 	startTime: string;
 	endTime: string;

@@ -105,21 +105,16 @@ export function SessionDetailsDialog({
 						{!isCancelled && (
 							<div className="space-y-1">
 								<p className="text-xs uppercase tracking-wide text-muted-foreground">
-									Meeting Link
+									Virtual Meeting Room
 								</p>
-								{selectedBooking.meetingLink &&
-								selectedBooking.meetingLink !== "Pending" ? (
-									<Link
-										to="/call/$bookingId"
-										params={{ bookingId: selectedBooking.id }}
-										className="flex items-center gap-2 text-primary font-medium hover:underline"
-									>
-										<Video className="h-4 w-4" />
-										<span>Join Meeting Room</span>
-									</Link>
-								) : (
-									<p className="text-muted-foreground">Pending</p>
-								)}
+								<Link
+									to="/call/$bookingId"
+									params={{ bookingId: selectedBooking.id }}
+									className="flex items-center gap-2 text-primary font-medium hover:underline bg-primary/5 px-3 py-2 rounded-xl"
+								>
+									<Video className="h-4 w-4" />
+									<span>Join Meeting Room</span>
+								</Link>
 							</div>
 						)}
 

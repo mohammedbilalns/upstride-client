@@ -1,9 +1,15 @@
 import type React from "react";
-import { useEffect, useState } from "react";
-import { Tldraw, useEditor } from "tldraw";
-import "tldraw/tldraw.css";
+import { useEffect, useState, useRef, useCallback } from "react";
+import { Excalidraw } from "@excalidraw/excalidraw";
+import "@excalidraw/excalidraw/index.css";
+import type {
+	ExcalidrawImperativeAPI,
+	ExcalidrawElement,
+} from "@excalidraw/excalidraw/types/types";
 import type { Socket } from "socket.io-client";
 import { Button } from "@/components/ui/button";
+import { Users, Lock, Unlock, MousePointer2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface WhiteboardProps {
 	socket: Socket | null;
@@ -12,60 +18,72 @@ interface WhiteboardProps {
 	menteeId?: string;
 }
 
-const WhiteboardSync: React.FC<{
-	socket: Socket | null;
-	bookingId: string;
-	isReadonly: boolean;
-}> = ({ socket, bookingId, isReadonly }) => {
-	const editor = useEditor();
-
-	useEffect(() => {
-		if (!socket || !editor) return;
-
-		// Listen to incoming syncs
-		const handleSync = ({ update }: { update: any }) => {
-			// Very simple synchronization logic
-			// In a production app you would use a proper Yjs provider
-			// For now, if we receive an update we apply it if we're not actively editing
-			// Or just merge documents. However, TLDraw natively handles this better with @tldraw/sync.
-		};
-
-		socket.on("whiteboard:sync", handleSync);
-
-		return () => {
-			socket.off("whiteboard:sync", handleSync);
-		};
-	}, [socket, editor]);
-
-	useEffect(() => {
-		editor.updateInstanceState({ isReadonly });
-	}, [editor, isReadonly]);
-
-	return null;
-};
-
 export const Whiteboard: React.FC<WhiteboardProps> = ({
 	socket,
 	bookingId,
 	isMentor,
 	menteeId,
 }) => {
+	const [excalidrawAPI, setExcalidrawAPI] =
+		useState<ExcalidrawImperativeAPI | null>(null);
 	const [hasPermission, setHasPermission] = useState(isMentor);
+	const [menteeHasPermission, setMenteeHasPermission] = useState(false);
 
+	// Track the last version of elements we received to avoid broadcast loops
+	const lastRemoteVersion = useRef<number>(0);
+	const isRemoteUpdate = useRef(false);
+
+	// Permission Sync
 	useEffect(() => {
 		if (!socket) return;
-		socket.on("whiteboard:permission", (payload: { allow: boolean }) => {
+
+		const handlePermission = (payload: { allow: boolean }) => {
 			if (!isMentor) {
 				setHasPermission(payload.allow);
+				toast.info(
+					payload.allow
+						? "Mentor granted you drawing access"
+						: "Mentor revoked drawing access",
+				);
 			}
-		});
+		};
 
+		socket.on("whiteboard:permission", handlePermission);
 		return () => {
-			socket.off("whiteboard:permission");
+			socket.off("whiteboard:permission", handlePermission);
 		};
 	}, [socket, isMentor]);
 
-	const [menteeHasPermission, setMenteeHasPermission] = useState(false);
+	// Whiteboard Content Sync
+	useEffect(() => {
+		if (!socket || !excalidrawAPI) return;
+
+		const handleSync = ({
+			update,
+		}: {
+			update: readonly ExcalidrawElement[];
+		}) => {
+			if (!update) return;
+
+			// Mark this as a remote update to avoid emitting it back
+			isRemoteUpdate.current = true;
+
+			excalidrawAPI.updateScene({
+				elements: update,
+				commitToHistory: false,
+			});
+
+			// Reset flag after a short delay or after the update cycle
+			setTimeout(() => {
+				isRemoteUpdate.current = false;
+			}, 100);
+		};
+
+		socket.on("whiteboard:sync", handleSync);
+		return () => {
+			socket.off("whiteboard:sync", handleSync);
+		};
+	}, [socket, excalidrawAPI]);
 
 	const togglePermission = () => {
 		if (!isMentor || !socket) return;
@@ -79,28 +97,76 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 		});
 	};
 
+	const handleChange = useCallback(
+		(elements: readonly ExcalidrawElement[]) => {
+			if (!socket || !hasPermission || isRemoteUpdate.current) return;
+
+			// Emit the sync event
+			socket.emit("whiteboard:sync", {
+				bookingId,
+				update: elements,
+			});
+		},
+		[socket, bookingId, hasPermission],
+	);
+
 	return (
-		<div className="absolute inset-0 z-20 bg-background flex flex-col">
-			{isMentor && (
-				<div className="absolute top-4 right-4 z-50">
-					<Button
-						variant={menteeHasPermission ? "default" : "secondary"}
-						onClick={togglePermission}
-					>
-						{menteeHasPermission
-							? "Revoke Mentee Drawing Access"
-							: "Grant Mentee Drawing Access"}
-					</Button>
+		<div className="absolute inset-0 z-20 bg-white flex flex-col overflow-hidden">
+			{/* Toolbar Header */}
+			<div className="h-14 bg-white border-b border-slate-200 px-6 flex-shrink-0 flex items-center justify-between shadow-sm z-30">
+				<div className="flex items-center gap-3">
+					<div className="p-2 bg-primary/10 rounded-lg">
+						<MousePointer2 className="w-5 h-5 text-primary" />
+					</div>
+					<div>
+						<h3 className="font-semibold text-slate-800 text-sm">
+							Collaborative Whiteboard
+						</h3>
+						<p className="text-[10px] text-slate-500 flex items-center gap-1">
+							<Users className="w-3 h-3" />
+							{hasPermission ? "You have drawing access" : "View only mode"}
+						</p>
+					</div>
 				</div>
-			)}
+
+				{isMentor && (
+					<div className="flex items-center gap-2">
+						<Button
+							size="sm"
+							variant={menteeHasPermission ? "default" : "secondary"}
+							onClick={togglePermission}
+							className="h-9 gap-2 shadow-sm"
+						>
+							{menteeHasPermission ? (
+								<Lock className="w-4 h-4" />
+							) : (
+								<Unlock className="w-4 h-4" />
+							)}
+							<span className="hidden md:inline">
+								{menteeHasPermission ? "Lock Mentee" : "Unlock Mentee"}
+							</span>
+						</Button>
+					</div>
+				)}
+			</div>
+
+			{/* Excalidraw Canvas */}
 			<div className="flex-1 w-full relative">
-				<Tldraw>
-					<WhiteboardSync
-						socket={socket}
-						bookingId={bookingId}
-						isReadonly={!hasPermission}
-					/>
-				</Tldraw>
+				<Excalidraw
+					excalidrawAPI={(api) => setExcalidrawAPI(api)}
+					onChange={handleChange}
+					viewModeEnabled={!hasPermission}
+					theme="light"
+					gridModeEnabled={true}
+					UIOptions={{
+						canvasActions: {
+							loadScene: false,
+							saveToActiveFile: false,
+							export: false,
+							saveAsImage: true,
+						},
+					}}
+				/>
 			</div>
 		</div>
 	);
