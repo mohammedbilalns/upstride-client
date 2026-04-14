@@ -5,11 +5,12 @@ import "@excalidraw/excalidraw/index.css";
 import type {
 	ExcalidrawImperativeAPI,
 	ExcalidrawElement,
-} from "@excalidraw/excalidraw/types/types";
+} from "@excalidraw/excalidraw/types";
 import type { Socket } from "socket.io-client";
 import { Button } from "@/components/ui/button";
 import { Users, Lock, Unlock, MousePointer2 } from "lucide-react";
 import { toast } from "sonner";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 interface WhiteboardProps {
 	socket: Socket | null;
@@ -24,13 +25,12 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 	isMentor,
 	menteeId,
 }) => {
+	const { isDarkMode } = useTheme();
 	const [excalidrawAPI, setExcalidrawAPI] =
 		useState<ExcalidrawImperativeAPI | null>(null);
 	const [hasPermission, setHasPermission] = useState(isMentor);
 	const [menteeHasPermission, setMenteeHasPermission] = useState(false);
 
-	// Track the last version of elements we received to avoid broadcast loops
-	const lastRemoteVersion = useRef<number>(0);
 	const isRemoteUpdate = useRef(false);
 
 	// Permission Sync
@@ -54,29 +54,40 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 		};
 	}, [socket, isMentor]);
 
+	const pendingUpdate = useRef<readonly ExcalidrawElement[] | null>(null);
+
 	// Whiteboard Content Sync
 	useEffect(() => {
-		if (!socket || !excalidrawAPI) return;
+		if (!socket) return;
 
 		const handleSync = ({
 			update,
 		}: {
 			update: readonly ExcalidrawElement[];
 		}) => {
+			console.log(
+				"[Whiteboard] Received sync update:",
+				update?.length,
+				"elements",
+			);
 			if (!update) return;
 
-			// Mark this as a remote update to avoid emitting it back
-			isRemoteUpdate.current = true;
-
-			excalidrawAPI.updateScene({
-				elements: update,
-				commitToHistory: false,
-			});
-
-			// Reset flag after a short delay or after the update cycle
-			setTimeout(() => {
-				isRemoteUpdate.current = false;
-			}, 100);
+			if (excalidrawAPI) {
+				console.log("[Whiteboard] Applying update immediately");
+				// Apply immediately if API is ready
+				isRemoteUpdate.current = true;
+				excalidrawAPI.updateScene({
+					elements: update,
+					commitToHistory: false,
+				});
+				setTimeout(() => {
+					isRemoteUpdate.current = false;
+				}, 100);
+			} else {
+				console.log("[Whiteboard] API not ready, buffering update");
+				// Buffer the update if API is not yet available
+				pendingUpdate.current = update;
+			}
 		};
 
 		socket.on("whiteboard:sync", handleSync);
@@ -84,6 +95,37 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 			socket.off("whiteboard:sync", handleSync);
 		};
 	}, [socket, excalidrawAPI]);
+
+	const isInitialized = useRef(false);
+
+	// Apply pending update once API is ready
+	useEffect(() => {
+		if (excalidrawAPI && pendingUpdate.current) {
+			console.log(
+				"[Whiteboard] Applying buffered update:",
+				pendingUpdate.current.length,
+				"elements",
+			);
+			isRemoteUpdate.current = true;
+			excalidrawAPI.updateScene({
+				elements: pendingUpdate.current,
+				commitToHistory: false,
+			});
+			pendingUpdate.current = null;
+			isInitialized.current = true; // Mark as initialized after applying server state
+
+			setTimeout(() => {
+				isRemoteUpdate.current = false;
+			}, 100);
+		} else if (excalidrawAPI) {
+			// If no pending update, we still want to mark as initialized after a short delay
+			// so the user can start drawing on a fresh board
+			const timer = setTimeout(() => {
+				isInitialized.current = true;
+			}, 1000);
+			return () => clearTimeout(timer);
+		}
+	}, [excalidrawAPI]);
 
 	const togglePermission = () => {
 		if (!isMentor || !socket) return;
@@ -101,6 +143,11 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 		(elements: readonly ExcalidrawElement[]) => {
 			if (!socket || !hasPermission || isRemoteUpdate.current) return;
 
+			// CRITICAL: Don't emit empty state if we haven't initialized yet.
+			// This prevents a refreshing user from overwriting the Redis state with an empty canvas
+			// before the server data has had a chance to arrive and be applied.
+			if (elements.length === 0 && !isInitialized.current) return;
+
 			// Emit the sync event
 			socket.emit("whiteboard:sync", {
 				bookingId,
@@ -111,18 +158,18 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 	);
 
 	return (
-		<div className="absolute inset-0 z-20 bg-white flex flex-col overflow-hidden">
+		<div className="absolute inset-0 z-20 bg-white dark:bg-[#121212] flex flex-col overflow-hidden transition-colors duration-200">
 			{/* Toolbar Header */}
-			<div className="h-14 bg-white border-b border-slate-200 px-6 flex-shrink-0 flex items-center justify-between shadow-sm z-30">
+			<div className="h-14 bg-white dark:bg-[#121212] border-b border-slate-200 dark:border-slate-800 px-6 flex-shrink-0 flex items-center justify-between shadow-sm z-30 transition-colors duration-200">
 				<div className="flex items-center gap-3">
 					<div className="p-2 bg-primary/10 rounded-lg">
 						<MousePointer2 className="w-5 h-5 text-primary" />
 					</div>
 					<div>
-						<h3 className="font-semibold text-slate-800 text-sm">
+						<h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">
 							Collaborative Whiteboard
 						</h3>
-						<p className="text-[10px] text-slate-500 flex items-center gap-1">
+						<p className="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
 							<Users className="w-3 h-3" />
 							{hasPermission ? "You have drawing access" : "View only mode"}
 						</p>
@@ -156,7 +203,7 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 					excalidrawAPI={(api) => setExcalidrawAPI(api)}
 					onChange={handleChange}
 					viewModeEnabled={!hasPermission}
-					theme="light"
+					theme={isDarkMode ? "dark" : "light"}
 					gridModeEnabled={true}
 					UIOptions={{
 						canvasActions: {

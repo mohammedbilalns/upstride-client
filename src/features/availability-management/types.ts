@@ -76,12 +76,12 @@ export interface MentorAvailabilitiesResponse {
 	message: string;
 	data: {
 		availabilities: AvailabilityRule[];
-	};
-	pagination?: {
-		page: number;
-		limit: number;
-		totalPages: number;
-		totalCount: number;
+		pagination?: {
+			page: number;
+			limit: number;
+			totalPages: number;
+			totalCount: number;
+		};
 	};
 }
 

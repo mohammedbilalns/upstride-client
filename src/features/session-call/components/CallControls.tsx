@@ -1,5 +1,4 @@
 import {
-	Hand,
 	Mic,
 	MicOff,
 	MonitorUp,

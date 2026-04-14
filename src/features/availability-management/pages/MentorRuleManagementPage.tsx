@@ -107,7 +107,7 @@ export function MentorRuleManagementPage() {
 		enabled: !!profile?.id,
 	});
 
-	const pagination = data?.pagination;
+	const pagination = data?.data?.pagination;
 	const hasMore =
 		pagination !== undefined
 			? pagination.page < pagination.totalPages
