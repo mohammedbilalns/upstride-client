@@ -1,4 +1,5 @@
-import { Coins, CreditCard } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { Coins, CreditCard, Video } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -108,14 +109,14 @@ export function SessionDetailsDialog({
 								</p>
 								{selectedBooking.meetingLink &&
 								selectedBooking.meetingLink !== "Pending" ? (
-									<a
-										href={selectedBooking.meetingLink}
-										target="_blank"
-										rel="noreferrer"
-										className="text-primary font-medium hover:underline break-all"
+									<Link
+										to="/call/$bookingId"
+										params={{ bookingId: selectedBooking.id }}
+										className="flex items-center gap-2 text-primary font-medium hover:underline"
 									>
-										{selectedBooking.meetingLink}
-									</a>
+										<Video className="h-4 w-4" />
+										<span>Join Meeting Room</span>
+									</Link>
 								) : (
 									<p className="text-muted-foreground">Pending</p>
 								)}

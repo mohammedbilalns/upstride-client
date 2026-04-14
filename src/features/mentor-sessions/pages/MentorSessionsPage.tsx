@@ -1,6 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
-import { Calendar, Clock, Coins, CreditCard, XCircle } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import {
+	Calendar,
+	Clock,
+	Coins,
+	CreditCard,
+	Video,
+	XCircle,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { Badge } from "@/components/ui/badge";
@@ -208,6 +215,13 @@ function MentorSessionCard({
 	isCancelling: boolean;
 }) {
 	const isCancelled = booking.status.startsWith("CANCELLED");
+	const timeUntilStartMs = new Date(booking.startTime).getTime() - Date.now();
+	const showJoinButton =
+		!isCancelled &&
+		booking.status !== "COMPLETED" &&
+		timeUntilStartMs <= 60 * 60 * 1000 && // 1 hour before
+		timeUntilStartMs >= -(120 * 60 * 1000); // Up to 2 hours after start
+
 	const canCancel =
 		showCancel && !isCancelled && booking.status !== "COMPLETED";
 
@@ -245,6 +259,16 @@ function MentorSessionCard({
 					<div className="text-xs text-muted-foreground italic max-w-[200px] truncate">
 						"{booking.notes}"
 					</div>
+				)}
+				{showJoinButton && (
+					<Link
+						to="/call/$bookingId"
+						params={{ bookingId: booking.id }}
+						className="flex items-center gap-1.5 text-xs text-primary font-medium hover:underline bg-primary/5 px-2 py-1 rounded-md"
+					>
+						<Video className="h-4 w-4" />
+						<span>Join Session</span>
+					</Link>
 				)}
 				<Button
 					variant="ghost"

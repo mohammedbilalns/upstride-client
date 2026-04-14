@@ -108,16 +108,15 @@ export function SessionCard({
 							{booking.totalAmount}{" "}
 							{booking.currency === "inr" ? "₹" : booking.currency}
 						</span>
-						{showMeetingInfo && booking.meetingLink && (
-							<a
-								href={booking.meetingLink}
-								target="_blank"
-								rel="noreferrer"
+						{showMeetingInfo && (
+							<Link
+								to="/call/$bookingId"
+								params={{ bookingId: booking.id }}
 								className="flex items-center gap-1.5 text-xs text-primary font-medium hover:underline"
 							>
 								<Video className="h-3.5 w-3.5" />
 								<span>Join Session</span>
-							</a>
+							</Link>
 						)}
 					</div>
 				</div>
