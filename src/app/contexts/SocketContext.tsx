@@ -77,7 +77,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 			}) => {
 				console.log("[WS] Received chat:message", data);
 
-				//  Update chat history if we are currently in that chat
+				//  Update chat history
 				const currentChatId = pathnameRef.current.split("/").pop();
 				if (
 					currentChatId === data.chatId ||
@@ -104,7 +104,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 					);
 				}
 
-				// Invalidate/Update Chat List to show last message and unread count
+				// Invalidate Chat List
 				console.log("[WS] Invalidating chats list query");
 				queryClient.invalidateQueries({ queryKey: ["chats"] });
 			};

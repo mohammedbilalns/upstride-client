@@ -39,7 +39,6 @@ export const ThemeProvider = ({ children }: { children: react.ReactNode }) => {
 	);
 };
 
-// Hook for theme consuption
 export const useTheme = () => {
 	const context = react.useContext(ThemeContext);
 	if (context === undefined) {

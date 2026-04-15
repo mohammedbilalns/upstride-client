@@ -74,7 +74,6 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 
 			if (excalidrawAPI) {
 				console.log("[Whiteboard] Applying update immediately");
-				// Apply immediately if API is ready
 				isRemoteUpdate.current = true;
 				excalidrawAPI.updateScene({
 					elements: update,
@@ -85,7 +84,6 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 				}, 100);
 			} else {
 				console.log("[Whiteboard] API not ready, buffering update");
-				// Buffer the update if API is not yet available
 				pendingUpdate.current = update;
 			}
 		};
@@ -98,7 +96,6 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 
 	const isInitialized = useRef(false);
 
-	// Apply pending update once API is ready
 	useEffect(() => {
 		if (excalidrawAPI && pendingUpdate.current) {
 			console.log(
@@ -112,14 +109,12 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 				commitToHistory: false,
 			});
 			pendingUpdate.current = null;
-			isInitialized.current = true; // Mark as initialized after applying server state
+			isInitialized.current = true;
 
 			setTimeout(() => {
 				isRemoteUpdate.current = false;
 			}, 100);
 		} else if (excalidrawAPI) {
-			// If no pending update, we still want to mark as initialized after a short delay
-			// so the user can start drawing on a fresh board
 			const timer = setTimeout(() => {
 				isInitialized.current = true;
 			}, 1000);
@@ -143,9 +138,6 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 		(elements: readonly ExcalidrawElement[]) => {
 			if (!socket || !hasPermission || isRemoteUpdate.current) return;
 
-			// CRITICAL: Don't emit empty state if we haven't initialized yet.
-			// This prevents a refreshing user from overwriting the Redis state with an empty canvas
-			// before the server data has had a chance to arrive and be applied.
 			if (elements.length === 0 && !isInitialized.current) return;
 
 			// Emit the sync event

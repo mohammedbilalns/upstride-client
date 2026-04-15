@@ -27,7 +27,6 @@ export const useChat = (
 				},
 			]);
 
-			// We'll let the component handle marking as read when open
 			setHasUnread(true);
 
 			const isSelf = payload.senderId === currentUserId;
@@ -54,7 +53,6 @@ export const useChat = (
 
 			socket.emit("call:chat-message", payload);
 
-			// Add to local state immediately
 			setMessages((prev) => [
 				...prev,
 				{
