@@ -6,6 +6,7 @@ import {
 	Video,
 	VideoOff,
 	XSquare,
+	MessageSquare,
 } from "lucide-react";
 import type React from "react";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,9 @@ interface CallControlsProps {
 	onToggleWhiteboard: () => void;
 	onLeave: () => void;
 	onTerminate?: () => void;
+	onToggleChat: () => void;
+	isChatOpen: boolean;
+	hasUnreadChat: boolean;
 }
 
 export const CallControls: React.FC<CallControlsProps> = ({
@@ -36,6 +40,9 @@ export const CallControls: React.FC<CallControlsProps> = ({
 	onToggleWhiteboard,
 	onLeave,
 	onTerminate,
+	onToggleChat,
+	isChatOpen,
+	hasUnreadChat,
 }) => {
 	return (
 		<div className="flex items-center justify-center gap-4 bg-background/90 p-4 backdrop-blur-md border border-border shadow-lg rounded-2xl mb-4 w-fit mx-auto">
@@ -81,6 +88,19 @@ export const CallControls: React.FC<CallControlsProps> = ({
 				title="Toggle Whiteboard"
 			>
 				<SquareCheck className="h-5 w-5" />
+			</Button>
+
+			<Button
+				variant={isChatOpen ? "default" : "secondary"}
+				size="icon"
+				onClick={onToggleChat}
+				className="rounded-full h-12 w-12 relative"
+				title={isChatOpen ? "Close Chat" : "Open Chat"}
+			>
+				<MessageSquare className="h-5 w-5" />
+				{!isChatOpen && hasUnreadChat && (
+					<span className="absolute top-2 right-2 h-3 w-3 bg-primary rounded-full border-2 border-background" />
+				)}
 			</Button>
 
 			<div className="flex gap-2 ml-4 pl-4 border-l border-border">

@@ -247,6 +247,12 @@ function MentorSessionCard({
 					{booking.status === "PENDING" && (
 						<Badge variant="secondary">Payment Pending</Badge>
 					)}
+					{booking.status === "STARTED" && (
+						<Badge className="bg-emerald-500 hover:bg-emerald-600 text-white flex items-center gap-1.5 animate-pulse">
+							<span className="h-1.5 w-1.5 rounded-full bg-white transition-opacity" />
+							Ongoing
+						</Badge>
+					)}
 				</div>
 				<div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
 					<div className="flex items-center gap-2">

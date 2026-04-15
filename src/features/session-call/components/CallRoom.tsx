@@ -8,6 +8,9 @@ import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { useWebRTC } from "../hooks/use-webrtc";
 import { CallControls } from "./CallControls";
 import { Whiteboard } from "./Whiteboard";
+import { useChat } from "../hooks/use-chat";
+import { ChatPanel } from "./ChatPanel";
+import { useRouter } from "@tanstack/react-router";
 
 interface CallRoomProps {
 	bookingId: string;
@@ -33,6 +36,33 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 		useState(false);
 	const [showTerminateConfirm, setShowTerminateConfirm] = useState(false);
 	const [isTerminating, setIsTerminating] = useState(false);
+	const [isChatOpen, setIsChatOpen] = useState(false);
+
+	const router = useRouter();
+	const currentUserId = router.options.context?.auth?.user?.id;
+
+	const { messages, sendMessage, hasUnread, clearUnread } = useChat(
+		bookingId,
+		socket,
+		currentUserId,
+		(msg) => {
+			if (!isChatOpen) {
+				toast.info(`New message from ${remoteLabel}`, {
+					description:
+						msg.message.length > 50
+							? `${msg.message.substring(0, 50)}...`
+							: msg.message,
+					action: {
+						label: "Open Chat",
+						onClick: () => {
+							setIsChatOpen(true);
+							clearUnread();
+						},
+					},
+				});
+			}
+		},
+	);
 
 	const navigateToSessionList = () => {
 		window.location.assign(isMentor ? "/mentor-sessions" : "/sessions");
@@ -223,188 +253,87 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 		(isWhiteboardActive || isScreenSharing || isRemoteScreenSharing);
 
 	return (
-		<div className="flex flex-col h-[calc(100vh-4rem)] w-full bg-slate-950 relative overflow-hidden text-slate-50">
+		<div className="flex h-[calc(100vh-4rem)] w-full bg-slate-950 relative overflow-hidden text-slate-50">
 			{/* Main Content Area */}
-			<div className="flex-1 relative z-0 flex flex-col min-h-0">
-				{/* Whiteboard (ALWAYS Persisted - Hidden when not active) */}
-				<div
-					className={`absolute inset-0 z-10 w-full h-full ${!isCollaborationActive || pinnedViewId !== "WHITEBOARD" ? "hidden" : "block"}`}
-				>
-					<Whiteboard
-						socket={socket}
-						bookingId={bookingId}
-						isMentor={isMentor}
-						menteeId={menteeId}
-					/>
-				</div>
+			<div className="flex-1 flex flex-col relative z-0 min-w-0">
+				<div className="flex-1 relative z-0 overflow-hidden">
+					{/* Whiteboard (ALWAYS Persisted - Hidden when not active) */}
+					<div
+						className={`absolute inset-0 z-10 w-full h-full ${!isCollaborationActive || pinnedViewId !== "WHITEBOARD" ? "hidden" : "block"}`}
+					>
+						<Whiteboard
+							socket={socket}
+							bookingId={bookingId}
+							isMentor={isMentor}
+							menteeId={menteeId}
+						/>
+					</div>
 
-				<div
-					className={`flex-1 relative z-0 flex flex-col min-h-0 ${isCollaborationActive && pinnedViewId === "WHITEBOARD" ? "invisible pointer-events-none" : ""}`}
-				>
-					{!isCollaborationActive ? (
-						/* Grid Mode */
-						<div className="flex-1 p-4 grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
-							<VideoCard
-								stream={localStream}
-								isCamOn={isCamOn}
-								label={localLabel}
-								roleIndicator={isMentor ? "Mentor" : undefined}
-								isMicOn={isMicOn}
-								isLocal
-								onPin={() => {}} // Pin disabled in grid mode
-								isPinned
-							/>
-							<div className="relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-800/50 flex items-center justify-center shadow-2xl">
-								{isWaiting ? (
-									<div className="flex flex-col items-center justify-center text-slate-400 p-8 text-center">
-										<Loader2 className="h-12 w-12 animate-spin mb-4 text-primary" />
-										<h3 className="text-xl font-semibold mb-2 text-slate-100">
-											Waiting for the other person to join...
-										</h3>
-										<p className="max-w-xs text-sm">
-											They have been notified and should be here shortly.
-										</p>
-									</div>
-								) : (
-									<VideoCard
-										stream={remoteVideoStream}
-										isCamOn={isRemoteCamOn}
-										label={remoteLabel}
-										roleIndicator={!isMentor ? "Mentor" : undefined}
-										isMicOn={isRemoteMicOn}
-										onPin={() => {}} // Pin disabled in grid mode
-										isPinned
-									/>
-								)}
-							</div>
-						</div>
-					) : (
-						/* Collaboration Mode (Stage + Strip) */
-						<div className="flex-1 flex flex-col relative min-h-0 h-full">
-							{/* Main Stage */}
-							<div className="flex-1 relative m-4 rounded-3xl overflow-hidden border border-slate-800/50 bg-slate-900 shadow-2xl flex items-center justify-center">
-								{/* Whiteboard placeholder (actual whiteboard is layered above via absolute positioning) */}
-								{pinnedViewId === "WHITEBOARD" && (
-									<div className="absolute inset-0 bg-slate-950" />
-								)}
-
-								{/* Remote Screen */}
-								{pinnedViewId === "REMOTE_SCREEN" && isRemoteScreenSharing && (
-									<video
-										ref={(ref) => {
-											if (ref) ref.srcObject = remoteScreenStream;
-										}}
-										autoPlay
-										playsInline
-										className="w-full h-full object-contain bg-black"
-									/>
-								)}
-
-								{/* Local Screen */}
-								{pinnedViewId === "LOCAL_SCREEN" && isScreenSharing && (
-									<video
-										ref={(ref) => {
-											if (ref) ref.srcObject = localScreenStream;
-										}}
-										autoPlay
-										playsInline
-										muted
-										className="w-full h-full object-contain bg-black"
-									/>
-								)}
-
-								{/* Remote Cam */}
-								{pinnedViewId === "REMOTE_CAM" && !isWaiting && (
-									<VideoCard
-										stream={remoteVideoStream}
-										isCamOn={isRemoteCamOn}
-										label={remoteLabel}
-										roleIndicator={!isMentor ? "Mentor" : undefined}
-										isMicOn={isRemoteMicOn}
-										onPin={() => handlePinView("REMOTE_CAM")}
-										isPinned
-									/>
-								)}
-
-								{/* Local Cam */}
-								{pinnedViewId === "LOCAL_CAM" && (
-									<VideoCard
-										stream={localStream}
-										isCamOn={isCamOn}
-										label={localLabel}
-										roleIndicator={isMentor ? "Mentor" : undefined}
-										isMicOn={isMicOn}
-										isLocal
-										onPin={() => handlePinView("LOCAL_CAM")}
-										isPinned
-									/>
-								)}
-
-								{/* Waiting Screen as Main View */}
-								{pinnedViewId === "REMOTE_CAM" && isWaiting && (
-									<div className="flex flex-col items-center justify-center text-slate-400 p-8 text-center">
-										<Loader2 className="h-12 w-12 animate-spin mb-4 text-primary" />
-										<h3 className="text-xl font-semibold mb-2 text-slate-100">
-											Waiting for the other person to join...
-										</h3>
-										<p className="max-w-xs text-sm">
-											They have been notified and should be here shortly.
-										</p>
-									</div>
-								)}
-							</div>
-
-							{/* Thumbnail Strip */}
-							<div className="h-40 px-6 pb-20 flex gap-4 justify-center items-end pointer-events-none mb-4">
-								{/* Local Cam Thumbnail */}
-								{pinnedViewId !== "LOCAL_CAM" && (
-									<div className="pointer-events-auto h-full aspect-video shadow-2xl">
+					<div
+						className={`h-full w-full relative z-0 flex flex-col min-h-0 ${isCollaborationActive && pinnedViewId === "WHITEBOARD" ? "invisible pointer-events-none" : ""}`}
+					>
+						{!isCollaborationActive ? (
+							/* Grid Mode */
+							<div className="flex-1 p-4 grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+								<VideoCard
+									stream={localStream}
+									isCamOn={isCamOn}
+									label={localLabel}
+									roleIndicator={isMentor ? "Mentor" : undefined}
+									isMicOn={isMicOn}
+									isLocal
+									onPin={() => {}} // Pin disabled in grid mode
+									isPinned
+								/>
+								<div className="relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-800/50 flex items-center justify-center shadow-2xl">
+									{isWaiting ? (
+										<div className="flex flex-col items-center justify-center text-slate-400 p-8 text-center">
+											<Loader2 className="h-12 w-12 animate-spin mb-4 text-primary" />
+											<h3 className="text-xl font-semibold mb-2 text-slate-100">
+												Waiting for the other person to join...
+											</h3>
+											<p className="max-w-xs text-sm">
+												They have been notified and should be here shortly.
+											</p>
+										</div>
+									) : (
 										<VideoCard
-											stream={localStream}
-											isCamOn={isCamOn}
-											label={localLabel}
-											roleIndicator={isMentor ? "Mentor" : undefined}
-											isMicOn={isMicOn}
-											isLocal
-											isThumbnail
-											onPin={() => handlePinView("LOCAL_CAM")}
+											stream={remoteVideoStream}
+											isCamOn={isRemoteCamOn}
+											label={remoteLabel}
+											roleIndicator={!isMentor ? "Mentor" : undefined}
+											isMicOn={isRemoteMicOn}
+											onPin={() => {}} // Pin disabled in grid mode
+											isPinned
 										/>
-									</div>
-								)}
+									)}
+								</div>
+							</div>
+						) : (
+							/* Collaboration Mode (Stage + Strip) */
+							<div className="flex-1 flex flex-col relative min-h-0 h-full">
+								{/* Main Stage */}
+								<div className="flex-1 relative m-4 rounded-3xl overflow-hidden border border-slate-800/50 bg-slate-900 shadow-2xl flex items-center justify-center">
+									{/* Whiteboard placeholder (actual whiteboard is layered above via absolute positioning) */}
+									{pinnedViewId === "WHITEBOARD" && (
+										<div className="absolute inset-0 bg-slate-950" />
+									)}
 
-								{/* Remote Cam/Waiting Thumbnail */}
-								{pinnedViewId !== "REMOTE_CAM" && (
-									<div className="pointer-events-auto h-full aspect-video shadow-2xl">
-										{isWaiting ? (
-											<div className="h-full w-full rounded-2xl bg-slate-900 border border-slate-800 flex flex-col items-center justify-center p-2 text-[10px] text-slate-500">
-												<Loader2 className="h-4 w-4 animate-spin mb-1" />
-												<span className="text-center">Waiting...</span>
-												<Button
-													size="icon"
-													variant="ghost"
-													className="h-6 w-6 mt-1"
-													onClick={() => handlePinView("REMOTE_CAM")}
-												>
-													<Maximize2 className="h-3.5 w-3.5" />
-												</Button>
-											</div>
-										) : (
-											<VideoCard
-												stream={remoteVideoStream}
-												isCamOn={isRemoteCamOn}
-												label={remoteLabel}
-												roleIndicator={!isMentor ? "Mentor" : undefined}
-												isMicOn={isRemoteMicOn}
-												isThumbnail
-												onPin={() => handlePinView("REMOTE_CAM")}
+									{/* Remote Screen */}
+									{pinnedViewId === "REMOTE_SCREEN" &&
+										isRemoteScreenSharing && (
+											<video
+												ref={(ref) => {
+													if (ref) ref.srcObject = remoteScreenStream;
+												}}
+												autoPlay
+												playsInline
+												className="w-full h-full object-contain bg-black"
 											/>
 										)}
-									</div>
-								)}
 
-								{/* Local Screen Thumbnail */}
-								{pinnedViewId !== "LOCAL_SCREEN" && isScreenSharing && (
-									<div className="pointer-events-auto h-full aspect-video shadow-2xl relative rounded-xl overflow-hidden border border-slate-700">
+									{/* Local Screen */}
+									{pinnedViewId === "LOCAL_SCREEN" && isScreenSharing && (
 										<video
 											ref={(ref) => {
 												if (ref) ref.srcObject = localScreenStream;
@@ -412,69 +341,192 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 											autoPlay
 											playsInline
 											muted
-											className="w-full h-full object-cover"
+											className="w-full h-full object-contain bg-black"
 										/>
-										<div className="absolute top-2 right-2 z-20">
-											<Button
-												size="icon"
-												variant="secondary"
-												className="h-7 w-7 bg-black/50 hover:bg-black/80 backdrop-blur-md"
-												onClick={() => handlePinView("LOCAL_SCREEN")}
-											>
-												<Maximize2 className="h-4 w-4" />
-											</Button>
-										</div>
-										<div className="absolute bottom-2 left-2 bg-black/50 px-2 py-0.5 rounded text-[10px] backdrop-blur-md">
-											Your Screen
-										</div>
-									</div>
-								)}
+									)}
 
-								{/* Remote Screen Thumbnail */}
-								{pinnedViewId !== "REMOTE_SCREEN" && isRemoteScreenSharing && (
-									<div className="pointer-events-auto h-full aspect-video shadow-2xl relative rounded-xl overflow-hidden border border-slate-700">
-										<video
-											ref={(ref) => {
-												if (ref) ref.srcObject = remoteScreenStream;
-											}}
-											autoPlay
-											playsInline
-											className="w-full h-full object-cover"
+									{/* Remote Cam */}
+									{pinnedViewId === "REMOTE_CAM" && !isWaiting && (
+										<VideoCard
+											stream={remoteVideoStream}
+											isCamOn={isRemoteCamOn}
+											label={remoteLabel}
+											roleIndicator={!isMentor ? "Mentor" : undefined}
+											isMicOn={isRemoteMicOn}
+											onPin={() => handlePinView("REMOTE_CAM")}
+											isPinned
 										/>
-										<div className="absolute top-2 right-2 z-20">
-											<Button
-												size="icon"
-												variant="secondary"
-												className="h-7 w-7 bg-black/50 hover:bg-black/80 backdrop-blur-md"
-												onClick={() => handlePinView("REMOTE_SCREEN")}
-											>
-												<Maximize2 className="h-4 w-4" />
-											</Button>
+									)}
+
+									{/* Local Cam */}
+									{pinnedViewId === "LOCAL_CAM" && (
+										<VideoCard
+											stream={localStream}
+											isCamOn={isCamOn}
+											label={localLabel}
+											roleIndicator={isMentor ? "Mentor" : undefined}
+											isMicOn={isMicOn}
+											isLocal
+											onPin={() => handlePinView("LOCAL_CAM")}
+											isPinned
+										/>
+									)}
+
+									{/* Waiting Screen as Main View */}
+									{pinnedViewId === "REMOTE_CAM" && isWaiting && (
+										<div className="flex flex-col items-center justify-center text-slate-400 p-8 text-center">
+											<Loader2 className="h-12 w-12 animate-spin mb-4 text-primary" />
+											<h3 className="text-xl font-semibold mb-2 text-slate-100">
+												Waiting for the other person to join...
+											</h3>
+											<p className="max-w-xs text-sm">
+												They have been notified and should be here shortly.
+											</p>
 										</div>
-										<div className="absolute bottom-2 left-2 bg-black/50 px-2 py-0.5 rounded text-[10px] backdrop-blur-md">
-											Remote Screen
+									)}
+								</div>
+
+								{/* Thumbnail Strip */}
+								<div className="h-40 px-6 pb-20 flex gap-4 justify-center items-end pointer-events-none mb-4">
+									{/* Local Cam Thumbnail */}
+									{pinnedViewId !== "LOCAL_CAM" && (
+										<div className="pointer-events-auto h-full aspect-video shadow-2xl">
+											<VideoCard
+												stream={localStream}
+												isCamOn={isCamOn}
+												label={localLabel}
+												roleIndicator={isMentor ? "Mentor" : undefined}
+												isMicOn={isMicOn}
+												isLocal
+												isThumbnail
+												onPin={() => handlePinView("LOCAL_CAM")}
+											/>
 										</div>
-									</div>
-								)}
+									)}
+
+									{/* Remote Cam/Waiting Thumbnail */}
+									{pinnedViewId !== "REMOTE_CAM" && (
+										<div className="pointer-events-auto h-full aspect-video shadow-2xl">
+											{isWaiting ? (
+												<div className="h-full w-full rounded-2xl bg-slate-900 border border-slate-800 flex flex-col items-center justify-center p-2 text-[10px] text-slate-500">
+													<Loader2 className="h-4 w-4 animate-spin mb-1" />
+													<span className="text-center">Waiting...</span>
+													<Button
+														size="icon"
+														variant="ghost"
+														className="h-6 w-6 mt-1"
+														onClick={() => handlePinView("REMOTE_CAM")}
+													>
+														<Maximize2 className="h-3.5 w-3.5" />
+													</Button>
+												</div>
+											) : (
+												<VideoCard
+													stream={remoteVideoStream}
+													isCamOn={isRemoteCamOn}
+													label={remoteLabel}
+													roleIndicator={!isMentor ? "Mentor" : undefined}
+													isMicOn={isRemoteMicOn}
+													isThumbnail
+													onPin={() => handlePinView("REMOTE_CAM")}
+												/>
+											)}
+										</div>
+									)}
+
+									{/* Local Screen Thumbnail */}
+									{pinnedViewId !== "LOCAL_SCREEN" && isScreenSharing && (
+										<div className="pointer-events-auto h-full aspect-video shadow-2xl relative rounded-xl overflow-hidden border border-slate-700">
+											<video
+												ref={(ref) => {
+													if (ref) ref.srcObject = localScreenStream;
+												}}
+												autoPlay
+												playsInline
+												muted
+												className="w-full h-full object-cover"
+											/>
+											<div className="absolute top-2 right-2 z-20">
+												<Button
+													size="icon"
+													variant="secondary"
+													className="h-7 w-7 bg-black/50 hover:bg-black/80 backdrop-blur-md"
+													onClick={() => handlePinView("LOCAL_SCREEN")}
+												>
+													<Maximize2 className="h-4 w-4" />
+												</Button>
+											</div>
+											<div className="absolute bottom-2 left-2 bg-black/50 px-2 py-0.5 rounded text-[10px] backdrop-blur-md">
+												Your Screen
+											</div>
+										</div>
+									)}
+
+									{/* Remote Screen Thumbnail */}
+									{pinnedViewId !== "REMOTE_SCREEN" &&
+										isRemoteScreenSharing && (
+											<div className="pointer-events-auto h-full aspect-video shadow-2xl relative rounded-xl overflow-hidden border border-slate-700">
+												<video
+													ref={(ref) => {
+														if (ref) ref.srcObject = remoteScreenStream;
+													}}
+													autoPlay
+													playsInline
+													className="w-full h-full object-cover"
+												/>
+												<div className="absolute top-2 right-2 z-20">
+													<Button
+														size="icon"
+														variant="secondary"
+														className="h-7 w-7 bg-black/50 hover:bg-black/80 backdrop-blur-md"
+														onClick={() => handlePinView("REMOTE_SCREEN")}
+													>
+														<Maximize2 className="h-4 w-4" />
+													</Button>
+												</div>
+												<div className="absolute bottom-2 left-2 bg-black/50 px-2 py-0.5 rounded text-[10px] backdrop-blur-md">
+													Remote Screen
+												</div>
+											</div>
+										)}
+								</div>
 							</div>
-						</div>
-					)}
+						)}
+					</div>
 				</div>
+
+				<CallControls
+					isCamOn={isCamOn}
+					isMicOn={isMicOn}
+					isScreenSharing={isScreenSharing}
+					isWhiteboardActive={isWhiteboardActive}
+					isMentor={isMentor}
+					onToggleCam={toggleCam}
+					onToggleMic={toggleMic}
+					onToggleScreenShare={handleToggleScreenShare}
+					onToggleWhiteboard={handleToggleWhiteboard}
+					onLeave={handleLeaveSession}
+					onTerminate={() => setShowTerminateConfirm(true)}
+					onToggleChat={() => {
+						setIsChatOpen(!isChatOpen);
+						if (!isChatOpen) clearUnread();
+					}}
+					isChatOpen={isChatOpen}
+					hasUnreadChat={hasUnread}
+				/>
 			</div>
 
-			<CallControls
-				isCamOn={isCamOn}
-				isMicOn={isMicOn}
-				isScreenSharing={isScreenSharing}
-				isWhiteboardActive={isWhiteboardActive}
-				isMentor={isMentor}
-				onToggleCam={toggleCam}
-				onToggleMic={toggleMic}
-				onToggleScreenShare={handleToggleScreenShare}
-				onToggleWhiteboard={handleToggleWhiteboard}
-				onLeave={handleLeaveSession}
-				onTerminate={() => setShowTerminateConfirm(true)}
-			/>
+			{/* Chat Side Panel */}
+			{isChatOpen && (
+				<div className="w-80 md:w-96 flex-shrink-0 animate-in slide-in-from-right duration-300">
+					<ChatPanel
+						messages={messages}
+						onSendMessage={sendMessage}
+						onClose={() => setIsChatOpen(false)}
+						remoteParticipantName={remoteLabel}
+					/>
+				</div>
+			)}
 
 			<ConfirmModal
 				isOpen={showStopScreenShareConfirm}

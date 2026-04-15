@@ -37,3 +37,9 @@ export interface WhiteboardPermissionPayload {
 export interface CallEndPayload {
 	bookingId: string;
 }
+
+export interface ChatMessagePayload {
+	senderId: string;
+	message: string;
+	timestamp: string;
+}

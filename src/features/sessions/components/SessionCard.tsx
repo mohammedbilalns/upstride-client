@@ -92,6 +92,12 @@ export function SessionCard({
 								Payment Pending
 							</Badge>
 						)}
+						{booking.status === "STARTED" && (
+							<Badge className="h-5 text-[10px] px-2 rounded-full uppercase tracking-wider bg-emerald-500 hover:bg-emerald-600 text-white flex items-center gap-1.5 animate-pulse border-none">
+								<span className="h-1.5 w-1.5 rounded-full bg-white" />
+								Ongoing
+							</Badge>
+						)}
 					</div>
 
 					<div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
