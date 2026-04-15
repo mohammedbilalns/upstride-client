@@ -7,7 +7,8 @@ export const Route = createFileRoute("/_app-layout/_user-layout/sessions/")({
 	validateSearch: (search) => SessionsSearchSchema.parse(search),
 	loaderDeps: ({ search }) => ({ search }),
 	loader: async ({ context: { queryClient }, deps: { search } }) => {
-		const filter = search.tab === "past" ? "past" : search.upcomingFilter;
+		const filter =
+			search.tab === "past" ? search.pastFilter : search.upcomingFilter;
 		await queryClient.ensureQueryData(
 			userSessionsQueryOptions({
 				page: search.page,

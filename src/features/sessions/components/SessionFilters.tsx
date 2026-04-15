@@ -24,6 +24,7 @@ export function SessionFilters({
 	const hasFilters =
 		search.tab !== "upcoming" ||
 		search.upcomingFilter !== "upcoming" ||
+		search.pastFilter !== "completed" ||
 		search.page !== 1;
 
 	return (
@@ -39,7 +40,13 @@ export function SessionFilters({
 				<Tabs
 					value={search.tab}
 					onValueChange={(val) =>
-						onUpdate({ tab: val as "upcoming" | "past", page: 1 })
+						onUpdate({
+							tab: val as "upcoming" | "past",
+							page: 1,
+							...(val === "past"
+								? { pastFilter: "completed" as const }
+								: { upcomingFilter: "upcoming" as const }),
+						})
 					}
 					className="w-full"
 				>
@@ -54,7 +61,7 @@ export function SessionFilters({
 				</Tabs>
 			</div>
 
-			{/* Status Filter (Only for Upcoming) */}
+			{/* Status Filter */}
 			{search.tab === "upcoming" && (
 				<div className="rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-4 space-y-3">
 					<p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400 uppercase">
@@ -79,6 +86,33 @@ export function SessionFilters({
 							<SelectContent>
 								<SelectItem value="upcoming">Active Sessions</SelectItem>
 								<SelectItem value="payment_pending">Payment Pending</SelectItem>
+								<SelectItem value="cancelled">Cancelled</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
+				</div>
+			)}
+
+			{search.tab === "past" && (
+				<div className="rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-4 space-y-3">
+					<p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400 uppercase">
+						Status
+					</p>
+					<div className="space-y-2">
+						<Select
+							value={search.pastFilter}
+							onValueChange={(val) =>
+								onUpdate({
+									pastFilter: val as "completed" | "cancelled",
+									page: 1,
+								})
+							}
+						>
+							<SelectTrigger className="h-10 rounded-xl bg-white/60 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-800">
+								<SelectValue placeholder="Filter by status" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="completed">Completed</SelectItem>
 								<SelectItem value="cancelled">Cancelled</SelectItem>
 							</SelectContent>
 						</Select>

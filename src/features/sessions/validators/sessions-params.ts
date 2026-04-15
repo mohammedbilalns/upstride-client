@@ -8,6 +8,7 @@ export const SessionsSearchSchema = z.object({
 	upcomingFilter: z
 		.enum(["upcoming", "cancelled", "payment_pending"])
 		.catch("upcoming"),
+	pastFilter: z.enum(["completed", "cancelled"]).catch("completed"),
 	booking_success: z.boolean().optional(),
 	booking_id: z.string().optional(),
 });

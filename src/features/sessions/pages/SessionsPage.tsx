@@ -79,9 +79,16 @@ export function SessionsPage() {
 	const coinBalanceQuery = useCoinBalance();
 	const coinValue = coinBalanceQuery.data?.coinValue;
 
-	const filter = (
-		search.tab === "past" ? "past" : search.upcomingFilter
-	) as BookingFilter;
+	const filter = useMemo(() => {
+		if (search.tab === "past") {
+			return search.pastFilter === "cancelled"
+				? ("past_cancelled" as const)
+				: (search.pastFilter as BookingFilter);
+		}
+		return search.upcomingFilter === "cancelled"
+			? ("upcoming_cancelled" as const)
+			: (search.upcomingFilter as BookingFilter);
+	}, [search.tab, search.pastFilter, search.upcomingFilter]);
 	const params = useMemo(
 		() => ({
 			page: search.page,
@@ -197,6 +204,7 @@ export function SessionsPage() {
 										search: {
 											tab: "upcoming",
 											upcomingFilter: "upcoming",
+											pastFilter: "completed",
 											page: 1,
 											limit: 10,
 										},

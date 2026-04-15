@@ -67,7 +67,10 @@ export interface CancelBookingResponse {
 
 export type BookingFilter =
 	| "past"
+	| "completed"
 	| "cancelled"
+	| "upcoming_cancelled"
+	| "past_cancelled"
 	| "upcoming"
 	| "all"
 	| "payment_pending";
