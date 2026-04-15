@@ -3,6 +3,7 @@ export type PaymentStatus = "PENDING" | "COMPLETED" | "FAILED" | "REFUNDED";
 export type BookingStatus =
 	| "PENDING"
 	| "CONFIRMED"
+	| "STARTED"
 	| "COMPLETED"
 	| "CANCELLED_BY_MENTEE"
 	| "CANCELLED_BY_MENTOR";

@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Coins, CreditCard, Video } from "lucide-react";
+import { Coins, CreditCard, Download, Video } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +31,16 @@ export function SessionDetailsDialog({
 	const isCancelled =
 		selectedBooking?.status === "CANCELLED_BY_MENTEE" ||
 		selectedBooking?.status === "CANCELLED_BY_MENTOR";
+	const canJoinMeeting =
+		Boolean(selectedBooking) &&
+		!isCancelled &&
+		selectedBooking.status !== "COMPLETED" &&
+		new Date(selectedBooking.endTime).getTime() >= Date.now();
+	const canDownloadReceipt =
+		Boolean(selectedBooking) &&
+		(selectedBooking.status === "CONFIRMED" ||
+			selectedBooking.status === "STARTED" ||
+			selectedBooking.status === "COMPLETED");
 	const paymentStatusLabel = selectedBooking
 		? selectedBooking.paymentStatus === "COMPLETED"
 			? "Payment completed"
@@ -40,6 +50,52 @@ export function SessionDetailsDialog({
 					? "Payment failed"
 					: "Payment refunded"
 		: "";
+	const bookingStatusLabel = selectedBooking
+		? selectedBooking.status === "STARTED"
+			? "Ongoing"
+			: selectedBooking.status === "COMPLETED"
+				? "Completed"
+				: selectedBooking.status === "CONFIRMED"
+					? "Confirmed"
+					: selectedBooking.status === "PENDING"
+						? "Payment Pending"
+						: selectedBooking.status === "CANCELLED_BY_MENTEE"
+							? "Cancelled by mentee"
+							: "Cancelled by mentor"
+		: "";
+
+	const handleDownloadReceipt = () => {
+		if (!selectedBooking) return;
+
+		const receiptLines = [
+			"Upstride Session Receipt",
+			`Receipt Date: ${new Date().toLocaleString()}`,
+			`Booking ID: ${selectedBooking.id}`,
+			`Status: ${bookingStatusLabel}`,
+			`Payment Status: ${paymentStatusLabel}`,
+			`${personLabel}: ${personName ?? selectedBooking.mentorName ?? personLabel}`,
+			`Session Date: ${formatDateShort(selectedBooking.startTime)}`,
+			`Session Time: ${formatTimeShort(selectedBooking.startTime)} - ${formatTimeShort(selectedBooking.endTime)}`,
+			`Amount: ${selectedBooking.totalAmount} ${selectedBooking.currency.toUpperCase()}`,
+			`Payment Type: ${selectedBooking.paymentType}`,
+		];
+
+		if (selectedBooking.notes) {
+			receiptLines.push(`Notes: ${selectedBooking.notes}`);
+		}
+
+		const blob = new Blob([receiptLines.join("\n")], {
+			type: "text/plain;charset=utf-8",
+		});
+		const url = URL.createObjectURL(blob);
+		const anchor = document.createElement("a");
+		anchor.href = url;
+		anchor.download = `receipt-${selectedBooking.id}.txt`;
+		document.body.appendChild(anchor);
+		anchor.click();
+		anchor.remove();
+		URL.revokeObjectURL(url);
+	};
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
@@ -84,7 +140,7 @@ export function SessionDetailsDialog({
 
 						<div className="flex flex-wrap items-center gap-2">
 							<Badge variant="outline" className="text-[10px] uppercase">
-								{selectedBooking.status}
+								{bookingStatusLabel}
 							</Badge>
 							<Badge variant="secondary" className="text-[10px] uppercase">
 								{paymentStatusLabel}
@@ -102,7 +158,7 @@ export function SessionDetailsDialog({
 							</span>
 						</div>
 
-						{!isCancelled && (
+						{canJoinMeeting && (
 							<div className="space-y-1">
 								<p className="text-xs uppercase tracking-wide text-muted-foreground">
 									Virtual Meeting Room
@@ -115,6 +171,23 @@ export function SessionDetailsDialog({
 									<Video className="h-4 w-4" />
 									<span>Join Meeting Room</span>
 								</Link>
+							</div>
+						)}
+
+						{canDownloadReceipt && (
+							<div className="space-y-1">
+								<p className="text-xs uppercase tracking-wide text-muted-foreground">
+									Receipt
+								</p>
+								<Button
+									type="button"
+									variant="outline"
+									onClick={handleDownloadReceipt}
+									className="rounded-xl"
+								>
+									<Download className="h-4 w-4" />
+									<span>Download Receipt</span>
+								</Button>
 							</div>
 						)}
 

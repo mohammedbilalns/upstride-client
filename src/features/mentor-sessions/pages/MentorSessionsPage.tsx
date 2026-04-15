@@ -215,12 +215,15 @@ function MentorSessionCard({
 	isCancelling: boolean;
 }) {
 	const isCancelled = booking.status.startsWith("CANCELLED");
-	const timeUntilStartMs = new Date(booking.startTime).getTime() - Date.now();
+	const now = Date.now();
+	const timeUntilStartMs = new Date(booking.startTime).getTime() - now;
+	const hasEnded = new Date(booking.endTime).getTime() < now;
 	const showJoinButton =
 		!isCancelled &&
+		!hasEnded &&
 		booking.status !== "COMPLETED" &&
 		timeUntilStartMs <= 60 * 60 * 1000 && // 1 hour before
-		timeUntilStartMs >= -(120 * 60 * 1000); // Up to 2 hours after start
+		timeUntilStartMs >= -(120 * 60 * 1000); // Keep late joins blocked once the session is already past
 
 	const canCancel =
 		showCancel && !isCancelled && booking.status !== "COMPLETED";
