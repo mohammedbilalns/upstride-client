@@ -64,7 +64,7 @@ export class PushNotificationService {
 			// Send subscription to backend
 			await api.post("/notifications/register-push", subscription.toJSON());
 			console.log("User subscribed to push notifications");
-		} catch (error) {
+		} catch (error: any) {
 			console.error("Failed to subscribe user", error);
 		}
 	}

@@ -1,8 +1,18 @@
 /* eslint-disable no-restricted-globals */
 // Listen for incoming push messages
 self.addEventListener("push", (event) => {
-	// convert raw data to json if presnt
-	const data = event.data ? event.data.json() : {};
+	console.log("[Service Worker] Push Received.");
+	let data = {};
+	try {
+		data = event.data ? event.data.json() : {};
+		console.log("[Service Worker] Push Data:", data);
+	} catch (err) {
+		console.warn(
+			"[Service Worker] Push data was not valid JSON:",
+			event.data.text(),
+		);
+	}
+
 	const title = data.title || "New Notification";
 	const options = {
 		body: data.body || "You have a new notification from Upstride.",
@@ -12,7 +22,8 @@ self.addEventListener("push", (event) => {
 			link: data.link || "/",
 		},
 	};
-	// keep alive until task completes
+
+	console.log("[Service Worker] Showing Notification:", title);
 	event.waitUntil(self.registration.showNotification(title, options));
 });
 
@@ -24,8 +35,7 @@ self.addEventListener("notificationclick", (event) => {
 		clients
 			.matchAll({ type: "window", includeUncontrolled: true })
 			.then((windowClients) => {
-				for (let i = 0; i < windowClients.length; i++) {
-					const client = windowClients[i];
+				for (const client of windowClients) {
 					if (client.url === urlToOpen && "focus" in client) {
 						return client.focus();
 					}
