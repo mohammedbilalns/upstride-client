@@ -1,11 +1,9 @@
 import type React from "react";
 import { useEffect, useState, useRef, useCallback } from "react";
-import { Excalidraw } from "@excalidraw/excalidraw";
+import { Excalidraw, CaptureUpdateAction } from "@excalidraw/excalidraw";
 import "@excalidraw/excalidraw/index.css";
-import type {
-	ExcalidrawImperativeAPI,
-	ExcalidrawElement,
-} from "@excalidraw/excalidraw/types";
+import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
+import type { ExcalidrawElement } from "@excalidraw/excalidraw/element/types";
 import type { Socket } from "socket.io-client";
 import { Button } from "@/components/ui/button";
 import { Users, Lock, Unlock, MousePointer2 } from "lucide-react";
@@ -77,7 +75,7 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 				isRemoteUpdate.current = true;
 				excalidrawAPI.updateScene({
 					elements: update,
-					commitToHistory: false,
+					captureUpdate: CaptureUpdateAction.NEVER,
 				});
 				setTimeout(() => {
 					isRemoteUpdate.current = false;
@@ -106,7 +104,7 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 			isRemoteUpdate.current = true;
 			excalidrawAPI.updateScene({
 				elements: pendingUpdate.current,
-				commitToHistory: false,
+				captureUpdate: CaptureUpdateAction.NEVER,
 			});
 			pendingUpdate.current = null;
 			isInitialized.current = true;
@@ -182,7 +180,9 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 								<Unlock className="w-4 h-4" />
 							)}
 							<span className="hidden md:inline">
-								{menteeHasPermission ? "Lock Mentee" : "Unlock Mentee"}
+								{menteeHasPermission
+									? "Revoke Edit Access"
+									: "Permit Edit Access"}
 							</span>
 						</Button>
 					</div>
