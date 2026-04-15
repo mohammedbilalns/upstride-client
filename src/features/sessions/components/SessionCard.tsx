@@ -4,11 +4,13 @@ import {
 	Clock,
 	Coins,
 	CreditCard,
+	Download,
 	Video,
 	XCircle,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { sessionBookingService } from "@/features/session-booking-management";
 import type { BookingDto } from "@/features/session-booking-management/types";
 import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
 
@@ -48,6 +50,12 @@ export function SessionCard({
 		booking.paymentType === "STRIPE" &&
 		booking.paymentStatus !== "COMPLETED" &&
 		timeUntilStartMs >= 0;
+
+	const canDownloadReceipt =
+		!isCancelled &&
+		booking.paymentType === "STRIPE" &&
+		booking.paymentStatus === "COMPLETED" &&
+		["CONFIRMED", "STARTED", "COMPLETED"].includes(booking.status);
 
 	return (
 		<div className="group flex flex-col gap-4 rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-5 sm:flex-row sm:items-center sm:justify-between transition-all hover:border-zinc-300 dark:hover:border-zinc-700 shadow-sm hover:shadow-md">
@@ -149,6 +157,18 @@ export function SessionCard({
 						className="h-9 px-4 rounded-xl text-xs font-semibold"
 					>
 						Pay now
+					</Button>
+				)}
+
+				{canDownloadReceipt && (
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={() => sessionBookingService.downloadReceipt(booking.id)}
+						className="h-9 px-4 rounded-xl text-xs font-semibold"
+					>
+						<Download className="h-3.5 w-3.5 mr-2" />
+						Download Receipt
 					</Button>
 				)}
 
