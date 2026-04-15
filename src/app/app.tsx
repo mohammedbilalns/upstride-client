@@ -13,6 +13,11 @@ const App = () => {
 			await initAuthSession(router);
 			if (mounted) {
 				setLoading(false);
+				import("@/shared/services/push-notification.service").then(
+					({ PushNotificationService }) => {
+						PushNotificationService.subscribeUser().catch(console.error);
+					},
+				);
 			}
 		};
 

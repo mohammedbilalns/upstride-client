@@ -3,7 +3,11 @@ import type { Socket } from "socket.io-client";
 import { useMediaDevices } from "./use-media-devices";
 import { useRTCPeerConnection } from "./use-rtc-peer-connection";
 
-export const useWebRTC = (bookingId: string, socket: Socket | null) => {
+export const useWebRTC = (
+	bookingId: string,
+	socket: Socket | null,
+	enabled: boolean = true,
+) => {
 	const {
 		localStream,
 		setLocalStream,
@@ -221,7 +225,7 @@ export const useWebRTC = (bookingId: string, socket: Socket | null) => {
 
 	// Lifecycle logic
 	useEffect(() => {
-		if (!socket) return;
+		if (!socket || !enabled) return;
 
 		const pc = createPeerConnection();
 		peerConnection.current = pc;
@@ -238,7 +242,7 @@ export const useWebRTC = (bookingId: string, socket: Socket | null) => {
 			leaveSession();
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [socket, createPeerConnection]);
+	}, [socket, createPeerConnection, enabled]);
 
 	const toggleCam = useCallback(async () => {
 		if (!peerConnection.current) return;

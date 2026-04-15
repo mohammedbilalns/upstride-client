@@ -6,6 +6,9 @@ import { ThemeProvider } from "./app/contexts/ThemeContext";
 import { queryClient } from "./app/router/routerConfig";
 import { Toaster } from "./components/ui/sonner";
 import { env } from "./shared/config/env";
+import { PushNotificationService } from "./shared/services/push-notification.service";
+
+PushNotificationService.register();
 
 const rootElement = document.getElementById("app");
 if (!rootElement) throw new Error("Root element not found");

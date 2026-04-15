@@ -40,11 +40,14 @@ export function SessionCard({
 	const showMeetingInfo =
 		isUpcoming &&
 		!isCancelled &&
+		booking.status !== "PENDING" &&
 		timeUntilStartMs <= 60 * 60 * 1000 &&
 		timeUntilStartMs >= 0;
 
 	const canCancel =
-		showCancel && !isCancelled && booking.status !== "COMPLETED";
+		showCancel &&
+		!isCancelled &&
+		!["COMPLETED", "STARTED"].includes(booking.status);
 	const canRepay =
 		!isCancelled &&
 		booking.paymentType === "STRIPE" &&

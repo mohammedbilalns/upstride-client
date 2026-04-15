@@ -17,6 +17,7 @@ export const Route = createFileRoute("/_app-layout/call/$bookingId")({
 
 			if (
 				!booking ||
+				booking.status === "PENDING" ||
 				(booking.mentorUserId !== userId && booking.menteeId !== userId)
 			) {
 				throw redirect({ to: "/" });

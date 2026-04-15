@@ -223,6 +223,7 @@ function MentorSessionCard({
 		!isCancelled &&
 		!hasEnded &&
 		booking.status !== "COMPLETED" &&
+		booking.status !== "PENDING" &&
 		timeUntilStartMs <= 60 * 60 * 1000 && // 1 hour before
 		timeUntilStartMs >= -(120 * 60 * 1000); // Keep late joins blocked once the session is already past
 

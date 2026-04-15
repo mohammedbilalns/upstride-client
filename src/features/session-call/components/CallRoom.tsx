@@ -8,6 +8,8 @@ import { CallControls } from "./CallControls";
 import { Whiteboard } from "./Whiteboard";
 import { useChat } from "../hooks/use-chat";
 import { ChatPanel } from "./ChatPanel";
+import { AlertCircle, ArrowLeft, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "@tanstack/react-router";
 import { SessionGrid } from "./SessionGrid";
 import { CollaborationStage } from "./CollaborationStage";
@@ -38,6 +40,9 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 	const [showTerminateConfirm, setShowTerminateConfirm] = useState(false);
 	const [isTerminating, setIsTerminating] = useState(false);
 	const [isChatOpen, setIsChatOpen] = useState(false);
+	const [joinError, setJoinError] = useState<string | null>(null);
+	const [isAuthorized, setIsAuthorized] = useState(false);
+	const [isValidating, setIsValidating] = useState(true);
 
 	const router = useRouter();
 	const currentUserId = router.options.context?.auth?.user?.id;
@@ -66,7 +71,27 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 	);
 
 	const navigateToSessionList = () => {
-		window.location.assign(isMentor ? "/mentor-sessions" : "/sessions");
+		if (isMentor) {
+			router.navigate({
+				to: "/mentor-sessions",
+				search: {
+					page: 1,
+					limit: 10,
+					filter: "upcoming",
+				},
+			});
+		} else {
+			router.navigate({
+				to: "/sessions",
+				search: {
+					page: 1,
+					limit: 10,
+					tab: "upcoming",
+					upcomingFilter: "upcoming",
+					pastFilter: "completed",
+				},
+			});
+		}
 	};
 	const localLabel = localParticipantName.trim() || "You";
 	const remoteLabel = remoteParticipantName.trim() || "Participant";
@@ -86,7 +111,7 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 		toggleMic,
 		toggleScreenShare,
 		leaveSession,
-	} = useWebRTC(bookingId, socket);
+	} = useWebRTC(bookingId, socket, isAuthorized && !joinError);
 
 	// Clear waiting state when remote stream is received
 	useEffect(() => {
@@ -96,8 +121,16 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 	useEffect(() => {
 		if (!socket) return;
 
-		console.log("[CallRoom] Joining call room", bookingId);
-		socket.emit("call:join", { bookingId });
+		console.log("[CallRoom] Initiating pre-join check", bookingId);
+		socket.emit("call:pre-join-check", { bookingId });
+
+		const handlePreJoinSuccess = () => {
+			console.log("[CallRoom] Pre-join check successful", bookingId);
+			setJoinError(null);
+			setIsAuthorized(true);
+			setIsValidating(false);
+			socket.emit("call:join", { bookingId });
+		};
 
 		const handleUserJoined = () => {
 			setIsWaiting(false);
@@ -122,6 +155,7 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 			navigateToSessionList();
 		};
 
+		socket.on("call:pre-join-check:success", handlePreJoinSuccess);
 		socket.on("call:user-joined", handleUserJoined);
 		socket.on("call:user-left", handleUserLeft);
 		socket.on("call:terminated", handleTerminated);
@@ -129,6 +163,7 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 		return () => {
 			leaveSession();
 			socket.emit("call:leave", { bookingId });
+			socket.off("call:pre-join-check:success", handlePreJoinSuccess);
 			socket.off("call:user-joined", handleUserJoined);
 			socket.off("call:user-left", handleUserLeft);
 			socket.off("call:terminated", handleTerminated);
@@ -138,8 +173,15 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 	useEffect(() => {
 		if (!socket) return;
 
-		const handleSocketError = () => {
+		const handleSocketError = (err: { message: string }) => {
 			setIsTerminating(false);
+			setIsValidating(false);
+			if (
+				err.message?.includes("Session has not started yet") ||
+				err.message?.includes("5 minutes before the start time")
+			) {
+				setJoinError(err.message || "Session has not started yet.");
+			}
 		};
 
 		socket.on("socket:error", handleSocketError);
@@ -245,6 +287,57 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 	const isCollaborationActive =
 		!isWaiting &&
 		(isWhiteboardActive || isScreenSharing || isRemoteScreenSharing);
+
+	if (isValidating) {
+		return (
+			<div className="flex flex-col items-center justify-center h-[calc(100vh-4rem)] w-full bg-slate-950 text-slate-50 p-6">
+				<div className="max-w-md w-full space-y-6 text-center animate-in fade-in duration-500">
+					<div className="relative mx-auto w-16 h-16 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10">
+						<Loader2 className="h-8 w-8 animate-spin text-white" />
+					</div>
+					<div className="space-y-2">
+						<h2 className="text-xl font-medium tracking-tight">
+							Verifying Session...
+						</h2>
+						<p className="text-slate-400 text-sm italic">
+							Hang tight, we're getting things ready for you.
+						</p>
+					</div>
+				</div>
+			</div>
+		);
+	}
+
+	if (joinError) {
+		return (
+			<div className="flex flex-col items-center justify-center h-[calc(100vh-4rem)] w-full bg-slate-950 text-slate-50 p-6">
+				<div className="max-w-md w-full space-y-8 text-center animate-in fade-in zoom-in duration-500">
+					<div className="relative mx-auto w-24 h-24 flex items-center justify-center rounded-3xl bg-rose-500/10 text-rose-500 border border-rose-500/20">
+						<AlertCircle className="h-12 w-12" />
+						<div className="absolute inset-0 rounded-3xl bg-rose-500/5 animate-pulse" />
+					</div>
+
+					<div className="space-y-3">
+						<h2 className="text-3xl font-bold tracking-tight">
+							Access Restricted
+						</h2>
+						<p className="text-slate-400 leading-relaxed">{joinError}</p>
+					</div>
+
+					<div className="pt-4">
+						<Button
+							onClick={navigateToSessionList}
+							variant="outline"
+							className="bg-white/5 border-white/10 hover:bg-white/10 text-white rounded-2xl px-8 h-12 gap-2"
+						>
+							<ArrowLeft className="h-4 w-4" />
+							Back to Sessions
+						</Button>
+					</div>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="flex h-[calc(100vh-4rem)] w-full bg-slate-950 relative overflow-hidden text-slate-50">

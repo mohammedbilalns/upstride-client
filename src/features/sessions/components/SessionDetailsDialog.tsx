@@ -35,6 +35,7 @@ export function SessionDetailsDialog({
 		Boolean(selectedBooking) &&
 		!isCancelled &&
 		selectedBooking.status !== "COMPLETED" &&
+		selectedBooking.status !== "PENDING" &&
 		new Date(selectedBooking.endTime).getTime() >= Date.now();
 	const canDownloadReceipt =
 		Boolean(selectedBooking) &&
