@@ -110,10 +110,7 @@ export function ExperienceSection({
 					{(field) => (
 						<div className="space-y-6">
 							{field.state.value.map((entry, index: number) => (
-								<Card
-									key={`${entry.company}-${entry.role}-${entry.from}-${entry.to}-${entry.description}`}
-									className="border-border/50 bg-background/50"
-								>
+								<Card key={index} className="border-border/50 bg-background/50">
 									<CardHeader className="py-3 px-4 flex flex-row items-center justify-between border-b border-border/10">
 										<span className="text-sm font-semibold opacity-70">
 											Experience {index + 1}

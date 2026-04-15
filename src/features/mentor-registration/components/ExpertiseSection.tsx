@@ -124,7 +124,7 @@ export function ExpertiseSection({
 												{field.state.value.map(
 													(skill: MentorSkill, index: number) => (
 														<div
-															key={`${skill.skillId}-${skill.level}`}
+															key={index}
 															className="flex flex-col gap-2 p-3 rounded-xl bg-muted/20 border border-border/50"
 														>
 															<div className="flex gap-3">

@@ -67,7 +67,7 @@ export function EducationSection({
 								{field.state.value.map(
 									(qualification: string, index: number) => (
 										<form.Field
-											key={qualification}
+											key={index}
 											name={`educationalQualifications[${index}]`}
 										>
 											{(subField) => (
