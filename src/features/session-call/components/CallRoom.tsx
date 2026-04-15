@@ -3,7 +3,6 @@ import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useSocket } from "@/app/contexts/SocketContext";
-import { useRouter } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { useWebRTC } from "../hooks/use-webrtc";
@@ -14,24 +13,35 @@ interface CallRoomProps {
 	bookingId: string;
 	isMentor: boolean;
 	menteeId?: string;
+	localParticipantName: string;
+	remoteParticipantName: string;
 }
 
 export const CallRoom: React.FC<CallRoomProps> = ({
 	bookingId,
 	isMentor,
 	menteeId,
+	localParticipantName,
+	remoteParticipantName,
 }) => {
 	const { socket } = useSocket();
-	const router = useRouter();
 
 	const [isWaiting, setIsWaiting] = useState(true);
 	const [isWhiteboardActive, setIsWhiteboardActive] = useState(false);
 	const [pinnedViewId, setPinnedViewId] = useState<string | null>(null);
 	const [showStopScreenShareConfirm, setShowStopScreenShareConfirm] =
 		useState(false);
+	const [showTerminateConfirm, setShowTerminateConfirm] = useState(false);
+	const [isTerminating, setIsTerminating] = useState(false);
 
-	const localVideoRef = useRef<HTMLVideoElement>(null);
-	const remoteVideoRef = useRef<HTMLVideoElement>(null);
+	const navigateToSessionList = () => {
+		window.location.assign(isMentor ? "/mentor-sessions" : "/sessions");
+	};
+	const localLabel = localParticipantName.trim() || "You";
+	const remoteLabel = remoteParticipantName.trim() || "Participant";
+
+	//	const localVideoRef = useRef<HTMLVideoElement>(null);
+	//	const remoteVideoRef = useRef<HTMLVideoElement>(null);
 
 	const {
 		localStream,
@@ -47,19 +57,15 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 		toggleCam,
 		toggleMic,
 		toggleScreenShare,
+		leaveSession,
 	} = useWebRTC(bookingId, socket);
 
-	const localScreenVideoRef = useRef<HTMLVideoElement>(null);
-	const remoteScreenVideoRef = useRef<HTMLVideoElement>(null);
+	//const localScreenVideoRef = useRef<HTMLVideoElement>(null);
+	//	const remoteScreenVideoRef = useRef<HTMLVideoElement>(null);
 
 	// Clear waiting state when remote stream is received
 	useEffect(() => {
-		if (remoteVideoStream) {
-			console.log(
-				"[CallRoom] Remote video stream received, clearing waiting state",
-			);
-			setIsWaiting(false);
-		}
+		setIsWaiting(!remoteVideoStream);
 	}, [remoteVideoStream]);
 
 	useEffect(() => {
@@ -68,38 +74,80 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 		console.log("[CallRoom] Joining call room", bookingId);
 		socket.emit("call:join", { bookingId });
 
-		socket.on("call:user-joined", () => {
+		const handleUserJoined = () => {
 			setIsWaiting(false);
-			toast.success("Other person joined!");
-		});
+			toast.success(`${remoteLabel} joined the call.`);
+		};
 
-		socket.on("call:user-left", () => {
+		const handleUserLeft = () => {
 			setIsWaiting(true);
-			toast.info("Other person disconnected. Waiting for them to rejoin...");
-		});
+			setIsWhiteboardActive(false);
+			setPinnedViewId("REMOTE_CAM");
+			toast.info(`${remoteLabel} left the call. Waiting for him to rejoin...`);
+		};
 
-		socket.on("call:error", ({ message }) => {
-			toast.error(message || "An error occurred during the call.");
-		});
+		const handleTerminated = () => {
+			setIsTerminating(false);
+			setShowTerminateConfirm(false);
+			toast.info(
+				isMentor
+					? "Session terminated successfully."
+					: "Session has been terminated by the mentor.",
+			);
+			navigateToSessionList();
+		};
 
-		socket.on("call:terminated", () => {
-			toast.info("Session has been terminated by the mentor.");
-			router.navigate({ to: isMentor ? "/mentor/sessions" : "/sessions" });
-		});
+		socket.on("call:user-joined", handleUserJoined);
+		socket.on("call:user-left", handleUserLeft);
+		socket.on("call:terminated", handleTerminated);
 
 		return () => {
+			leaveSession();
 			socket.emit("call:leave", { bookingId });
-			socket.off("call:user-joined");
-			socket.off("call:user-left");
-			socket.off("call:terminated");
+			socket.off("call:user-joined", handleUserJoined);
+			socket.off("call:user-left", handleUserLeft);
+			socket.off("call:terminated", handleTerminated);
 		};
-	}, [socket, bookingId, router, isMentor]);
+	}, [socket, bookingId, isMentor, leaveSession, remoteLabel]);
 
-	const handleEndCall = () => {
-		if (isMentor) {
-			socket?.emit("call:terminate", { bookingId });
-		}
-		router.navigate({ to: isMentor ? "/mentor/sessions" : "/sessions" });
+	useEffect(() => {
+		if (!socket) return;
+
+		const handleSocketError = () => {
+			setIsTerminating(false);
+		};
+
+		socket.on("socket:error", handleSocketError);
+
+		return () => {
+			socket.off("socket:error", handleSocketError);
+		};
+	}, [socket]);
+
+	useEffect(() => {
+		const handlePageExit = () => {
+			leaveSession();
+		};
+
+		window.addEventListener("pagehide", handlePageExit);
+		window.addEventListener("beforeunload", handlePageExit);
+
+		return () => {
+			window.removeEventListener("pagehide", handlePageExit);
+			window.removeEventListener("beforeunload", handlePageExit);
+		};
+	}, [leaveSession]);
+
+	const handleLeaveSession = () => {
+		leaveSession();
+		socket?.emit("call:leave", { bookingId });
+		navigateToSessionList();
+	};
+
+	const handleTerminateSession = () => {
+		if (!socket) return;
+		setIsTerminating(true);
+		socket.emit("call:terminate", { bookingId });
 	};
 
 	// Auto-select pinned view if none is pinned
@@ -171,7 +219,8 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 	};
 
 	const isCollaborationActive =
-		isWhiteboardActive || isScreenSharing || isRemoteScreenSharing;
+		!isWaiting &&
+		(isWhiteboardActive || isScreenSharing || isRemoteScreenSharing);
 
 	return (
 		<div className="flex flex-col h-[calc(100vh-4rem)] w-full bg-slate-950 relative overflow-hidden text-slate-50">
@@ -198,7 +247,8 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 							<VideoCard
 								stream={localStream}
 								isCamOn={isCamOn}
-								label="You"
+								label={localLabel}
+								roleIndicator={isMentor ? "Mentor" : undefined}
 								isMicOn={isMicOn}
 								isLocal
 								onPin={() => {}} // Pin disabled in grid mode
@@ -219,7 +269,8 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 									<VideoCard
 										stream={remoteVideoStream}
 										isCamOn={isRemoteCamOn}
-										label={isMentor ? "Mentee" : "Mentor"}
+										label={remoteLabel}
+										roleIndicator={!isMentor ? "Mentor" : undefined}
 										isMicOn={isRemoteMicOn}
 										onPin={() => {}} // Pin disabled in grid mode
 										isPinned
@@ -267,7 +318,8 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 									<VideoCard
 										stream={remoteVideoStream}
 										isCamOn={isRemoteCamOn}
-										label={isMentor ? "Mentee" : "Mentor"}
+										label={remoteLabel}
+										roleIndicator={!isMentor ? "Mentor" : undefined}
 										isMicOn={isRemoteMicOn}
 										onPin={() => handlePinView("REMOTE_CAM")}
 										isPinned
@@ -279,7 +331,8 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 									<VideoCard
 										stream={localStream}
 										isCamOn={isCamOn}
-										label="You"
+										label={localLabel}
+										roleIndicator={isMentor ? "Mentor" : undefined}
 										isMicOn={isMicOn}
 										isLocal
 										onPin={() => handlePinView("LOCAL_CAM")}
@@ -309,7 +362,8 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 										<VideoCard
 											stream={localStream}
 											isCamOn={isCamOn}
-											label="You"
+											label={localLabel}
+											roleIndicator={isMentor ? "Mentor" : undefined}
 											isMicOn={isMicOn}
 											isLocal
 											isThumbnail
@@ -338,7 +392,8 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 											<VideoCard
 												stream={remoteVideoStream}
 												isCamOn={isRemoteCamOn}
-												label={isMentor ? "Mentee" : "Mentor"}
+												label={remoteLabel}
+												roleIndicator={!isMentor ? "Mentor" : undefined}
 												isMicOn={isRemoteMicOn}
 												isThumbnail
 												onPin={() => handlePinView("REMOTE_CAM")}
@@ -412,11 +467,13 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 				isMicOn={isMicOn}
 				isScreenSharing={isScreenSharing}
 				isWhiteboardActive={isWhiteboardActive}
+				isMentor={isMentor}
 				onToggleCam={toggleCam}
 				onToggleMic={toggleMic}
 				onToggleScreenShare={handleToggleScreenShare}
 				onToggleWhiteboard={handleToggleWhiteboard}
-				onEndCall={handleEndCall}
+				onLeave={handleLeaveSession}
+				onTerminate={() => setShowTerminateConfirm(true)}
 			/>
 
 			<ConfirmModal
@@ -428,6 +485,16 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 				confirmText="Stop Sharing"
 				variant="destructive"
 			/>
+
+			<ConfirmModal
+				isOpen={showTerminateConfirm}
+				onClose={() => setShowTerminateConfirm(false)}
+				onConfirm={handleTerminateSession}
+				title="Terminate Session?"
+				message="This will permanently end the session and mark it as completed. You will not be able to rejoin."
+				confirmText={isTerminating ? "Terminating..." : "Terminate"}
+				variant="destructive"
+			/>
 		</div>
 	);
 };
@@ -436,6 +503,7 @@ interface VideoCardProps {
 	stream: MediaStream | null;
 	isCamOn: boolean;
 	label: string;
+	roleIndicator?: string;
 	isMicOn: boolean;
 	isLocal?: boolean;
 	isThumbnail?: boolean;
@@ -447,6 +515,7 @@ const VideoCard: React.FC<VideoCardProps> = ({
 	stream,
 	isCamOn,
 	label,
+	roleIndicator,
 	isMicOn,
 	isLocal,
 	isThumbnail,
@@ -510,7 +579,12 @@ const VideoCard: React.FC<VideoCardProps> = ({
 			<div
 				className={`absolute bottom-3 left-3 bg-slate-950/60 text-slate-100 px-3 py-1 rounded-lg ${isThumbnail ? "text-[10px]" : "text-xs"} backdrop-blur-md border border-white/5 flex items-center gap-2`}
 			>
-				{label}{" "}
+				<span>{label}</span>
+				{roleIndicator && (
+					<span className="rounded-full bg-amber-400/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-amber-200">
+						{roleIndicator}
+					</span>
+				)}
 				{!isMicOn && <span className="text-rose-400 font-bold">MUTED</span>}
 			</div>
 		</div>

@@ -15,11 +15,13 @@ interface CallControlsProps {
 	isMicOn: boolean;
 	isScreenSharing: boolean;
 	isWhiteboardActive: boolean;
+	isMentor: boolean;
 	onToggleCam: () => void;
 	onToggleMic: () => void;
 	onToggleScreenShare: () => void;
 	onToggleWhiteboard: () => void;
-	onEndCall: () => void;
+	onLeave: () => void;
+	onTerminate?: () => void;
 }
 
 export const CallControls: React.FC<CallControlsProps> = ({
@@ -27,11 +29,13 @@ export const CallControls: React.FC<CallControlsProps> = ({
 	isMicOn,
 	isScreenSharing,
 	isWhiteboardActive,
+	isMentor,
 	onToggleCam,
 	onToggleMic,
 	onToggleScreenShare,
 	onToggleWhiteboard,
-	onEndCall,
+	onLeave,
+	onTerminate,
 }) => {
 	return (
 		<div className="flex items-center justify-center gap-4 bg-background/90 p-4 backdrop-blur-md border border-border shadow-lg rounded-2xl mb-4 w-fit mx-auto">
@@ -79,15 +83,31 @@ export const CallControls: React.FC<CallControlsProps> = ({
 				<SquareCheck className="h-5 w-5" />
 			</Button>
 
-			<Button
-				variant="destructive"
-				size="icon"
-				onClick={onEndCall}
-				className="rounded-full h-12 w-12 ml-4"
-				title="End Call"
-			>
-				<XSquare className="h-6 w-6" />
-			</Button>
+			<div className="flex gap-2 ml-4 pl-4 border-l border-border">
+				<Button
+					variant="secondary"
+					size="sm"
+					onClick={onLeave}
+					className="h-10 px-4 rounded-xl font-medium"
+					title="Leave Session"
+				>
+					<XSquare className="h-4 w-4 mr-2" />
+					Leave
+				</Button>
+
+				{isMentor && (
+					<Button
+						variant="destructive"
+						size="sm"
+						onClick={onTerminate}
+						className="h-10 px-4 rounded-xl font-medium bg-rose-600 hover:bg-rose-700"
+						title="Terminate Session"
+					>
+						<SquareCheck className="h-4 w-4 mr-2" />
+						Terminate
+					</Button>
+				)}
+			</div>
 		</div>
 	);
 };

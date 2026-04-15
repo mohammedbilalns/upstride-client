@@ -1,4 +1,3 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { authService } from "@/features/authentication/services/auth.service";
 import { sessionBookingService } from "@/features/session-booking-management/services/session-booking.service";
@@ -41,6 +40,20 @@ function CallPage() {
 	const { booking, isMentor, menteeId } = Route.useLoaderData();
 
 	return (
-		<CallRoom bookingId={booking.id} isMentor={isMentor} menteeId={menteeId} />
+		<CallRoom
+			bookingId={booking.id}
+			isMentor={isMentor}
+			menteeId={menteeId}
+			localParticipantName={
+				isMentor
+					? (booking.mentorName ?? "Mentor")
+					: (booking.menteeName ?? "You")
+			}
+			remoteParticipantName={
+				isMentor
+					? (booking.menteeName ?? "Participant")
+					: (booking.mentorName ?? "Mentor")
+			}
+		/>
 	);
 }

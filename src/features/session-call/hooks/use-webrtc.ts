@@ -20,6 +20,69 @@ export const useWebRTC = (bookingId: string, socket: Socket | null) => {
 	const isLocalMediaReady = useRef(false);
 	const iceCandidateQueue = useRef<RTCIceCandidateInit[]>([]);
 	const remoteCameraStreamId = useRef<string | null>(null);
+	const localStreamRef = useRef<MediaStream | null>(null);
+	const localScreenStreamRef = useRef<MediaStream | null>(null);
+
+	useEffect(() => {
+		localStreamRef.current = localStream;
+	}, [localStream]);
+
+	useEffect(() => {
+		localScreenStreamRef.current = localScreenStream;
+	}, [localScreenStream]);
+
+	const clearRemoteState = useCallback(() => {
+		setRemoteVideoStream(null);
+		setRemoteScreenStream(null);
+		setIsRemoteScreenSharing(false);
+		setIsRemoteCamOn(true);
+		setIsRemoteMicOn(true);
+		remoteCameraStreamId.current = null;
+		iceCandidateQueue.current = [];
+	}, []);
+
+	const stopAllLocalMedia = useCallback(() => {
+		const currentLocalStream = localStreamRef.current;
+		if (currentLocalStream) {
+			for (const track of currentLocalStream.getTracks()) {
+				track.stop();
+			}
+		}
+
+		const currentLocalScreenStream = localScreenStreamRef.current;
+		if (currentLocalScreenStream) {
+			for (const track of currentLocalScreenStream.getTracks()) {
+				track.stop();
+			}
+		}
+
+		localStreamRef.current = null;
+		localScreenStreamRef.current = null;
+		setLocalStream(null);
+		setLocalScreenStream(null);
+		setIsCamOn(true);
+		setIsMicOn(true);
+		setIsScreenSharing(false);
+		isLocalMediaReady.current = false;
+	}, []);
+
+	const teardownConnection = useCallback(() => {
+		if (peerConnection.current) {
+			peerConnection.current.ontrack = null;
+			peerConnection.current.onicecandidate = null;
+			peerConnection.current.oniceconnectionstatechange = null;
+			peerConnection.current.onsignalingstatechange = null;
+			peerConnection.current.onconnectionstatechange = null;
+			peerConnection.current.close();
+			peerConnection.current = null;
+		}
+		clearRemoteState();
+	}, [clearRemoteState]);
+
+	const leaveSession = useCallback(() => {
+		teardownConnection();
+		stopAllLocalMedia();
+	}, [stopAllLocalMedia, teardownConnection]);
 
 	const createPeerConnection = useCallback(() => {
 		const pc = new RTCPeerConnection({
@@ -175,14 +238,7 @@ export const useWebRTC = (bookingId: string, socket: Socket | null) => {
 			peerConnection.current = null;
 		}
 
-		// Clear remote streams and identification
-		setRemoteVideoStream(null);
-		setRemoteScreenStream(null);
-		setIsRemoteScreenSharing(false);
-		setIsRemoteCamOn(true);
-		setIsRemoteMicOn(true);
-		remoteCameraStreamId.current = null;
-		iceCandidateQueue.current = [];
+		clearRemoteState();
 
 		const pc = createPeerConnection();
 		peerConnection.current = pc;
@@ -209,12 +265,18 @@ export const useWebRTC = (bookingId: string, socket: Socket | null) => {
 		}
 
 		return pc;
-	}, [bookingId, createPeerConnection, localStream, localScreenStream]);
+	}, [
+		bookingId,
+		clearRemoteState,
+		createPeerConnection,
+		localStream,
+		localScreenStream,
+	]);
 
 	useEffect(() => {
 		if (!socket) return;
 
-		socket.on("call:user-joined", async ({ userId }) => {
+		const handleUserJoined = async ({ userId }: { userId: string }) => {
 			console.log(
 				"[WebRTC] User joined, resetting connection",
 				userId,
@@ -222,7 +284,7 @@ export const useWebRTC = (bookingId: string, socket: Socket | null) => {
 			);
 			resetConnection();
 			createOffer();
-		});
+		};
 
 		const handleOffer = async ({ offer }: { offer: any }) => {
 			if (!peerConnection.current) return;
@@ -261,9 +323,7 @@ export const useWebRTC = (bookingId: string, socket: Socket | null) => {
 			}
 		};
 
-		socket.on("call:offer", handleOffer);
-
-		socket.on("call:answer", async ({ answer }) => {
+		const handleAnswer = async ({ answer }: { answer: any }) => {
 			if (!peerConnection.current) return;
 			console.log("[WebRTC] Received call:answer", bookingId);
 			try {
@@ -283,9 +343,13 @@ export const useWebRTC = (bookingId: string, socket: Socket | null) => {
 			} catch (error) {
 				console.error("[WebRTC] Failed to handle answer", error, bookingId);
 			}
-		});
+		};
 
-		socket.on("call:ice-candidate", async ({ candidate }) => {
+		const handleIceCandidate = async ({
+			candidate,
+		}: {
+			candidate: RTCIceCandidateInit;
+		}) => {
 			if (!peerConnection.current) return;
 			console.log("[WebRTC] Received call:ice-candidate", bookingId);
 			try {
@@ -308,9 +372,15 @@ export const useWebRTC = (bookingId: string, socket: Socket | null) => {
 					bookingId,
 				);
 			}
-		});
+		};
 
-		socket.on("call:toggled-media", ({ mediaType, isEnabled }) => {
+		const handleToggledMedia = ({
+			mediaType,
+			isEnabled,
+		}: {
+			mediaType: string;
+			isEnabled: boolean;
+		}) => {
 			console.log(
 				`[WebRTC] Remote toggled ${mediaType}: ${isEnabled}`,
 				bookingId,
@@ -323,35 +393,29 @@ export const useWebRTC = (bookingId: string, socket: Socket | null) => {
 					setRemoteScreenStream(null);
 				}
 			}
-		});
+		};
 
-		socket.on("call:user-left", () => {
+		const handleUserLeft = () => {
 			console.log("[WebRTC] User left, clearing remote state", bookingId);
-			setIsRemoteScreenSharing(false);
-			setIsRemoteCamOn(true);
-			setIsRemoteMicOn(true);
-			setRemoteVideoStream(null);
-			setRemoteScreenStream(null);
-			remoteCameraStreamId.current = null;
-			if (peerConnection.current) {
-				console.log(
-					"[WebRTC] Closing peer connection due to user-left",
-					bookingId,
-				);
-				peerConnection.current.close();
-				peerConnection.current = null;
-			}
-		});
+			teardownConnection();
+		};
+
+		socket.on("call:user-joined", handleUserJoined);
+		socket.on("call:offer", handleOffer);
+		socket.on("call:answer", handleAnswer);
+		socket.on("call:ice-candidate", handleIceCandidate);
+		socket.on("call:toggled-media", handleToggledMedia);
+		socket.on("call:user-left", handleUserLeft);
 
 		return () => {
-			socket.off("call:user-joined");
-			socket.off("call:user-left");
-			socket.off("call:offer");
-			socket.off("call:answer");
-			socket.off("call:ice-candidate");
-			socket.off("call:toggled-media");
+			socket.off("call:user-joined", handleUserJoined);
+			socket.off("call:user-left", handleUserLeft);
+			socket.off("call:offer", handleOffer);
+			socket.off("call:answer", handleAnswer);
+			socket.off("call:ice-candidate", handleIceCandidate);
+			socket.off("call:toggled-media", handleToggledMedia);
 		};
-	}, [socket, bookingId, createOffer, resetConnection]);
+	}, [socket, bookingId, createOffer, resetConnection, teardownConnection]);
 
 	useEffect(() => {
 		if (!socket) {
@@ -377,20 +441,7 @@ export const useWebRTC = (bookingId: string, socket: Socket | null) => {
 
 		return () => {
 			console.log("[WebRTC] Cleaning up peer connection", bookingId);
-			if (peerConnection.current) {
-				peerConnection.current.close();
-				peerConnection.current = null;
-			}
-			if (localStream) {
-				for (const track of localStream.getTracks()) {
-					track.stop();
-				}
-			}
-			if (localScreenStream) {
-				for (const track of localScreenStream.getTracks()) {
-					track.stop();
-				}
-			}
+			leaveSession();
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [socket, createPeerConnection]);
@@ -533,5 +584,6 @@ export const useWebRTC = (bookingId: string, socket: Socket | null) => {
 		toggleCam,
 		toggleMic,
 		toggleScreenShare,
+		leaveSession,
 	};
 };
