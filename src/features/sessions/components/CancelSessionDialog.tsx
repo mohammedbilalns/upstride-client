@@ -65,7 +65,7 @@ export function CancelSessionDialog({
 					value={cancelReason}
 					onChange={(e) => setCancelReason(e.target.value)}
 					placeholder="Please share why you're cancelling..."
-					className="min-h-[100px] rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-800 resize-none focus:ring-primary/20"
+					className="min-h-25 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-800 resize-none focus:ring-primary/20"
 				/>
 			</div>
 		</ConfirmModal>
