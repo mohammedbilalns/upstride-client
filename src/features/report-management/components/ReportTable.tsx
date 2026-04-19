@@ -19,11 +19,11 @@ import {
 	useUnblockArticle,
 } from "../hooks/use-report-actions";
 import { ReportManagementService } from "../services/report-management.service";
-import type { ReportDto } from "../types";
+import type { Report } from "../types";
 import { ReportTableRow } from "./ReportTableRow";
 
 interface ReportTableProps {
-	reports: ReportDto[];
+	reports: Report[];
 }
 
 type ReportAction =
@@ -33,7 +33,7 @@ type ReportAction =
 	| "unblock-article";
 
 export function ReportTable({ reports }: ReportTableProps) {
-	const [selectedReport, setSelectedReport] = useState<ReportDto | null>(null);
+	const [selectedReport, setSelectedReport] = useState<Report | null>(null);
 	const [actionType, setActionType] = useState<ReportAction | null>(null);
 	const [adminReason, setAdminReason] = useState("");
 	const [expandedId, setExpandedId] = useState<string | null>(null);

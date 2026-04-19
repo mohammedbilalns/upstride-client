@@ -1,27 +1,27 @@
 export type MessageType = "TEXT" | "IMAGE" | "FILE";
 export type MessageStatus = "sending" | "send" | "read";
 
-export interface ChatDto {
+export interface Chat {
 	id: string;
 	senderId: string;
 	receiverId: string;
-	sender: ChatUserDto;
-	receiver: ChatUserDto;
+	sender: ChatUser;
+	receiver: ChatUser;
 	lastMessageId: string | null;
-	lastMessage: ChatLastMessageDto | null;
+	lastMessage: ChatLastMessage | null;
 	unreadCount: Record<string, number>;
 	createdAt: string;
 	updatedAt: string;
 }
 
-export interface ChatUserDto {
+export interface ChatUser {
 	id: string;
 	name: string;
 	profilePictureUrl?: string | null;
 	role?: "USER" | "MENTOR" | "ADMIN" | "SUPER_ADMIN";
 }
 
-export interface ChatLastMessageDto {
+export interface ChatLastMessage {
 	id: string;
 	senderId: string;
 	messageType: "TEXT" | "IMAGE" | "FILE";
@@ -30,7 +30,7 @@ export interface ChatLastMessageDto {
 	createdAt: string;
 }
 
-export interface ChatMessageDto {
+export interface ChatMessage {
 	id: string;
 	chatId: string;
 	senderId: string;
@@ -52,7 +52,7 @@ export interface GetChatsInput {
 }
 
 export interface GetChatsOutput {
-	chats: ChatDto[];
+	chats: Chat[];
 	total: number;
 	page: number;
 	limit: number;
@@ -64,9 +64,9 @@ export interface GetChatInput {
 }
 
 export interface GetChatOutput {
-	chat: ChatDto | null;
-	receiver: ChatUserDto | null;
-	messages: ChatMessageDto[];
+	chat: Chat | null;
+	receiver: ChatUser | null;
+	messages: ChatMessage[];
 	total: number;
 	page: number;
 	limit: number;
@@ -82,7 +82,7 @@ export interface SendMessageInput {
 }
 
 export interface SendMessageOutput {
-	message: ChatMessageDto;
+	message: ChatMessage;
 }
 
 export interface MarkMessagesReadOutput {

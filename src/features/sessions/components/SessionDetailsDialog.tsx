@@ -10,13 +10,13 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import type { BookingDto } from "@/features/session-booking-management/types";
+import type { Booking } from "@/features/session-booking-management/types";
 import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
 
 interface SessionDetailsDialogProps {
 	isOpen: boolean;
 	onClose: (open: boolean) => void;
-	selectedBooking: BookingDto | null;
+	selectedBooking: Booking | null;
 	personLabel?: string;
 	personName?: string | null;
 }

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import { ArticleCard } from "../components/ArticleCard";
 import { articleQueries } from "../hooks/queries";
-import type { ArticleDto } from "../types";
+import type { Article } from "../types";
 
 const statusOptions = [
 	{ label: "All", value: "all" },
@@ -93,7 +93,7 @@ export function MentorArticlesPage() {
 				) : (
 					<>
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-							{items.map((article: ArticleDto) => (
+							{items.map((article: Article) => (
 								<ArticleCard key={article.id} article={article} />
 							))}
 						</div>

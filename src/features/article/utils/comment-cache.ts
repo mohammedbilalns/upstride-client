@@ -1,6 +1,6 @@
 import type { InfiniteData, QueryClient } from "@tanstack/react-query";
 import { articleQueries } from "../hooks/queries";
-import type { ArticleCommentDto, GetCommentsResponse } from "../types";
+import type { ArticleComment, GetCommentsResponse } from "../types";
 
 export const updateCommentsInfiniteCache = (
 	queryClient: QueryClient,
@@ -40,7 +40,7 @@ export const addCommentOptimistically = (
 	}: {
 		articleId: string;
 		parentId: string | null;
-		comment: ArticleCommentDto;
+		comment: ArticleComment;
 	},
 ) => {
 	updateCommentsInfiniteCache(queryClient, {
@@ -71,7 +71,7 @@ export const updateCommentOptimistically = (
 		articleId: string;
 		parentId: string | null;
 		commentId: string;
-		updates: Partial<ArticleCommentDto>;
+		updates: Partial<ArticleComment>;
 	},
 ) => {
 	updateCommentsInfiniteCache(queryClient, {
@@ -80,7 +80,7 @@ export const updateCommentOptimistically = (
 		updateFn: (pages) =>
 			pages.map((page) => ({
 				...page,
-				items: page.items.map((item: ArticleCommentDto) =>
+				items: page.items.map((item: ArticleComment) =>
 					item.id === commentId ? { ...item, ...updates } : item,
 				),
 			})),
@@ -105,7 +105,7 @@ export const deleteCommentOptimistically = (
 		updateFn: (pages) =>
 			pages.map((page) => ({
 				...page,
-				items: page.items.map((item: ArticleCommentDto) =>
+				items: page.items.map((item: ArticleComment) =>
 					item.id === commentId
 						? {
 								...item,

@@ -8,7 +8,7 @@ import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { useCoinBalance } from "@/features/coin-management/hooks/use-coin-management";
 import { sessionBookingService } from "@/features/session-booking-management";
 import type {
-	BookingDto,
+	Booking,
 	BookingFilter,
 } from "@/features/session-booking-management/types";
 import { Pagination } from "@/features/user-management/components/Pagination";
@@ -25,10 +25,7 @@ import { useUserSessions } from "../hooks/use-sessions";
 // 	format(new Date(value), "MMM dd, yyyy");
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-const getRefundPreview = (
-	booking: BookingDto | undefined,
-	coinValue?: number,
-) => {
+const getRefundPreview = (booking: Booking | undefined, coinValue?: number) => {
 	if (!booking || booking.paymentStatus !== "COMPLETED") {
 		return {
 			percentage: 0,
@@ -73,9 +70,7 @@ export function SessionsPage() {
 	const [pendingCancelId, setPendingCancelId] = useState<string | null>(null);
 	const [cancelReason, setCancelReason] = useState("");
 	const [pendingRepayId, setPendingRepayId] = useState<string | null>(null);
-	const [selectedBooking, setSelectedBooking] = useState<BookingDto | null>(
-		null,
-	);
+	const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 	const coinBalanceQuery = useCoinBalance();
 	const coinValue = coinBalanceQuery.data?.coinValue;
 

@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { sessionBookingService } from "@/features/session-booking-management";
-import type { BookingDto } from "@/features/session-booking-management/types";
+import type { Booking } from "@/features/session-booking-management/types";
 import { SessionDetailsDialog } from "@/features/sessions/components/SessionDetailsDialog";
 import { Pagination } from "@/features/user-management/components/Pagination";
 import { Route } from "@/routes/_app-layout/_mentor-layout/mentor-sessions";
@@ -36,9 +36,7 @@ export function MentorSessionsPage() {
 	const search = Route.useSearch();
 	const [pendingCancelId, setPendingCancelId] = useState<string | null>(null);
 	const [cancelReason, setCancelReason] = useState("");
-	const [selectedBooking, setSelectedBooking] = useState<BookingDto | null>(
-		null,
-	);
+	const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
 	const params = useMemo(
 		() => ({
@@ -209,7 +207,7 @@ function MentorSessionCard({
 	onViewDetails,
 	isCancelling,
 }: {
-	booking: BookingDto;
+	booking: Booking;
 	showCancel: boolean;
 	onCancel: () => void;
 	onViewDetails: () => void;

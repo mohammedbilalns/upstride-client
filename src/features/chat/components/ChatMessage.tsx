@@ -1,10 +1,10 @@
 import { Clock, FileIcon, FileText } from "lucide-react";
 import { ProgressiveImage } from "@/components/common/ProgressiveImage";
-import type { ChatMessageDto } from "@/features/chat/types";
+import type { ChatMessage } from "@/features/chat/types";
 import { formatChatTimestamp } from "@/shared/utils/date";
 
 interface ChatMessageProps {
-	message: ChatMessageDto;
+	message: ChatMessage;
 	isMe: boolean;
 	localMediaPreviews?: Record<string, string>;
 }

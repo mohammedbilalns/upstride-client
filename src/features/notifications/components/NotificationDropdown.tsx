@@ -11,7 +11,7 @@ import {
 	useMarkAllNotificationsRead,
 	useMarkNotificationRead,
 } from "../hooks";
-import type { NotificationDto, NotificationReadFilter } from "../types";
+import type { Notification, NotificationReadFilter } from "../types";
 
 export function NotificationDropdown({ onClose }: { onClose?: () => void }) {
 	const [activeTab, setActiveTab] = useState<NotificationReadFilter>("all");
@@ -29,7 +29,7 @@ export function NotificationDropdown({ onClose }: { onClose?: () => void }) {
 		markReadMutation.mutate(id);
 	};
 
-	const handleNotificationClick = (notification: NotificationDto) => {
+	const handleNotificationClick = (notification: Notification) => {
 		if (!notification.isRead) {
 			markReadMutation.mutate(notification.id);
 		}
@@ -50,7 +50,7 @@ export function NotificationDropdown({ onClose }: { onClose?: () => void }) {
 		markAllReadMutation.mutate();
 	};
 
-	const getNotificationIcon = (_type: NotificationDto["type"]) => {
+	const getNotificationIcon = (_type: Notification["type"]) => {
 		return (
 			<div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary shrink-0">
 				<Bell className="h-4 w-4" />
@@ -147,14 +147,14 @@ function NotificationList({
 	handleNotificationClick,
 	isMarkReadPending,
 }: {
-	notifications: NotificationDto[];
+	notifications: Notification[];
 	isLoading: boolean;
 	isFetchingNextPage: boolean;
 	hasNextPage?: boolean;
 	fetchNextPage: () => void;
-	getNotificationIcon: (type: NotificationDto["type"]) => React.ReactNode;
+	getNotificationIcon: (type: Notification["type"]) => React.ReactNode;
 	handleMarkRead: (id: string, e: React.MouseEvent) => void;
-	handleNotificationClick: (notification: NotificationDto) => void;
+	handleNotificationClick: (notification: Notification) => void;
 	isMarkReadPending: boolean;
 }) {
 	if (isLoading) {

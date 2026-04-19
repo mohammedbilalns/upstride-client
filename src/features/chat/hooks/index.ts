@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-query";
 import { chatService } from "../services/chat.service";
 import type {
-	ChatMessageDto,
+	ChatMessage,
 	GetChatOutput,
 	GetChatsInput,
 	GetChatsOutput,
@@ -50,7 +50,7 @@ export const useSendMessage = (chatId: string, otherUserId: string) => {
 				InfiniteData<GetChatOutput>
 			>(chatKeys.detail(otherUserId));
 
-			const optimisticMessage: ChatMessageDto = {
+			const optimisticMessage: ChatMessage = {
 				id: `optimistic-${Date.now()}`,
 				chatId,
 				senderId: newMessagePayload.senderId || "",

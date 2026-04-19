@@ -8,14 +8,13 @@ import {
 	MoreHorizontal,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import type { ArticleDto } from "@/features/article/types";
+import type { Article } from "@/features/article/types";
 
 interface FeedArticleCardProps {
-	article: ArticleDto;
+	article: Article;
 }
 
 export function FeedArticleCard({ article }: FeedArticleCardProps) {
-	// Fallback stats since ArticleDto might not have these directly mapped in simplistic types
 	const likes = article.likesCount ?? 0;
 	const comments = article.commentsCount ?? 0;
 	const views = article.views ?? 0;

@@ -9,10 +9,10 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { formatDateShort, formatTimeWithSeconds24 } from "@/shared/utils/date";
-import type { ReportDto } from "../types";
+import type { Report } from "../types";
 
 interface ReportRowDetailsProps {
-	report: ReportDto;
+	report: Report;
 }
 
 export function ReportRowDetails({ report }: ReportRowDetailsProps) {

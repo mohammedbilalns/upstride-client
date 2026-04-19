@@ -3,15 +3,15 @@ import { ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
-import type { ReportDto } from "../types";
+import type { Report } from "../types";
 import { ReportRowDetails } from "./ReportRowDetails";
 
 interface ReportTableRowProps {
-	report: ReportDto;
+	report: Report;
 	isExpanded: boolean;
 	onToggle: () => void;
 	onAction: (
-		report: ReportDto,
+		report: Report,
 		action: "resolve" | "block-user" | "block-article" | "unblock-article",
 	) => void;
 	isProcessing: boolean;

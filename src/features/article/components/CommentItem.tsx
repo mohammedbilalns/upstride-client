@@ -21,12 +21,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/shared/utils/cn";
 import { articleQueries } from "../hooks/queries";
-import type { ArticleCommentDto } from "../types";
+import type { ArticleComment } from "../types";
 import { CommentForm } from "./CommentForm";
 
 interface CommentItemProps {
 	articleId: string;
-	comment: ArticleCommentDto;
+	comment: ArticleComment;
 	currentUserId?: string;
 	onEdit: (commentId: string) => void;
 	onDelete: (commentId: string, parentId?: string | null) => void;

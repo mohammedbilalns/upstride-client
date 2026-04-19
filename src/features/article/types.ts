@@ -6,7 +6,7 @@ interface ArticleAuthorSnapshot {
 	isBlocked?: boolean;
 }
 
-export interface ArticleDto {
+export interface Article {
 	id: string;
 	authorId: string;
 	authorSnapshot: ArticleAuthorSnapshot;
@@ -34,7 +34,7 @@ export interface ReportResponse {
 	id: string;
 }
 
-export interface ArticleCommentDto {
+export interface ArticleComment {
 	id: string;
 	articleId: string;
 	parentId: string | null;
@@ -51,7 +51,7 @@ export interface ArticleCommentDto {
 	updatedAt: string;
 }
 
-export interface ArticleReactionDto {
+export interface ArticleReaction {
 	id: string;
 	resourceId: string;
 	userId: string;
@@ -81,7 +81,7 @@ export interface GetTopTagsResponse {
 }
 
 export interface GetArticlesResponse {
-	items: ArticleDto[];
+	items: Article[];
 	total: number;
 	page: number;
 	limit: number;
@@ -89,7 +89,7 @@ export interface GetArticlesResponse {
 }
 
 export interface GetArticleResponse {
-	article: ArticleDto;
+	article: Article;
 	isAuthor?: boolean;
 	userReaction?: ArticleReactionType;
 	isReported?: boolean;
@@ -110,7 +110,7 @@ export interface CreateArticleInput {
 }
 
 export interface CreateArticleResponse {
-	article: ArticleDto;
+	article: Article;
 }
 
 export interface UpdateArticleInput {
@@ -122,7 +122,7 @@ export interface UpdateArticleInput {
 }
 
 export interface UpdateArticleResponse {
-	article: ArticleDto;
+	article: Article;
 }
 
 export interface DeleteArticleInput {
@@ -136,7 +136,7 @@ export interface GetCommentsInput {
 }
 
 export interface GetCommentsResponse {
-	items: ArticleCommentDto[];
+	items: ArticleComment[];
 	total: number;
 	page: number;
 	limit: number;
@@ -150,7 +150,7 @@ export interface CreateCommentInput {
 }
 
 export interface CreateCommentResponse {
-	comment: ArticleCommentDto;
+	comment: ArticleComment;
 }
 
 export interface UpdateCommentInput {
@@ -159,7 +159,7 @@ export interface UpdateCommentInput {
 }
 
 export interface UpdateCommentResponse {
-	comment: ArticleCommentDto;
+	comment: ArticleComment;
 }
 
 export interface DeleteCommentInput {
@@ -176,7 +176,7 @@ export interface ReactToArticleInput {
 }
 
 export interface ReactToArticleResponse {
-	reaction: ArticleReactionDto;
+	reaction: ArticleReaction;
 }
 
 export interface ReactToCommentInput {
@@ -185,5 +185,5 @@ export interface ReactToCommentInput {
 }
 
 export interface ReactToCommentResponse {
-	reaction: ArticleReactionDto;
+	reaction: ArticleReaction;
 }

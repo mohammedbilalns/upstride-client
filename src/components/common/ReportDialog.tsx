@@ -1,7 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { Flag, Loader2 } from "lucide-react";
 import { useState } from "react";
-import { z } from "zod";
 import FieldError from "@/components/common/Field-Error";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,14 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useArticleMutations } from "@/features/article/hooks/mutations";
-
-const reportSchema = z.object({
-	reason: z.string().min(1, "Please select a reason"),
-	description: z
-		.string()
-		.min(10, "Please provide at least 10 characters")
-		.max(500),
-});
+import { reportFormSchema } from "@/features/report-management/validators/report-form-schema";
 
 interface ReportDialogProps {
 	targetId: string;
@@ -73,9 +65,16 @@ export function ReportDialog({
 			form.reset();
 		},
 		validators: {
-			onChange: reportSchema,
+			onSubmit: reportFormSchema,
 		},
 	});
+
+	const handleOpenChange = (nextOpen: boolean) => {
+		if (!nextOpen) {
+			form.reset();
+		}
+		setOpen(nextOpen);
+	};
 
 	return submitted ? (
 		<Button
@@ -88,7 +87,7 @@ export function ReportDialog({
 			Report Submitted
 		</Button>
 	) : (
-		<Dialog open={open} onOpenChange={setOpen}>
+		<Dialog open={open} onOpenChange={handleOpenChange}>
 			<DialogTrigger asChild>
 				{trigger || (
 					<Button

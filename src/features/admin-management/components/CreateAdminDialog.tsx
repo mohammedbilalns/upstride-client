@@ -29,9 +29,7 @@ export function CreateAdminDialog({
 	const form = useForm({
 		defaultValues: { email: "", password: "" },
 		onSubmit: async ({ value }) => {
-			const result = createAdminSchema.safeParse(value);
-			if (!result.success) return;
-			await createAdmin.mutateAsync(result.data, {
+			await createAdmin.mutateAsync(value, {
 				onSuccess: () => {
 					form.reset();
 					onOpenChange(false);
@@ -43,8 +41,15 @@ export function CreateAdminDialog({
 		},
 	});
 
+	const handleOpenChange = (nextOpen: boolean) => {
+		if (!nextOpen) {
+			form.reset();
+		}
+		onOpenChange(nextOpen);
+	};
+
 	return (
-		<Dialog open={open} onOpenChange={onOpenChange}>
+		<Dialog open={open} onOpenChange={handleOpenChange}>
 			<DialogContent className="sm:max-w-130">
 				<DialogHeader>
 					<DialogTitle>Create Admin</DialogTitle>
@@ -66,7 +71,7 @@ export function CreateAdminDialog({
 								<Label htmlFor={field.name}>Email</Label>
 								<Input
 									id={field.name}
-									type="email"
+									//type="email"
 									placeholder="admin@upstride.com"
 									value={field.state.value}
 									onBlur={field.handleBlur}

@@ -10,7 +10,7 @@ import { useDebounce } from "@/shared/hooks/use-debounce";
 import { ArticleCard } from "../components/ArticleCard";
 import { ArticleFilters } from "../components/ArticleFilters";
 import { articleQueries } from "../hooks/queries";
-import type { ArticleDto } from "../types";
+import type { Article } from "../types";
 import type { ArticleSearch } from "../validators/article-search-params";
 
 export function ArticlesPage() {
@@ -181,7 +181,7 @@ export function ArticlesPage() {
 
 							{!isLoading && items.length > 0 && (
 								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5">
-									{items.map((article: ArticleDto) => (
+									{items.map((article: Article) => (
 										<ArticleCard key={article.id} article={article} />
 									))}
 								</div>

@@ -81,7 +81,7 @@ export interface GetBookingsInput {
 	limit?: number;
 }
 
-export interface BookingDto {
+export interface Booking {
 	id: string;
 	mentorId: string;
 	mentorUserId: string | null;
@@ -106,7 +106,7 @@ export interface GetBookingsResponse {
 	success: boolean;
 	message: string;
 	data: {
-		items: BookingDto[];
+		items: Booking[];
 		total: number;
 		page: number;
 		limit: number;
@@ -118,7 +118,7 @@ export interface GetBookingDetailsResponse {
 	success: boolean;
 	message: string;
 	data: {
-		booking: BookingDto;
+		booking: Booking;
 	};
 }
 

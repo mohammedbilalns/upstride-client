@@ -11,10 +11,10 @@ import {
 	CardHeader,
 } from "@/components/ui/card";
 import { formatDateMedium } from "@/shared/utils/date";
-import type { ArticleDto } from "../types";
+import type { Article } from "../types";
 
 interface ArticleCardProps {
-	article: ArticleDto;
+	article: Article;
 	isAdminView?: boolean;
 }
 

@@ -12,7 +12,7 @@ export type NotificationEvent =
 	| "ARTICLE_LIKED"
 	| "PAYMENT_SUCCESS";
 
-export interface NotificationDto {
+export interface Notification {
 	id: string;
 	userId: string;
 	title: string;
@@ -41,7 +41,7 @@ export interface GetNotificationsInput {
 }
 
 export interface GetNotificationsOutput {
-	notifications: NotificationDto[];
+	notifications: Notification[];
 	total: number;
 	page: number;
 	limit: number;
@@ -49,7 +49,7 @@ export interface GetNotificationsOutput {
 }
 
 export interface MarkNotificationReadOutput {
-	notification: NotificationDto;
+	notification: Notification;
 }
 
 export interface MarkAllNotificationsReadOutput {

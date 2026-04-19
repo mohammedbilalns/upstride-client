@@ -5,10 +5,10 @@ import type React from "react";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { Socket } from "socket.io-client";
 import { toast } from "sonner";
-import type { ChatMessageDto, GetChatOutput } from "@/features/chat/types";
+import type { ChatMessage, GetChatOutput } from "@/features/chat/types";
 import type {
 	GetUnreadNotificationCountOutput,
-	NotificationDto,
+	Notification,
 } from "@/features/notifications/types";
 import {
 	disconnectSocket,
@@ -73,7 +73,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 			// New Chat Message
 			const handleChatMessage = (data: {
 				chatId: string;
-				message: ChatMessageDto;
+				message: ChatMessage;
 			}) => {
 				console.log("[WS] Received chat:message", data);
 
@@ -110,9 +110,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 			};
 
 			// New Notification
-			const handleNotificationNew = (data: {
-				notification: NotificationDto;
-			}) => {
+			const handleNotificationNew = (data: { notification: Notification }) => {
 				console.log("[WS] Received notification:new", data);
 
 				// Update notification count badge

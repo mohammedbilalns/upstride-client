@@ -1,10 +1,10 @@
-import type { ArticleDto } from "@/features/article/types";
+import type { Article } from "@/features/article/types";
 
 export type ReportTargetType = "USER" | "ARTICLE";
 export type ReportStatus = "PENDING" | "RESOLVED" | "REJECTED" | "CLOSED";
 export type ReportDecisionStatus = "RESOLVED" | "REJECTED";
 
-export interface ReportDto {
+export interface Report {
 	id: string;
 	reporterId: string;
 	targetId: string;
@@ -41,7 +41,7 @@ export interface ReportArticleInput extends ReportBodyInput {
 }
 
 export interface ReportArticleResponse {
-	report: ReportDto;
+	report: Report;
 }
 
 export interface ReportUserInput extends ReportBodyInput {
@@ -49,7 +49,7 @@ export interface ReportUserInput extends ReportBodyInput {
 }
 
 export interface ReportUserResponse {
-	report: ReportDto;
+	report: Report;
 }
 
 export interface GetReportsInput {
@@ -63,7 +63,7 @@ export interface GetReportsInput {
 }
 
 export interface GetReportsResponse {
-	reports: ReportDto[];
+	reports: Report[];
 	total: number;
 	page: number;
 	limit: number;
@@ -77,7 +77,7 @@ export interface UpdateReportStatusInput {
 }
 
 export interface UpdateReportStatusResponse {
-	report: ReportDto;
+	report: Report;
 }
 
 export interface BlockArticleInput {
@@ -87,5 +87,5 @@ export interface BlockArticleInput {
 }
 
 export interface BlockArticleResponse {
-	article: ArticleDto;
+	article: Article;
 }

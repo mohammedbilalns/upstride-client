@@ -11,7 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { sessionBookingService } from "@/features/session-booking-management";
-import type { BookingDto } from "@/features/session-booking-management/types";
+import type { Booking } from "@/features/session-booking-management/types";
 import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
 
 export function SessionCard({
@@ -23,7 +23,7 @@ export function SessionCard({
 	isCancelling,
 	isRepaying,
 }: {
-	booking: BookingDto;
+	booking: Booking;
 	showCancel: boolean;
 	onViewDetails: () => void;
 	onCancel: () => void;

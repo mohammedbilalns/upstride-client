@@ -3,7 +3,7 @@ import { ArrowRight, Calendar, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { BookingDto } from "@/features/session-booking-management/types";
+import type { Booking } from "@/features/session-booking-management/types";
 import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
 
 export function UpcomingSessionsWidget({
@@ -11,7 +11,7 @@ export function UpcomingSessionsWidget({
 	upcomingItems,
 }: {
 	upcomingLoading: boolean;
-	upcomingItems: BookingDto[];
+	upcomingItems: Booking[];
 }) {
 	return (
 		<Card className="border-border/60 shadow-sm">

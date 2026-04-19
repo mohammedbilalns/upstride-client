@@ -40,7 +40,7 @@ import {
 	useSendMessage,
 } from "@/features/chat/hooks";
 import { chatKeys } from "@/features/chat/hooks/queries";
-import type { ChatMessageDto, GetChatsOutput } from "@/features/chat/types";
+import type { ChatMessage, GetChatsOutput } from "@/features/chat/types";
 import { publicMentorProfileService } from "@/features/mentor-public-profile/services/public-mentor-profile.service";
 import { fileService } from "@/shared/services/file.service";
 
@@ -87,7 +87,7 @@ export function ChatDetailPage() {
 	const errorStatus = (error as { response?: { status?: number } })?.response
 		?.status;
 
-	const allMessages: ChatMessageDto[] =
+	const allMessages: ChatMessage[] =
 		data?.pages
 			.flatMap((page) => page.messages)
 			.sort(
