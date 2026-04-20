@@ -2,7 +2,7 @@ import { Camera, Loader2, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ProgressiveImage } from "@/components/common/ProgressiveImage";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { fileService } from "@/shared/services/file.service";
 import { ArticleImageCropper } from "./ArticleImageCropper";
 

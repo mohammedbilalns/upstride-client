@@ -2,10 +2,10 @@ import { useForm } from "@tanstack/react-form";
 import { CreditCard } from "lucide-react";
 import { useId } from "react";
 import { z } from "zod";
-import FieldError from "@/components/common/Field-Error";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { getErrorMessage } from "@/shared/utils/form-validation";
+import FieldError from "@/components/common/FieldError";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 
 interface AddBalanceFormProps {
 	onSubmit: (coins: number) => Promise<void>;

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MentorSessionsPage } from "@/features/mentor-sessions";
-import { mentorSessionsQueryOptions } from "@/features/mentor-sessions/hooks/use-mentor-sessions";
-import { MentorSessionsSearchSchema } from "@/features/mentor-sessions/validators/mentor-sessions-params";
+import { mentorSessionsQueryOptions } from "@/features/mentor-sessions/hooks/queries/useMentorSessions";
+import { MentorSessionsSearchSchema } from "@/features/mentor-sessions/validators/mentor-sessions-params.schema";
 
 export const Route = createFileRoute(
 	"/_app-layout/_mentor-layout/mentor-sessions",

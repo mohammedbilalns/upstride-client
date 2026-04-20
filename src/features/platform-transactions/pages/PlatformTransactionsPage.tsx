@@ -6,14 +6,14 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/Select";
 import { PaymentTransactionsTable } from "@/features/coin-management/components/PaymentTransactionsTable";
 import { Route } from "@/routes/_admin-layout/platform-transactions";
 import {
 	usePlatformPaymentTransactions,
 	usePlatformWallet,
-} from "../hooks/use-platform-transactions";
-import type { PlatformTransactionsSearch } from "../validators/platform-transactions-params";
+} from "../hooks/queries/usePlatformTransactions";
+import type { PlatformTransactionsSearch } from "../validators/platform-transactions-params.schema";
 
 export function PlatformTransactionsPage() {
 	const navigate = useNavigate({ from: Route.fullPath });

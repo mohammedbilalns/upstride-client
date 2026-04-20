@@ -19,4 +19,3 @@ export const registerSchema = z
 	});
 
 export type RegisterFormValues = z.infer<typeof registerSchema>;
-export type RegisterPayload = Omit<RegisterFormValues, "confirmPassword">;

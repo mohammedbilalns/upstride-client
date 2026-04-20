@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { catalogQueryOptions } from "@/features/catalog-management/hooks/use-catalog";
+import { catalogQueryOptions } from "@/features/catalog-management/hooks/queries/useCatalog";
 import { CatalogManagementPage } from "@/features/catalog-management/pages/CatalogManagementPage";
 import { catalogSearchSchema } from "@/features/catalog-management/validators/catalog.schema";
 

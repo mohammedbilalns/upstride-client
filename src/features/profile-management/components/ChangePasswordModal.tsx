@@ -9,8 +9,8 @@ import {
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
-import { useOtpFlow } from "@/features/authentication/hooks/use-otp-flow";
+} from "@/components/ui/Dialog";
+import { useOtpFlow } from "@/features/authentication/hooks/useOtpFlow";
 import {
 	changePasswordSchema,
 	requestChangePasswordSchema,

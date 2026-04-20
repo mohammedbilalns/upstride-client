@@ -1,2 +1,2 @@
-export * from "./services/public-mentor-profile.service";
+export * from "./services/publicProfile.service";
 export * from "./types";

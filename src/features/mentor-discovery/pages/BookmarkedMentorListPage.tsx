@@ -3,10 +3,10 @@ import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { ArrowLeft, Bookmark } from "lucide-react";
 import { useMemo, useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { BookmarkMentorCard } from "../components/BookmarkMentorCard";
-import { useDeleteMentorList } from "../hooks/use-mentor-list-mutations";
-import { mentorListKeys, useMentorList } from "../hooks/use-mentor-lists";
+import { useDeleteMentorList } from "../hooks/mutations/useMentorListMutations";
+import { mentorListKeys, useMentorList } from "../hooks/queries/useMentorLists";
 import type { GetMentorListsResponse } from "../types";
 
 export function BookmarkedMentorListPage() {

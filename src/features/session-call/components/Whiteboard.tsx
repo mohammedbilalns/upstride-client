@@ -5,7 +5,7 @@ import "@excalidraw/excalidraw/index.css";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import type { ExcalidrawElement } from "@excalidraw/excalidraw/element/types";
 import type { Socket } from "socket.io-client";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Users, Lock, Unlock, MousePointer2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTheme } from "@/app/contexts/ThemeContext";

@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { TableCell, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { TableCell, TableRow } from "@/components/ui/Table";
 import type { Report } from "../types";
 import { ReportRowDetails } from "./ReportRowDetails";
 

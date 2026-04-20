@@ -1,16 +1,14 @@
 import { useNavigate } from "@tanstack/react-router";
 import * as lucideReact from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/Alert";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Route } from "@/routes/_admin-layout/platform-settings";
 import { ContentSettings } from "../components/ContentSettings";
 import { EconomySettings } from "../components/EconomySettings";
 import { MentorSettings } from "../components/MentorSettings";
 import { SessionSettings } from "../components/SessionSettings";
-import {
-	usePlatformSettings,
-	usePlatformSettingsMutations,
-} from "../hooks/use-platform-settings";
+import { usePlatformSettingsMutations } from "../hooks/mutations/usePlatformSettingsMutations";
+import { usePlatformSettings } from "../hooks/queries/usePlatformSettings";
 import type { PlatformSettingsSearch } from "../validators/platform-settings.schema";
 
 type PlatformSettingsTab = NonNullable<PlatformSettingsSearch["tab"]>;

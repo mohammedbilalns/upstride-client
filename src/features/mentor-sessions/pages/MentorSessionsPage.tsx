@@ -11,24 +11,24 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/components/ui/Select";
+import { Textarea } from "@/components/ui/Textarea";
 import { sessionBookingService } from "@/features/session-booking-management";
 import type { Booking } from "@/features/session-booking-management/types";
 import { SessionDetailsDialog } from "@/features/sessions/components/SessionDetailsDialog";
 import { Pagination } from "@/features/user-management/components/Pagination";
 import { Route } from "@/routes/_app-layout/_mentor-layout/mentor-sessions";
 import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
-import { useMentorSessions } from "../hooks/use-mentor-sessions";
+import { useMentorSessions } from "../hooks/queries/useMentorSessions";
 
 export function MentorSessionsPage() {
 	const navigate = useNavigate({ from: Route.fullPath });

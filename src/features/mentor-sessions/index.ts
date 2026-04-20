@@ -1,3 +1,3 @@
-export * from "./hooks/use-mentor-sessions";
+export * from "./hooks/queries/useMentorSessions";
 export * from "./pages/MentorSessionsPage";
-export * from "./validators/mentor-sessions-params";
+export * from "./validators/mentor-sessions-params.schema";

@@ -1,14 +1,14 @@
 import { SlidersHorizontal, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/Select";
 import type { CatalogInterest } from "@/features/onboarding/types";
-import type { MentorDiscoverySearch } from "../validators/mentor-discovery-params";
+import type { MentorDiscoverySearch } from "../validators/mentor-discovery-params.schema";
 
 const EXPERIENCE_RANGES = [
 	{ label: "Any experience", min: undefined, max: undefined },

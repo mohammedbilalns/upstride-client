@@ -1,8 +1,8 @@
 import { Calendar, ChevronDown, ChevronUp, Mail } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { TableCell, TableRow } from "@/components/ui/table";
+import { Avatar, AvatarFallback } from "@/components/ui/Avatar";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { TableCell, TableRow } from "@/components/ui/Table";
 import type { Mentor } from "@/shared/types/mentor";
 import { formatDateShort } from "@/shared/utils/date";
 import { MentorRowDetails } from "./MentorRowDetails";

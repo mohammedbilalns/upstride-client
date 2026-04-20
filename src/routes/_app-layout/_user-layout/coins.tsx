@@ -3,9 +3,9 @@ import {
 	coinBalanceQueryOptions,
 	coinTransactionsQueryOptions,
 	paymentTransactionsQueryOptions,
-} from "@/features/coin-management/hooks/use-coin-management";
+} from "@/features/coin-management/hooks/queries/useCoinManagement";
 import { CoinManagementPage } from "@/features/coin-management/pages/CoinManagementPage";
-import { CoinManagementSearchSchema } from "@/features/coin-management/validators/coin-management-params";
+import { CoinManagementSearchSchema } from "@/features/coin-management/validators/coin-management-params.schema";
 
 export const Route = createFileRoute("/_app-layout/_user-layout/coins")({
 	validateSearch: (search) => CoinManagementSearchSchema.parse(search),

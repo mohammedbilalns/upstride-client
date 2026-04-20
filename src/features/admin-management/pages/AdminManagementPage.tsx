@@ -1,22 +1,22 @@
 import { useNavigate } from "@tanstack/react-router";
 import { Plus, Search, SortAsc, SortDesc } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/Select";
 import { Pagination } from "@/features/user-management/components/Pagination";
 import { Route } from "@/routes/_admin-layout/admin-management";
-import { useDebounce } from "@/shared/hooks/use-debounce";
+import { useDebounce } from "@/shared/hooks/useDebounce";
 import { AdminTable } from "../components/AdminTable";
 import { CreateAdminDialog } from "../components/CreateAdminDialog";
-import { useAdmins } from "../hooks/use-admins";
-import type { AdminManagementSearch } from "../validators/admin-management-params";
+import { useAdmins } from "../hooks/queries/useAdmins";
+import type { AdminManagementSearch } from "../validators/admin-management-params.schema";
 
 export function AdminManagementPage() {
 	const navigate = useNavigate({ from: Route.fullPath });

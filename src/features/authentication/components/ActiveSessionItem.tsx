@@ -10,9 +10,9 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { useRevokeSession } from "../hooks/use-revoke-session";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { useRevokeSession } from "../hooks/mutations/useRevokeSession";
 import type { ActiveSession } from "../types";
 
 interface ActiveSessionItemProps {

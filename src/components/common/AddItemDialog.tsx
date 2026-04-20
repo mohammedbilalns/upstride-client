@@ -2,7 +2,7 @@ import { useForm } from "@tanstack/react-form";
 import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
 	Dialog,
 	DialogContent,
@@ -10,11 +10,11 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { getErrorMessage } from "@/shared/utils/form-validation";
-import FieldError from "./Field-Error";
+} from "@/components/ui/Dialog";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
+import { getErrorMessage } from "@/shared/utils/formValidation";
+import FieldError from "./FieldError";
 
 interface AddItemDialogProps {
 	isOpen: boolean;
@@ -42,6 +42,7 @@ export function AddItemDialog({
 	schema,
 }: AddItemDialogProps) {
 	const validationSchema = schema ? z.object({ name: schema }) : undefined;
+	//FIX : pass zod validator to the tanstack form to validate
 	const form = useForm<{ name: string }>({
 		defaultValues: {
 			name: "",

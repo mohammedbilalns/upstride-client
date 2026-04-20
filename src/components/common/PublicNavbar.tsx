@@ -1,8 +1,8 @@
 import { Link, useRouter } from "@tanstack/react-router";
 import { Menu, X, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
-import ThemeToggle from "@/components/common/Theme-Toggle";
-import { Button } from "@/components/ui/button";
+import ThemeToggle from "@/components/common/ThemeToggle";
+import { Button } from "@/components/ui/Button";
 import { cn } from "@/shared/utils/cn";
 
 export default function PublicNavbar() {

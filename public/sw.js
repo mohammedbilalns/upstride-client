@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-globals */
 // Listen for incoming push messages
 self.addEventListener("push", (event) => {
 	console.log("[Service Worker] Push Received.");

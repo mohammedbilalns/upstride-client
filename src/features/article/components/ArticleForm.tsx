@@ -1,15 +1,15 @@
 import { useForm } from "@tanstack/react-form";
 import { Loader2, Plus, Save } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
 import {
 	type ArticleFormValues,
 	articleSchema,
 } from "@/features/article/validators/article-form.schema";
-import { getErrorMessage } from "@/shared/utils/form-validation";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import { ArticleEditor } from "./ArticleEditor";
 import { ArticleImageUpload } from "./ArticleImageUpload";
 

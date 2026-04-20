@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { useMemo } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import type {
 	BreakTime,
 	DayOfWeek,
@@ -12,12 +12,12 @@ import {
 import {
 	buildEmptyStringErrors,
 	buildFieldErrorsFromIssues,
-} from "@/shared/utils/form-validation";
-import { CreateRuleBasicsFields } from "./CreateRuleBasicsFields";
-import { CreateRuleBreakTimes } from "./CreateRuleBreakTimes";
-import { CreateRuleDaysSelector } from "./CreateRuleDaysSelector";
-import { CreateRuleScheduleFields } from "./CreateRuleScheduleFields";
-import { CreateRuleSlotSettings } from "./CreateRuleSlotSettings";
+} from "@/shared/utils/formValidation";
+import { CreateRuleBasicsFields } from "./BasicsFields";
+import { CreateRuleBreakTimes } from "./BreakTimes";
+import { CreateRuleDaysSelector } from "./DaysSelector";
+import { CreateRuleScheduleFields } from "./ScheduleFields";
+import { CreateRuleSlotSettings } from "./SlotSettings";
 
 export type AvailabilityFormApi = ReturnType<
 	//FIX: type error
@@ -69,6 +69,7 @@ export function CreateRuleForm({
 			: { fields: buildFieldErrorsFromIssues(parsed.error.issues) };
 	};
 
+	//FIX : pass validator to the tansack form here
 	const form = useForm({
 		defaultValues,
 		validators: {

@@ -2,22 +2,22 @@ import type { useForm } from "@tanstack/react-form";
 import { isValid, parse } from "date-fns";
 import { Briefcase, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import FieldError from "@/components/common/Field-Error";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import FieldError from "@/components/common/FieldError";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/Select";
 import type { Profession } from "@/features/mentor-registration/services/catalog.service";
 import type { MentorRegistrationValues } from "@/features/mentor-registration/validators/mentor-registration.schema";
 import { formatDateInput } from "@/shared/utils/date";
-import { useProfessions } from "../hooks/use-catalog";
+import { useProfessions } from "../hooks/queries/useCatalog";
 
 interface ExperienceSectionProps {
 	form: ReturnType<typeof useForm<MentorRegistrationValues>>;

@@ -2,16 +2,16 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { FileText, Loader2, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/Select";
 import { ArticleCard } from "../components/ArticleCard";
-import { articleQueries } from "../hooks/queries";
+import { articleQueries } from "../hooks/queries/useArticleQueries";
 import type { Article } from "../types";
 
 const statusOptions = [

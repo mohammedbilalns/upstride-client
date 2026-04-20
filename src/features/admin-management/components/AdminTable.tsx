@@ -8,8 +8,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import {
 	Table,
 	TableBody,
@@ -17,12 +17,10 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/Table";
 import { formatDateShort } from "@/shared/utils/date";
-import {
-	useBlockAdmin,
-	useUnblockAdmin,
-} from "../hooks/admin-management-mutations";
+import { useBlockAdmin } from "../hooks/mutations/useBlockAdmin";
+import { useUnblockAdmin } from "../hooks/mutations/useUnblockAdmin";
 import type { AdminListItem } from "../types";
 
 interface AdminTableProps {

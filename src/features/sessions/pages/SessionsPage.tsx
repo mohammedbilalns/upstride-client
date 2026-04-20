@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import type { ApiError } from "@/api/apiError";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { useCoinBalance } from "@/features/coin-management/hooks/use-coin-management";
+import { useCoinBalance } from "@/features/coin-management/hooks/queries/useCoinManagement";
 import { sessionBookingService } from "@/features/session-booking-management";
 import type {
 	Booking,
@@ -17,7 +17,7 @@ import { CancelSessionDialog } from "../components/CancelSessionDialog";
 import { SessionCard } from "../components/SessionCard";
 import { SessionDetailsDialog } from "../components/SessionDetailsDialog";
 import { SessionFilters } from "../components/SessionFilters";
-import { useUserSessions } from "../hooks/use-sessions";
+import { useUserSessions } from "../hooks/queries/useSessions";
 
 // const formatDate = (value: string) => format(new Date(value), "MMM dd, yyyy");
 // const formatTime = (value: string) => format(new Date(value), "hh:mm a");

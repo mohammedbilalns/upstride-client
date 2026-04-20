@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { activeSessionsQueryOptions } from "@/features/authentication/hooks/use-active-sessions";
+import { activeSessionsQueryOptions } from "@/features/authentication/hooks/queries/useActiveSessions";
 import { ProfileSecurityPage } from "@/features/profile-management/pages/ProfileSecurityPage";
 
 export const Route = createFileRoute(

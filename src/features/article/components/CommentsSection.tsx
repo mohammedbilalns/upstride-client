@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle, Loader2, MessageSquare } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
 	Dialog,
 	DialogContent,
@@ -9,9 +9,9 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/ui/Dialog";
 import { useArticleMutations } from "../hooks/mutations";
-import { articleQueries } from "../hooks/queries";
+import { articleQueries } from "../hooks/queries/useArticleQueries";
 import { CommentForm } from "./CommentForm";
 import { CommentItem } from "./CommentItem";
 

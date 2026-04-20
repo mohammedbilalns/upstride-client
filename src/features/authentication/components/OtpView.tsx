@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 import { toast } from "sonner";
 import type { ApiError } from "@/api/apiError";
-import { useOtpFlow } from "../hooks/use-otp-flow";
-import { useResendOtp } from "../hooks/use-resend-otp";
-import { useVerifyOtp } from "../hooks/use-verify-otp";
+import { useOtpFlow } from "../hooks/useOtpFlow";
+import { useResendOtp } from "../hooks/mutations/useResendOtp";
+import { useVerifyOtp } from "../hooks/mutations/useVerifyOtp";
 import type { AuthView } from "../types";
 import { OtpVerificationPanel } from "./OtpVerificationPanel";
 

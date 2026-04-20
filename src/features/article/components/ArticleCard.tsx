@@ -2,14 +2,14 @@ import { Link } from "@tanstack/react-router";
 import { Calendar, Eye, Image as ImageIcon, MessageSquare } from "lucide-react";
 import { useState } from "react";
 import { ProgressiveImage } from "@/components/common/ProgressiveImage";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Badge } from "@/components/ui/Badge";
 import {
 	Card,
 	CardContent,
 	CardFooter,
 	CardHeader,
-} from "@/components/ui/card";
+} from "@/components/ui/Card";
 import { formatDateMedium } from "@/shared/utils/date";
 import type { Article } from "../types";
 

@@ -6,14 +6,14 @@ import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { AvailabilityRulesSection } from "@/features/availability-management/components/AvailabilityRulesSection";
 import { RuleCreationCard } from "@/features/availability-management/components/RuleCreationCard";
 import { RuleManagementHeader } from "@/features/availability-management/components/RuleManagementHeader";
-import { availabilityManagementService } from "@/features/availability-management/services/availability-management.service";
+import { availabilityManagementService } from "@/features/availability-management/services/availability.service";
 import type {
 	AvailabilityRule,
 	CreateAvailabilityInput,
 	MentorAvailabilitiesResponse,
 } from "@/features/availability-management/types";
 import type { AvailabilityFormValues } from "@/features/availability-management/validators/rule.schema";
-import { useProfile } from "@/features/profile-management/hooks/use-profile";
+import { useProfile } from "@/features/profile-management/hooks/queries/useProfile";
 
 export function MentorRuleManagementPage() {
 	const { data: profile } = useProfile();

@@ -3,11 +3,12 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { AddItemDialog } from "@/components/common/AddItemDialog";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Route } from "@/routes/_admin-layout/catalog-management";
 import { InterestList } from "../components/InterestList";
 import { ProfessionTable } from "../components/ProfessionTable";
-import { useCatalog, useCatalogMutations } from "../hooks/use-catalog";
+import { useCatalogMutations } from "../hooks/mutations/useCatalogMutations";
+import { useCatalog } from "../hooks/queries/useCatalog";
 import { catalogItemNameSchema } from "../validators/catalog.schema";
 
 export function CatalogManagementPage() {

@@ -4,14 +4,14 @@ import {
 	LayoutList,
 	MoreHorizontal,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/Select";
 import { cn } from "@/shared/utils/cn";
 
 interface PaginationProps {

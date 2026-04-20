@@ -1,19 +1,19 @@
 import { useNavigate } from "@tanstack/react-router";
 import { Search, SortAsc, SortDesc } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/Input";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/Select";
 import { Route } from "@/routes/_admin-layout/user-management";
-import { useDebounce } from "@/shared/hooks/use-debounce";
+import { useDebounce } from "@/shared/hooks/useDebounce";
 import { Pagination } from "../components/Pagination";
 import { UserTable } from "../components/UserTable";
-import { useUsers } from "../hooks/use-users";
+import { useUsers } from "../hooks/queries/useUsers";
 
 export function UserManagementPage() {
 	const navigate = useNavigate({ from: Route.fullPath });

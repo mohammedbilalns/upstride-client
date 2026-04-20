@@ -1,6 +1,6 @@
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
-import FieldError from "@/components/common/Field-Error";
-import { Button } from "@/components/ui/button";
+import FieldError from "@/components/common/FieldError";
+import { Button } from "@/components/ui/Button";
 import type { OnboardingForm } from "./OnboardingView";
 import { LEVEL_LABELS } from "./OnboardingView";
 

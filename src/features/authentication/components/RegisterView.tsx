@@ -2,12 +2,12 @@ import { useForm } from "@tanstack/react-form";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import type { ApiError } from "@/api/apiError";
-import FieldError from "@/components/common/Field-Error";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { useRegister } from "../hooks/use-register";
+import FieldError from "@/components/common/FieldError";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
+import { Separator } from "@/components/ui/Separator";
+import { useRegister } from "../hooks/mutations/useRegister";
 import type { AuthView } from "../types";
 import { registerSchema } from "../validators";
 import { PasswordField } from "./PasswordField";
@@ -104,7 +104,7 @@ export function RegisterView({ onNavigate }: Props) {
 							<Label htmlFor={field.name}>Email</Label>
 							<Input
 								id={field.name}
-								type="email"
+								//type="email"
 								placeholder="john@example.com"
 								autoComplete="email"
 								value={field.state.value}

@@ -2,11 +2,11 @@ import { useForm } from "@tanstack/react-form";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
 	useRegisterMentor,
 	useResubmitMentor,
-} from "@/features/mentor-registration/hooks/use-mentor-registration";
+} from "@/features/mentor-registration/hooks/mutations/useMentorRegistrationMutations";
 import type {
 	Mentor,
 	MentorExperience,
@@ -17,7 +17,7 @@ import {
 	RegisterMentorSchema,
 	ResubmitMentorSchema,
 } from "@/features/mentor-registration/validators/mentor-registration.schema";
-import { useOnboardingCatalog } from "@/features/onboarding/hooks/use-catalog";
+import { useOnboardingCatalog } from "@/features/onboarding/hooks/queries/useCatalog";
 import { EducationSection } from "./EducationSection";
 import { ExperienceSection } from "./ExperienceSection";
 import { ExpertiseSection } from "./ExpertiseSection";

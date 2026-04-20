@@ -1,13 +1,13 @@
 import { useCallback, useState } from "react";
 import Cropper, { type Area, type Point } from "react-easy-crop";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
 	Dialog,
 	DialogContent,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/ui/Dialog";
 import { getCroppedImg } from "../utils/cropImage";
 
 interface Props {

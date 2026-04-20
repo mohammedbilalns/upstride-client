@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { Coins } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { catalogService } from "@/features/catalog-management/services/catalog.service";
 import { mentorProfileService } from "@/features/mentor-profile";
 import { EditMentorProfileModal } from "@/features/mentor-profile/components/EditMentorProfileModal";
 import { UpcomingSessionsWidget } from "@/features/mentor-sessions/components/UpcomingSessionsWidget";
-import { useMentorSessions } from "@/features/mentor-sessions/hooks/use-mentor-sessions";
+import { useMentorSessions } from "@/features/mentor-sessions/hooks/queries/useMentorSessions";
 
 export function MentorDashboardPage() {
 	const { data, isLoading } = useQuery({

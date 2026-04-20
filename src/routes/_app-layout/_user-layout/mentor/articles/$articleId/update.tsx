@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { articleQueries } from "@/features/article/hooks/queries";
+import { articleQueries } from "@/features/article/hooks/queries/useArticleQueries";
 import { UpdateArticlePage } from "@/features/article/pages/UpdateArticlePage";
 
 export const Route = createFileRoute(

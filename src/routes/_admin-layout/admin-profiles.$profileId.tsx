@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type { ApiError } from "@/api/apiError";
-import ErrorComponent from "@/components/common/Error-Component";
-import NotFoundComponent from "@/components/common/Not-Found";
+import ErrorComponent from "@/components/common/ErrorComponent";
+import NotFoundComponent from "@/components/common/NotFound";
 import { publicMentorProfileService } from "@/features/mentor-public-profile";
 import { PublicMentorProfilePage } from "@/features/mentor-public-profile/pages/PublicMentorProfilePage";
 

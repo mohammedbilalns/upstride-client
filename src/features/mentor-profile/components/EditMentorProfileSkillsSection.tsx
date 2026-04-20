@@ -1,15 +1,15 @@
 import type { Dispatch, SetStateAction } from "react";
-import FieldError from "@/components/common/Field-Error";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import FieldError from "@/components/common/FieldError";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Label } from "@/components/ui/Label";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/Select";
 import type {
 	CatalogInterest,
 	CatalogSkill,

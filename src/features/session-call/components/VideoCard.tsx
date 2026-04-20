@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Pin } from "lucide-react";
 
 interface VideoCardProps {

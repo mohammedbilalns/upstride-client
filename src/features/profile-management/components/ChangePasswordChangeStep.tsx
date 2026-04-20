@@ -1,5 +1,5 @@
 import { CheckCircle2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { PasswordField } from "@/features/authentication/components/PasswordField";
 import type { ChangeForm, ChangePasswordStep } from "./ChangePasswordModal";
 import { ChangePasswordStepBadge } from "./ChangePasswordStepBadge";

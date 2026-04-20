@@ -4,9 +4,9 @@ import { useRouter } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { env } from "@/shared/config/env";
-import { useSocialLogin } from "../hooks/use-social-login";
+import { useSocialLogin } from "../hooks/mutations/useSocialLogin";
 import type { AuthView } from "../types";
 
 interface Props {

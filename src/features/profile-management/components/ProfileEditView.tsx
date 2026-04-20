@@ -2,14 +2,14 @@ import { useForm } from "@tanstack/react-form";
 import { Camera, Loader2, Save, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import FieldError from "@/components/common/Field-Error";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import FieldError from "@/components/common/FieldError";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
 import { fileService } from "@/shared/services/file.service";
-import { useUpdateProfile } from "../hooks/use-update-profile";
+import { useUpdateProfile } from "../hooks/mutations/useUpdateProfile";
 import type { UserProfile } from "../types";
 import { profileUpdateSchema } from "../validators";
 import { ImageCropper } from "./ImageCropper";
@@ -36,6 +36,7 @@ export function ProfileEditView({ profile, onCancel }: Props) {
 		},
 	});
 
+	// FIX : simplify form validation here
 	const form = useForm({
 		defaultValues: {
 			name: profile.name,

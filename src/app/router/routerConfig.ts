@@ -1,7 +1,7 @@
 import { QueryClient } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
 import { injectRouter } from "@/api/axios";
-import PendingComponent from "@/components/common/Pending-Component";
+import PendingComponent from "@/components/common/PendingComponent";
 import type { AuthenticatedUser } from "@/features/authentication/types";
 import { routeTree } from "@/routeTree.gen";
 

@@ -2,11 +2,11 @@ import { useForm } from "@tanstack/react-form";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useState } from "react";
 import type { ApiError } from "@/api/apiError";
-import FieldError from "@/components/common/Field-Error";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useRequestPasswordReset } from "../hooks/use-request-password-reset";
+import FieldError from "@/components/common/FieldError";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
+import { useRequestPasswordReset } from "../hooks/mutations/useRequestPasswordReset";
 import type { AuthView } from "../types";
 import { forgotPasswordSchema } from "../validators";
 
@@ -77,7 +77,7 @@ export function ForgotPasswordView({ onNavigate }: Props) {
 							<Label htmlFor={field.name}>Email address</Label>
 							<Input
 								id={field.name}
-								type="email"
+								//type="email"
 								placeholder="you@example.com"
 								autoComplete="email"
 								value={field.state.value}

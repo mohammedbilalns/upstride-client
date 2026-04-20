@@ -1,7 +1,7 @@
 import { useRouter } from "@tanstack/react-router";
 import { ArrowRight, Users } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import { stats } from "../data";
 
 export default function HeroSection() {

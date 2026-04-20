@@ -9,11 +9,11 @@ import MobileMenu from "@/components/common/MobileMenu";
 import MobileNotifications from "@/components/common/MobileNotifications";
 import NavbarLinks from "@/components/common/NavbarLinks";
 import NavbarLogo from "@/components/common/NavbarLogo";
-import ThemeToggle from "@/components/common/Theme-Toggle";
-import { useLogout } from "@/features/authentication/hooks/use-logout";
+import ThemeToggle from "@/components/common/ThemeToggle";
+import { useLogout } from "@/features/authentication/hooks/mutations/useLogout";
 import { useCoinBalance } from "@/features/coin-management";
 import { useGetUnreadCount } from "@/features/notifications/hooks";
-import { profileQueryOptions } from "@/features/profile-management/hooks/use-profile";
+import { profileQueryOptions } from "@/features/profile-management/hooks/queries/useProfile";
 import { cn } from "@/shared/utils/cn";
 
 export const navLinks = [
@@ -25,7 +25,7 @@ export const navLinks = [
 export type NavbarUser = {
 	name?: string;
 	role?: string;
-	profilePictureUrl?: string;
+	profilePictureUrl?: string | null;
 } | null;
 
 export default function UserNavbar() {

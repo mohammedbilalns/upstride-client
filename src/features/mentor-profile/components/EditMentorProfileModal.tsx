@@ -3,14 +3,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import type { ApiError } from "@/api/apiError";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
 	Dialog,
 	DialogContent,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/ui/Dialog";
 import { mentorProfileService } from "@/features/mentor-profile";
 import { mentorProfileSchema } from "@/features/mentor-profile/validators/mentor-profile.schema";
 import type { CatalogInterest } from "@/features/onboarding/types";
@@ -76,9 +76,6 @@ export function EditMentorProfileModal({
 			newQualification: "",
 		},
 		onSubmit: async ({ value }) => {
-			const result = mentorProfileSchema.safeParse(value);
-			if (!result.success) return;
-
 			const payload = {
 				currentPricePer30Min:
 					value.currentPricePer30Min && value.currentPricePer30Min.trim() !== ""

@@ -2,8 +2,8 @@ import { useForm } from "@tanstack/react-form";
 import { MessageSquareText } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import FieldError from "@/components/common/Field-Error";
-import { Button } from "@/components/ui/button";
+import FieldError from "@/components/common/FieldError";
+import { Button } from "@/components/ui/Button";
 import {
 	Dialog,
 	DialogContent,
@@ -12,8 +12,8 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/components/ui/Dialog";
+import { Textarea } from "@/components/ui/Textarea";
 import { articleService } from "../services/article.service";
 import { appealSchema } from "../validators/appeal.schema";
 

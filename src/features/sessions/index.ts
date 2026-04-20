@@ -1,3 +1,3 @@
-export * from "./hooks/use-sessions";
+export * from "./hooks/queries/useSessions";
 export * from "./pages/SessionsPage";
-export * from "./validators/sessions-params";
+export * from "./validators/sessions-params.schema";

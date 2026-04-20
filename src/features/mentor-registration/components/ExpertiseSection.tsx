@@ -1,16 +1,16 @@
 import type { useForm } from "@tanstack/react-form";
 import { Award, Plus, Trash2 } from "lucide-react";
-import FieldError from "@/components/common/Field-Error";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import FieldError from "@/components/common/FieldError";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Label } from "@/components/ui/Label";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/Select";
 import type { MentorSkill } from "@/features/mentor-registration/types";
 import type { MentorRegistrationValues } from "@/features/mentor-registration/validators/mentor-registration.schema";
 import type { CatalogInterest } from "@/features/onboarding/types";

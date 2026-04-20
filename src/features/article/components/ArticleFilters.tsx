@@ -1,15 +1,15 @@
 import { X } from "lucide-react";
 import { useId } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-import type { ArticleSearch } from "../validators/article-search-params";
+} from "@/components/ui/Select";
+import type { ArticleSearch } from "../validators/article-search-params.schema";
 
 interface ArticleFiltersProps {
 	search: ArticleSearch;

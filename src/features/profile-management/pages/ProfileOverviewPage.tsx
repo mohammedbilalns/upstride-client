@@ -2,16 +2,16 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 import { Coins, Mail, Pencil, Phone, User as UserIcon } from "lucide-react";
 import { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/Card";
 import { catalogService } from "@/features/catalog-management/services/catalog.service";
 import { mentorProfileService } from "@/features/mentor-profile";
 import { EditMentorProfileModal } from "@/features/mentor-profile/components/EditMentorProfileModal";

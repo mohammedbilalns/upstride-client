@@ -1,8 +1,8 @@
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { SocketProvider } from "@/app/contexts/SocketContext";
 import type { RouterContext } from "@/app/router/routerConfig";
-import ErrorComponent from "@/components/common/Error-Component";
-import NotFoundComponent from "@/components/common/Not-Found";
+import ErrorComponent from "@/components/common/ErrorComponent";
+import NotFoundComponent from "@/components/common/NotFound";
 import "../styles.css";
 
 /**

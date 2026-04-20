@@ -1,5 +1,4 @@
 import { z } from "zod";
-
 import { passwordSchema } from "@/shared/validators/password.schema";
 
 export const loginSchema = z.object({
@@ -8,4 +7,3 @@ export const loginSchema = z.object({
 });
 
 export type LoginFormValues = z.infer<typeof loginSchema>;
-export type LoginPayload = LoginFormValues;

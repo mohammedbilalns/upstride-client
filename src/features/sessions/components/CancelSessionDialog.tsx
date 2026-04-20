@@ -1,5 +1,5 @@
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "@/components/ui/Textarea";
 
 interface CancelSessionDialogProps {
 	isOpen: boolean;

@@ -6,8 +6,8 @@ import {
 	Trash2,
 } from "lucide-react";
 import { Fragment, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import {
 	Table,
 	TableBody,
@@ -15,7 +15,7 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/Table";
 import { cn } from "@/shared/utils/cn";
 import type { CatalogInterest } from "../types";
 import { SkillTable } from "./SkillTable";

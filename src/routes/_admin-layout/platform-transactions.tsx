@@ -2,12 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
 	platformPaymentTransactionsQueryOptions,
 	platformWalletQueryOptions,
-} from "@/features/platform-transactions/hooks/use-platform-transactions";
+} from "@/features/platform-transactions/hooks/queries/usePlatformTransactions";
 import { PlatformTransactionsPage } from "@/features/platform-transactions/pages/PlatformTransactionsPage";
 import {
 	type PlatformTransactionsSearch,
 	PlatformTransactionsSearchSchema,
-} from "@/features/platform-transactions/validators/platform-transactions-params";
+} from "@/features/platform-transactions/validators/platform-transactions-params.schema";
 
 export const Route = createFileRoute("/_admin-layout/platform-transactions")({
 	validateSearch: (search) => PlatformTransactionsSearchSchema.parse(search),

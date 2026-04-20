@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
 import { ChatList } from "@/features/chat/components/ChatList";
-import { getChatsInfiniteQueryOptions } from "@/features/chat/hooks/queries";
+import { getChatsInfiniteQueryOptions } from "@/features/chat/hooks/queries/useChatQueries";
 
 export const Route = createFileRoute("/_app-layout/_user-layout/chats")({
 	loader: async ({ context: { queryClient } }) => {

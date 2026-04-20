@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Coins, CreditCard, Download, Video } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import {
 	Dialog,
 	DialogClose,
@@ -9,7 +9,7 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/ui/Dialog";
 import type { Booking } from "@/features/session-booking-management/types";
 import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
 

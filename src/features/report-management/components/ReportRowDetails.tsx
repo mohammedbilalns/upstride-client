@@ -7,7 +7,7 @@ import {
 	MessageSquareText,
 	ShieldAlert,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/Badge";
 import { formatDateShort, formatTimeWithSeconds24 } from "@/shared/utils/date";
 import type { Report } from "../types";
 

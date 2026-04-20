@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { getMentorsInfiniteQueryOptions } from "@/features/mentor-discovery/hooks/queries";
+import { getMentorsInfiniteQueryOptions } from "@/features/mentor-discovery/hooks/queries/useMentorDiscoveryQueries";
 import { MentorDiscoveryPage } from "@/features/mentor-discovery/pages/MentorDiscoveryPage";
-import { MentorDiscoverySearchSchema } from "@/features/mentor-discovery/validators/mentor-discovery-params";
+import { MentorDiscoverySearchSchema } from "@/features/mentor-discovery/validators/mentor-discovery-params.schema";
 
 export const Route = createFileRoute("/_app-layout/_user-layout/mentors/")({
 	validateSearch: (search) => MentorDiscoverySearchSchema.parse(search),

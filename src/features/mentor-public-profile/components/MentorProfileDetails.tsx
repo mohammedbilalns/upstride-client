@@ -1,11 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { Flag } from "lucide-react";
 import { ReportDialog } from "@/components/common/ReportDialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardHeader } from "@/components/ui/Card";
+import { Separator } from "@/components/ui/Separator";
 import type { UserProfile } from "@/features/profile-management/types";
 import type { PublicMentorProfile } from "../types";
 

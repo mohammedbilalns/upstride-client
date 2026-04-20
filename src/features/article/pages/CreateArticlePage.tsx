@@ -1,6 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Route } from "@/routes/_app-layout/_user-layout/mentor/articles/create";
 import { ArticleForm } from "../components/ArticleForm";
 import { useCreateArticleMutation } from "../hooks/mutations";

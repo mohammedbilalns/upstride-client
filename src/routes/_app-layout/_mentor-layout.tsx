@@ -6,7 +6,7 @@ import {
 	useRouteContext,
 } from "@tanstack/react-router";
 import { ProfileSidebar } from "@/features/profile-management/components/ProfileSidebar";
-import { profileQueryOptions } from "@/features/profile-management/hooks/use-profile";
+import { profileQueryOptions } from "@/features/profile-management/hooks/queries/useProfile";
 
 export const Route = createFileRoute("/_app-layout/_mentor-layout")({
 	beforeLoad: async ({ context }) => {

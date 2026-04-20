@@ -1,7 +1,7 @@
 import { Maximize2 } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { VideoCard } from "./VideoCard";
 import { WaitingScreen } from "./WaitingScreen";
 

@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { LogOut, User as UserIcon } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -9,8 +9,8 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { getInitials } from "@/shared/utils/get-initials";
+} from "@/components/ui/DropdownMenu";
+import { getInitials } from "@/shared/utils/getInitials";
 import type { NavbarUser } from "./Navbar";
 
 export default function DesktopUserMenu({

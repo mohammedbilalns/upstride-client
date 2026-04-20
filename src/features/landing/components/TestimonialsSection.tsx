@@ -1,6 +1,6 @@
 import { QuoteIcon, Star } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback } from "@/components/ui/Avatar";
+import { Card, CardContent } from "@/components/ui/Card";
 import { testimonials } from "../data";
 
 export default function TestimonialsSection() {

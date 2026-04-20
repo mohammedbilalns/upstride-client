@@ -2,16 +2,16 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Loader2, Newspaper, Plus, Search } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { getMentorCategoriesQueryOptions } from "@/features/mentor-discovery/hooks/queries";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { getMentorCategoriesQueryOptions } from "@/features/mentor-discovery/hooks/queries/useMentorDiscoveryQueries";
 import { Route } from "@/routes/_app-layout/_user-layout/articles/index";
-import { useDebounce } from "@/shared/hooks/use-debounce";
+import { useDebounce } from "@/shared/hooks/useDebounce";
 import { ArticleCard } from "../components/ArticleCard";
 import { ArticleFilters } from "../components/ArticleFilters";
-import { articleQueries } from "../hooks/queries";
+import { articleQueries } from "../hooks/queries/useArticleQueries";
 import type { Article } from "../types";
-import type { ArticleSearch } from "../validators/article-search-params";
+import type { ArticleSearch } from "../validators/article-search-params.schema";
 
 export function ArticlesPage() {
 	const navigate = useNavigate({ from: Route.fullPath });

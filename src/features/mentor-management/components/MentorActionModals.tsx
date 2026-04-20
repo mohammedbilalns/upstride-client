@@ -1,7 +1,7 @@
 import { Loader2 } from "lucide-react";
 import { useId } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "@/components/ui/Textarea";
 import type { Mentor } from "@/shared/types/mentor";
 
 interface MentorActionModalsProps {

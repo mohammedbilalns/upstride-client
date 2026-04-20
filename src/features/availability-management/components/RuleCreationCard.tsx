@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { CreateRuleForm } from "@/features/availability-management/components/CreateRuleForm";
 import type { AvailabilityFormValues } from "@/features/availability-management/validators/rule.schema";
 

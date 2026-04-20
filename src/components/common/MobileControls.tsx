@@ -1,6 +1,6 @@
 import { Menu, X } from "lucide-react";
 import type { ReactNode } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 export default function MobileControls({
 	isMenuOpen,

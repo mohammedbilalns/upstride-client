@@ -16,7 +16,7 @@ import {
 	chatKeys,
 	getChatInfiniteQueryOptions,
 	getChatsInfiniteQueryOptions,
-} from "./queries";
+} from "./queries/useChatQueries";
 
 /**
  * Hook to get the paginated list of all chats.

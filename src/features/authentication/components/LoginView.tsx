@@ -3,12 +3,12 @@ import { useRouter } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import type { ApiError } from "@/api/apiError";
-import FieldError from "@/components/common/Field-Error";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { useLogin } from "../hooks/use-login";
+import FieldError from "@/components/common/FieldError";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
+import { Separator } from "@/components/ui/Separator";
+import { useLogin } from "../hooks/mutations/useLogin";
 import type { AuthView } from "../types";
 import { loginSchema } from "../validators";
 import { PasswordField } from "./PasswordField";
@@ -42,9 +42,7 @@ export function LoginView({ onNavigate }: Props) {
 		defaultValues: { email: "", password: "" },
 		onSubmit: async ({ value }) => {
 			setApiError(null);
-			const result = loginSchema.safeParse(value);
-			if (!result.success) return;
-			loginMutation.mutate(result.data);
+			loginMutation.mutate(value);
 		},
 		validators: {
 			onSubmit: loginSchema,
@@ -89,14 +87,19 @@ export function LoginView({ onNavigate }: Props) {
 							<Label htmlFor={field.name}>Email</Label>
 							<Input
 								id={field.name}
-								type="email"
 								placeholder="john@example.com"
 								autoComplete="email"
 								value={field.state.value}
 								onBlur={field.handleBlur}
 								onChange={(e) => field.handleChange(e.target.value)}
 							/>
-							<FieldError message={field.state.meta.errors?.[0]?.message} />
+							<FieldError
+								message={
+									field.state.meta.isTouched
+										? field.state.meta.errors?.[0]?.message
+										: undefined
+								}
+							/>
 						</div>
 					)}
 				</form.Field>

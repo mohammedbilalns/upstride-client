@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 import { toast } from "sonner";
 import type { ApiError } from "@/api/apiError";
-import { useOtpFlow } from "../hooks/use-otp-flow";
-import { useResendPasswordResetOtp } from "../hooks/use-resend-password-reset-otp";
-import { useVerifyPasswordResetOtp } from "../hooks/use-verify-password-reset-otp";
+import { useOtpFlow } from "../hooks/useOtpFlow";
+import { useResendPasswordResetOtp } from "../hooks/mutations/useResendPasswordResetOtp";
+import { useVerifyPasswordResetOtp } from "../hooks/mutations/useVerifyPasswordResetOtp";
 import type { AuthView } from "../types";
 import { OtpVerificationPanel } from "./OtpVerificationPanel";
 

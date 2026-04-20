@@ -1,9 +1,9 @@
 import { Eye, EyeOff } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState } from "react";
-import FieldError from "@/components/common/Field-Error";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import FieldError from "@/components/common/FieldError";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
 
 interface PasswordFieldProps {
 	id: string;

@@ -5,12 +5,12 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/Select";
 import { Pagination } from "@/features/user-management/components/Pagination";
 import { Route } from "@/routes/_admin-layout/report-management";
 import { ReportTable } from "../components/ReportTable";
-import { useReports } from "../hooks/use-reports";
-import type { ReportManagementSearch } from "../validators/report-management-params";
+import { useReports } from "../hooks/queries/useReports";
+import type { ReportManagementSearch } from "../validators/report-management-params.schema";
 
 export function ReportManagementPage() {
 	const navigate = useNavigate({ from: Route.fullPath });

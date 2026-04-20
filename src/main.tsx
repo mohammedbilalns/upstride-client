@@ -1,10 +1,10 @@
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClientProvider } from "@tanstack/react-query";
 import ReactDOM from "react-dom/client";
-import App from "./app/app";
+import App from "./app/App";
 import { ThemeProvider } from "./app/contexts/ThemeContext";
 import { queryClient } from "./app/router/routerConfig";
-import { Toaster } from "./components/ui/sonner";
+import { Toaster } from "./components/ui/Sonner";
 import { env } from "./shared/config/env";
 import { PushNotificationService } from "./shared/services/push-notification.service";
 

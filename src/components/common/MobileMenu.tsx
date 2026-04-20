@@ -2,9 +2,9 @@ import { Link } from "@tanstack/react-router";
 import { LogOut, User as UserIcon } from "lucide-react";
 import CoinBalanceLink from "@/components/common/CoinBalanceLink";
 import NavbarLinks from "@/components/common/NavbarLinks";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { getInitials } from "@/shared/utils/get-initials";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
+import { getInitials } from "@/shared/utils/getInitials";
 import type { NavbarUser, navLinks } from "./Navbar";
 
 type NavLinkItem = (typeof navLinks)[number];

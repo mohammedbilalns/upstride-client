@@ -1,7 +1,7 @@
 import { Clock, Power } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import type { AvailabilityRule } from "@/features/availability-management/types";
 import { cn } from "@/shared/utils/cn";
 import { formatDateDmyShort } from "@/shared/utils/date";

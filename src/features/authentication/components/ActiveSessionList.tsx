@@ -1,17 +1,17 @@
 import { Loader2, RefreshCcw, ShieldAlert, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
-import { useActiveSessions } from "../hooks/use-active-sessions";
-import { useRevokeAllOtherSessions } from "../hooks/use-revoke-all-other-sessions";
+} from "@/components/ui/Card";
+import { useActiveSessions } from "../hooks/queries/useActiveSessions";
+import { useRevokeAllOtherSessions } from "../hooks/mutations/useRevokeAllOtherSessions";
 import { ActiveSessionItem } from "./ActiveSessionItem";
 
 export function ActiveSessionList() {

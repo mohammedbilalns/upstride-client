@@ -1,6 +1,6 @@
 import { Lock, ShieldCheck } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { ActiveSessionList } from "@/features/authentication/components/ActiveSessionList";
 import { ChangePasswordModal, useProfile } from "@/features/profile-management";
 

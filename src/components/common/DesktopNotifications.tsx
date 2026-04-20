@@ -1,11 +1,11 @@
 import { Bell } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/DropdownMenu";
 import { NotificationDropdown } from "@/features/notifications/components/NotificationDropdown";
 import { cn } from "@/shared/utils/cn";
 

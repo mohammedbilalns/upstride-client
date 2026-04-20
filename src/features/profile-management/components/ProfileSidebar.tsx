@@ -9,9 +9,9 @@ import {
 	ShieldCheck,
 	User,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { useLogout } from "@/features/authentication/hooks/use-logout";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
+import { useLogout } from "@/features/authentication/hooks/mutations/useLogout";
 import { cn } from "@/shared/utils/cn";
 
 interface SidebarItem {

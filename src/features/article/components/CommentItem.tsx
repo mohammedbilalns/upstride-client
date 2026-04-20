@@ -11,16 +11,16 @@ import {
 	Trash2,
 } from "lucide-react";
 import { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/DropdownMenu";
 import { cn } from "@/shared/utils/cn";
-import { articleQueries } from "../hooks/queries";
+import { articleQueries } from "../hooks/queries/useArticleQueries";
 import type { ArticleComment } from "../types";
 import { CommentForm } from "./CommentForm";
 

@@ -1,6 +1,6 @@
 import { AlertCircle, CheckCircle2, Info, Loader2 } from "lucide-react";
 import { useState } from "react";
-import { useMentorRegistrationInfo } from "@/features/mentor-registration/hooks/use-mentor-registration";
+import { useMentorRegistrationInfo } from "@/features/mentor-registration/hooks/queries/useMentorRegistration";
 import { MentorForm } from "../components/MentorForm";
 import { StatusView } from "../components/StatusView";
 

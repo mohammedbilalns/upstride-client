@@ -1,2 +1,2 @@
-export * from "./services/report-management.service";
+export * from "./services/report.service";
 export * from "./types";

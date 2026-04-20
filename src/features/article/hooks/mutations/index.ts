@@ -1,6 +1,6 @@
-import { useArticleCommentMutations } from "./use-article-comments";
-import { useArticleReactionMutation } from "./use-article-reaction";
-import { useArticleReportMutation } from "./use-article-report";
+import { useArticleCommentMutations } from "./useArticleComments";
+import { useArticleReactionMutation } from "./useArticleReaction";
+import { useArticleReportMutation } from "./useArticleReport";
 
 export function useArticleMutations() {
 	const react = useArticleReactionMutation();
@@ -17,8 +17,8 @@ export function useArticleMutations() {
 	};
 }
 
-export { useArticleCommentMutations } from "./use-article-comments";
-export { useArticleReactionMutation } from "./use-article-reaction";
-export { useArticleReportMutation } from "./use-article-report";
-export { useCreateArticleMutation } from "./use-create-article";
-export { useUpdateArticleMutation } from "./use-update-article";
+export { useArticleCommentMutations } from "./useArticleComments";
+export { useArticleReactionMutation } from "./useArticleReaction";
+export { useArticleReportMutation } from "./useArticleReport";
+export { useCreateArticleMutation } from "./useCreateArticle";
+export { useUpdateArticleMutation } from "./useUpdateArticle";

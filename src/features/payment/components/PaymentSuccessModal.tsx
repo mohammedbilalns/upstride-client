@@ -1,12 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { CircleCheck } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
 	DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/ui/Dialog";
 
 type PaymentSuccessModalProps = {
 	isOpen: boolean;

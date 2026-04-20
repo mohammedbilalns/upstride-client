@@ -10,12 +10,12 @@ import {
 	Wallet,
 	Zap,
 } from "lucide-react";
-import ThemeToggle from "@/components/common/Theme-Toggle";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { useLogout } from "@/features/authentication/hooks/use-logout";
+import ThemeToggle from "@/components/common/ThemeToggle";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
+import { useLogout } from "@/features/authentication/hooks/mutations/useLogout";
 import { cn } from "@/shared/utils/cn";
-import { getInitials } from "@/shared/utils/get-initials";
+import { getInitials } from "@/shared/utils/getInitials";
 
 interface AdminSidebarProps {
 	isOpen?: boolean;

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { professionsQueryOptions } from "@/features/mentor-registration/hooks/use-mentor-registration";
+import { professionsQueryOptions } from "@/features/mentor-registration/hooks/queries/useMentorRegistration";
 import { MentorRegistrationPage } from "@/features/mentor-registration/pages/MentorRegistrationPage";
 
 export const Route = createFileRoute(

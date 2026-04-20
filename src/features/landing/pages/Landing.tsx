@@ -1,8 +1,8 @@
 import { useRouter } from "@tanstack/react-router";
 import { CheckCircle, ChevronRight, Heart, Zap } from "lucide-react";
 import PublicNavbar from "@/components/common/PublicNavbar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent } from "@/components/ui/Card";
 import FeaturesSection from "@/features/landing/components/FeaturesSection";
 import FooterCTA from "@/features/landing/components/FooterCTA";
 import HeroSection from "@/features/landing/components/HeroSection";

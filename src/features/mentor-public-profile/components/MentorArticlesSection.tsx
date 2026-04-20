@@ -1,8 +1,8 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { ArticleCard } from "@/features/article/components/ArticleCard";
-import { articleQueries } from "@/features/article/hooks/queries";
+import { articleQueries } from "@/features/article/hooks/queries/useArticleQueries";
 
 interface MentorArticlesSectionProps {
 	authorId: string;

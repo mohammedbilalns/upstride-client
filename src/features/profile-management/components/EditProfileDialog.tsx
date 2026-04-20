@@ -2,9 +2,9 @@ import { useForm } from "@tanstack/react-form";
 import { Camera, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import FieldError from "@/components/common/Field-Error";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import FieldError from "@/components/common/FieldError";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
 import {
 	Dialog,
 	DialogContent,
@@ -12,11 +12,11 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@/components/ui/Dialog";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
 import { fileService } from "@/shared/services/file.service";
-import { useUpdateProfile } from "../hooks/use-update-profile";
+import { useUpdateProfile } from "../hooks/mutations/useUpdateProfile";
 import type { UserProfile } from "../types";
 import { profileUpdateSchema } from "../validators";
 
@@ -42,6 +42,7 @@ export function EditProfileDialog({ profile, open, onOpenChange }: Props) {
 		},
 	});
 
+	//FIX: use tanstack form here
 	const form = useForm({
 		defaultValues: {
 			name: profile.name,
@@ -51,7 +52,6 @@ export function EditProfileDialog({ profile, open, onOpenChange }: Props) {
 			const result = profileUpdateSchema.safeParse(value);
 			if (!result.success) return;
 
-			// We only send name and profilePictureId if it was changed
 			const payload: { name: string; profilePictureId?: string } = {
 				name: value.name,
 			};
@@ -89,7 +89,7 @@ export function EditProfileDialog({ profile, open, onOpenChange }: Props) {
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="sm:max-w-[500px] p-0 overflow-hidden border-none shadow-2xl">
+			<DialogContent className="sm:max-w-125 p-0 overflow-hidden border-none shadow-2xl">
 				<form
 					onSubmit={(e) => {
 						e.preventDefault();

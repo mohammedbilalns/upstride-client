@@ -13,18 +13,18 @@ import {
 import { useEffect } from "react";
 import { ProgressiveImage } from "@/components/common/ProgressiveImage";
 import { ReportDialog } from "@/components/common/ReportDialog";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { useProfile } from "@/features/profile-management/hooks/use-profile";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/Alert";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Separator } from "@/components/ui/Separator";
+import { useProfile } from "@/features/profile-management/hooks/queries/useProfile";
 import { formatDateLong, formatDateMedium } from "@/shared/utils/date";
 import { AppealDialog } from "../components/AppealDialog";
 import { ArticleManagement } from "../components/ArticleManagement";
 import { CommentsSection } from "../components/CommentsSection";
 import { ReactionButtons } from "../components/ReactionButtons";
-import { articleQueries } from "../hooks/queries";
+import { articleQueries } from "../hooks/queries/useArticleQueries";
 
 export function ArticleDetailPage({
 	articleId,

@@ -2,12 +2,12 @@ import { useForm } from "@tanstack/react-form";
 import { Save } from "lucide-react";
 import { useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
 	buildEmptyStringErrors,
 	buildFieldErrorsFromIssues,
 	getErrorMessage,
-} from "@/shared/utils/form-validation";
+} from "@/shared/utils/formValidation";
 import type { EconomySettingsConfig } from "../types";
 import { economySettingsSchema } from "../validators/platform-settings.schema";
 import { EconomySettingsCoinValueCard } from "./EconomySettingsCoinValueCard";
@@ -76,6 +76,7 @@ export function EconomySettings({
 				};
 	};
 
+	//FIX : simplify the form usage here
 	const form = useForm<EconomySettingsFormValues>({
 		defaultValues: settings as EconomySettingsFormValues,
 		validators: {

@@ -2,23 +2,23 @@ import { useForm } from "@tanstack/react-form";
 import { GraduationCap, Save } from "lucide-react";
 import { useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import FieldError from "@/components/common/Field-Error";
-import { Button } from "@/components/ui/button";
+import FieldError from "@/components/common/FieldError";
+import { Button } from "@/components/ui/Button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
 import {
 	buildEmptyStringErrors,
 	buildFieldErrorsFromIssues,
 	getErrorMessage,
 	parseNumberInput,
-} from "@/shared/utils/form-validation";
+} from "@/shared/utils/formValidation";
 import type { MentorSettingsConfig } from "../types";
 import { mentorSettingsSchema } from "../validators/platform-settings.schema";
 
@@ -72,6 +72,7 @@ export function MentorSettings({
 				};
 	};
 
+	//FIX : simplify form validation here
 	const form = useForm({
 		defaultValues: settings as MentorSettingsFormValues,
 		validators: {

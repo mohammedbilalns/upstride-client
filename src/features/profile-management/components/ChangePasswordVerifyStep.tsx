@@ -1,13 +1,13 @@
 import { ArrowRight, RotateCcw } from "lucide-react";
-import FieldError from "@/components/common/Field-Error";
-import { Button } from "@/components/ui/button";
+import FieldError from "@/components/common/FieldError";
+import { Button } from "@/components/ui/Button";
 import {
 	InputOTP,
 	InputOTPGroup,
 	InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { Label } from "@/components/ui/label";
-import { formatSecondsToClock } from "@/features/authentication/hooks/use-otp-flow";
+} from "@/components/ui/InputOtp";
+import { Label } from "@/components/ui/Label";
+import { formatSecondsToClock } from "@/features/authentication/hooks/useOtpFlow";
 import type { ChangePasswordStep, VerifyForm } from "./ChangePasswordModal";
 import { ChangePasswordStepBadge } from "./ChangePasswordStepBadge";
 

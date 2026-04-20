@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SessionsPage } from "@/features/sessions";
-import { userSessionsQueryOptions } from "@/features/sessions/hooks/use-sessions";
-import { SessionsSearchSchema } from "@/features/sessions/validators/sessions-params";
+import { userSessionsQueryOptions } from "@/features/sessions/hooks/queries/useSessions";
+import { SessionsSearchSchema } from "@/features/sessions/validators/sessions-params.schema";
 
 export const Route = createFileRoute("/_app-layout/_user-layout/sessions/")({
 	validateSearch: (search) => SessionsSearchSchema.parse(search),

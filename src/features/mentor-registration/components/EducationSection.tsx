@@ -10,14 +10,14 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import FieldError from "@/components/common/Field-Error";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import FieldError from "@/components/common/FieldError";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
 import type { Mentor } from "@/features/mentor-registration/types";
 import type { MentorRegistrationValues } from "@/features/mentor-registration/validators/mentor-registration.schema";
-import { useDeleteFile } from "@/shared/hooks/use-delete-file";
+import { useDeleteFile } from "@/shared/hooks/useDeleteFile";
 import { fileService } from "@/shared/services/file.service";
 
 interface EducationSectionProps {

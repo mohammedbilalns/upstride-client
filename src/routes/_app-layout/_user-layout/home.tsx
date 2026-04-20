@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useRouteContext } from "@tanstack/react-router";
-import { articleQueries } from "@/features/article/hooks/queries";
+import { articleQueries } from "@/features/article/hooks/queries/useArticleQueries";
 import { articleService } from "@/features/article/services/article.service";
 import { BecomeMentorWidget } from "@/features/home/components/BecomeMentorWidget";
 import { FeedArticleCard } from "@/features/home/components/FeedArticleCard";
@@ -8,9 +8,9 @@ import { RecommendedArticlesWidget } from "@/features/home/components/Recommende
 import { SavedListsWidget } from "@/features/home/components/SavedListsWidget";
 import { SuggestedMentorsWidget } from "@/features/home/components/SuggestedMentorsWidget";
 import { UpcomingSessionsWidget } from "@/features/home/components/UpcomingSessionsWidget";
-import { mentorDiscoveryService } from "@/features/mentor-discovery/services/mentor-discovery.service";
-import { mentorListsService } from "@/features/mentor-discovery/services/mentor-lists.service";
-import { sessionBookingService } from "@/features/session-booking-management/services/session-booking.service";
+import { mentorDiscoveryService } from "@/features/mentor-discovery/services/discovery.service";
+import { mentorListsService } from "@/features/mentor-discovery/services/lists.service";
+import { sessionBookingService } from "@/features/session-booking-management/services/booking.service";
 
 export const Route = createFileRoute("/_app-layout/_user-layout/home")({
 	loader: async ({ context: { queryClient } }) => {

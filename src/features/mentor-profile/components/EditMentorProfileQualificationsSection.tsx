@@ -1,9 +1,9 @@
 import type { Dispatch, SetStateAction } from "react";
-import FieldError from "@/components/common/Field-Error";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import FieldError from "@/components/common/FieldError";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
 import type { EditMentorProfileForm } from "./EditMentorProfileModal";
 
 interface EditMentorProfileQualificationsSectionProps {

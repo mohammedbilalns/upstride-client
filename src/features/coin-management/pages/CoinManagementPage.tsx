@@ -7,8 +7,8 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "@/components/ui/Select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Route } from "@/routes/_app-layout/_user-layout/coins";
 import { CoinTransactionsTable } from "../components/CoinTransactionsTable";
 import { PaymentTransactionsTable } from "../components/PaymentTransactionsTable";
@@ -16,9 +16,9 @@ import {
 	useCoinBalance,
 	useCoinTransactions,
 	usePaymentTransactions,
-} from "../hooks/use-coin-management";
-import { coinManagementService } from "../services/coin-management.service";
-import type { CoinManagementSearch } from "../validators/coin-management-params";
+} from "../hooks/queries/useCoinManagement";
+import { coinManagementService } from "../services/coin.service";
+import type { CoinManagementSearch } from "../validators/coin-management-params.schema";
 
 const PENDING_BOOKING_STORAGE_KEY = "pending-booking-slot";
 

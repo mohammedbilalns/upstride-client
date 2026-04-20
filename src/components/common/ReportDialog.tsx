@@ -1,8 +1,8 @@
 import { useForm } from "@tanstack/react-form";
 import { Flag, Loader2 } from "lucide-react";
 import { useState } from "react";
-import FieldError from "@/components/common/Field-Error";
-import { Button } from "@/components/ui/button";
+import FieldError from "@/components/common/FieldError";
+import { Button } from "@/components/ui/Button";
 import {
 	Dialog,
 	DialogContent,
@@ -11,18 +11,18 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
+} from "@/components/ui/Dialog";
+import { Label } from "@/components/ui/Label";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/components/ui/Select";
+import { Textarea } from "@/components/ui/Textarea";
 import { useArticleMutations } from "@/features/article/hooks/mutations";
-import { reportFormSchema } from "@/features/report-management/validators/report-form-schema";
+import { reportFormSchema } from "@/features/report-management/validators/report-form.schema";
 
 interface ReportDialogProps {
 	targetId: string;

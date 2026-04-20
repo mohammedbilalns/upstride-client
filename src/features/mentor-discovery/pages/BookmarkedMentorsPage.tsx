@@ -2,24 +2,27 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Bookmark, FolderOpen, Users } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/Card";
 import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useCreateMentorList } from "../hooks/use-mentor-list-mutations";
-import { mentorListKeys, useMentorLists } from "../hooks/use-mentor-lists";
+} from "@/components/ui/Dialog";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
+import { useCreateMentorList } from "../hooks/mutations/useMentorListMutations";
+import {
+	mentorListKeys,
+	useMentorLists,
+} from "../hooks/queries/useMentorLists";
 import type { GetMentorListsResponse } from "../types";
 
 export function BookmarkedMentorsPage() {

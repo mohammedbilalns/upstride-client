@@ -12,12 +12,12 @@ import type {
 	VerifyRegisterOtpResponse,
 	VerifyResetOtpResponse,
 } from "../types";
-import type { LoginPayload } from "../validators/login.schema";
-import type { RegisterPayload } from "../validators/register.schema";
+import type { LoginFormValues } from "../validators/login.schema";
+import type { RegisterFormValues } from "../validators/register.schema";
 
 export const authService = {
 	login: async (
-		data: LoginPayload,
+		data: LoginFormValues,
 	): Promise<{ message: string; data: LoginResponse }> => {
 		const response = await api.post(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.LOGIN}`,
@@ -26,7 +26,9 @@ export const authService = {
 		return response.data;
 	},
 
-	register: async (data: RegisterPayload): Promise<{ message: string }> => {
+	register: async (
+		data: Omit<RegisterFormValues, "confirmPassword">,
+	): Promise<{ message: string }> => {
 		const response = await api.post(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.REGISTER}`,
 			data,

@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { Bookmark, Star, User } from "lucide-react";
 import { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import {
 	Card,
 	CardContent,
@@ -11,7 +11,7 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/Card";
 import type { MentorDiscoveryItem } from "../types";
 import { MentorListDialog } from "./MentorListDialog";
 

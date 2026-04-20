@@ -1,13 +1,13 @@
 import { ArrowLeft, Loader2, RefreshCw, Timer } from "lucide-react";
 import type { ReactNode } from "react";
 import { useMemo } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
 	InputOTP,
 	InputOTPGroup,
 	InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { formatSecondsToClock } from "../hooks/use-otp-flow";
+} from "@/components/ui/InputOtp";
+import { formatSecondsToClock } from "../hooks/useOtpFlow";
 
 interface OtpVerificationPanelProps {
 	backLabel: string;

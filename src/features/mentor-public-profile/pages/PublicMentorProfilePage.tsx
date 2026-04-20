@@ -6,25 +6,25 @@ import { toast } from "sonner";
 import type { ApiError } from "@/api/apiError";
 import { AddBalanceForm } from "@/components/common/AddBalanceForm";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Separator } from "@/components/ui/separator";
+} from "@/components/ui/Dialog";
+import { Label } from "@/components/ui/Label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
+import { Separator } from "@/components/ui/Separator";
 import type { AvailabilitySlot } from "@/features/availability-management/types";
 import {
 	coinManagementService,
 	useCoinBalance,
 } from "@/features/coin-management";
 import { publicMentorProfileService } from "@/features/mentor-public-profile";
-import { useProfile } from "@/features/profile-management/hooks/use-profile";
+import { useProfile } from "@/features/profile-management/hooks/queries/useProfile";
 import { sessionBookingService } from "@/features/session-booking-management";
 import { cn } from "@/shared/utils/cn";
 import { formatLocaleTimeShort } from "@/shared/utils/date";

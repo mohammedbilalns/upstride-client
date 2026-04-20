@@ -7,9 +7,12 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/Table";
 import type { Mentor } from "@/shared/types/mentor";
-import { useApproveMentor, useRejectMentor } from "../hooks/use-mentor-actions";
+import {
+	useApproveMentor,
+	useRejectMentor,
+} from "../hooks/mutations/useMentorActions";
 import { MentorActionModals } from "./MentorActionModals";
 import { MentorTableRow } from "./MentorTableRow";
 

@@ -1,8 +1,8 @@
 import { BookmarkX } from "lucide-react";
 import { useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { Button } from "@/components/ui/button";
-import { useRemoveMentorFromList } from "../hooks/use-mentor-list-mutations";
+import { Button } from "@/components/ui/Button";
+import { useRemoveMentorFromList } from "../hooks/mutations/useMentorListMutations";
 import type { MentorDiscoveryItem } from "../types";
 import { MentorCard } from "./MentorCard";
 

@@ -17,21 +17,21 @@ import {
 } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
 import {
 	EmojiPicker,
 	EmojiPickerContent,
 	EmojiPickerFooter,
 	EmojiPickerSearch,
-} from "@/components/ui/emoji-picker";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/EmojiPicker";
+import { Input } from "@/components/ui/Input";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@/components/ui/Popover";
+import { ScrollArea } from "@/components/ui/ScrollArea";
 import { ChatMessage } from "@/features/chat/components/ChatMessage";
 import { ChatNotFound } from "@/features/chat/components/ChatNotFound";
 import {
@@ -39,9 +39,9 @@ import {
 	useMarkChatRead,
 	useSendMessage,
 } from "@/features/chat/hooks";
-import { chatKeys } from "@/features/chat/hooks/queries";
+import { chatKeys } from "@/features/chat/hooks/queries/useChatQueries";
 import type { ChatMessage, GetChatsOutput } from "@/features/chat/types";
-import { publicMentorProfileService } from "@/features/mentor-public-profile/services/public-mentor-profile.service";
+import { publicMentorProfileService } from "@/features/mentor-public-profile/services/publicProfile.service";
 import { fileService } from "@/shared/services/file.service";
 
 export function ChatDetailPage() {

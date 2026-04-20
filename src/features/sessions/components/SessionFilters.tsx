@@ -1,14 +1,14 @@
 import { X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { SessionsSearch } from "../validators/sessions-params";
+} from "@/components/ui/Select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import type { SessionsSearch } from "../validators/sessions-params.schema";
 
 interface SessionFiltersProps {
 	search: SessionsSearch;

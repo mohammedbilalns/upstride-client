@@ -3,12 +3,12 @@ import { useNavigate, useRouter } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
 import { useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Route } from "@/routes/_app-layout/_user-layout/mentor/articles/$articleId/update";
 import { ArticleForm } from "../components/ArticleForm";
 import { ArticleNotFound } from "../components/ArticleNotFound";
 import { useUpdateArticleMutation } from "../hooks/mutations";
-import { articleQueries } from "../hooks/queries";
+import { articleQueries } from "../hooks/queries/useArticleQueries";
 import type { ArticleFormValues } from "../validators/article-form.schema";
 
 export function UpdateArticlePage() {

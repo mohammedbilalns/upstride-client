@@ -6,12 +6,12 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/Select";
 import { Route } from "@/routes/_admin-layout/mentor-management";
 import { Pagination } from "../../user-management/components/Pagination";
 import { MentorTable } from "../components/MentorTable";
-import { useMentors } from "../hooks/use-mentors";
-import type { MentorManagementSearch } from "../validators/mentor-management-params";
+import { useMentors } from "../hooks/queries/useMentors";
+import type { MentorManagementSearch } from "../validators/mentor-management-params.schema";
 
 export function MentorManagementPage() {
 	const navigate = useNavigate({ from: Route.fullPath });
