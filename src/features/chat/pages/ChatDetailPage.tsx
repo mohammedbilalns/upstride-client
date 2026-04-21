@@ -40,7 +40,7 @@ import {
 	useSendMessage,
 } from "@/features/chat/hooks";
 import { chatKeys } from "@/features/chat/hooks/queries/useChatQueries";
-import type { ChatMessage, GetChatsOutput } from "@/features/chat/types";
+import type { GetChatsOutput } from "@/features/chat/types";
 import { publicMentorProfileService } from "@/features/mentor-public-profile/services/publicProfile.service";
 import { fileService } from "@/shared/services/file.service";
 
