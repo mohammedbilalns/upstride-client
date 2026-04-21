@@ -1,4 +1,5 @@
 import type { UserRole, UserStatus } from "@/shared/types/user";
+
 export interface GetUsersInput {
 	page: number;
 	limit: number;
@@ -31,4 +32,11 @@ export interface BlockUserInput {
 
 export interface UnblockUserInput {
 	userId: string;
+}
+
+export interface UserStatusMutationResponse {
+	message: string;
+	data: {
+		resourceId: string;
+	};
 }

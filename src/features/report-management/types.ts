@@ -87,5 +87,12 @@ export interface BlockArticleInput {
 }
 
 export interface BlockArticleResponse {
+	resourceId: string;
 	article: Article;
+}
+
+export interface UnblockArticleResponse {
+	resourceId: string;
+	article: Article;
+	isUnblocked: boolean;
 }

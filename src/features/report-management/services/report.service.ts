@@ -9,6 +9,7 @@ import type {
 	ReportArticleResponse,
 	ReportUserInput,
 	ReportUserResponse,
+	UnblockArticleResponse,
 	UpdateReportStatusInput,
 	UpdateReportStatusResponse,
 } from "../types";
@@ -72,9 +73,12 @@ export const ReportManagementService = {
 		return response.data.data;
 	},
 
-	unblockArticle: async (articleId: string): Promise<void> => {
-		await api.patch(
+	unblockArticle: async (
+		articleId: string,
+	): Promise<UnblockArticleResponse> => {
+		const response = await api.patch<{ data: UnblockArticleResponse }>(
 			`${ROUTES.REPORTS.BASE}${ROUTES.REPORTS.UNBLOCK_ARTICLE(articleId)}`,
 		);
+		return response.data.data;
 	},
 };

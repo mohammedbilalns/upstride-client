@@ -9,11 +9,11 @@ export function useBlockUser() {
 
 	return useMutation({
 		mutationFn: UserManagementService.blockUser,
-		onSuccess: ({ message }, variables) => {
+		onSuccess: ({ message, data }) => {
 			toast.success(message || "User blocked successfully");
 
 			updateQueryCache<GetUsersResponse>(queryClient, ["users"], (oldData) =>
-				updateUserStatus(oldData, variables.userId, "blocked"),
+				updateUserStatus(oldData, data.resourceId, "blocked"),
 			);
 		},
 		onError: (error: Error) => {

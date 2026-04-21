@@ -45,6 +45,13 @@ export interface CatalogActionResponse {
 	message: string;
 }
 
+export interface CatalogIsActiveMutationResponse {
+	message: string;
+	data: {
+		resourceId: string;
+	};
+}
+
 // Input Types
 export interface AddInterestInput {
 	name: string;

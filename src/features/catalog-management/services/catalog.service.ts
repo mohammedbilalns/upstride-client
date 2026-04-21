@@ -5,6 +5,7 @@ import type {
 	AddProfessionInput,
 	AddSkillInput,
 	CatalogActionResponse,
+	CatalogIsActiveMutationResponse,
 	FetchCatalogResponse,
 	GetOnboardingCatalogResponse,
 	GetProfessionsResponse,
@@ -42,8 +43,10 @@ export const catalogService = {
 		return response.data;
 	},
 
-	disableInterest: async (id: string): Promise<CatalogActionResponse> => {
-		const response = await api.patch<CatalogActionResponse>(
+	disableInterest: async (
+		id: string,
+	): Promise<CatalogIsActiveMutationResponse> => {
+		const response = await api.patch<CatalogIsActiveMutationResponse>(
 			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.DISABLE_INTEREST(id)}`,
 		);
 		return response.data;
@@ -57,8 +60,10 @@ export const catalogService = {
 		return response.data;
 	},
 
-	disableSkill: async (id: string): Promise<CatalogActionResponse> => {
-		const response = await api.patch<CatalogActionResponse>(
+	disableSkill: async (
+		id: string,
+	): Promise<CatalogIsActiveMutationResponse> => {
+		const response = await api.patch<CatalogIsActiveMutationResponse>(
 			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.DISABLE_SKILL(id)}`,
 		);
 		return response.data;
@@ -74,29 +79,35 @@ export const catalogService = {
 		return response.data;
 	},
 
-	disableProfession: async (id: string): Promise<CatalogActionResponse> => {
-		const response = await api.patch<CatalogActionResponse>(
+	disableProfession: async (
+		id: string,
+	): Promise<CatalogIsActiveMutationResponse> => {
+		const response = await api.patch<CatalogIsActiveMutationResponse>(
 			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.DISABLE_PROFESSION(id)}`,
 		);
 		return response.data;
 	},
 
-	enableInterest: async (id: string): Promise<CatalogActionResponse> => {
-		const response = await api.patch<CatalogActionResponse>(
+	enableInterest: async (
+		id: string,
+	): Promise<CatalogIsActiveMutationResponse> => {
+		const response = await api.patch<CatalogIsActiveMutationResponse>(
 			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ENABLE_INTEREST(id)}`,
 		);
 		return response.data;
 	},
 
-	enableSkill: async (id: string): Promise<CatalogActionResponse> => {
-		const response = await api.patch<CatalogActionResponse>(
+	enableSkill: async (id: string): Promise<CatalogIsActiveMutationResponse> => {
+		const response = await api.patch<CatalogIsActiveMutationResponse>(
 			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ENABLE_SKILL(id)}`,
 		);
 		return response.data;
 	},
 
-	enableProfession: async (id: string): Promise<CatalogActionResponse> => {
-		const response = await api.patch<CatalogActionResponse>(
+	enableProfession: async (
+		id: string,
+	): Promise<CatalogIsActiveMutationResponse> => {
+		const response = await api.patch<CatalogIsActiveMutationResponse>(
 			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ENABLE_PROFESSION(id)}`,
 		);
 		return response.data;

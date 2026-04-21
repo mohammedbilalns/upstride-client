@@ -6,11 +6,12 @@ import type {
 	AddInterestInput,
 	AddProfessionInput,
 	AddSkillInput,
+	CatalogIsActiveMutationResponse,
+	FetchCatalogResponse,
 } from "../../types";
 
-const getErrorMessage = (error: ApiError, defaultMessage: string) => {
-	return error.response?.data?.message || defaultMessage;
-};
+const getErrorMessage = (error: ApiError, defaultMessage: string) =>
+	error.response?.data?.message || defaultMessage;
 
 export function useCatalogMutations() {
 	const queryClient = useQueryClient();
@@ -30,10 +31,52 @@ export function useCatalogMutations() {
 		mutationFn: (id: string) => catalogService.disableInterest(id),
 		onSuccess: (res) => {
 			toast.success(res.message);
-			queryClient.invalidateQueries({ queryKey: ["catalog"] });
+			queryClient.setQueryData<FetchCatalogResponse>(["catalog"], (old) => {
+				if (!old) return old;
+
+				return {
+					...old,
+					data: {
+						...old.data,
+						interests: old.data.interests.map((interest) =>
+							interest.id === res.data.resourceId
+								? { ...interest, isActive: false }
+								: interest,
+						),
+					},
+				};
+			});
 		},
 		onError: (error: ApiError) => {
 			toast.error(getErrorMessage(error, "Failed to disable interest"));
+		},
+	});
+
+	const disableSkill = useMutation({
+		mutationFn: (id: string) => catalogService.disableSkill(id),
+		onSuccess: (res: CatalogIsActiveMutationResponse) => {
+			toast.success(res.message);
+			queryClient.setQueryData<FetchCatalogResponse>(["catalog"], (old) => {
+				if (!old) return old;
+
+				return {
+					...old,
+					data: {
+						...old.data,
+						interests: old.data.interests.map((interest) => ({
+							...interest,
+							skills: interest.skills.map((skill) =>
+								skill.id === res.data.resourceId
+									? { ...skill, isActive: false }
+									: skill,
+							),
+						})),
+					},
+				};
+			});
+		},
+		onError: (error: ApiError) => {
+			toast.error(getErrorMessage(error, "Failed to disable skill"));
 		},
 	});
 
@@ -51,9 +94,23 @@ export function useCatalogMutations() {
 
 	const disableProfession = useMutation({
 		mutationFn: (id: string) => catalogService.disableProfession(id),
-		onSuccess: (res) => {
+		onSuccess: (res: CatalogIsActiveMutationResponse) => {
 			toast.success(res.message);
-			queryClient.invalidateQueries({ queryKey: ["catalog"] });
+			queryClient.setQueryData<FetchCatalogResponse>(["catalog"], (old) => {
+				if (!old) return old;
+
+				return {
+					...old,
+					data: {
+						...old.data,
+						professions: old.data.professions.map((profession) =>
+							profession.id === res.data.resourceId
+								? { ...profession, isActive: false }
+								: profession,
+						),
+					},
+				};
+			});
 		},
 		onError: (error: ApiError) => {
 			toast.error(getErrorMessage(error, "Failed to disable profession"));
@@ -71,22 +128,25 @@ export function useCatalogMutations() {
 		},
 	});
 
-	const disableSkill = useMutation({
-		mutationFn: (id: string) => catalogService.disableSkill(id),
-		onSuccess: (res) => {
-			toast.success(res.message);
-			queryClient.invalidateQueries({ queryKey: ["catalog"] });
-		},
-		onError: (error: ApiError) => {
-			toast.error(getErrorMessage(error, "Failed to disable skill"));
-		},
-	});
-
 	const enableInterest = useMutation({
 		mutationFn: (id: string) => catalogService.enableInterest(id),
 		onSuccess: (res) => {
 			toast.success(res.message);
-			queryClient.invalidateQueries({ queryKey: ["catalog"] });
+			queryClient.setQueryData<FetchCatalogResponse>(["catalog"], (old) => {
+				if (!old) return old;
+
+				return {
+					...old,
+					data: {
+						...old.data,
+						interests: old.data.interests.map((interest) =>
+							interest.id === res.data.resourceId
+								? { ...interest, isActive: true }
+								: interest,
+						),
+					},
+				};
+			});
 		},
 		onError: (error: ApiError) => {
 			toast.error(getErrorMessage(error, "Failed to enable interest"));
@@ -97,7 +157,21 @@ export function useCatalogMutations() {
 		mutationFn: (id: string) => catalogService.enableProfession(id),
 		onSuccess: (res) => {
 			toast.success(res.message);
-			queryClient.invalidateQueries({ queryKey: ["catalog"] });
+			queryClient.setQueryData<FetchCatalogResponse>(["catalog"], (old) => {
+				if (!old) return old;
+
+				return {
+					...old,
+					data: {
+						...old.data,
+						professions: old.data.professions.map((profession) =>
+							profession.id === res.data.resourceId
+								? { ...profession, isActive: true }
+								: profession,
+						),
+					},
+				};
+			});
 		},
 		onError: (error: ApiError) => {
 			toast.error(getErrorMessage(error, "Failed to enable profession"));
@@ -106,9 +180,26 @@ export function useCatalogMutations() {
 
 	const enableSkill = useMutation({
 		mutationFn: (id: string) => catalogService.enableSkill(id),
-		onSuccess: (res) => {
+		onSuccess: (res: CatalogIsActiveMutationResponse) => {
 			toast.success(res.message);
-			queryClient.invalidateQueries({ queryKey: ["catalog"] });
+			queryClient.setQueryData<FetchCatalogResponse>(["catalog"], (old) => {
+				if (!old) return old;
+
+				return {
+					...old,
+					data: {
+						...old.data,
+						interests: old.data.interests.map((interest) => ({
+							...interest,
+							skills: interest.skills.map((skill) =>
+								skill.id === res.data.resourceId
+									? { ...skill, isActive: true }
+									: skill,
+							),
+						})),
+					},
+				};
+			});
 		},
 		onError: (error: ApiError) => {
 			toast.error(getErrorMessage(error, "Failed to enable skill"));
