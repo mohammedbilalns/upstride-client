@@ -4,6 +4,7 @@ import {
 	Laptop,
 	Loader2,
 	Monitor,
+	Router,
 	ShieldCheck,
 	Smartphone,
 	XCircle,
@@ -65,6 +66,10 @@ export function ActiveSessionItem({ session }: ActiveSessionItemProps) {
 							)}
 						</div>
 						<div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+							<div className="flex items-center gap-1.5">
+								<Router className="h-3.5 w-3.5" />
+								IP Address {session.ip}
+							</div>
 							<div className="flex items-center gap-1.5">
 								<Clock className="h-3.5 w-3.5" />
 								Last active {formatDistanceToNow(new Date(session.lastUsedAt))}{" "}

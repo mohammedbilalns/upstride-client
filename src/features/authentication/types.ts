@@ -66,6 +66,7 @@ export interface ChangePasswordInput {
 
 export interface ActiveSession {
 	id: string;
+	ip: string;
 	deviceName: string;
 	deviceType: string;
 	lastUsedAt: string;
