@@ -1,6 +1,6 @@
+import { Pin } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/Button";
-import { Pin } from "lucide-react";
 
 interface VideoCardProps {
 	stream: MediaStream | null;

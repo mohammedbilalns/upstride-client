@@ -1,14 +1,14 @@
+import { CaptureUpdateAction, Excalidraw } from "@excalidraw/excalidraw";
 import type React from "react";
-import { useEffect, useState, useRef, useCallback } from "react";
-import { Excalidraw, CaptureUpdateAction } from "@excalidraw/excalidraw";
+import { useCallback, useEffect, useRef, useState } from "react";
 import "@excalidraw/excalidraw/index.css";
-import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import type { ExcalidrawElement } from "@excalidraw/excalidraw/element/types";
+import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
+import { Lock, MousePointer2, Unlock, Users } from "lucide-react";
 import type { Socket } from "socket.io-client";
-import { Button } from "@/components/ui/Button";
-import { Users, Lock, Unlock, MousePointer2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTheme } from "@/app/contexts/ThemeContext";
+import { Button } from "@/components/ui/Button";
 
 interface WhiteboardProps {
 	socket: Socket | null;

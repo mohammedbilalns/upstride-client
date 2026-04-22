@@ -10,8 +10,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/Card";
-import { useActiveSessions } from "../hooks/queries/useActiveSessions";
 import { useRevokeAllOtherSessions } from "../hooks/mutations/useRevokeAllOtherSessions";
+import { useActiveSessions } from "../hooks/queries/useActiveSessions";
 import { ActiveSessionItem } from "./ActiveSessionItem";
 
 export function ActiveSessionList() {

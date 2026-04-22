@@ -1,19 +1,19 @@
+import { useRouter } from "@tanstack/react-router";
+import { AlertCircle, ArrowLeft, Loader2 } from "lucide-react";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useSocket } from "@/app/contexts/SocketContext";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
+import { Button } from "@/components/ui/Button";
+import { useChat } from "../hooks/useChat";
 import { useWebRTC } from "../hooks/useWebrtc";
 import { CallControls } from "./CallControls";
-import { Whiteboard } from "./Whiteboard";
-import { useChat } from "../hooks/useChat";
 import { ChatPanel } from "./ChatPanel";
-import { AlertCircle, ArrowLeft, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { useRouter } from "@tanstack/react-router";
-import { SessionGrid } from "./SessionGrid";
 import { CollaborationStage } from "./CollaborationStage";
+import { SessionGrid } from "./SessionGrid";
 import { ThumbnailStrip } from "./ThumbnailStrip";
+import { Whiteboard } from "./Whiteboard";
 
 interface CallRoomProps {
 	bookingId: string;

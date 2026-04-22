@@ -1,11 +1,11 @@
+import { format } from "date-fns";
+import { MessageSquareOff, Send, X } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import { Send, X, MessageSquareOff } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import type { ChatMessage } from "../hooks/useChat";
-import { format } from "date-fns";
 
 interface ChatPanelProps {
 	messages: ChatMessage[];

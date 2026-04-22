@@ -1,8 +1,8 @@
 import { useForm } from "@tanstack/react-form";
 import { useRouter } from "@tanstack/react-router";
 import { useState } from "react";
-import { useOnboardingCatalog } from "../hooks/queries/useCatalog";
 import { useSaveInterests } from "../hooks/mutations/useSaveInterests";
+import { useOnboardingCatalog } from "../hooks/queries/useCatalog";
 import { saveInterestsSchema } from "../validators/onboarding.schema";
 import { OnboardingErrorState } from "./OnboardingErrorState";
 import { OnboardingInterestSelection } from "./OnboardingInterestSelection";

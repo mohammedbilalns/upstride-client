@@ -7,9 +7,9 @@ import type {
 	AddProfessionInput,
 	AddSkillInput,
 	CatalogInterest,
+	CatalogIsActiveMutationResponse,
 	CatalogProfession,
 	CatalogSkill,
-	CatalogIsActiveMutationResponse,
 	FetchCatalogResponse,
 } from "../../types";
 

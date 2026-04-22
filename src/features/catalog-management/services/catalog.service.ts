@@ -1,3 +1,4 @@
+import type { ApiSuccess } from "@/api/apiSuccess";
 import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
 import type {
@@ -12,7 +13,6 @@ import type {
 	GetOnboardingCatalogResponse,
 	GetProfessionsResponse,
 } from "../types";
-import type { ApiSuccess } from "@/api/apiSuccess";
 
 export const catalogService = {
 	fetchCatalog: async (): Promise<FetchCatalogResponse> => {

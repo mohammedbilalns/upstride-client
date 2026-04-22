@@ -1,4 +1,5 @@
 import {
+	MessageSquare,
 	Mic,
 	MicOff,
 	MonitorUp,
@@ -6,7 +7,6 @@ import {
 	Video,
 	VideoOff,
 	XSquare,
-	MessageSquare,
 } from "lucide-react";
 import type React from "react";
 import { Button } from "@/components/ui/Button";

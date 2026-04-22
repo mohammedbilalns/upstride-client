@@ -35,7 +35,9 @@ export class PushNotificationService {
 
 			// If we have an existing subscription, check if it's using the right key
 			if (subscription) {
-				const currentKey = this.urlBase64ToUint8Array(env.VAPID_PUBLIC_KEY);
+				const currentKey = PushNotificationService.urlBase64ToUint8Array(
+					env.VAPID_PUBLIC_KEY,
+				);
 				const subKey = new Uint8Array(
 					subscription.options.applicationServerKey!,
 				);
@@ -52,9 +54,8 @@ export class PushNotificationService {
 			}
 
 			if (!subscription) {
-				const applicationServerKey = this.urlBase64ToUint8Array(
-					env.VAPID_PUBLIC_KEY,
-				);
+				const applicationServerKey =
+					PushNotificationService.urlBase64ToUint8Array(env.VAPID_PUBLIC_KEY);
 				subscription = await registration.pushManager.subscribe({
 					userVisibleOnly: true,
 					applicationServerKey,
