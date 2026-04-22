@@ -4,7 +4,7 @@ import FieldError from "@/components/common/FieldError";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Textarea";
 import { commentSchema } from "@/features/article/validators/comment.schema";
-import { useProfile } from "@/features/profile-management/hooks/queries/useProfile";
+import { useProfile } from "@/features/profile/hooks/queries/useProfile";
 import { useArticleMutations } from "../hooks/mutations";
 
 interface CommentFormProps {

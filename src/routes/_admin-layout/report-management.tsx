@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { reportManagementQueryOptions } from "@/features/report-management/hooks/queries/useReports";
-import { ReportManagementPage } from "@/features/report-management/pages/ReportManagementPage";
-import { ReportManagementSearchSchema } from "@/features/report-management/validators/report-management-params.schema";
+import { reportManagementQueryOptions } from "@/features/report/hooks/queries/useReports";
+import { ReportManagementPage } from "@/features/report/pages/ReportManagementPage";
+import { ReportManagementSearchSchema } from "@/features/report/validators/report-management-params.schema";
 
 export const Route = createFileRoute("/_admin-layout/report-management")({
 	validateSearch: (search) => ReportManagementSearchSchema.parse(search),

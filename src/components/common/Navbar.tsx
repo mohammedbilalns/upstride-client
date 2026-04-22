@@ -10,10 +10,10 @@ import MobileNotifications from "@/components/common/MobileNotifications";
 import NavbarLinks from "@/components/common/NavbarLinks";
 import NavbarLogo from "@/components/common/NavbarLogo";
 import ThemeToggle from "@/components/common/ThemeToggle";
-import { useLogout } from "@/features/authentication/hooks/mutations/useLogout";
-import { useCoinBalance } from "@/features/coin-management";
-import { useGetUnreadCount } from "@/features/notifications/hooks";
-import { profileQueryOptions } from "@/features/profile-management/hooks/queries/useProfile";
+import { useLogout } from "@/features/auth/hooks/mutations/useLogout";
+import { useGetUnreadCount } from "@/features/notification/hooks";
+import { profileQueryOptions } from "@/features/profile/hooks/queries/useProfile";
+import { useCoinBalance } from "@/features/wallet";
 import { cn } from "@/shared/utils/cn";
 
 export const navLinks = [

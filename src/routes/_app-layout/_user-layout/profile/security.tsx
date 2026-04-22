@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { activeSessionsQueryOptions } from "@/features/authentication/hooks/queries/useActiveSessions";
-import { ProfileSecurityPage } from "@/features/profile-management/pages/ProfileSecurityPage";
+import { activeSessionsQueryOptions } from "@/features/auth/hooks/queries/useActiveSessions";
+import { ProfileSecurityPage } from "@/features/profile/pages/ProfileSecurityPage";
 
 export const Route = createFileRoute(
 	"/_app-layout/_user-layout/profile/security",

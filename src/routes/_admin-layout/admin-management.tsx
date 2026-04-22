@@ -1,10 +1,10 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { adminManagementQueryOptions } from "@/features/admin-management/hooks/queries/useAdmins";
-import { AdminManagementPage } from "@/features/admin-management/pages/AdminManagementPage";
+import { adminManagementQueryOptions } from "@/features/admin/hooks/queries/useAdmins";
+import { AdminManagementPage } from "@/features/admin/pages/AdminManagementPage";
 import {
 	type AdminManagementSearch,
 	AdminManagementSearchSchema,
-} from "@/features/admin-management/validators/admin-management-params.schema";
+} from "@/features/admin/validators/admin-management-params.schema";
 
 export const Route = createFileRoute("/_admin-layout/admin-management")({
 	beforeLoad: async ({ context }) => {

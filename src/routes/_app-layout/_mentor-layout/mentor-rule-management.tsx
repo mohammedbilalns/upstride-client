@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { MentorRuleManagementPage } from "@/features/availability-management/pages/MentorRuleManagementPage";
+import { MentorRuleManagementPage } from "@/features/availability/pages/MentorRuleManagementPage";
 
 export const Route = createFileRoute(
 	"/_app-layout/_mentor-layout/mentor-rule-management",

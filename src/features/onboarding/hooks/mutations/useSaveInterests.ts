@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
-import { authService } from "@/features/authentication/services/auth.service";
-import type { SaveUserInterestsResponse } from "@/features/authentication/types";
-import { setAuthSession } from "@/features/authentication/utils/setAuthSession";
+import { authService } from "@/features/auth/services/auth.service";
+import type { SaveUserInterestsResponse } from "@/features/auth/types";
+import { setAuthSession } from "@/features/auth/utils/setAuthSession";
 import type { SaveInterestsPayload } from "../../validators/onboarding.schema";
 
 type SaveInterestsResponse = {

@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Calendar } from "@/components/ui/Calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import type { AvailabilitySlot } from "@/features/availability-management/types";
+import type { AvailabilitySlot } from "@/features/availability/types";
 import {
 	formatLocaleDateLong,
 	formatLocaleTimeShort,

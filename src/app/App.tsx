@@ -1,7 +1,7 @@
 import { RouterProvider } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import PendingComponent from "@/components/common/PendingComponent";
-import { initAuthSession } from "@/features/authentication/utils/initAuthSession";
+import { initAuthSession } from "@/features/auth/utils/initAuthSession";
 import { router } from "./router/routerConfig";
 
 const App = () => {

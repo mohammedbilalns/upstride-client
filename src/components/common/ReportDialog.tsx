@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
 import { useArticleMutations } from "@/features/article/hooks/mutations";
-import { reportFormSchema } from "@/features/report-management/validators/report-form.schema";
+import { reportFormSchema } from "@/features/report/validators/report-form.schema";
 
 interface ReportDialogProps {
 	targetId: string;

@@ -9,7 +9,7 @@ import type { ChatMessage, GetChatOutput } from "@/features/chat/types";
 import type {
 	GetUnreadNotificationCountOutput,
 	Notification,
-} from "@/features/notifications/types";
+} from "@/features/notification/types";
 import {
 	disconnectSocket,
 	getSocketInstance,

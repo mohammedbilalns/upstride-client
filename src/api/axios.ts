@@ -1,8 +1,8 @@
 import type { InternalAxiosRequestConfig } from "axios";
 import axios, { type AxiosError } from "axios";
 import type { router as AppRouter } from "@/app/router/routerConfig";
-import { authService } from "@/features/authentication/services/auth.service";
-import { clearAuthSession } from "@/features/authentication/utils/clearAuthSession";
+import { authService } from "@/features/auth/services/auth.service";
+import { clearAuthSession } from "@/features/auth/utils/clearAuthSession";
 import { env } from "@/shared/config/env";
 
 /**

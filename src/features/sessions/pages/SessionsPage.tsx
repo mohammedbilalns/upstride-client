@@ -5,13 +5,10 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import type { ApiError } from "@/api/apiError";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
-import { useCoinBalance } from "@/features/coin-management/hooks/queries/useCoinManagement";
-import { sessionBookingService } from "@/features/session-booking-management";
-import type {
-	Booking,
-	BookingFilter,
-} from "@/features/session-booking-management/types";
-import { Pagination } from "@/features/user-management/components/Pagination";
+import { sessionBookingService } from "@/features/session-booking";
+import type { Booking, BookingFilter } from "@/features/session-booking/types";
+import { Pagination } from "@/features/users/components/Pagination";
+import { useCoinBalance } from "@/features/wallet/hooks/queries/useCoinManagement";
 import { Route } from "@/routes/_app-layout/_user-layout/sessions/index";
 import { CancelSessionDialog } from "../components/CancelSessionDialog";
 import { SessionCard } from "../components/SessionCard";

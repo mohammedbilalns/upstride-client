@@ -3,7 +3,7 @@ import { ArrowRight, Calendar, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import type { Booking } from "@/features/session-booking-management/types";
+import type { Booking } from "@/features/session-booking/types";
 import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
 
 export function UpcomingSessionsWidget({

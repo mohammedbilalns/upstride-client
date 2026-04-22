@@ -18,7 +18,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Separator } from "@/components/ui/Separator";
-import { useProfile } from "@/features/profile-management/hooks/queries/useProfile";
+import { useProfile } from "@/features/profile/hooks/queries/useProfile";
 import { formatDateLong, formatDateMedium } from "@/shared/utils/date";
 import { AppealDialog } from "../components/AppealDialog";
 import { ArticleManagement } from "../components/ArticleManagement";

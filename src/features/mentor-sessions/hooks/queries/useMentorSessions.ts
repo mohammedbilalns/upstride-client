@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { sessionBookingService } from "@/features/session-booking-management";
-import type { GetBookingsInput } from "@/features/session-booking-management/types";
+import { sessionBookingService } from "@/features/session-booking";
+import type { GetBookingsInput } from "@/features/session-booking/types";
 
 export const mentorSessionsQueryOptions = (params: GetBookingsInput) =>
 	queryOptions({

@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Clock } from "lucide-react";
-import type { Booking } from "@/features/session-booking-management/types";
+import type { Booking } from "@/features/session-booking/types";
 
 interface UpcomingSessionsWidgetProps {
 	sessions?: Booking[];

@@ -10,8 +10,8 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { sessionBookingService } from "@/features/session-booking-management";
-import type { Booking } from "@/features/session-booking-management/types";
+import { sessionBookingService } from "@/features/session-booking";
+import type { Booking } from "@/features/session-booking/types";
 import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
 
 export function SessionCard({

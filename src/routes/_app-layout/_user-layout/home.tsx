@@ -10,7 +10,7 @@ import { SuggestedMentorsWidget } from "@/features/home/components/SuggestedMent
 import { UpcomingSessionsWidget } from "@/features/home/components/UpcomingSessionsWidget";
 import { mentorDiscoveryService } from "@/features/mentor-discovery/services/discovery.service";
 import { mentorListsService } from "@/features/mentor-discovery/services/lists.service";
-import { sessionBookingService } from "@/features/session-booking-management/services/booking.service";
+import { sessionBookingService } from "@/features/session-booking/services/booking.service";
 
 export const Route = createFileRoute("/_app-layout/_user-layout/home")({
 	loader: async ({ context: { queryClient } }) => {

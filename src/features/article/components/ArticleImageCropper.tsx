@@ -8,7 +8,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/Dialog";
-import { getCroppedImg } from "../../profile-management/utils/cropImage";
+import { getCroppedImg } from "../../profile/utils/cropImage";
 
 interface Props {
 	image: string;

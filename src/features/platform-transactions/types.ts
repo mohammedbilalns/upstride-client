@@ -2,7 +2,7 @@ import type {
 	GetPaymentTransactionsResponse,
 	PaginationInput,
 	PaymentStatus,
-} from "@/features/coin-management/types";
+} from "@/features/wallet/types";
 
 export interface GetPlatformWalletResponse {
 	balance: number;

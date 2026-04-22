@@ -13,7 +13,7 @@ import {
 import ThemeToggle from "@/components/common/ThemeToggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
-import { useLogout } from "@/features/authentication/hooks/mutations/useLogout";
+import { useLogout } from "@/features/auth/hooks/mutations/useLogout";
 import { cn } from "@/shared/utils/cn";
 import { getInitials } from "@/shared/utils/getInitials";
 

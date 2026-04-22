@@ -22,10 +22,10 @@ import {
 	SelectValue,
 } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
-import { sessionBookingService } from "@/features/session-booking-management";
-import type { Booking } from "@/features/session-booking-management/types";
+import { sessionBookingService } from "@/features/session-booking";
+import type { Booking } from "@/features/session-booking/types";
 import { SessionDetailsDialog } from "@/features/sessions/components/SessionDetailsDialog";
-import { Pagination } from "@/features/user-management/components/Pagination";
+import { Pagination } from "@/features/users/components/Pagination";
 import { Route } from "@/routes/_app-layout/_mentor-layout/mentor-sessions";
 import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
 import { useMentorSessions } from "../hooks/queries/useMentorSessions";

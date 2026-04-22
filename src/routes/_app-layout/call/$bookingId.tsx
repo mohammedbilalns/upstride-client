@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { authService } from "@/features/authentication/services/auth.service";
-import { sessionBookingService } from "@/features/session-booking-management/services/booking.service";
+import { authService } from "@/features/auth/services/auth.service";
+import { sessionBookingService } from "@/features/session-booking/services/booking.service";
 import { CallRoom } from "@/features/session-call/components/CallRoom";
 
 export const Route = createFileRoute("/_app-layout/call/$bookingId")({

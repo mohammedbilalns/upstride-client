@@ -1,7 +1,7 @@
 import type { ApiSuccess } from "@/api/apiSuccess";
 import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
-import type { PublicMentorAvailableSlotsResponse } from "../../availability-management/types";
+import type { PublicMentorAvailableSlotsResponse } from "../../availability/types";
 import type { PublicMentorProfileResponse } from "../types";
 
 export const publicMentorProfileService = {

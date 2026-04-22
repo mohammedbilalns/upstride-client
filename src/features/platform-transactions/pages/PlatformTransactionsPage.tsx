@@ -7,7 +7,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/Select";
-import { PaymentTransactionsTable } from "@/features/coin-management/components/PaymentTransactionsTable";
+import { PaymentTransactionsTable } from "@/features/wallet/components/PaymentTransactionsTable";
 import { Route } from "@/routes/_admin-layout/platform-transactions";
 import {
 	usePlatformPaymentTransactions,

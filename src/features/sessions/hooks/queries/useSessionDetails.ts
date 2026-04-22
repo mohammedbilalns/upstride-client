@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { sessionBookingService } from "@/features/session-booking-management";
+import { sessionBookingService } from "@/features/session-booking";
 
 export const useSessionDetails = (bookingId: string | undefined) =>
 	useQuery({

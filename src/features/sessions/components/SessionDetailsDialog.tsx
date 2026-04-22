@@ -10,7 +10,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/Dialog";
-import type { Booking } from "@/features/session-booking-management/types";
+import type { Booking } from "@/features/session-booking/types";
 import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
 
 interface SessionDetailsDialogProps {

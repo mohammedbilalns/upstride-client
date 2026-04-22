@@ -6,7 +6,7 @@ import {
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
-import { NotificationDropdown } from "@/features/notifications/components/NotificationDropdown";
+import { NotificationDropdown } from "@/features/notification/components/NotificationDropdown";
 import { cn } from "@/shared/utils/cn";
 
 export default function DesktopNotifications({

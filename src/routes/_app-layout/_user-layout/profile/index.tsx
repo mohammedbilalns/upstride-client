@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { profileQueryOptions } from "@/features/profile-management";
-import { ProfileOverviewPage } from "@/features/profile-management/pages/ProfileOverviewPage";
+import { profileQueryOptions } from "@/features/profile";
+import { ProfileOverviewPage } from "@/features/profile/pages/ProfileOverviewPage";
 
 export const Route = createFileRoute("/_app-layout/_user-layout/profile/")({
 	loader: async ({ context }) => {
