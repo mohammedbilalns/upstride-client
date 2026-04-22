@@ -12,6 +12,7 @@ import type {
 	FetchCatalogResponse,
 	GetOnboardingCatalogResponse,
 	GetProfessionsResponse,
+	UpdateCatalogInput,
 } from "../types";
 
 export const catalogService = {
@@ -99,6 +100,28 @@ export const catalogService = {
 		const response = await api.patch<
 			ApiSuccess<CatalogIsActiveMutationResponse>
 		>(`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ENABLE_PROFESSION(id)}`);
+		return response.data;
+	},
+
+	updateInterest: async (id: string, data: UpdateCatalogInput) => {
+		const response = await api.patch<ApiSuccess>(
+			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.UPDATE_INTEREST(id)}`,
+			data,
+		);
+		return response.data;
+	},
+	updateSkill: async (id: string, data: UpdateCatalogInput) => {
+		const response = await api.patch<ApiSuccess>(
+			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.UPDATE_SKILL(id)}`,
+			data,
+		);
+		return response.data;
+	},
+	updateProfession: async (id: string, data: UpdateCatalogInput) => {
+		const response = await api.patch<ApiSuccess>(
+			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.UPDATE_PROFESSION(id)}`,
+			data,
+		);
 		return response.data;
 	},
 };

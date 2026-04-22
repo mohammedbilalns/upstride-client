@@ -1,4 +1,4 @@
-import { Plus, RotateCcw, Trash2 } from "lucide-react";
+import { Pencil, Plus, RotateCcw, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import {
@@ -14,6 +14,7 @@ import type { CatalogProfession } from "../types";
 
 interface ProfessionTableProps {
 	professions: CatalogProfession[];
+	onEditProfession: (id: string) => void;
 	onAddProfession: () => void;
 	onDisableProfession: (id: string) => void;
 	onEnableProfession: (id: string) => void;
@@ -21,6 +22,7 @@ interface ProfessionTableProps {
 
 export function ProfessionTable({
 	professions,
+	onEditProfession,
 	onAddProfession,
 	onDisableProfession,
 	onEnableProfession,
@@ -85,27 +87,38 @@ export function ProfessionTable({
 										</span>
 									</TableCell>
 									<TableCell className="text-right pr-6">
-										{profession.isActive ? (
-											<Button
-												size="sm"
-												variant="ghost"
-												className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100"
-												onClick={() => onDisableProfession(profession.id)}
-												title="Disable Profession"
-											>
-												<Trash2 className="w-3.5 h-3.5" />
-											</Button>
-										) : (
+										<div className="flex items-center justify-end gap-2">
 											<Button
 												size="sm"
 												variant="ghost"
 												className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10 opacity-0 group-hover:opacity-100"
-												onClick={() => onEnableProfession(profession.id)}
-												title="Enable Profession"
+												onClick={() => onEditProfession(profession.id)}
+												title="Edit Profession"
 											>
-												<RotateCcw className="w-3.5 h-3.5" />
+												<Pencil className="w-3.5 h-3.5" />
 											</Button>
-										)}
+											{profession.isActive ? (
+												<Button
+													size="sm"
+													variant="ghost"
+													className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100"
+													onClick={() => onDisableProfession(profession.id)}
+													title="Disable Profession"
+												>
+													<Trash2 className="w-3.5 h-3.5" />
+												</Button>
+											) : (
+												<Button
+													size="sm"
+													variant="ghost"
+													className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10 opacity-0 group-hover:opacity-100"
+													onClick={() => onEnableProfession(profession.id)}
+													title="Enable Profession"
+												>
+													<RotateCcw className="w-3.5 h-3.5" />
+												</Button>
+											)}
+										</div>
 									</TableCell>
 								</TableRow>
 							))

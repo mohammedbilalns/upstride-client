@@ -1,4 +1,4 @@
-import { RotateCcw, Trash2 } from "lucide-react";
+import { Pencil, RotateCcw, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import {
@@ -15,6 +15,7 @@ import type { CatalogSkill } from "../types";
 interface SkillTableProps {
 	skills: CatalogSkill[];
 	parentActive: boolean;
+	onEditSkill: (id: string) => void;
 	onDisableSkill: (id: string) => void;
 	onEnableSkill: (id: string) => void;
 }
@@ -22,6 +23,7 @@ interface SkillTableProps {
 export function SkillTable({
 	skills,
 	parentActive,
+	onEditSkill,
 	onDisableSkill,
 	onEnableSkill,
 }: SkillTableProps) {
@@ -75,42 +77,53 @@ export function SkillTable({
 								</span>
 							</TableCell>
 							<TableCell className="text-right pr-6">
-								{skill.isActive ? (
+								<div className="flex items-center justify-end gap-2">
 									<Button
 										size="sm"
 										variant="ghost"
-										className={cn(
-											"h-8 w-8 p-0 text-muted-foreground transition-all hover:text-destructive hover:bg-destructive/10",
-											parentActive
-												? "opacity-0 group-hover:opacity-100"
-												: "opacity-0 cursor-not-allowed",
-										)}
-										disabled={!parentActive}
-										onClick={() => onDisableSkill(skill.id)}
+										className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10 opacity-0 group-hover:opacity-100"
+										onClick={() => onEditSkill(skill.id)}
+										title="Edit Skill"
 									>
-										<Trash2 className="w-3.5 h-3.5" />
+										<Pencil className="w-3.5 h-3.5" />
 									</Button>
-								) : (
-									<Button
-										size="sm"
-										variant="ghost"
-										className={cn(
-											"h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10",
-											parentActive
-												? "opacity-0 group-hover:opacity-100"
-												: "opacity-50 cursor-not-allowed",
-										)}
-										disabled={!parentActive}
-										onClick={() => onEnableSkill(skill.id)}
-										title={
-											!parentActive
-												? "Parent interest must be enabled first"
-												: "Enable Skill"
-										}
-									>
-										<RotateCcw className="w-3.5 h-3.5" />
-									</Button>
-								)}
+									{skill.isActive ? (
+										<Button
+											size="sm"
+											variant="ghost"
+											className={cn(
+												"h-8 w-8 p-0 text-muted-foreground transition-all hover:text-destructive hover:bg-destructive/10",
+												parentActive
+													? "opacity-0 group-hover:opacity-100"
+													: "opacity-0 cursor-not-allowed",
+											)}
+											disabled={!parentActive}
+											onClick={() => onDisableSkill(skill.id)}
+										>
+											<Trash2 className="w-3.5 h-3.5" />
+										</Button>
+									) : (
+										<Button
+											size="sm"
+											variant="ghost"
+											className={cn(
+												"h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10",
+												parentActive
+													? "opacity-0 group-hover:opacity-100"
+													: "opacity-50 cursor-not-allowed",
+											)}
+											disabled={!parentActive}
+											onClick={() => onEnableSkill(skill.id)}
+											title={
+												!parentActive
+													? "Parent interest must be enabled first"
+													: "Enable Skill"
+											}
+										>
+											<RotateCcw className="w-3.5 h-3.5" />
+										</Button>
+									)}
+								</div>
 							</TableCell>
 						</TableRow>
 					))

@@ -5,10 +5,17 @@ import { AddItemDialog } from "@/components/common/AddItemDialog";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Route } from "@/routes/_admin-layout/catalog-management";
+import { CatalogItemUpdateDialog } from "../components/CatalogItemUpdateDialog";
 import { InterestList } from "../components/InterestList";
 import { ProfessionTable } from "../components/ProfessionTable";
 import { useCatalogMutations } from "../hooks/mutations/useCatalogMutations";
+import { useUpdateCatalog } from "../hooks/mutations/useUpdateCatalog";
 import { useCatalog } from "../hooks/queries/useCatalog";
+import type {
+	CatalogInterest,
+	CatalogProfession,
+	CatalogSkill,
+} from "../types";
 import { catalogItemNameSchema } from "../validators/catalog.schema";
 
 export function CatalogManagementPage() {
@@ -27,11 +34,18 @@ export function CatalogManagementPage() {
 		disableSkill,
 		enableSkill,
 	} = useCatalogMutations();
+	const { updateInterest, updateSkill, updateProfession } = useUpdateCatalog();
 
 	const [isInterestDialogOpen, setIsInterestDialogOpen] = useState(false);
 	const [isProfessionDialogOpen, setIsProfessionDialogOpen] = useState(false);
 	const [isSkillDialogOpen, setIsSkillDialogOpen] = useState(false);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+	const [interestToEdit, setInterestToEdit] = useState<CatalogInterest | null>(
+		null,
+	);
+	const [skillToEdit, setSkillToEdit] = useState<CatalogSkill | null>(null);
+	const [professionToEdit, setProfessionToEdit] =
+		useState<CatalogProfession | null>(null);
 
 	const [selectedInterestId, setSelectedInterestId] = useState("");
 	const [itemToConfirm, setItemToConfirm] = useState<{
@@ -64,6 +78,35 @@ export function CatalogManagementPage() {
 		setIsSkillDialogOpen(false);
 		setSelectedInterestId("");
 	};
+
+	const handleUpdateInterest = async (name: string) => {
+		if (!interestToEdit) return;
+		await updateInterest.mutateAsync({
+			id: interestToEdit.id,
+			data: { name },
+		});
+	};
+
+	const handleUpdateSkill = async (name: string) => {
+		if (!skillToEdit) return;
+		await updateSkill.mutateAsync({
+			id: skillToEdit.id,
+			data: { name },
+		});
+	};
+
+	const handleUpdateProfession = async (name: string) => {
+		if (!professionToEdit) return;
+		await updateProfession.mutateAsync({
+			id: professionToEdit.id,
+			data: { name },
+		});
+	};
+
+	const findSkillById = (skillId: string) =>
+		catalog?.data.interests
+			.flatMap((interest) => interest.skills)
+			.find((skill) => skill.id === skillId) ?? null;
 
 	const handleConfirmAction = async () => {
 		if (!itemToConfirm) return;
@@ -112,6 +155,16 @@ export function CatalogManagementPage() {
 					<InterestList
 						interests={catalog?.data.interests || []}
 						onAddInterest={() => setIsInterestDialogOpen(true)}
+						onEditInterest={(id) => {
+							const nextInterest =
+								catalog?.data.interests.find(
+									(interest) => interest.id === id,
+								) ?? null;
+							setInterestToEdit(nextInterest);
+						}}
+						onEditSkill={(id) => {
+							setSkillToEdit(findSkillById(id));
+						}}
 						onAddSkill={(id) => {
 							setSelectedInterestId(id);
 							setIsSkillDialogOpen(true);
@@ -138,6 +191,13 @@ export function CatalogManagementPage() {
 				<TabsContent value="professions">
 					<ProfessionTable
 						professions={catalog?.data.professions || []}
+						onEditProfession={(id) => {
+							const nextProfession =
+								catalog?.data.professions.find(
+									(profession) => profession.id === id,
+								) ?? null;
+							setProfessionToEdit(nextProfession);
+						}}
 						onAddProfession={() => setIsProfessionDialogOpen(true)}
 						onDisableProfession={(id) => {
 							setItemToConfirm({ id, type: "profession", action: "disable" });
@@ -189,6 +249,45 @@ export function CatalogManagementPage() {
 				confirmText="Add Skill"
 				isLoading={addSkill.isPending}
 				schema={catalogItemNameSchema}
+			/>
+
+			<CatalogItemUpdateDialog
+				open={Boolean(interestToEdit)}
+				onOpenChange={(open) => {
+					if (!open) setInterestToEdit(null);
+				}}
+				title="Edit Interest"
+				description="Update the interest name shown throughout the system."
+				initialName={interestToEdit?.name ?? ""}
+				confirmText="Save Interest"
+				isLoading={updateInterest.isPending}
+				onSubmit={handleUpdateInterest}
+			/>
+
+			<CatalogItemUpdateDialog
+				open={Boolean(skillToEdit)}
+				onOpenChange={(open) => {
+					if (!open) setSkillToEdit(null);
+				}}
+				title="Edit Skill"
+				description="Rename the selected skill."
+				initialName={skillToEdit?.name ?? ""}
+				confirmText="Save Skill"
+				isLoading={updateSkill.isPending}
+				onSubmit={handleUpdateSkill}
+			/>
+
+			<CatalogItemUpdateDialog
+				open={Boolean(professionToEdit)}
+				onOpenChange={(open) => {
+					if (!open) setProfessionToEdit(null);
+				}}
+				title="Edit Profession"
+				description="Update the profession name shown to admins and users."
+				initialName={professionToEdit?.name ?? ""}
+				confirmText="Save Profession"
+				isLoading={updateProfession.isPending}
+				onSubmit={handleUpdateProfession}
 			/>
 
 			<ConfirmModal
