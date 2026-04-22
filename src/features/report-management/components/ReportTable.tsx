@@ -176,14 +176,14 @@ export function ReportTable({ reports }: ReportTableProps) {
 			<Table>
 				<TableHeader className="bg-muted/40 border-b border-border/50">
 					<TableRow className="hover:bg-transparent">
-						<TableHead className="w-[48px]"></TableHead>
-						<TableHead className="min-w-[240px] py-4 text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80">
+						<TableHead className="w-12"></TableHead>
+						<TableHead className="min-w-60 py-4 text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80">
 							Target Content
 						</TableHead>
-						<TableHead className="min-w-[160px] text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80">
+						<TableHead className="min-w-40 text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80">
 							Reporter
 						</TableHead>
-						<TableHead className="w-[110px] text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80 text-center">
+						<TableHead className="w-27.5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80 text-center">
 							Status
 						</TableHead>
 						<TableHead className="text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80 pr-6">
@@ -249,7 +249,7 @@ export function ReportTable({ reports }: ReportTableProps) {
 							placeholder="Enter the official reason for blocking this article..."
 							value={adminReason}
 							onChange={(e) => setAdminReason(e.target.value)}
-							className="min-h-[100px] text-sm bg-muted/30 border-muted-foreground/20 focus:border-red-500/50"
+							className="min-h-25 text-sm bg-muted/30 border-muted-foreground/20 focus:border-red-500/50"
 						/>
 						<p className="text-[10px] text-muted-foreground italic">
 							This reason will be visible to the author. If left blank, the

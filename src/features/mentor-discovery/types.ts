@@ -1,3 +1,5 @@
+import type { CatalogInterest } from "../onboarding/types";
+
 export interface MentorList {
 	id: string;
 	name: string;
@@ -80,4 +82,8 @@ export interface GetMentorsDiscoveryResponse {
 	page: number;
 	limit: number;
 	totalPages: number;
+}
+
+export interface GetCategoriesResponse {
+	interests: CatalogInterest[];
 }

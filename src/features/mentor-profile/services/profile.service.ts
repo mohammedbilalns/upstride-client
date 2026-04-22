@@ -1,3 +1,4 @@
+import type { ApiSuccess } from "@/api/apiSuccess";
 import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
 import type {
@@ -7,16 +8,14 @@ import type {
 } from "../types";
 
 export const mentorProfileService = {
-	getProfile: async (): Promise<MentorProfileResponse> => {
-		const response = await api.get<MentorProfileResponse>(
+	getProfile: async () => {
+		const response = await api.get<ApiSuccess<MentorProfileResponse>>(
 			`${ROUTES.MENTOR.BASE}${ROUTES.MENTOR.PROFILE}`,
 		);
 		return response.data;
 	},
-	updateProfile: async (
-		data: UpdateMentorProfileInput,
-	): Promise<UpdateMentorProfileResponse> => {
-		const response = await api.patch<UpdateMentorProfileResponse>(
+	updateProfile: async (data: UpdateMentorProfileInput) => {
+		const response = await api.patch<ApiSuccess<UpdateMentorProfileResponse>>(
 			`${ROUTES.MENTOR.BASE}${ROUTES.MENTOR.PROFILE}`,
 			data,
 		);

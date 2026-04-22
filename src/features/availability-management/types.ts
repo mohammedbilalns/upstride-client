@@ -64,44 +64,28 @@ export interface AvailabilitySlot {
 }
 
 export interface PublicMentorAvailableSlotsResponse {
-	success: boolean;
-	message: string;
-	data: {
-		slots: AvailabilitySlot[];
-	};
+	slots: AvailabilitySlot[];
 }
 
 export interface MentorAvailabilitiesResponse {
-	success: boolean;
-	message: string;
-	data: {
-		availabilities: AvailabilityRule[];
-		pagination?: {
-			page: number;
-			limit: number;
-			totalPages: number;
-			totalCount: number;
-		};
+	availabilities: AvailabilityRule[];
+	pagination?: {
+		page: number;
+		limit: number;
+		totalPages: number;
+		totalCount: number;
 	};
 }
 
 export interface CheckAndCreateAvailabilityResponse {
-	success: boolean;
-	message: string;
-	data: {
-		created: boolean;
-		availability?: AvailabilityRule;
-		conflicts?: ConflictAvailabilitySummary[];
-	};
+	created: boolean;
+	availability?: AvailabilityRule;
+	conflicts?: ConflictAvailabilitySummary[];
 }
 
 export interface CheckAndReenableAvailabilityResponse {
-	success: boolean;
-	message: string;
-	data: {
-		enabled: boolean;
-		conflicts?: ConflictAvailabilitySummary[];
-	};
+	enabled: boolean;
+	conflicts?: ConflictAvailabilitySummary[];
 }
 
 export interface ConflictAvailabilitySummary {

@@ -1,3 +1,4 @@
+import type { ApiSuccess } from "@/api/apiSuccess";
 import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
 import type {
@@ -11,37 +12,31 @@ import type {
 } from "../types";
 
 export const coinManagementService = {
-	getCoinBalance: async (): Promise<GetCoinBalanceResponse> => {
-		const response = await api.get<{ data: GetCoinBalanceResponse }>(
+	getCoinBalance: async () => {
+		const response = await api.get<ApiSuccess<GetCoinBalanceResponse>>(
 			`${ROUTES.WALLET.BASE}${ROUTES.WALLET.COIN_BALANCE}`,
 		);
 		return response.data.data;
 	},
 
-	getCoinTransactions: async (
-		params: GetCoinTransactionsInput,
-	): Promise<GetCoinTransactionsResponse> => {
-		const response = await api.get<{ data: GetCoinTransactionsResponse }>(
+	getCoinTransactions: async (params: GetCoinTransactionsInput) => {
+		const response = await api.get<ApiSuccess<GetCoinTransactionsResponse>>(
 			`${ROUTES.WALLET.BASE}${ROUTES.WALLET.COIN_TRANSACTIONS}`,
 			{ params },
 		);
 		return response.data.data;
 	},
 
-	getPaymentTransactions: async (
-		params: GetPaymentTransactionsInput,
-	): Promise<GetPaymentTransactionsResponse> => {
-		const response = await api.get<{ data: GetPaymentTransactionsResponse }>(
+	getPaymentTransactions: async (params: GetPaymentTransactionsInput) => {
+		const response = await api.get<ApiSuccess<GetPaymentTransactionsResponse>>(
 			`${ROUTES.WALLET.BASE}${ROUTES.WALLET.PAYMENT_TRANSACTIONS}`,
 			{ params },
 		);
 		return response.data.data;
 	},
 
-	createCheckoutSession: async (
-		data: CreateCheckoutSessionInput,
-	): Promise<CreateCheckoutSessionResponse> => {
-		const response = await api.post<{ data: CreateCheckoutSessionResponse }>(
+	createCheckoutSession: async (data: CreateCheckoutSessionInput) => {
+		const response = await api.post<ApiSuccess<CreateCheckoutSessionResponse>>(
 			`${ROUTES.PAYMENTS.BASE}${ROUTES.PAYMENTS.CHECKOUT_SESSION}`,
 			data,
 		);

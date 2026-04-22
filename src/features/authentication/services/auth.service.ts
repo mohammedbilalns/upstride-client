@@ -1,3 +1,4 @@
+import type { ApiSuccess } from "@/api/apiSuccess";
 import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
 import type {
@@ -16,107 +17,94 @@ import type { LoginFormValues } from "../validators/login.schema";
 import type { RegisterFormValues } from "../validators/register.schema";
 
 export const authService = {
-	login: async (
-		data: LoginFormValues,
-	): Promise<{ message: string; data: LoginResponse }> => {
-		const response = await api.post(
+	login: async (data: LoginFormValues) => {
+		const response = await api.post<ApiSuccess<LoginResponse>>(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.LOGIN}`,
 			data,
 		);
 		return response.data;
 	},
 
-	register: async (
-		data: Omit<RegisterFormValues, "confirmPassword">,
-	): Promise<{ message: string }> => {
-		const response = await api.post(
+	register: async (data: Omit<RegisterFormValues, "confirmPassword">) => {
+		const response = await api.post<ApiSuccess>(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.REGISTER}`,
 			data,
 		);
 		return response.data;
 	},
 
-	verifyRegisterOtp: async (
-		email: string,
-		otp: string,
-	): Promise<{ message: string; data: VerifyRegisterOtpResponse }> => {
-		const response = await api.post(
+	verifyRegisterOtp: async (email: string, otp: string) => {
+		const response = await api.post<ApiSuccess<VerifyRegisterOtpResponse>>(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.VERIFY_REGISTER_OTP}`,
 			{ email, otp },
 		);
 		return response.data;
 	},
 
-	resendRegisterOtp: async (email: string): Promise<{ message: string }> => {
-		const response = await api.post(
+	resendRegisterOtp: async (email: string) => {
+		const response = await api.post<ApiSuccess>(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.RESEND_REGISTER_OTP}`,
 			{ email },
 		);
 		return response.data;
 	},
 
-	socialLogin: async (
-		data: SocialLoginInput,
-	): Promise<{ message: string; data: SocialLoginResponse }> => {
+	socialLogin: async (data: SocialLoginInput) => {
 		const endpoint =
 			data.provider === "GOOGLE" ? ROUTES.AUTH.GOOGLE : ROUTES.AUTH.LINKEDIN;
-		const response = await api.post(`${ROUTES.AUTH.BASE}${endpoint}`, data);
+		const response = await api.post<ApiSuccess<SocialLoginResponse>>(
+			`${ROUTES.AUTH.BASE}${endpoint}`,
+			data,
+		);
 		return response.data;
 	},
 
-	logout: async (): Promise<{ message: string }> => {
-		const response = await api.post(`${ROUTES.AUTH.BASE}${ROUTES.AUTH.LOGOUT}`);
+	logout: async () => {
+		const response = await api.post<ApiSuccess>(
+			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.LOGOUT}`,
+		);
 		return response.data;
 	},
 
-	refreshToken: async (): Promise<{ message: string; data: LoginResponse }> => {
-		const response = await api.post(
+	refreshToken: async () => {
+		const response = await api.post<ApiSuccess<LoginResponse>>(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.REFRESH}`,
 		);
 		return response.data;
 	},
-	getCsrfToken: async (): Promise<{
-		data: { csrfToken: string };
-	}> => {
-		const response = await api.get(`${ROUTES.AUTH.BASE}${ROUTES.AUTH.CSRF}`);
+	getCsrfToken: async () => {
+		const response = await api.get<ApiSuccess<{ csrfToken: string }>>(
+			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.CSRF}`,
+		);
 		return response.data;
 	},
 
-	requestPasswordReset: async (
-		data: RequestPasswordResetInput,
-	): Promise<{ message: string }> => {
-		const response = await api.post(
+	requestPasswordReset: async (data: RequestPasswordResetInput) => {
+		const response = await api.post<ApiSuccess>(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.REQUEST_PASSWORD_RESET}`,
 			data,
 		);
 		return response.data;
 	},
 
-	verifyResetPasswordOtp: async (
-		email: string,
-		otp: string,
-	): Promise<{ message: string; data: VerifyResetOtpResponse }> => {
-		const response = await api.post(
+	verifyResetPasswordOtp: async (email: string, otp: string) => {
+		const response = await api.post<ApiSuccess<VerifyResetOtpResponse>>(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.VERIFY_RESET_PASSWORD_OTP}`,
 			{ email, otp },
 		);
 		return response.data;
 	},
 
-	resendResetPasswordOtp: async (
-		email: string,
-	): Promise<{ message: string }> => {
-		const response = await api.post(
+	resendResetPasswordOtp: async (email: string) => {
+		const response = await api.post<ApiSuccess>(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.RESEND_RESET_PASSWORD_OTP}`,
 			{ email },
 		);
 		return response.data;
 	},
 
-	changePassword: async (
-		data: ChangePasswordInput,
-	): Promise<{ message: string }> => {
-		const response = await api.post(
+	changePassword: async (data: ChangePasswordInput) => {
+		const response = await api.post<ApiSuccess>(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.UPDATE_PASSWORD}`,
 			data,
 		);
@@ -127,41 +115,35 @@ export const authService = {
 		setupToken: string;
 		interests: string[];
 		skills: { skillId: string; level: string }[];
-	}): Promise<{ message: string; data: SaveUserInterestsResponse }> => {
-		const response = await api.post(
+	}) => {
+		const response = await api.post<ApiSuccess<SaveUserInterestsResponse>>(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.SAVE_INTERESTS}`,
 			data,
 		);
 		return response.data;
 	},
 
-	getMe: async (): Promise<{
-		message: string;
-		data: { user: AuthenticatedUser };
-	}> => {
-		const response = await api.get(
+	getMe: async () => {
+		const response = await api.get<ApiSuccess<{ user: AuthenticatedUser }>>(
 			`${ROUTES.PROFILE.BASE}${ROUTES.PROFILE.ME}`,
 		);
 		return response.data;
 	},
-	getActiveSessions: async (): Promise<{
-		message: string;
-		data: GetActiveSessionsResponse;
-	}> => {
-		const response = await api.get(
+	getActiveSessions: async () => {
+		const response = await api.get<ApiSuccess<GetActiveSessionsResponse>>(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.ACTIVE_SESSIONS}`,
 		);
 		return response.data;
 	},
-	revokeSession: async (sessionId: string): Promise<{ message: string }> => {
-		const response = await api.post(
+	revokeSession: async (sessionId: string) => {
+		const response = await api.post<ApiSuccess>(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.REVOKE_SESSION}`,
 			{ targetSessionId: sessionId },
 		);
 		return response.data;
 	},
-	revokeAllOtherSessions: async (): Promise<{ message: string }> => {
-		const response = await api.post(
+	revokeAllOtherSessions: async () => {
+		const response = await api.post<ApiSuccess>(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.REVOKE_ALL_OTHER_SESSIONS}`,
 		);
 		return response.data;

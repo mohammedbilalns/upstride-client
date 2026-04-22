@@ -27,12 +27,9 @@ export interface PublicMentorProfile {
 }
 
 export interface PublicMentorProfileResponse {
-	message: string;
-	data: {
-		profile: PublicMentorProfile;
-		nextAvailableSessions: PublicMentorSlot[];
-		isReported?: boolean;
-	};
+	profile: PublicMentorProfile;
+	nextAvailableSessions: PublicMentorSlot[];
+	isReported?: boolean;
 }
 
 export interface PublicMentorAvailableSlotsResponse {

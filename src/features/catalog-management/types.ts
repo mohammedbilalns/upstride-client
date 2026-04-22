@@ -22,30 +22,18 @@ export interface CatalogProfession {
 
 // Response Types
 export interface FetchCatalogResponse {
-	message: string;
-	data: {
-		professions: CatalogProfession[];
-		interests: CatalogInterest[];
-	};
+	professions: CatalogProfession[];
+	interests: CatalogInterest[];
 }
 
 export interface GetOnboardingCatalogResponse {
-	message: string;
-	data: {
-		interests: CatalogInterest[];
-	};
+	interests: CatalogInterest[];
 }
 
-export interface GetProfessionsResponse {
-	message: string;
-	data: CatalogProfession[];
-}
+export type GetProfessionsResponse = CatalogProfession[];
 
 export interface CatalogIsActiveMutationResponse {
-	message: string;
-	data: {
-		resourceId: string;
-	};
+	resourceId: string;
 }
 
 // Input Types

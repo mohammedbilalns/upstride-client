@@ -1,3 +1,4 @@
+import type { ApiSuccess } from "@/api/apiSuccess";
 import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
 import type {
@@ -11,63 +12,53 @@ import type {
 } from "../types";
 
 export const sessionBookingService = {
-	bookSession: async (data: BookSessionInput): Promise<BookSessionResponse> => {
-		const response = await api.post<BookSessionResponse>(
+	bookSession: async (data: BookSessionInput) => {
+		const response = await api.post<ApiSuccess<BookSessionResponse>>(
 			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.ROOT}`,
 			data,
 		);
 		return response.data;
 	},
 
-	cancelBooking: async (
-		data: CancelBookingInput,
-	): Promise<CancelBookingResponse> => {
-		const response = await api.put<CancelBookingResponse>(
+	cancelBooking: async (data: CancelBookingInput) => {
+		const response = await api.put<ApiSuccess<CancelBookingResponse>>(
 			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.CANCEL(data.bookingId)}`,
 			{ reason: data.reason },
 		);
 		return response.data;
 	},
 
-	cancelBookingByMentor: async (
-		data: CancelBookingInput,
-	): Promise<CancelBookingResponse> => {
-		const response = await api.put<CancelBookingResponse>(
+	cancelBookingByMentor: async (data: CancelBookingInput) => {
+		const response = await api.put<ApiSuccess<CancelBookingResponse>>(
 			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.MENTOR_CANCEL(data.bookingId)}`,
 			{ reason: data.reason },
 		);
 		return response.data;
 	},
 
-	getUserBookings: async (
-		params: GetBookingsInput = {},
-	): Promise<GetBookingsResponse> => {
-		const response = await api.get<GetBookingsResponse>(
+	getUserBookings: async (params: GetBookingsInput = {}) => {
+		const response = await api.get<ApiSuccess<GetBookingsResponse>>(
 			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.USER}`,
 			{ params },
 		);
 		return response.data;
 	},
 
-	getMentorBookings: async (
-		params: GetBookingsInput = {},
-	): Promise<GetBookingsResponse> => {
-		const response = await api.get<GetBookingsResponse>(
+	getMentorBookings: async (params: GetBookingsInput = {}) => {
+		const response = await api.get<ApiSuccess<GetBookingsResponse>>(
 			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.MENTOR}`,
 			{ params },
 		);
 		return response.data;
 	},
-	getBookingDetails: async (
-		bookingId: string,
-	): Promise<GetBookingDetailsResponse> => {
-		const response = await api.get<GetBookingDetailsResponse>(
+	getBookingDetails: async (bookingId: string) => {
+		const response = await api.get<ApiSuccess<GetBookingDetailsResponse>>(
 			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.BY_ID(bookingId)}`,
 		);
 		return response.data;
 	},
-	repayBooking: async (bookingId: string): Promise<BookSessionResponse> => {
-		const response = await api.post<BookSessionResponse>(
+	repayBooking: async (bookingId: string) => {
+		const response = await api.post<ApiSuccess<BookSessionResponse>>(
 			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.REPAY(bookingId)}`,
 		);
 		return response.data;

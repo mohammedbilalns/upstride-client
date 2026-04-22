@@ -11,8 +11,8 @@ import type {
 } from "../types";
 
 export const AdminManagementService = {
-	getAdmins: async (params: GetAdminsInput): Promise<GetAdminsResponse> => {
-		const response = await api.get(
+	getAdmins: async (params: GetAdminsInput) => {
+		const response = await api.get<ApiSuccess<GetAdminsResponse>>(
 			`${ROUTES.ADMIN_MANAGEMENT.BASE}${ROUTES.ADMIN_MANAGEMENT.FETCH_ADMINS}`,
 			{
 				params,
@@ -21,10 +21,8 @@ export const AdminManagementService = {
 		return response.data.data;
 	},
 
-	createAdmin: async (
-		input: CreateAdminInput,
-	): Promise<ApiSuccess<CreateAdminResponse>> => {
-		const response = await api.post(
+	createAdmin: async (input: CreateAdminInput) => {
+		const response = await api.post<ApiSuccess<CreateAdminResponse>>(
 			`${ROUTES.ADMIN_MANAGEMENT.BASE}${ROUTES.ADMIN_MANAGEMENT.CREATE_ADMIN}`,
 			input,
 		);

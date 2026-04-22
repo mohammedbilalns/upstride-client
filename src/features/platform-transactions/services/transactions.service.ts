@@ -1,3 +1,4 @@
+import type { ApiSuccess } from "@/api/apiSuccess";
 import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
 import type {
@@ -7,8 +8,8 @@ import type {
 } from "../types";
 
 export const platformTransactionsService = {
-	getPlatformWallet: async (): Promise<GetPlatformWalletResponse> => {
-		const response = await api.get<{ data: GetPlatformWalletResponse }>(
+	getPlatformWallet: async () => {
+		const response = await api.get<ApiSuccess<GetPlatformWalletResponse>>(
 			`${ROUTES.WALLET.BASE}${ROUTES.WALLET.PLATFORM_BALANCE}`,
 		);
 		return response.data.data;
@@ -16,10 +17,10 @@ export const platformTransactionsService = {
 
 	getPlatformPaymentTransactions: async (
 		params: GetPlatformPaymentTransactionsInput,
-	): Promise<GetPlatformPaymentTransactionsResponse> => {
-		const response = await api.get<{
-			data: GetPlatformPaymentTransactionsResponse;
-		}>(`${ROUTES.WALLET.BASE}${ROUTES.WALLET.PLATFORM_PAYMENT_TRANSACTIONS}`, {
+	) => {
+		const response = await api.get<
+			ApiSuccess<GetPlatformPaymentTransactionsResponse>
+		>(`${ROUTES.WALLET.BASE}${ROUTES.WALLET.PLATFORM_PAYMENT_TRANSACTIONS}`, {
 			params,
 		});
 		return response.data.data;

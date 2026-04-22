@@ -8,26 +8,8 @@ export type BookingStatus =
 	| "CANCELLED_BY_MENTEE"
 	| "CANCELLED_BY_MENTOR";
 
-export interface CreateBookingInput {
-	mentorId: string;
-	startTime: string; // ISO string
-	endTime: string; // ISO string
-	paymentType: PaymentType;
-	notes?: string;
-}
-
-export interface CreateBookingResponse {
-	success: boolean;
-	message: string;
-	data: {
-		bookingId: string;
-		paymentStatus: "PENDING" | "COMPLETED";
-		paymentUrl?: string;
-	};
-}
-
 export interface BookSessionInput {
-	slotId?: string; // Legacy
+	slotId?: string;
 	mentorId?: string;
 	startTime?: string;
 	endTime?: string;
@@ -36,13 +18,9 @@ export interface BookSessionInput {
 }
 
 export interface BookSessionResponse {
-	success: boolean;
-	message: string;
-	data: {
-		bookingId: string;
-		paymentStatus?: "PENDING" | "COMPLETED";
-		paymentUrl?: string;
-	};
+	bookingId: string;
+	paymentStatus?: "PENDING" | "COMPLETED";
+	paymentUrl?: string;
 }
 
 export interface CancelBookingInput {
@@ -51,17 +29,13 @@ export interface CancelBookingInput {
 }
 
 export interface CancelBookingResponse {
-	success: boolean;
-	message: string;
-	data: {
-		bookingId: string;
-		status: string;
-		refund?: {
-			amount: number;
-			percentage: number;
-			currency: "COINS";
-			reason: string;
-		};
+	bookingId: string;
+	status: string;
+	refund?: {
+		amount: number;
+		percentage: number;
+		currency: "COINS";
+		reason: string;
 	};
 }
 
@@ -103,23 +77,15 @@ export interface Booking {
 }
 
 export interface GetBookingsResponse {
-	success: boolean;
-	message: string;
-	data: {
-		items: Booking[];
-		total: number;
-		page: number;
-		limit: number;
-		totalPages: number;
-	};
+	items: Booking[];
+	total: number;
+	page: number;
+	limit: number;
+	totalPages: number;
 }
 
 export interface GetBookingDetailsResponse {
-	success: boolean;
-	message: string;
-	data: {
-		booking: Booking;
-	};
+	booking: Booking;
 }
 
 // Keep legacy ones if needed for now

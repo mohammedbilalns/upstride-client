@@ -35,8 +35,5 @@ export interface UnblockUserInput {
 }
 
 export interface UserStatusMutationResponse {
-	message: string;
-	data: {
-		resourceId: string;
-	};
+	resourceId: string;
 }

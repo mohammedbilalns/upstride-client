@@ -15,30 +15,28 @@ import type {
 } from "../types";
 
 export const catalogService = {
-	fetchCatalog: async (): Promise<FetchCatalogResponse> => {
-		const response = await api.get<FetchCatalogResponse>(
+	fetchCatalog: async () => {
+		const response = await api.get<ApiSuccess<FetchCatalogResponse>>(
 			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.FETCH}`,
 		);
 		return response.data;
 	},
 
-	getOnboardingCatalog: async (): Promise<GetOnboardingCatalogResponse> => {
-		const response = await api.get<GetOnboardingCatalogResponse>(
+	getOnboardingCatalog: async () => {
+		const response = await api.get<ApiSuccess<GetOnboardingCatalogResponse>>(
 			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ONBOARDING}`,
 		);
 		return response.data;
 	},
 
-	getProfessions: async (): Promise<GetProfessionsResponse> => {
-		const response = await api.get<GetProfessionsResponse>(
+	getProfessions: async () => {
+		const response = await api.get<ApiSuccess<GetProfessionsResponse>>(
 			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.PROFESSIONS}`,
 		);
 		return response.data;
 	},
 
-	addInterest: async (
-		data: AddInterestInput,
-	): Promise<ApiSuccess<AddInterestResponse>> => {
+	addInterest: async (data: AddInterestInput) => {
 		const response = await api.post<ApiSuccess<AddInterestResponse>>(
 			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ADD_INTEREST}`,
 			data,
@@ -46,18 +44,14 @@ export const catalogService = {
 		return response.data;
 	},
 
-	disableInterest: async (
-		id: string,
-	): Promise<CatalogIsActiveMutationResponse> => {
-		const response = await api.patch<CatalogIsActiveMutationResponse>(
-			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.DISABLE_INTEREST(id)}`,
-		);
+	disableInterest: async (id: string) => {
+		const response = await api.patch<
+			ApiSuccess<CatalogIsActiveMutationResponse>
+		>(`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.DISABLE_INTEREST(id)}`);
 		return response.data;
 	},
 
-	addSkill: async (
-		data: AddSkillInput,
-	): Promise<ApiSuccess<AddSkillIResponse>> => {
+	addSkill: async (data: AddSkillInput) => {
 		const response = await api.post<ApiSuccess<AddSkillIResponse>>(
 			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ADD_SKILL}`,
 			data,
@@ -65,18 +59,14 @@ export const catalogService = {
 		return response.data;
 	},
 
-	disableSkill: async (
-		id: string,
-	): Promise<CatalogIsActiveMutationResponse> => {
-		const response = await api.patch<CatalogIsActiveMutationResponse>(
-			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.DISABLE_SKILL(id)}`,
-		);
+	disableSkill: async (id: string) => {
+		const response = await api.patch<
+			ApiSuccess<CatalogIsActiveMutationResponse>
+		>(`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.DISABLE_SKILL(id)}`);
 		return response.data;
 	},
 
-	addProfession: async (
-		data: AddProfessionInput,
-	): Promise<ApiSuccess<AddProfessionResponse>> => {
+	addProfession: async (data: AddProfessionInput) => {
 		const response = await api.post<ApiSuccess<AddProfessionResponse>>(
 			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ADD_PROFESSION}`,
 			data,
@@ -84,37 +74,31 @@ export const catalogService = {
 		return response.data;
 	},
 
-	disableProfession: async (
-		id: string,
-	): Promise<CatalogIsActiveMutationResponse> => {
-		const response = await api.patch<CatalogIsActiveMutationResponse>(
-			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.DISABLE_PROFESSION(id)}`,
-		);
+	disableProfession: async (id: string) => {
+		const response = await api.patch<
+			ApiSuccess<CatalogIsActiveMutationResponse>
+		>(`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.DISABLE_PROFESSION(id)}`);
 		return response.data;
 	},
 
-	enableInterest: async (
-		id: string,
-	): Promise<CatalogIsActiveMutationResponse> => {
-		const response = await api.patch<CatalogIsActiveMutationResponse>(
-			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ENABLE_INTEREST(id)}`,
-		);
+	enableInterest: async (id: string) => {
+		const response = await api.patch<
+			ApiSuccess<CatalogIsActiveMutationResponse>
+		>(`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ENABLE_INTEREST(id)}`);
 		return response.data;
 	},
 
-	enableSkill: async (id: string): Promise<CatalogIsActiveMutationResponse> => {
-		const response = await api.patch<CatalogIsActiveMutationResponse>(
-			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ENABLE_SKILL(id)}`,
-		);
+	enableSkill: async (id: string) => {
+		const response = await api.patch<
+			ApiSuccess<CatalogIsActiveMutationResponse>
+		>(`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ENABLE_SKILL(id)}`);
 		return response.data;
 	},
 
-	enableProfession: async (
-		id: string,
-	): Promise<CatalogIsActiveMutationResponse> => {
-		const response = await api.patch<CatalogIsActiveMutationResponse>(
-			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ENABLE_PROFESSION(id)}`,
-		);
+	enableProfession: async (id: string) => {
+		const response = await api.patch<
+			ApiSuccess<CatalogIsActiveMutationResponse>
+		>(`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ENABLE_PROFESSION(id)}`);
 		return response.data;
 	},
 };

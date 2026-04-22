@@ -1,3 +1,4 @@
+import type { ApiSuccess } from "@/api/apiSuccess";
 import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
 import type {
@@ -9,35 +10,31 @@ import type {
 } from "../types";
 
 export const notificationService = {
-	getNotifications: async (
-		params: GetNotificationsInput = {},
-	): Promise<GetNotificationsOutput> => {
-		const response = await api.get<{ data: GetNotificationsOutput }>(
+	getNotifications: async (params: GetNotificationsInput = {}) => {
+		const response = await api.get<ApiSuccess<GetNotificationsOutput>>(
 			`${ROUTES.NOTIFICATIONS.BASE}${ROUTES.NOTIFICATIONS.ROOT}`,
 			{ params },
 		);
 		return response.data.data;
 	},
-	markRead: async (
-		notificationId: string,
-	): Promise<MarkNotificationReadOutput> => {
-		const response = await api.patch<{ data: MarkNotificationReadOutput }>(
+	markRead: async (notificationId: string) => {
+		const response = await api.patch<ApiSuccess<MarkNotificationReadOutput>>(
 			`${ROUTES.NOTIFICATIONS.BASE}${ROUTES.NOTIFICATIONS.MARK_READ(
 				notificationId,
 			)}`,
 		);
 		return response.data.data;
 	},
-	markAllRead: async (): Promise<MarkAllNotificationsReadOutput> => {
-		const response = await api.patch<{ data: MarkAllNotificationsReadOutput }>(
-			`${ROUTES.NOTIFICATIONS.BASE}${ROUTES.NOTIFICATIONS.READ_ALL}`,
-		);
+	markAllRead: async () => {
+		const response = await api.patch<
+			ApiSuccess<MarkAllNotificationsReadOutput>
+		>(`${ROUTES.NOTIFICATIONS.BASE}${ROUTES.NOTIFICATIONS.READ_ALL}`);
 		return response.data.data;
 	},
-	getUnreadCount: async (): Promise<GetUnreadNotificationCountOutput> => {
-		const response = await api.get<{
-			data: GetUnreadNotificationCountOutput;
-		}>(`${ROUTES.NOTIFICATIONS.BASE}${ROUTES.NOTIFICATIONS.UNREAD_COUNT}`);
+	getUnreadCount: async () => {
+		const response = await api.get<
+			ApiSuccess<GetUnreadNotificationCountOutput>
+		>(`${ROUTES.NOTIFICATIONS.BASE}${ROUTES.NOTIFICATIONS.UNREAD_COUNT}`);
 		return response.data.data;
 	},
 };

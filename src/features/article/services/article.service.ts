@@ -1,3 +1,4 @@
+import type { ApiSuccess } from "@/api/apiSuccess";
 import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
 import type {
@@ -29,11 +30,9 @@ import type {
 } from "../types";
 
 export const articleService = {
-	getArticles: async (
-		input: GetArticlesInput,
-	): Promise<GetArticlesResponse> => {
+	getArticles: async (input: GetArticlesInput) => {
 		const { category, ...rest } = input;
-		const response = await api.get<{ data: GetArticlesResponse }>(
+		const response = await api.get<ApiSuccess<GetArticlesResponse>>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.ROOT}`,
 			{
 				params: {
@@ -49,42 +48,38 @@ export const articleService = {
 		page: number;
 		search?: string;
 		status?: GetMentorArticlesInput["status"];
-	}): Promise<GetArticlesResponse> => {
-		const response = await api.get<{ data: GetArticlesResponse }>(
+	}) => {
+		const response = await api.get<ApiSuccess<GetArticlesResponse>>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.MENTOR}`,
 			{ params },
 		);
 		return response.data.data;
 	},
 
-	getTopTags: async (): Promise<GetTopTagsResponse> => {
-		const response = await api.get<{ data: GetTopTagsResponse }>(
+	getTopTags: async () => {
+		const response = await api.get<ApiSuccess<GetTopTagsResponse>>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.TOP_TAGS}`,
 		);
 		return response.data.data;
 	},
 
-	getArticle: async (slug: string): Promise<GetArticleResponse> => {
-		const response = await api.get<{ data: GetArticleResponse }>(
+	getArticle: async (slug: string) => {
+		const response = await api.get<ApiSuccess<GetArticleResponse>>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.BY_SLUG(slug)}`,
 		);
 		return response.data.data;
 	},
 
-	createArticle: async (
-		input: CreateArticleInput,
-	): Promise<CreateArticleResponse> => {
-		const response = await api.post<{ data: CreateArticleResponse }>(
+	createArticle: async (input: CreateArticleInput) => {
+		const response = await api.post<ApiSuccess<CreateArticleResponse>>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.ROOT}`,
 			input,
 		);
 		return response.data.data;
 	},
 
-	updateArticle: async (
-		input: UpdateArticleInput,
-	): Promise<UpdateArticleResponse> => {
-		const response = await api.patch<{ data: UpdateArticleResponse }>(
+	updateArticle: async (input: UpdateArticleInput) => {
+		const response = await api.patch<ApiSuccess<UpdateArticleResponse>>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.BY_ID(input.articleId)}`,
 			{
 				title: input.title,
@@ -102,81 +97,63 @@ export const articleService = {
 		);
 	},
 
-	getComments: async (
-		input: GetCommentsInput,
-	): Promise<GetCommentsResponse> => {
-		const response = await api.get<{ data: GetCommentsResponse }>(
+	getComments: async (input: GetCommentsInput) => {
+		const response = await api.get<ApiSuccess<GetCommentsResponse>>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.COMMENTS(input.articleId)}`,
 			{ params: { page: input.page, parentId: input.parentId } },
 		);
 		return response.data.data;
 	},
 
-	createComment: async (
-		input: CreateCommentInput,
-	): Promise<CreateCommentResponse> => {
-		const response = await api.post<{ data: CreateCommentResponse }>(
+	createComment: async (input: CreateCommentInput) => {
+		const response = await api.post<ApiSuccess<CreateCommentResponse>>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.COMMENTS(input.articleId)}`,
 			{ content: input.content, parentId: input.parentId },
 		);
 		return response.data.data;
 	},
 
-	updateComment: async (
-		input: UpdateCommentInput,
-	): Promise<UpdateCommentResponse> => {
-		const response = await api.patch<{ data: UpdateCommentResponse }>(
+	updateComment: async (input: UpdateCommentInput) => {
+		const response = await api.patch<ApiSuccess<UpdateCommentResponse>>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.COMMENT_BY_ID(input.commentId)}`,
 			{ content: input.content },
 		);
 		return response.data.data;
 	},
 
-	deleteComment: async (
-		input: DeleteCommentInput,
-	): Promise<DeleteCommentResponse> => {
-		const response = await api.delete<{ data: DeleteCommentResponse }>(
+	deleteComment: async (input: DeleteCommentInput) => {
+		const response = await api.delete<ApiSuccess<DeleteCommentResponse>>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.COMMENT_BY_ID(input.commentId)}`,
 		);
 		return response.data.data;
 	},
 
-	reactToArticle: async (
-		input: ReactToArticleInput,
-	): Promise<ReactToArticleResponse> => {
-		const response = await api.post<{ data: ReactToArticleResponse }>(
+	reactToArticle: async (input: ReactToArticleInput) => {
+		const response = await api.post<ApiSuccess<ReactToArticleResponse>>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.ARTICLE_REACTIONS(input.articleId)}`,
 			{},
 		);
 		return response.data.data;
 	},
 
-	reactToComment: async (
-		input: ReactToCommentInput,
-	): Promise<ReactToCommentResponse> => {
-		const response = await api.post<{ data: ReactToCommentResponse }>(
+	reactToComment: async (input: ReactToCommentInput) => {
+		const response = await api.post<ApiSuccess<ReactToCommentResponse>>(
 			`${ROUTES.ARTICLES.BASE}${ROUTES.ARTICLES.COMMENT_REACTIONS(input.commentId)}`,
 			{ reactionType: input.reactionType },
 		);
 		return response.data.data;
 	},
 
-	reportArticle: async (
-		articleId: string,
-		input: ReportInput,
-	): Promise<ReportResponse> => {
-		const response = await api.post<{ data: ReportResponse }>(
+	reportArticle: async (articleId: string, input: ReportInput) => {
+		const response = await api.post<ApiSuccess<ReportResponse>>(
 			`${ROUTES.REPORTS.BASE}${ROUTES.REPORTS.REPORT_ARTICLE(articleId)}`,
 			input,
 		);
 		return response.data.data;
 	},
 
-	reportUser: async (
-		userId: string,
-		input: ReportInput,
-	): Promise<ReportResponse> => {
-		const response = await api.post<{ data: ReportResponse }>(
+	reportUser: async (userId: string, input: ReportInput) => {
+		const response = await api.post<ApiSuccess<ReportResponse>>(
 			`${ROUTES.REPORTS.BASE}${ROUTES.REPORTS.REPORT_USER(userId)}`,
 			input,
 		);

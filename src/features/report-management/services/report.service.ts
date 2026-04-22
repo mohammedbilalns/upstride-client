@@ -1,3 +1,4 @@
+import type { ApiSuccess } from "@/api/apiSuccess";
 import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
 import type {
@@ -15,10 +16,8 @@ import type {
 } from "../types";
 
 export const ReportManagementService = {
-	reportArticle: async (
-		input: ReportArticleInput,
-	): Promise<ReportArticleResponse> => {
-		const response = await api.post<{ data: ReportArticleResponse }>(
+	reportArticle: async (input: ReportArticleInput) => {
+		const response = await api.post<ApiSuccess<ReportArticleResponse>>(
 			`${ROUTES.REPORTS.BASE}${ROUTES.REPORTS.REPORT_ARTICLE(input.articleId)}`,
 			{
 				reason: input.reason,
@@ -28,8 +27,8 @@ export const ReportManagementService = {
 		return response.data.data;
 	},
 
-	reportUser: async (input: ReportUserInput): Promise<ReportUserResponse> => {
-		const response = await api.post<{ data: ReportUserResponse }>(
+	reportUser: async (input: ReportUserInput) => {
+		const response = await api.post<ApiSuccess<ReportUserResponse>>(
 			`${ROUTES.REPORTS.BASE}${ROUTES.REPORTS.REPORT_USER(input.userId)}`,
 			{
 				reason: input.reason,
@@ -39,18 +38,16 @@ export const ReportManagementService = {
 		return response.data.data;
 	},
 
-	getReports: async (params: GetReportsInput): Promise<GetReportsResponse> => {
-		const response = await api.get<{ data: GetReportsResponse }>(
+	getReports: async (params: GetReportsInput) => {
+		const response = await api.get<ApiSuccess<GetReportsResponse>>(
 			`${ROUTES.REPORTS.BASE}${ROUTES.REPORTS.ROOT}`,
 			{ params },
 		);
 		return response.data.data;
 	},
 
-	updateReportStatus: async (
-		input: UpdateReportStatusInput,
-	): Promise<UpdateReportStatusResponse> => {
-		const response = await api.patch<{ data: UpdateReportStatusResponse }>(
+	updateReportStatus: async (input: UpdateReportStatusInput) => {
+		const response = await api.patch<ApiSuccess<UpdateReportStatusResponse>>(
 			`${ROUTES.REPORTS.BASE}${ROUTES.REPORTS.STATUS(input.reportId)}`,
 			{
 				status: input.status,
@@ -60,10 +57,8 @@ export const ReportManagementService = {
 		return response.data.data;
 	},
 
-	blockArticle: async (
-		input: BlockArticleInput,
-	): Promise<BlockArticleResponse> => {
-		const response = await api.patch<{ data: BlockArticleResponse }>(
+	blockArticle: async (input: BlockArticleInput) => {
+		const response = await api.patch<ApiSuccess<BlockArticleResponse>>(
 			`${ROUTES.REPORTS.BASE}${ROUTES.REPORTS.BLOCK_ARTICLE(input.articleId)}`,
 			{
 				reason: input.reason,
@@ -73,10 +68,8 @@ export const ReportManagementService = {
 		return response.data.data;
 	},
 
-	unblockArticle: async (
-		articleId: string,
-	): Promise<UnblockArticleResponse> => {
-		const response = await api.patch<{ data: UnblockArticleResponse }>(
+	unblockArticle: async (articleId: string) => {
+		const response = await api.patch<ApiSuccess<UnblockArticleResponse>>(
 			`${ROUTES.REPORTS.BASE}${ROUTES.REPORTS.UNBLOCK_ARTICLE(articleId)}`,
 		);
 		return response.data.data;
