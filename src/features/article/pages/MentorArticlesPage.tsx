@@ -11,7 +11,7 @@ import {
 	SelectValue,
 } from "@/components/ui/Select";
 import { ArticleCard } from "../components/ArticleCard";
-import { articleQueries } from "../hooks/queries/useArticleQueries";
+import { articleInfiniteQueries } from "../hooks/queries";
 import type { Article } from "../types";
 
 const statusOptions = [
@@ -29,7 +29,7 @@ export function MentorArticlesPage() {
 		[status],
 	);
 	const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-		useInfiniteQuery(articleQueries.mentorListInfinite(listParams));
+		useInfiniteQuery(articleInfiniteQueries.mentorList(listParams));
 
 	const items = data?.pages.flatMap((page) => page.items) ?? [];
 

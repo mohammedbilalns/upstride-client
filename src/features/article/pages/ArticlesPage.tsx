@@ -9,7 +9,7 @@ import { Route } from "@/routes/_app-layout/_user-layout/articles/index";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import { ArticleCard } from "../components/ArticleCard";
 import { ArticleFilters } from "../components/ArticleFilters";
-import { articleQueries } from "../hooks/queries/useArticleQueries";
+import { articleInfiniteQueries, articleQueries } from "../hooks/queries";
 import type { Article } from "../types";
 import type { ArticleSearch } from "../validators/article-search-params.schema";
 
@@ -53,7 +53,7 @@ export function ArticlesPage() {
 
 	const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
 		useInfiniteQuery(
-			articleQueries.listInfinite({
+			articleInfiniteQueries.list({
 				search: search.search,
 				skill: search.skill,
 				category: search.category,

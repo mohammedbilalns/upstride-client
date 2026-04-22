@@ -8,7 +8,7 @@ import { Route } from "@/routes/_app-layout/_user-layout/mentor/articles/$articl
 import { ArticleForm } from "../components/ArticleForm";
 import { ArticleNotFound } from "../components/ArticleNotFound";
 import { useUpdateArticleMutation } from "../hooks/mutations";
-import { articleQueries } from "../hooks/queries/useArticleQueries";
+import { articleQueries } from "../hooks/queries";
 import type { ArticleFormValues } from "../validators/article-form.schema";
 
 export function UpdateArticlePage() {

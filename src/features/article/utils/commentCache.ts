@@ -1,5 +1,5 @@
 import type { InfiniteData, QueryClient } from "@tanstack/react-query";
-import { articleQueries } from "../hooks/queries/useArticleQueries";
+import { articleCommentQueries } from "../hooks/queries";
 import type { ArticleComment, GetCommentsResponse } from "../types";
 
 export const updateCommentsInfiniteCache = (
@@ -14,7 +14,7 @@ export const updateCommentsInfiniteCache = (
 		updateFn: (oldPages: GetCommentsResponse[]) => GetCommentsResponse[];
 	},
 ) => {
-	const queryKey = articleQueries.commentsInfinite({
+	const queryKey = articleCommentQueries.inifinite({
 		articleId,
 		parentId,
 	}).queryKey;

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { articleService } from "../../services/article.service";
-import { articleQueries } from "../queries/useArticleQueries";
+import { articleKeys } from "../queries/article.keys";
 
 export function useCreateArticleMutation() {
 	const queryClient = useQueryClient();
@@ -10,7 +10,7 @@ export function useCreateArticleMutation() {
 		mutationFn: articleService.createArticle,
 		onSuccess: () => {
 			toast.success("Article created successfully");
-			queryClient.invalidateQueries({ queryKey: articleQueries.all });
+			queryClient.invalidateQueries({ queryKey: articleKeys.all });
 		},
 		onError: (error) => {
 			toast.error("Failed to create article");

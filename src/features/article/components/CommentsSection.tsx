@@ -11,7 +11,8 @@ import {
 	DialogTitle,
 } from "@/components/ui/Dialog";
 import { useArticleMutations } from "../hooks/mutations";
-import { articleQueries } from "../hooks/queries/useArticleQueries";
+import { articleCommentQueries } from "../hooks/queries";
+import { articleKeys } from "../hooks/queries/article.keys";
 import { CommentForm } from "./CommentForm";
 import { CommentItem } from "./CommentItem";
 
@@ -35,7 +36,7 @@ export function CommentsSection({
 		fetchNextPage,
 		error,
 	} = useInfiniteQuery(
-		articleQueries.commentsInfinite({ articleId, parentId: null }),
+		articleCommentQueries.inifinite({ articleId, parentId: null }),
 	);
 
 	const { deleteComment } = useArticleMutations();
@@ -98,7 +99,7 @@ export function CommentsSection({
 							articleId={articleId}
 							onSuccess={() => {
 								queryClient.invalidateQueries({
-									queryKey: articleQueries.all,
+									queryKey: articleKeys.all,
 								});
 							}}
 						/>

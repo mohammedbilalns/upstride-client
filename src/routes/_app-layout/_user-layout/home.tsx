@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useRouteContext } from "@tanstack/react-router";
-import { articleQueries } from "@/features/article/hooks/queries/useArticleQueries";
+import { articleQueries } from "@/features/article/hooks/queries";
 import { articleService } from "@/features/article/services/article.service";
 import { BecomeMentorWidget } from "@/features/home/components/BecomeMentorWidget";
 import { FeedArticleCard } from "@/features/home/components/FeedArticleCard";

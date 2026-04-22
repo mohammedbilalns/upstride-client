@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { articleQueries } from "@/features/article/hooks/queries/useArticleQueries";
+import { articleQueries } from "@/features/article/hooks/queries";
 import { ArticlesPage } from "@/features/article/pages/ArticlesPage";
 import {
 	type ArticleSearch,

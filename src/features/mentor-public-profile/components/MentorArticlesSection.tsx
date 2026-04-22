@@ -2,7 +2,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { ArticleCard } from "@/features/article/components/ArticleCard";
-import { articleQueries } from "@/features/article/hooks/queries/useArticleQueries";
+import { articleInfiniteQueries } from "@/features/article/hooks/queries";
 
 interface MentorArticlesSectionProps {
 	authorId: string;
@@ -15,7 +15,7 @@ export function MentorArticlesSection({
 }: MentorArticlesSectionProps) {
 	const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
 		useInfiniteQuery({
-			...articleQueries.listInfinite({ authorId, limit: 8 }),
+			...articleInfiniteQueries.list({ authorId, limit: 8 }),
 		});
 
 	if (isLoading) {

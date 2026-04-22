@@ -20,7 +20,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 import { cn } from "@/shared/utils/cn";
-import { articleQueries } from "../hooks/queries/useArticleQueries";
+import { articleCommentQueries } from "../hooks/queries";
 import type { ArticleComment } from "../types";
 import { CommentForm } from "./CommentForm";
 
@@ -52,7 +52,7 @@ export function CommentItem({
 		isFetchingNextPage: isFetchingNextReplies,
 		isLoading: isLoadingReplies,
 	} = useInfiniteQuery({
-		...articleQueries.commentsInfinite({ articleId, parentId: comment.id }),
+		...articleCommentQueries.inifinite({ articleId, parentId: comment.id }),
 		enabled: showReplies,
 	});
 

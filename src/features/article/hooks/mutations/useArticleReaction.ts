@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { articleService } from "../../services/article.service";
 import type { GetArticleResponse } from "../../types";
-import { articleQueries } from "../queries/useArticleQueries";
+import { articleQueries } from "../queries";
 
 export function useArticleReactionMutation() {
 	const queryClient = useQueryClient();

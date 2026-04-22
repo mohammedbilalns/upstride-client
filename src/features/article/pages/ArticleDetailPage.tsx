@@ -24,7 +24,7 @@ import { AppealDialog } from "../components/AppealDialog";
 import { ArticleManagement } from "../components/ArticleManagement";
 import { CommentsSection } from "../components/CommentsSection";
 import { ReactionButtons } from "../components/ReactionButtons";
-import { articleQueries } from "../hooks/queries/useArticleQueries";
+import { articleQueries } from "../hooks/queries";
 
 export function ArticleDetailPage({
 	articleId,

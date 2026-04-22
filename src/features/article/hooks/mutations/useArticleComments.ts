@@ -6,7 +6,7 @@ import {
 	deleteCommentOptimistically,
 	updateCommentOptimistically,
 } from "../../utils/commentCache";
-import { articleQueries } from "../queries/useArticleQueries";
+import { articleCommentQueries } from "../queries";
 
 export function useArticleCommentMutations() {
 	const queryClient = useQueryClient();
@@ -23,7 +23,7 @@ export function useArticleCommentMutations() {
 		},
 		onMutate: async (variables) => {
 			const parentId = variables.parentId || null;
-			const queryKey = articleQueries.commentsInfinite({
+			const queryKey = articleCommentQueries.inifinite({
 				articleId: variables.articleId,
 				parentId,
 			}).queryKey;
@@ -76,7 +76,7 @@ export function useArticleCommentMutations() {
 		},
 		onMutate: async (variables) => {
 			const parentId = variables.parentId || null;
-			const queryKey = articleQueries.commentsInfinite({
+			const queryKey = articleCommentQueries.inifinite({
 				articleId: variables.articleId,
 				parentId,
 			}).queryKey;
@@ -117,7 +117,7 @@ export function useArticleCommentMutations() {
 		},
 		onMutate: async (variables) => {
 			const parentId = variables.parentId || null;
-			const queryKey = articleQueries.commentsInfinite({
+			const queryKey = articleCommentQueries.inifinite({
 				articleId: variables.articleId,
 				parentId,
 			}).queryKey;

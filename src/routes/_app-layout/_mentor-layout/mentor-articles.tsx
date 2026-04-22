@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { articleQueries } from "@/features/article/hooks/queries/useArticleQueries";
+import { articleInfiniteQueries } from "@/features/article/hooks/queries";
 import { MentorArticlesPage } from "@/features/article/pages/MentorArticlesPage";
 
 export const Route = createFileRoute(
@@ -7,7 +7,7 @@ export const Route = createFileRoute(
 )({
 	loader: async ({ context: { queryClient } }) => {
 		await queryClient.ensureInfiniteQueryData(
-			articleQueries.mentorListInfinite(),
+			articleInfiniteQueries.mentorList(),
 		);
 	},
 	component: MentorArticlesPage,
