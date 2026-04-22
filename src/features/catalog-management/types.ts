@@ -41,10 +41,6 @@ export interface GetProfessionsResponse {
 	data: CatalogProfession[];
 }
 
-export interface CatalogActionResponse {
-	message: string;
-}
-
 export interface CatalogIsActiveMutationResponse {
 	message: string;
 	data: {
@@ -57,13 +53,28 @@ export interface AddInterestInput {
 	name: string;
 }
 
+export interface AddProfessionResponse {
+	newProfessionId: string;
+	slug: string;
+}
+
 export interface AddProfessionInput {
 	name: string;
+}
+export interface AddInterestResponse {
+	newInterestId: string;
+	slug: string;
 }
 
 export interface AddSkillInput {
 	name: string;
 	interestId: string;
+}
+
+export interface AddSkillIResponse {
+	newSkillId: string;
+	interestId: string;
+	slug: string;
 }
 
 export interface DisableInterestInput {

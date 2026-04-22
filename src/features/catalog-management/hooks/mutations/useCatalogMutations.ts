@@ -6,6 +6,9 @@ import type {
 	AddInterestInput,
 	AddProfessionInput,
 	AddSkillInput,
+	CatalogInterest,
+	CatalogProfession,
+	CatalogSkill,
 	CatalogIsActiveMutationResponse,
 	FetchCatalogResponse,
 } from "../../types";
@@ -18,9 +21,28 @@ export function useCatalogMutations() {
 
 	const addInterest = useMutation({
 		mutationFn: (data: AddInterestInput) => catalogService.addInterest(data),
-		onSuccess: (res) => {
+		onSuccess: (res, variables) => {
 			toast.success(res.message);
-			queryClient.invalidateQueries({ queryKey: ["catalog"] });
+
+			queryClient.setQueryData<FetchCatalogResponse>(["catalog"], (old) => {
+				if (!old) return old;
+
+				const newInterest: CatalogInterest = {
+					id: res.data.newInterestId,
+					name: variables.name,
+					slug: res.data.slug,
+					isActive: true,
+					skills: [],
+				};
+
+				return {
+					...old,
+					data: {
+						...old.data,
+						interests: [newInterest, ...old.data.interests],
+					},
+				};
+			});
 		},
 		onError: (error: ApiError) => {
 			toast.error(getErrorMessage(error, "Failed to add interest"));
@@ -83,9 +105,27 @@ export function useCatalogMutations() {
 	const addProfession = useMutation({
 		mutationFn: (data: AddProfessionInput) =>
 			catalogService.addProfession(data),
-		onSuccess: (res) => {
+		onSuccess: (res, variables) => {
 			toast.success(res.message);
-			queryClient.invalidateQueries({ queryKey: ["catalog"] });
+
+			queryClient.setQueryData<FetchCatalogResponse>(["catalog"], (old) => {
+				if (!old) return old;
+
+				const newProfession: CatalogProfession = {
+					id: res.data.newProfessionId,
+					name: variables.name,
+					slug: res.data.slug,
+					isActive: true,
+				};
+
+				return {
+					...old,
+					data: {
+						...old.data,
+						professions: [newProfession, ...old.data.professions],
+					},
+				};
+			});
 		},
 		onError: (error: ApiError) => {
 			toast.error(getErrorMessage(error, "Failed to add profession"));
@@ -119,9 +159,34 @@ export function useCatalogMutations() {
 
 	const addSkill = useMutation({
 		mutationFn: (data: AddSkillInput) => catalogService.addSkill(data),
-		onSuccess: (res) => {
+		onSuccess: (res, variables) => {
 			toast.success(res.message);
-			queryClient.invalidateQueries({ queryKey: ["catalog"] });
+
+			queryClient.setQueryData<FetchCatalogResponse>(["catalog"], (old) => {
+				if (!old) return old;
+
+				const newSkill: CatalogSkill = {
+					id: res.data.newSkillId,
+					name: variables.name,
+					slug: res.data.slug,
+					isActive: true,
+				};
+
+				return {
+					...old,
+					data: {
+						...old.data,
+						interests: old.data.interests.map((interest) =>
+							interest.id === res.data.interestId
+								? {
+										...interest,
+										skills: [newSkill, ...interest.skills],
+									}
+								: interest,
+						),
+					},
+				};
+			});
 		},
 		onError: (error: ApiError) => {
 			toast.error(getErrorMessage(error, "Failed to add skill"));

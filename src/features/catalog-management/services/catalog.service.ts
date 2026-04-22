@@ -2,14 +2,17 @@ import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
 import type {
 	AddInterestInput,
+	AddInterestResponse,
 	AddProfessionInput,
+	AddProfessionResponse,
 	AddSkillInput,
-	CatalogActionResponse,
+	AddSkillIResponse,
 	CatalogIsActiveMutationResponse,
 	FetchCatalogResponse,
 	GetOnboardingCatalogResponse,
 	GetProfessionsResponse,
 } from "../types";
+import type { ApiSuccess } from "@/api/apiSuccess";
 
 export const catalogService = {
 	fetchCatalog: async (): Promise<FetchCatalogResponse> => {
@@ -35,8 +38,8 @@ export const catalogService = {
 
 	addInterest: async (
 		data: AddInterestInput,
-	): Promise<CatalogActionResponse> => {
-		const response = await api.post<CatalogActionResponse>(
+	): Promise<ApiSuccess<AddInterestResponse>> => {
+		const response = await api.post<ApiSuccess<AddInterestResponse>>(
 			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ADD_INTEREST}`,
 			data,
 		);
@@ -52,8 +55,10 @@ export const catalogService = {
 		return response.data;
 	},
 
-	addSkill: async (data: AddSkillInput): Promise<CatalogActionResponse> => {
-		const response = await api.post<CatalogActionResponse>(
+	addSkill: async (
+		data: AddSkillInput,
+	): Promise<ApiSuccess<AddSkillIResponse>> => {
+		const response = await api.post<ApiSuccess<AddSkillIResponse>>(
 			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ADD_SKILL}`,
 			data,
 		);
@@ -71,8 +76,8 @@ export const catalogService = {
 
 	addProfession: async (
 		data: AddProfessionInput,
-	): Promise<CatalogActionResponse> => {
-		const response = await api.post<CatalogActionResponse>(
+	): Promise<ApiSuccess<AddProfessionResponse>> => {
+		const response = await api.post<ApiSuccess<AddProfessionResponse>>(
 			`${ROUTES.CATALOG.BASE}${ROUTES.CATALOG.ADD_PROFESSION}`,
 			data,
 		);
