@@ -6,6 +6,8 @@ import { InterestTable } from "./InterestTable";
 interface InterestListProps {
 	interests: CatalogInterest[];
 	onAddInterest: () => void;
+	onEditInterest: (interestId: string) => void;
+	onEditSkill: (skillId: string) => void;
 	onAddSkill: (interestId: string) => void;
 	onDisableInterest: (id: string) => void;
 	onEnableInterest: (id: string) => void;
@@ -16,6 +18,8 @@ interface InterestListProps {
 export function InterestList({
 	interests,
 	onAddInterest,
+	onEditInterest,
+	onEditSkill,
 	onAddSkill,
 	onDisableInterest,
 	onEnableInterest,
@@ -33,6 +37,8 @@ export function InterestList({
 
 			<InterestTable
 				interests={interests}
+				onEditInterest={onEditInterest}
+				onEditSkill={onEditSkill}
 				onAddSkill={onAddSkill}
 				onDisableInterest={onDisableInterest}
 				onEnableInterest={onEnableInterest}

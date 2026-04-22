@@ -1,6 +1,7 @@
 import {
 	ChevronDown,
 	ChevronRight,
+	Pencil,
 	Plus,
 	RotateCcw,
 	Trash2,
@@ -22,6 +23,8 @@ import { SkillTable } from "./SkillTable";
 
 interface InterestTableProps {
 	interests: CatalogInterest[];
+	onEditInterest: (id: string) => void;
+	onEditSkill: (id: string) => void;
 	onAddSkill: (interestId: string) => void;
 	onDisableInterest: (id: string) => void;
 	onEnableInterest: (id: string) => void;
@@ -31,6 +34,8 @@ interface InterestTableProps {
 
 export function InterestTable({
 	interests,
+	onEditInterest,
+	onEditSkill,
 	onAddSkill,
 	onDisableInterest,
 	onEnableInterest,
@@ -121,6 +126,15 @@ export function InterestTable({
 											<Button
 												size="sm"
 												variant="ghost"
+												className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10 opacity-0 group-hover:opacity-100"
+												onClick={() => onEditInterest(interest.id)}
+												title="Edit Interest"
+											>
+												<Pencil className="w-3.5 h-3.5" />
+											</Button>
+											<Button
+												size="sm"
+												variant="ghost"
 												className={cn(
 													"h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10",
 													interest.isActive
@@ -173,6 +187,7 @@ export function InterestTable({
 													<SkillTable
 														skills={interest.skills}
 														parentActive={interest.isActive}
+														onEditSkill={onEditSkill}
 														onDisableSkill={onDisableSkill}
 														onEnableSkill={onEnableSkill}
 													/>
