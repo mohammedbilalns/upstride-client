@@ -88,3 +88,7 @@ export interface EnableProfessionInput {
 export interface EnableSkillInput {
 	skillId: string;
 }
+
+export interface UpdateCatalogInput {
+	name: string;
+}

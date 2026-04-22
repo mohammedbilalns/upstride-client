@@ -13,7 +13,7 @@ import type {
 export const AdminManagementService = {
 	getAdmins: async (params: GetAdminsInput) => {
 		const response = await api.get<ApiSuccess<GetAdminsResponse>>(
-			`${ROUTES.ADMIN_MANAGEMENT.BASE}${ROUTES.ADMIN_MANAGEMENT.FETCH_ADMINS}`,
+			`${ROUTES.ADMINS.BASE}${ROUTES.ADMINS.FETCH_ADMINS}`,
 			{
 				params,
 			},
@@ -23,7 +23,7 @@ export const AdminManagementService = {
 
 	createAdmin: async (input: CreateAdminInput) => {
 		const response = await api.post<ApiSuccess<CreateAdminResponse>>(
-			`${ROUTES.ADMIN_MANAGEMENT.BASE}${ROUTES.ADMIN_MANAGEMENT.CREATE_ADMIN}`,
+			`${ROUTES.ADMINS.BASE}${ROUTES.ADMINS.CREATE_ADMIN}`,
 			input,
 		);
 
@@ -32,14 +32,14 @@ export const AdminManagementService = {
 
 	blockAdmin: async (input: BlockAdminInput): Promise<ApiSuccess> => {
 		const response = await api.patch(
-			`${ROUTES.ADMIN_MANAGEMENT.BASE}${ROUTES.ADMIN_MANAGEMENT.BLOCK(input.adminId)}`,
+			`${ROUTES.ADMINS.BASE}${ROUTES.ADMINS.BLOCK(input.adminId)}`,
 		);
 		return response.data;
 	},
 
 	unblockAdmin: async (input: UnblockAdminInput): Promise<ApiSuccess> => {
 		const response = await api.patch(
-			`${ROUTES.ADMIN_MANAGEMENT.BASE}${ROUTES.ADMIN_MANAGEMENT.UNBLOCK(input.adminId)}`,
+			`${ROUTES.ADMINS.BASE}${ROUTES.ADMINS.UNBLOCK(input.adminId)}`,
 		);
 		return response.data;
 	},
