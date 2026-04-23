@@ -12,7 +12,7 @@ import type {
 export const UserManagementService = {
 	getUsers: async (params: GetUsersInput) => {
 		const response = await api.get<ApiSuccess<GetUsersResponse>>(
-			`${ROUTES.USER_MANAGEMENT.BASE}${ROUTES.USER_MANAGEMENT.FETCH_USERS}`,
+			`${ROUTES.USERS.BASE}${ROUTES.USERS.FETCH_USERS}`,
 			{ params },
 		);
 		return response.data.data;
@@ -20,14 +20,14 @@ export const UserManagementService = {
 
 	blockUser: async (input: BlockUserInput) => {
 		const response = await api.patch<ApiSuccess<UserStatusMutationResponse>>(
-			`${ROUTES.USER_MANAGEMENT.BASE}${ROUTES.USER_MANAGEMENT.BLOCK(input.userId)}`,
+			`${ROUTES.USERS.BASE}${ROUTES.USERS.BLOCK(input.userId)}`,
 		);
 		return response.data;
 	},
 
 	unblockUser: async (input: UnblockUserInput) => {
 		const response = await api.patch<ApiSuccess<UserStatusMutationResponse>>(
-			`${ROUTES.USER_MANAGEMENT.BASE}${ROUTES.USER_MANAGEMENT.UNBLOCK(input.userId)}`,
+			`${ROUTES.USERS.BASE}${ROUTES.USERS.UNBLOCK(input.userId)}`,
 		);
 		return response.data;
 	},

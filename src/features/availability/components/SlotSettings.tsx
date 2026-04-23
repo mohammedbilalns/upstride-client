@@ -14,7 +14,7 @@ export function CreateRuleSlotSettings({ form }: CreateRuleSlotSettingsProps) {
 			<form.Field name="slotDuration">
 				{/* FIX: Type error */}
 				{(field) => (
-					<div className="space-y-3">
+					<div className="flex flex-col gap-2">
 						<Label>Slot Duration (minutes)</Label>
 						<RadioGroup
 							value={String(field.state.value)}
@@ -47,7 +47,7 @@ export function CreateRuleSlotSettings({ form }: CreateRuleSlotSettingsProps) {
 			<form.Field name="bufferTime">
 				{/* FIX: type error  */}
 				{(field) => (
-					<div className="space-y-2">
+					<div className="flex flex-col gap-2">
 						<Label htmlFor={field.name}>Buffer Between Sessions (min)</Label>
 						<Input
 							id={field.name}

@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/Badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Card, CardContent } from "@/components/ui/Card";
 import {
 	Table,
 	TableBody,
@@ -30,9 +30,6 @@ export function PaymentTransactionsTable({
 }: PaymentTransactionsTableProps) {
 	return (
 		<Card className="bg-card rounded-xl border shadow-sm overflow-hidden">
-			<CardHeader className="bg-muted/50 border-b py-4">
-				<CardTitle className="text-lg">Payment Transactions</CardTitle>
-			</CardHeader>
 			<CardContent className="p-0">
 				{isLoading ? (
 					<div className="py-8 text-center text-muted-foreground">
@@ -88,16 +85,18 @@ export function PaymentTransactionsTable({
 											</TableCell>
 										)}
 										<TableCell className="text-xs py-2">
-											<Badge
-												variant="outline"
-												className={
-													item.direction === "credit"
-														? "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400"
-														: "border-rose-500/30 bg-rose-500/10 text-rose-700"
-												}
-											>
-												{item.direction}
-											</Badge>
+											{item.direction === "debit" ? (
+												<Badge
+													variant="outline"
+													className="border-rose-500/30 bg-rose-500/10 text-rose-700 font-bold text-[9px] uppercase tracking-tight px-1.5 h-5"
+												>
+													Debit
+												</Badge>
+											) : (
+												<span className="text-emerald-600 dark:text-emerald-400 font-bold text-[10px] uppercase tracking-wide">
+													Credit
+												</span>
+											)}
 										</TableCell>
 										<TableCell className="text-xs py-2">
 											<Badge variant="secondary" className="text-[10px]">

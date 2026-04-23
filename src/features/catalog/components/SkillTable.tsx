@@ -31,7 +31,8 @@ export function SkillTable({
 		<Table>
 			<TableHeader>
 				<TableRow className="hover:bg-transparent">
-					<TableHead className="w-[300px] pl-6 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+					<TableHead className="w-10 pl-4"></TableHead>
+					<TableHead className="w-[300px] text-xs font-bold uppercase tracking-wider text-muted-foreground">
 						Skill Name
 					</TableHead>
 					<TableHead className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
@@ -46,7 +47,7 @@ export function SkillTable({
 				{skills.length === 0 ? (
 					<TableRow>
 						<TableCell
-							colSpan={3}
+							colSpan={4}
 							className="text-center py-12 text-muted-foreground font-medium italic"
 						>
 							No skills added yet. Use the "Add Skill" button to get started.
@@ -61,18 +62,22 @@ export function SkillTable({
 								!skill.isActive && "opacity-60 bg-muted/20",
 							)}
 						>
-							<TableCell className="font-semibold pl-6">
+							<TableCell className="w-10 pl-4" />
+							<TableCell className="font-semibold">
 								<div className="flex items-center gap-2">
 									{skill.name}
 									{!skill.isActive && (
-										<Badge variant="secondary" className="h-4 px-1 text-[9px]">
+										<Badge
+											variant="outline"
+											className="bg-rose-500/10 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400 border-rose-500/20 hover:bg-rose-500/20 h-5 px-2 text-[10px]"
+										>
 											Disabled
 										</Badge>
 									)}
 								</div>
 							</TableCell>
 							<TableCell>
-								<span className="text-xs font-mono text-muted-foreground">
+								<span className="text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-md">
 									{skill.slug}
 								</span>
 							</TableCell>
@@ -81,7 +86,7 @@ export function SkillTable({
 									<Button
 										size="sm"
 										variant="ghost"
-										className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10 opacity-0 group-hover:opacity-100"
+										className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10 opacity-40 group-hover:opacity-100"
 										onClick={() => onEditSkill(skill.id)}
 										title="Edit Skill"
 									>
@@ -94,7 +99,7 @@ export function SkillTable({
 											className={cn(
 												"h-8 w-8 p-0 text-muted-foreground transition-all hover:text-destructive hover:bg-destructive/10",
 												parentActive
-													? "opacity-0 group-hover:opacity-100"
+													? "opacity-40 group-hover:opacity-100"
 													: "opacity-0 cursor-not-allowed",
 											)}
 											disabled={!parentActive}
@@ -109,7 +114,7 @@ export function SkillTable({
 											className={cn(
 												"h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10",
 												parentActive
-													? "opacity-0 group-hover:opacity-100"
+													? "opacity-40 group-hover:opacity-100"
 													: "opacity-50 cursor-not-allowed",
 											)}
 											disabled={!parentActive}

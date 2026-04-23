@@ -124,7 +124,6 @@ export function CatalogManagementPage() {
 		}
 
 		setIsConfirmModalOpen(false);
-		setItemToConfirm(null);
 	};
 
 	return (
@@ -133,8 +132,9 @@ export function CatalogManagementPage() {
 				<h1 className="text-3xl font-bold tracking-tight">
 					Catalog Management
 				</h1>
-				<p className="text-muted-foreground mt-1">
-					Manage interests, skills, and professions available in the system.
+				<p className="text-muted-foreground mt-1 text-sm">
+					{catalog?.data.interests.length} interests ·{" "}
+					{catalog?.data.professions.length} professions
 				</p>
 			</div>
 
@@ -292,7 +292,10 @@ export function CatalogManagementPage() {
 
 			<ConfirmModal
 				isOpen={isConfirmModalOpen}
-				onClose={() => setIsConfirmModalOpen(false)}
+				onClose={() => {
+					setIsConfirmModalOpen(false);
+					setTimeout(() => setItemToConfirm(null), 200);
+				}}
 				onConfirm={handleConfirmAction}
 				title={
 					itemToConfirm?.action === "disable"

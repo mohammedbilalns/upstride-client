@@ -176,7 +176,7 @@ export function ReportTable({ reports }: ReportTableProps) {
 			<Table>
 				<TableHeader className="bg-muted/40 border-b border-border/50">
 					<TableRow className="hover:bg-transparent">
-						<TableHead className="w-12"></TableHead>
+						<TableHead className="w-10 pl-4"></TableHead>
 						<TableHead className="min-w-60 py-4 text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80">
 							Target Content
 						</TableHead>

@@ -75,10 +75,10 @@ export default function UserNavbar() {
 	return (
 		<header
 			className={cn(
-				"fixed top-3 left-1/2 -translate-x-1/2 z-50 rounded-xl animate-soft-in transition-all duration-300",
+				"fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-300",
 				isScrolled
-					? "w-[calc(100%-4rem)] max-w-240 glass bg-background/80 border border-primary/20 shadow-lg backdrop-blur-xl"
-					: "w-[calc(100%-2rem)] max-w-6xl bg-transparent border border-transparent shadow-none backdrop-blur-0",
+					? "w-[calc(100%-3rem)] max-w-6xl bg-background/80 border border-border/40 backdrop-blur-md rounded-xl"
+					: "w-[calc(100%-2rem)] max-w-6xl bg-transparent border border-transparent backdrop-blur-none rounded-xl",
 			)}
 		>
 			<div className="mx-auto px-5 h-12 flex justify-between items-center">

@@ -77,8 +77,9 @@ export function UserManagementPage() {
 			<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
 				<div>
 					<h1 className="text-3xl font-bold tracking-tight">User Management</h1>
-					<p className="text-muted-foreground mt-1">
-						Manage platform users, roles, and access status.
+					<p className="text-muted-foreground mt-1 text-sm">
+						{usersData.totalUsers} total users · {usersData.totalMentors}{" "}
+						mentors
 					</p>
 				</div>
 			</div>
@@ -96,7 +97,7 @@ export function UserManagementPage() {
 
 				<div className="md:col-span-8 flex flex-wrap items-center gap-3 justify-end">
 					<div className="flex items-center gap-2">
-						<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+						<span className="text-xs font-medium text-muted-foreground">
 							Role
 						</span>
 						<Select
@@ -115,7 +116,7 @@ export function UserManagementPage() {
 					</div>
 
 					<div className="flex items-center gap-2">
-						<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+						<span className="text-xs font-medium text-muted-foreground">
 							Status
 						</span>
 						<Select
@@ -134,7 +135,7 @@ export function UserManagementPage() {
 					</div>
 
 					<div className="flex items-center gap-2">
-						<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+						<span className="text-xs font-medium text-muted-foreground">
 							Sort
 						</span>
 						<Select

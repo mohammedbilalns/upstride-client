@@ -22,11 +22,11 @@ export function AvailabilityRuleCard({
 	return (
 		<Card
 			className={cn(
-				"border-border/60 shadow-sm transition-all flex flex-col hover:shadow-md",
+				"flex flex-col",
 				!active && "opacity-60 bg-muted/20 border-dashed",
 			)}
 		>
-			<CardHeader className="pb-3 border-b bg-muted/10">
+			<CardHeader className="p-6 pb-4 border-b bg-transparent">
 				<div className="flex justify-between items-start">
 					<div>
 						<CardTitle className="text-base line-clamp-1">
@@ -44,7 +44,7 @@ export function AvailabilityRuleCard({
 					</Badge>
 				</div>
 			</CardHeader>
-			<CardContent className="p-4 flex-1 space-y-4 text-sm">
+			<CardContent className="p-6 flex-1 space-y-4 text-sm">
 				<div className="space-y-1.5 border-b pb-3">
 					<div className="flex justify-between">
 						<span className="text-muted-foreground">Valid Period:</span>
@@ -102,7 +102,7 @@ export function AvailabilityRuleCard({
 					</div>
 				)}
 			</CardContent>
-			<div className="p-3 border-t bg-muted/5 flex justify-end gap-2 shrink-0">
+			<div className="p-4 border-t bg-transparent flex justify-end gap-2 shrink-0">
 				{active ? (
 					<Button
 						variant="ghost"

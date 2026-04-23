@@ -47,7 +47,7 @@ export function ConfirmModal({
 					<DialogDescription>{message}</DialogDescription>
 					{children}
 				</DialogHeader>
-				<DialogFooter className="gap-2 sm:gap-0">
+				<DialogFooter className="gap-2 sm:gap-3">
 					<Button variant="ghost" onClick={onClose} disabled={isLoading}>
 						{cancelText}
 					</Button>

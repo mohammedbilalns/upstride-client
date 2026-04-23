@@ -33,7 +33,7 @@ export function PasswordField({
 	const [isVisible, setIsVisible] = useState(false);
 
 	return (
-		<div className="space-y-1.5">
+		<div className="flex flex-col gap-2">
 			<div className="flex justify-between items-center">
 				<Label htmlFor={id}>{label}</Label>
 				{labelAction}

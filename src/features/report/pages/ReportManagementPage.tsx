@@ -39,15 +39,16 @@ export function ReportManagementPage() {
 					<h1 className="text-3xl font-bold tracking-tight">
 						Report Management
 					</h1>
-					<p className="text-muted-foreground mt-1">
-						Review and resolve user and article reports.
+					<p className="text-muted-foreground mt-1 text-sm">
+						{reportsData.pendingReports} pending reports ·{" "}
+						{reportsData.appealedReports} appealed
 					</p>
 				</div>
 			</div>
 
 			<div className="flex flex-wrap items-center gap-4 bg-card p-4 rounded-xl border shadow-sm">
 				<div className="flex items-center gap-2">
-					<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+					<span className="text-xs font-medium text-muted-foreground">
 						Status
 					</span>
 					<Select
@@ -65,10 +66,10 @@ export function ReportManagementPage() {
 						}}
 					>
 						<SelectTrigger className="w-[160px] h-10">
-							<SelectValue placeholder="All Status" />
+							<SelectValue placeholder="All status" />
 						</SelectTrigger>
 						<SelectContent>
-							<SelectItem value="all">All Status</SelectItem>
+							<SelectItem value="all">All status</SelectItem>
 							<SelectItem value="PENDING">Pending</SelectItem>
 							<SelectItem value="RESOLVED">Resolved</SelectItem>
 							<SelectItem value="REJECTED">Rejected</SelectItem>
@@ -78,7 +79,7 @@ export function ReportManagementPage() {
 				</div>
 
 				<div className="flex items-center gap-2">
-					<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+					<span className="text-xs font-medium text-muted-foreground">
 						Target
 					</span>
 					<Select
@@ -92,10 +93,10 @@ export function ReportManagementPage() {
 						}}
 					>
 						<SelectTrigger className="w-[160px] h-10">
-							<SelectValue placeholder="All Targets" />
+							<SelectValue placeholder="All targets" />
 						</SelectTrigger>
 						<SelectContent>
-							<SelectItem value="all">All Targets</SelectItem>
+							<SelectItem value="all">All targets</SelectItem>
 							<SelectItem value="USER">User</SelectItem>
 							<SelectItem value="ARTICLE">Article</SelectItem>
 						</SelectContent>
@@ -103,7 +104,7 @@ export function ReportManagementPage() {
 				</div>
 
 				<div className="flex items-center gap-2">
-					<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+					<span className="text-xs font-medium text-muted-foreground">
 						Appealed
 					</span>
 					<Select
@@ -122,12 +123,12 @@ export function ReportManagementPage() {
 						}
 					>
 						<SelectTrigger className="w-[160px] h-10">
-							<SelectValue placeholder="All Reports" />
+							<SelectValue placeholder="All reports" />
 						</SelectTrigger>
 						<SelectContent>
-							<SelectItem value="all">All Reports</SelectItem>
-							<SelectItem value="true">Appealed Only</SelectItem>
-							<SelectItem value="false">Non-Appealed</SelectItem>
+							<SelectItem value="all">All reports</SelectItem>
+							<SelectItem value="true">Appealed only</SelectItem>
+							<SelectItem value="false">Non-appealed</SelectItem>
 						</SelectContent>
 					</Select>
 				</div>

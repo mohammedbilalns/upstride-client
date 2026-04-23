@@ -68,6 +68,9 @@ export interface GetReportsResponse {
 	page: number;
 	limit: number;
 	totalPages: number;
+	totalReports: number;
+	pendingReports: number;
+	appealedReports: number;
 }
 
 export interface UpdateReportStatusInput {

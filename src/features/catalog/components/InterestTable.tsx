@@ -59,7 +59,7 @@ export function InterestTable({
 			<Table>
 				<TableHeader className="bg-muted/50">
 					<TableRow className="hover:bg-transparent">
-						<TableHead className="w-[48px]"></TableHead>
+						<TableHead className="w-10 pl-4"></TableHead>
 						<TableHead className="w-[300px] text-xs font-bold uppercase tracking-wider">
 							Interest Name
 						</TableHead>
@@ -91,33 +91,37 @@ export function InterestTable({
 										expandedIds.has(interest.id) && "bg-muted/30",
 									)}
 								>
-									<TableCell className="pl-4">
-										<Button
-											variant="ghost"
-											size="sm"
-											className="h-8 w-8 p-0"
-											onClick={() => toggleExpand(interest.id)}
-										>
-											{expandedIds.has(interest.id) ? (
-												<ChevronDown className="h-4 w-4" />
-											) : (
-												<ChevronRight className="h-4 w-4" />
-											)}
-										</Button>
+									<TableCell className="w-10 pl-4">
+										<div className="w-6 h-6 flex items-center justify-center">
+											<Button
+												variant="ghost"
+												size="sm"
+												className="h-8 w-8 p-0 text-muted-foreground/60 hover:text-foreground transition-colors"
+												onClick={() => toggleExpand(interest.id)}
+											>
+												{expandedIds.has(interest.id) ? (
+													<ChevronDown className="h-4 w-4 text-primary" />
+												) : (
+													<ChevronRight className="h-4 w-4" />
+												)}
+											</Button>
+										</div>
 									</TableCell>
 									<TableCell className="font-semibold">
 										<div className="flex items-center gap-2">
 											{interest.name}
-											<Badge
-												variant={interest.isActive ? "default" : "secondary"}
-												className="h-4 px-1 text-[9px]"
-											>
-												{interest.isActive ? "Active" : "Disabled"}
-											</Badge>
+											{!interest.isActive && (
+												<Badge
+													variant="outline"
+													className="bg-rose-500/10 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400 border-rose-500/20 hover:bg-rose-500/20 h-5 px-2 text-[10px]"
+												>
+													Disabled
+												</Badge>
+											)}
 										</div>
 									</TableCell>
 									<TableCell>
-										<span className="text-xs font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+										<span className="text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-md">
 											{interest.slug}
 										</span>
 									</TableCell>
@@ -126,7 +130,7 @@ export function InterestTable({
 											<Button
 												size="sm"
 												variant="ghost"
-												className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10 opacity-0 group-hover:opacity-100"
+												className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10 opacity-40 group-hover:opacity-100"
 												onClick={() => onEditInterest(interest.id)}
 												title="Edit Interest"
 											>
@@ -138,7 +142,7 @@ export function InterestTable({
 												className={cn(
 													"h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10",
 													interest.isActive
-														? "opacity-0 group-hover:opacity-100"
+														? "opacity-40 group-hover:opacity-100"
 														: "opacity-0 cursor-not-allowed",
 												)}
 												disabled={!interest.isActive}
@@ -151,7 +155,7 @@ export function InterestTable({
 												<Button
 													size="sm"
 													variant="ghost"
-													className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100"
+													className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-destructive hover:bg-destructive/10 opacity-40 group-hover:opacity-100"
 													onClick={() => onDisableInterest(interest.id)}
 													title="Disable Interest"
 												>
@@ -161,7 +165,7 @@ export function InterestTable({
 												<Button
 													size="sm"
 													variant="ghost"
-													className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10 opacity-0 group-hover:opacity-100"
+													className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10 opacity-40 group-hover:opacity-100"
 													onClick={() => onEnableInterest(interest.id)}
 													title="Enable Interest"
 												>

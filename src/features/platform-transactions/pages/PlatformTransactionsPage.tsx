@@ -68,26 +68,27 @@ export function PlatformTransactionsPage() {
 				</p>
 			</div>
 
-			<div className="rounded-xl border bg-card p-5 shadow-sm flex flex-col gap-3">
-				<span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-					Platform Balance
-				</span>
-				<span className="text-3xl font-bold tracking-tight">
-					₹
-					{(wallet?.balance ?? 0).toLocaleString(undefined, {
-						minimumFractionDigits: 2,
-						maximumFractionDigits: 2,
-					})}
-				</span>
-				<span className="text-xs text-muted-foreground">
-					Balance updates when transactions settle.
-				</span>
+			<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+				<div className="rounded-xl border bg-card p-6 shadow-sm flex flex-col gap-1 border-l-4 border-l-primary">
+					<span className="text-xs font-bold uppercase tracking-wider text-muted-foreground/70">
+						Total Platform Balance
+					</span>
+					<div className="flex items-baseline gap-2">
+						<span className="text-3xl font-black tracking-tight text-foreground">
+							₹
+							{(wallet?.balance ?? 0).toLocaleString(undefined, {
+								minimumFractionDigits: 2,
+								maximumFractionDigits: 2,
+							})}
+						</span>
+					</div>
+				</div>
 			</div>
 
-			<div className="rounded-xl border bg-card p-3 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-				<span className="text-sm font-semibold">Payment Transactions</span>
-				<div className="flex items-center gap-2 px-2">
-					<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+			<div className="flex items-center justify-between gap-3 pt-4 border-t border-border/40">
+				<h2 className="text-xl font-bold tracking-tight">Activity Log</h2>
+				<div className="flex items-center gap-3">
+					<span className="text-xs font-medium text-muted-foreground">
 						Sort
 					</span>
 					<Select
@@ -101,7 +102,7 @@ export function PlatformTransactionsPage() {
 							})
 						}
 					>
-						<SelectTrigger className="w-32 h-8 text-xs rounded-lg">
+						<SelectTrigger className="w-40 h-10 bg-card rounded-xl">
 							<SelectValue placeholder="Sort" />
 						</SelectTrigger>
 						<SelectContent>

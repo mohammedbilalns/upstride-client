@@ -40,15 +40,16 @@ export function MentorManagementPage() {
 					<h1 className="text-3xl font-bold tracking-tight">
 						Mentor Management
 					</h1>
-					<p className="text-muted-foreground mt-1">
-						Review and manage mentor applications and approvals.
+					<p className="text-muted-foreground mt-1 text-sm">
+						{mentorsData.newMentorRequests} new requests ·{" "}
+						{mentorsData.approvedMentors} approved mentors
 					</p>
 				</div>
 			</div>
 
 			<div className="flex flex-wrap items-center gap-4 bg-card p-4 rounded-xl border shadow-sm">
 				<div className="flex items-center gap-2">
-					<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+					<span className="text-xs font-medium text-muted-foreground">
 						Status
 					</span>
 					<Select
@@ -65,10 +66,10 @@ export function MentorManagementPage() {
 						}}
 					>
 						<SelectTrigger className="w-[150px] h-10">
-							<SelectValue placeholder="All Status" />
+							<SelectValue placeholder="All status" />
 						</SelectTrigger>
 						<SelectContent>
-							<SelectItem value="all">All Status</SelectItem>
+							<SelectItem value="all">All status</SelectItem>
 							<SelectItem value="pending">Pending</SelectItem>
 							<SelectItem value="approved">Approved</SelectItem>
 							<SelectItem value="rejected">Rejected</SelectItem>
@@ -77,7 +78,7 @@ export function MentorManagementPage() {
 				</div>
 
 				<div className="flex items-center gap-2">
-					<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+					<span className="text-xs font-medium text-muted-foreground">
 						Sort
 					</span>
 					<Select
@@ -91,25 +92,25 @@ export function MentorManagementPage() {
 						}}
 					>
 						<SelectTrigger className="w-[160px] h-10">
-							<SelectValue placeholder="Sort By" />
+							<SelectValue placeholder="Sort by" />
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="recent">
 								<div className="flex items-center gap-2">
 									<SortDesc className="w-3.5 h-3.5" />
-									<span>Recent First</span>
+									<span>Recent first</span>
 								</div>
 							</SelectItem>
 							<SelectItem value="old">
 								<div className="flex items-center gap-2">
 									<SortAsc className="w-3.5 h-3.5" />
-									<span>Oldest First</span>
+									<span>Oldest first</span>
 								</div>
 							</SelectItem>
 							<SelectItem value="status">
 								<div className="flex items-center gap-2">
 									<SortDesc className="w-3.5 h-3.5" />
-									<span>By Status</span>
+									<span>By status</span>
 								</div>
 							</SelectItem>
 						</SelectContent>

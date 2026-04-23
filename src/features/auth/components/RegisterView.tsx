@@ -80,11 +80,11 @@ export function RegisterView({ onNavigate }: Props) {
 					e.preventDefault();
 					form.handleSubmit();
 				}}
-				className="space-y-4"
+				className="flex flex-col gap-5"
 			>
 				<form.Field name="name">
 					{(field) => (
-						<div className="space-y-1.5">
+						<div className="flex flex-col gap-2">
 							<Label htmlFor={field.name}>Full Name</Label>
 							<Input
 								id={field.name}
@@ -100,7 +100,7 @@ export function RegisterView({ onNavigate }: Props) {
 
 				<form.Field name="email">
 					{(field) => (
-						<div className="space-y-1.5">
+						<div className="flex flex-col gap-2">
 							<Label htmlFor={field.name}>Email</Label>
 							<Input
 								id={field.name}
@@ -118,7 +118,7 @@ export function RegisterView({ onNavigate }: Props) {
 
 				<form.Field name="phone">
 					{(field) => (
-						<div className="space-y-1.5">
+						<div className="flex flex-col gap-2">
 							<Label htmlFor={field.name}>Phone Number</Label>
 							<div className="relative">
 								<div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground font-medium text-sm">

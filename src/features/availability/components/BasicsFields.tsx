@@ -13,7 +13,7 @@ export function CreateRuleBasicsFields({ form }: CreateRuleBasicsFieldsProps) {
 			<form.Field name="name">
 				{/* FIX: Type error */}
 				{(field) => (
-					<div className="space-y-2">
+					<div className="flex flex-col gap-2">
 						<Label htmlFor={field.name}>Rule Name</Label>
 						<Input
 							id={field.name}
@@ -37,7 +37,7 @@ export function CreateRuleBasicsFields({ form }: CreateRuleBasicsFieldsProps) {
 			<form.Field name="description">
 				{/* FIX: Type error */}
 				{(field) => (
-					<div className="space-y-2">
+					<div className="flex flex-col gap-2">
 						<Label htmlFor={field.name}>Description</Label>
 						<Input
 							id={field.name}

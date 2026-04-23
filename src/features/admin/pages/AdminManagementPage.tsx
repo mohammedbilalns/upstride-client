@@ -81,8 +81,9 @@ export function AdminManagementPage() {
 					<h1 className="text-3xl font-bold tracking-tight">
 						Admin Management
 					</h1>
-					<p className="text-muted-foreground mt-1">
-						Manage admin access and status across the platform.
+					<p className="text-muted-foreground mt-1 text-sm">
+						{adminsData.totalAdmins} total admins · {adminsData.activeAdmins}{" "}
+						active · {adminsData.blockedAdmins} blocked
 					</p>
 				</div>
 				<Button onClick={() => setIsCreateOpen(true)}>
@@ -104,7 +105,7 @@ export function AdminManagementPage() {
 
 				<div className="md:col-span-7 flex flex-wrap items-center gap-3 justify-end">
 					<div className="flex items-center gap-2">
-						<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+						<span className="text-xs font-medium text-muted-foreground">
 							Status
 						</span>
 						<Select
@@ -123,7 +124,7 @@ export function AdminManagementPage() {
 					</div>
 
 					<div className="flex items-center gap-2">
-						<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+						<span className="text-xs font-medium text-muted-foreground">
 							Sort
 						</span>
 						<Select

@@ -33,6 +33,7 @@ export function UserTable({ users }: UserTableProps) {
 	const [actionType, setActionType] = useState<"block" | "unblock" | null>(
 		null,
 	);
+	const [isOpen, setIsOpen] = useState(false);
 	const [processing, setProcessing] = useState<{
 		userId: string;
 		action: "block" | "unblock";
@@ -40,6 +41,15 @@ export function UserTable({ users }: UserTableProps) {
 
 	const blockMutation = useBlockUser();
 	const unblockMutation = useUnblockUser();
+
+	const handleActionPreview = (
+		user: UserListItem,
+		type: "block" | "unblock",
+	) => {
+		setSelectedUser(user);
+		setActionType(type);
+		setIsOpen(true);
+	};
 
 	const handleAction = async () => {
 		if (!selectedUser || !actionType) return;
@@ -49,15 +59,8 @@ export function UserTable({ users }: UserTableProps) {
 		setProcessing({ userId: selectedUser.id, action: actionType });
 
 		try {
-			await mutation.mutateAsync(
-				{ userId: selectedUser.id },
-				{
-					onSuccess: () => {
-						setSelectedUser(null);
-						setActionType(null);
-					},
-				},
-			);
+			await mutation.mutateAsync({ userId: selectedUser.id });
+			setIsOpen(false);
 		} finally {
 			setProcessing(null);
 		}
@@ -72,11 +75,22 @@ export function UserTable({ users }: UserTableProps) {
 			<Table>
 				<TableHeader className="bg-muted/50">
 					<TableRow>
-						<TableHead className="w-75 py-4">User Details</TableHead>
-						<TableHead>Role</TableHead>
-						<TableHead>Status</TableHead>
-						<TableHead>Joined Date</TableHead>
-						<TableHead className="text-right">Actions</TableHead>
+						<TableHead className="w-10 pl-4"></TableHead>
+						<TableHead className="w-75 py-4 text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80">
+							User Details
+						</TableHead>
+						<TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80">
+							Role
+						</TableHead>
+						<TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80">
+							Status
+						</TableHead>
+						<TableHead className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80">
+							Joined Date
+						</TableHead>
+						<TableHead className="text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80 pr-6">
+							Actions
+						</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -98,6 +112,7 @@ export function UserTable({ users }: UserTableProps) {
 								key={user.id}
 								className="hover:bg-muted/30 transition-colors"
 							>
+								<TableCell className="w-10 pl-4" />
 								<TableCell className="py-4">
 									<div className="flex flex-col">
 										<span className="font-semibold text-foreground/90 leading-tight">
@@ -153,29 +168,23 @@ export function UserTable({ users }: UserTableProps) {
 										<Button
 											variant="ghost"
 											size="sm"
-											className="text-rose-600 hover:text-rose-700 hover:bg-rose-50/50 dark:hover:bg-rose-900/20 transition-all font-semibold"
-											onClick={() => {
-												setSelectedUser(user);
-												setActionType("block");
-											}}
+											className="h-8 px-3 text-rose-600 hover:text-rose-700 hover:bg-rose-50/50 dark:hover:bg-rose-900/20 transition-all font-bold text-[11px] rounded-lg gap-2"
+											onClick={() => handleActionPreview(user, "block")}
 											disabled={processing?.userId === user.id}
 										>
-											<ShieldAlert className="w-4 h-4 mr-2" />
-											Block
+											<ShieldAlert className="w-3.5 h-3.5" />
+											Block Access
 										</Button>
 									) : (
 										<Button
 											variant="ghost"
 											size="sm"
-											className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all font-semibold"
-											onClick={() => {
-												setSelectedUser(user);
-												setActionType("unblock");
-											}}
+											className="h-8 px-3 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all font-bold text-[11px] rounded-lg gap-2"
+											onClick={() => handleActionPreview(user, "unblock")}
 											disabled={processing?.userId === user.id}
 										>
-											<ShieldCheck className="w-4 h-4 mr-2" />
-											Unblock
+											<ShieldCheck className="w-3.5 h-3.5" />
+											Restore Access
 										</Button>
 									)}
 								</TableCell>
@@ -186,10 +195,13 @@ export function UserTable({ users }: UserTableProps) {
 			</Table>
 
 			<ConfirmModal
-				isOpen={!!selectedUser && !!actionType}
+				isOpen={isOpen}
 				onClose={() => {
-					setSelectedUser(null);
-					setActionType(null);
+					setIsOpen(false);
+					setTimeout(() => {
+						setSelectedUser(null);
+						setActionType(null);
+					}, 200);
 				}}
 				onConfirm={handleAction}
 				title={

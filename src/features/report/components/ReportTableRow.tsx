@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
+import { ChevronDown, ChevronUp, ExternalLink, RotateCcw } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { TableCell, TableRow } from "@/components/ui/Table";
@@ -48,12 +48,14 @@ export function ReportTableRow({
 				className={`hover:bg-muted/30 transition-colors cursor-pointer group ${isExpanded ? "bg-muted/20" : ""}`}
 				onClick={onToggle}
 			>
-				<TableCell>
-					{isExpanded ? (
-						<ChevronUp className="w-4 h-4 text-muted-foreground transition-transform" />
-					) : (
-						<ChevronDown className="w-4 h-4 text-muted-foreground transition-transform" />
-					)}
+				<TableCell className="w-10 pl-4">
+					<div className="w-6 h-6 flex items-center justify-center">
+						{isExpanded ? (
+							<ChevronUp className="w-4 h-4 text-primary transition-transform" />
+						) : (
+							<ChevronDown className="w-4 h-4 text-muted-foreground/60 group-hover:text-foreground transition-transform" />
+						)}
+					</div>
 				</TableCell>
 				<TableCell className="py-4">
 					<div className="flex flex-col gap-1.5">
@@ -177,13 +179,14 @@ export function ReportTableRow({
 							<Button
 								variant="ghost"
 								size="sm"
-								className="h-8 px-3 text-primary hover:text-primary hover:bg-primary/10 transition-all font-bold text-[11px] rounded-lg"
+								className="h-8 px-3 text-primary hover:text-primary hover:bg-primary/10 transition-all font-bold text-[11px] rounded-lg gap-1.5"
 								onClick={(e) => {
 									e.stopPropagation();
 									onAction(report, "unblock-article");
 								}}
 								disabled={isProcessing}
 							>
+								<RotateCcw className="w-3 h-3" />
 								Restore Content
 							</Button>
 						)}
@@ -191,9 +194,10 @@ export function ReportTableRow({
 				</TableCell>
 			</TableRow>
 			{isExpanded && (
-				<TableRow className="bg-muted/5 border-b border-border/40">
-					<TableCell colSpan={5} className="p-0">
-						<div className="p-8 bg-gradient-to-b from-muted/20 to-transparent border-t border-border/20">
+				<TableRow className="bg-muted/5 border-b border-border/40 hover:bg-transparent">
+					<TableCell className="w-10 pl-4 border-r border-border/10" />
+					<TableCell colSpan={4} className="p-0">
+						<div className="bg-gradient-to-b from-muted/20 to-transparent border-t border-border/20">
 							<ReportRowDetails report={report} />
 						</div>
 					</TableCell>

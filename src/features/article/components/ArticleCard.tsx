@@ -25,7 +25,7 @@ export function ArticleCard({
 	const [imageError, setImageError] = useState(false);
 
 	return (
-		<Card className="group flex flex-col h-full overflow-hidden bg-white dark:bg-zinc-950/50 hover:border-zinc-300 dark:hover:border-zinc-800 border-zinc-200/70 dark:border-zinc-800/50 transition-all duration-300">
+		<Card className="group flex flex-col h-full overflow-hidden bg-transparent transition-colors duration-300">
 			<div className="relative aspect-16/10 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
 				{article.featuredImageUrl && !imageError ? (
 					<ProgressiveImage
@@ -39,10 +39,10 @@ export function ArticleCard({
 							setImageError(true);
 						}}
 						wrapperClassName="w-full h-full"
-						className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
+						className="object-cover w-full h-full"
 					/>
 				) : (
-					<div className="w-full h-full flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600 transition-transform duration-500 group-hover:scale-105">
+					<div className="w-full h-full flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600">
 						<ImageIcon
 							className="w-10 h-10 mb-2 opacity-50"
 							strokeWidth={1.5}
@@ -63,7 +63,7 @@ export function ArticleCard({
 				</div>
 			</div>
 
-			<CardHeader className="p-4 pb-2">
+			<CardHeader className="p-6 pb-2">
 				<div className="flex items-center gap-2 mb-3">
 					<Avatar className="h-6 w-6 border border-zinc-100 dark:border-zinc-800">
 						<AvatarImage src={article.authorSnapshot.avatarUrl} />
@@ -93,13 +93,13 @@ export function ArticleCard({
 				</Link>
 			</CardHeader>
 
-			<CardContent className="px-4 py-0 flex-1">
+			<CardContent className="px-6 py-0 flex-1">
 				<p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed">
 					{article.previewContent || article.description}
 				</p>
 			</CardContent>
 
-			<CardFooter className="px-4 pb-4 pt-2 flex flex-col items-start gap-4">
+			<CardFooter className="px-6 pb-6 pt-4 flex flex-col items-start gap-4">
 				{article.tags && article.tags.length > 0 && (
 					<div className="flex flex-wrap gap-1.5 w-full">
 						{article.tags.slice(0, 3).map((tag) => (

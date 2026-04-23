@@ -79,11 +79,11 @@ export function LoginView({ onNavigate }: Props) {
 					e.preventDefault();
 					form.handleSubmit();
 				}}
-				className="space-y-4"
+				className="flex flex-col gap-5"
 			>
 				<form.Field name="email">
 					{(field) => (
-						<div className="space-y-1.5">
+						<div className="flex flex-col gap-2">
 							<Label htmlFor={field.name}>Email</Label>
 							<Input
 								id={field.name}

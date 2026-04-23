@@ -23,7 +23,7 @@ export function CreateRuleBreakTimes({
 	onRemoveBreakTime,
 }: CreateRuleBreakTimesProps) {
 	return (
-		<div className="space-y-3 p-4 border rounded-xl bg-muted/10">
+		<div className="flex flex-col gap-4 p-6 border rounded-xl bg-transparent">
 			<div className="flex items-center justify-between">
 				<Label className="text-base font-semibold">Break Times</Label>
 				<Button

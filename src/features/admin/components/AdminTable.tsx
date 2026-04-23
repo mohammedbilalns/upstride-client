@@ -34,6 +34,7 @@ export function AdminTable({ admins }: AdminTableProps) {
 	const [actionType, setActionType] = useState<"block" | "unblock" | null>(
 		null,
 	);
+	const [isOpen, setIsOpen] = useState(false);
 	const [processing, setProcessing] = useState<{
 		adminId: string;
 		action: "block" | "unblock";
@@ -41,6 +42,15 @@ export function AdminTable({ admins }: AdminTableProps) {
 
 	const blockMutation = useBlockAdmin();
 	const unblockMutation = useUnblockAdmin();
+
+	const handleActionPreview = (
+		admin: AdminListItem,
+		type: "block" | "unblock",
+	) => {
+		setSelectedAdmin(admin);
+		setActionType(type);
+		setIsOpen(true);
+	};
 
 	const handleAction = async () => {
 		if (!selectedAdmin || !actionType) return;
@@ -50,15 +60,8 @@ export function AdminTable({ admins }: AdminTableProps) {
 		setProcessing({ adminId: selectedAdmin.id, action: actionType });
 
 		try {
-			await mutation.mutateAsync(
-				{ adminId: selectedAdmin.id },
-				{
-					onSuccess: () => {
-						setSelectedAdmin(null);
-						setActionType(null);
-					},
-				},
-			);
+			await mutation.mutateAsync({ adminId: selectedAdmin.id });
+			setIsOpen(false);
 		} finally {
 			setProcessing(null);
 		}
@@ -73,7 +76,10 @@ export function AdminTable({ admins }: AdminTableProps) {
 			<Table>
 				<TableHeader className="bg-muted/50">
 					<TableRow>
-						<TableHead className="w-[320px] py-4">Admin Details</TableHead>
+						<TableHead className="w-10 pl-4"></TableHead>
+						<TableHead className="w-[320px] py-4 text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80">
+							Admin Details
+						</TableHead>
 						<TableHead>Status</TableHead>
 						<TableHead>Added Date</TableHead>
 						<TableHead className="text-right">Actions</TableHead>
@@ -98,6 +104,7 @@ export function AdminTable({ admins }: AdminTableProps) {
 								key={admin.id}
 								className="hover:bg-muted/30 transition-colors"
 							>
+								<TableCell className="w-10 pl-4" />
 								<TableCell className="py-4">
 									<div className="flex flex-col">
 										<span className="font-semibold text-foreground/90 leading-tight">
@@ -141,43 +148,51 @@ export function AdminTable({ admins }: AdminTableProps) {
 										<Button
 											variant="ghost"
 											size="sm"
-											className="text-rose-600 hover:text-rose-700 hover:bg-rose-50/50 dark:hover:bg-rose-900/20 transition-all font-semibold"
-											onClick={() => {
-												setSelectedAdmin(admin);
-												setActionType("block");
-											}}
+											className="h-8 px-3 text-rose-600 hover:text-rose-700 hover:bg-rose-50/50 dark:hover:bg-rose-900/20 transition-all font-bold text-[11px] rounded-lg gap-2"
+											onClick={() => handleActionPreview(admin, "block")}
 											disabled={processing?.adminId === admin.id}
 										>
-											<ShieldAlert className="w-4 h-4 mr-2" />
-											Block
+											<ShieldAlert className="w-3.5 h-3.5" />
+											Block Access
 										</Button>
 									) : (
 										<Button
 											variant="ghost"
 											size="sm"
-											className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all font-semibold"
-											onClick={() => {
-												setSelectedAdmin(admin);
-												setActionType("unblock");
-											}}
+											className="h-8 px-3 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all font-bold text-[11px] rounded-lg gap-2"
+											onClick={() => handleActionPreview(admin, "unblock")}
 											disabled={processing?.adminId === admin.id}
 										>
-											<ShieldCheck className="w-4 h-4 mr-2" />
-											Unblock
+											<ShieldCheck className="w-3.5 h-3.5" />
+											Restore Access
 										</Button>
 									)}
 								</TableCell>
 							</TableRow>
 						))
 					)}
+					{admins.length > 0 && (
+						<TableRow className="hover:bg-transparent">
+							<TableCell
+								colSpan={5}
+								className="text-center py-4 text-xs text-muted-foreground bg-muted/10 border-t-0"
+							>
+								End of list &mdash; {admins.length} record
+								{admins.length === 1 ? "" : "s"} shown
+							</TableCell>
+						</TableRow>
+					)}
 				</TableBody>
 			</Table>
 
 			<ConfirmModal
-				isOpen={!!selectedAdmin && !!actionType}
+				isOpen={isOpen}
 				onClose={() => {
-					setSelectedAdmin(null);
-					setActionType(null);
+					setIsOpen(false);
+					setTimeout(() => {
+						setSelectedAdmin(null);
+						setActionType(null);
+					}, 200);
 				}}
 				onConfirm={handleAction}
 				title={

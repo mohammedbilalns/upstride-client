@@ -40,7 +40,8 @@ export function ProfessionTable({
 				<Table>
 					<TableHeader className="bg-muted/50">
 						<TableRow className="hover:bg-transparent">
-							<TableHead className="pl-6 text-xs font-bold uppercase tracking-wider">
+							<TableHead className="w-10 pl-4"></TableHead>
+							<TableHead className="text-xs font-bold uppercase tracking-wider">
 								Profession Name
 							</TableHead>
 							<TableHead className="text-xs font-bold uppercase tracking-wider">
@@ -55,7 +56,7 @@ export function ProfessionTable({
 						{professions.length === 0 ? (
 							<TableRow>
 								<TableCell
-									colSpan={3}
+									colSpan={4}
 									className="text-center py-12 text-muted-foreground font-medium italic"
 								>
 									No professions added yet.
@@ -70,19 +71,22 @@ export function ProfessionTable({
 										!profession.isActive && "opacity-60 bg-muted/20",
 									)}
 								>
-									<TableCell className="font-semibold pl-6">
+									<TableCell className="w-10 pl-4" />
+									<TableCell className="font-semibold">
 										<div className="flex items-center gap-2">
 											{profession.name}
-											<Badge
-												variant={profession.isActive ? "default" : "secondary"}
-												className="h-4 px-1 text-[9px]"
-											>
-												{profession.isActive ? "Active" : "Disabled"}
-											</Badge>
+											{!profession.isActive && (
+												<Badge
+													variant="outline"
+													className="bg-rose-500/10 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400 border-rose-500/20 hover:bg-rose-500/20 h-5 px-2 text-[10px]"
+												>
+													Disabled
+												</Badge>
+											)}
 										</div>
 									</TableCell>
 									<TableCell>
-										<span className="text-xs font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+										<span className="text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-md">
 											{profession.slug}
 										</span>
 									</TableCell>
@@ -91,7 +95,7 @@ export function ProfessionTable({
 											<Button
 												size="sm"
 												variant="ghost"
-												className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10 opacity-0 group-hover:opacity-100"
+												className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10 opacity-40 group-hover:opacity-100"
 												onClick={() => onEditProfession(profession.id)}
 												title="Edit Profession"
 											>
@@ -101,7 +105,7 @@ export function ProfessionTable({
 												<Button
 													size="sm"
 													variant="ghost"
-													className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100"
+													className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-destructive hover:bg-destructive/10 opacity-40 group-hover:opacity-100"
 													onClick={() => onDisableProfession(profession.id)}
 													title="Disable Profession"
 												>
@@ -111,7 +115,7 @@ export function ProfessionTable({
 												<Button
 													size="sm"
 													variant="ghost"
-													className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10 opacity-0 group-hover:opacity-100"
+													className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10 opacity-40 group-hover:opacity-100"
 													onClick={() => onEnableProfession(profession.id)}
 													title="Enable Profession"
 												>

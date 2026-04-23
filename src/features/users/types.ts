@@ -24,6 +24,8 @@ export interface GetUsersResponse {
 	page: number;
 	limit: number;
 	totalPages: number;
+	totalUsers: number;
+	totalMentors: number;
 }
 
 export interface BlockUserInput {

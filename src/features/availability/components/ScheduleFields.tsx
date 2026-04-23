@@ -26,7 +26,7 @@ export function CreateRuleScheduleFields({
 			<form.Field name="startDate">
 				{/* FIX: type error  */}
 				{(field) => (
-					<div className="space-y-2">
+					<div className="flex flex-col gap-2">
 						<Label htmlFor={field.name}>Start Date</Label>
 						<Popover>
 							<PopoverTrigger asChild>
@@ -72,7 +72,7 @@ export function CreateRuleScheduleFields({
 			</form.Field>
 			<form.Field name="endDate">
 				{(field) => (
-					<div className="space-y-2">
+					<div className="flex flex-col gap-2">
 						<Label htmlFor={field.name}>End Date</Label>
 						<Popover>
 							<PopoverTrigger asChild>
@@ -125,7 +125,7 @@ export function CreateRuleScheduleFields({
 			</form.Field>
 			<form.Field name="startTime">
 				{(field) => (
-					<div className="space-y-2">
+					<div className="flex flex-col gap-2">
 						<Label htmlFor={field.name}>Daily Start Time</Label>
 						<Input
 							id={field.name}
@@ -149,7 +149,7 @@ export function CreateRuleScheduleFields({
 			<form.Field name="endTime">
 				{/* FIX: type error */}
 				{(field) => (
-					<div className="space-y-2">
+					<div className="flex flex-col gap-2">
 						<Label htmlFor={field.name}>Daily End Time</Label>
 						<Input
 							id={field.name}

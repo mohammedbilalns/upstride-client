@@ -81,7 +81,7 @@ export default function AdminSidebar({
 	return (
 		<aside
 			className={cn(
-				"w-72 h-[calc(100vh-1.5rem)] fixed top-3 left-3 rounded-xl glass-dark shadow-soft flex flex-col pt-6 pb-4 animate-soft-in transition-transform duration-200 z-50",
+				"w-72 h-screen fixed top-0 left-0 bg-background border-r border-border flex flex-col pt-6 pb-4 animate-soft-in transition-transform duration-200 z-50",
 				isOpen ? "translate-x-0" : "-translate-x-[110%]",
 				"lg:translate-x-0",
 			)}
@@ -113,10 +113,10 @@ export default function AdminSidebar({
 							key={item.to}
 							to={item.to}
 							className={cn(
-								"flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all group",
+								"flex items-center justify-between px-3 py-2.5 transition-colors group",
 								isActive
-									? "bg-primary/10 text-primary shadow-sm"
-									: "text-muted-foreground hover:bg-muted hover:text-foreground",
+									? "border-l-2 border-primary text-foreground font-medium bg-transparent"
+									: "border-l-2 border-transparent text-muted-foreground opacity-60 hover:opacity-100 hover:text-foreground hover:bg-muted/50 font-normal",
 							)}
 						>
 							<div className="flex items-center gap-3">
@@ -135,13 +135,9 @@ export default function AdminSidebar({
 			</nav>
 
 			{/* Bottom Section */}
-			<div className="px-4 mt-auto pt-6 space-y-6">
-				<div className="flex justify-center border-t border-border/60 pt-6">
-					<ThemeToggle />
-				</div>
-
+			<div className="px-4 mt-auto space-y-4">
 				{/* User Profile Info */}
-				<div className="p-3 rounded-xl bg-muted/40 border border-border/40 backdrop-blur-sm">
+				<div className="p-3 rounded-xl bg-muted/20 border border-border/40 backdrop-blur-sm">
 					<div className="flex items-center gap-3">
 						<Avatar className="h-10 w-10 border border-border/50 shadow-sm">
 							<AvatarImage
@@ -163,16 +159,18 @@ export default function AdminSidebar({
 					</div>
 				</div>
 
-				{/* Logout Button */}
-				<Button
-					variant="outline"
-					className="w-full justify-start text-destructive hover:bg-destructive/10 hover:text-destructive border-border/60"
-					onClick={handleLogout}
-					disabled={logoutMutation.isPending}
-				>
-					<LogOut className="mr-2 h-4 w-4" />
-					Logout
-				</Button>
+				<div className="flex items-center justify-between gap-2">
+					<Button
+						variant="ghost"
+						className="flex-1 justify-start text-muted-foreground hover:text-foreground hover:bg-muted/50"
+						onClick={handleLogout}
+						disabled={logoutMutation.isPending}
+					>
+						<LogOut className="mr-2 h-4 w-4" />
+						Logout
+					</Button>
+					<ThemeToggle />
+				</div>
 			</div>
 		</aside>
 	);
