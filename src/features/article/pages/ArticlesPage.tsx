@@ -1,12 +1,11 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Loader2, Newspaper, Plus, Search } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { getMentorCategoriesQueryOptions } from "@/features/mentor-discovery/hooks/queries/useMentorDiscoveryQueries";
 import { Route } from "@/routes/_app-layout/_user-layout/articles/index";
-import { useDebounce } from "@/shared/hooks/useDebounce";
 import { ArticleCard } from "../components/ArticleCard";
 import { ArticleFilters } from "../components/ArticleFilters";
 import { articleInfiniteQueries, articleQueries } from "../hooks/queries";
@@ -16,8 +15,11 @@ import type { ArticleSearch } from "../validators/article-search-params.schema";
 export function ArticlesPage() {
 	const navigate = useNavigate({ from: Route.fullPath });
 	const search = Route.useSearch();
-	const [searchInput, setSearchInput] = useState(search.search ?? "");
-	const debouncedSearch = useDebounce(searchInput, 400);
+
+	const [inputValue, setInputValue] = useState(search.search ?? "");
+
+	const lastPushedRef = useRef(search.search ?? "");
+	const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
 	const { auth } = Route.useRouteContext();
 	const isMentor = auth.user?.role === "MENTOR";
@@ -40,21 +42,33 @@ export function ArticlesPage() {
 	);
 
 	useEffect(() => {
-		if ((search.search ?? "") !== debouncedSearch) {
-			updateSearch({ search: debouncedSearch || undefined });
+		const urlValue = search.search ?? "";
+		if (urlValue !== lastPushedRef.current) {
+			setInputValue(urlValue);
+			lastPushedRef.current = urlValue;
 		}
-	}, [debouncedSearch, search.search, updateSearch]);
+	}, [search.search]);
 
-	useEffect(() => {
-		if ((search.search ?? "") !== searchInput) {
-			setSearchInput(search.search ?? "");
-		}
-	}, [search.search, searchInput]);
+	function handleSearchInput(e: React.ChangeEvent<HTMLInputElement>) {
+		const value = e.target.value;
+		setInputValue(value);
+		clearTimeout(debounceRef.current);
+		debounceRef.current = setTimeout(() => {
+			lastPushedRef.current = value;
+			navigate({
+				search: (prev: ArticleSearch) => ({
+					...prev,
+					search: value || undefined,
+				}),
+			});
+		}, 400);
+	}
 
 	const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
 		useInfiniteQuery(
 			articleInfiniteQueries.list({
 				search: search.search,
+				tag: search.tag,
 				skill: search.skill,
 				category: search.category,
 			}),
@@ -77,10 +91,6 @@ export function ArticlesPage() {
 						<h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
 							Articles & Insights
 						</h1>
-						<p className="text-sm text-muted-foreground">
-							Explore expert perspectives and stay updated with the latest in
-							tech and career.
-						</p>
 					</div>
 					{isMentor && (
 						<Button
@@ -105,8 +115,8 @@ export function ArticlesPage() {
 									<Input
 										placeholder="Search articles..."
 										className="h-11 pl-11 rounded-xl bg-white/60 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-800 transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary/20 hover:bg-white/80 dark:hover:bg-zinc-900/60"
-										value={searchInput}
-										onChange={(e) => setSearchInput(e.target.value)}
+										value={inputValue}
+										onChange={handleSearchInput}
 									/>
 								</div>
 							</div>
@@ -122,6 +132,7 @@ export function ArticlesPage() {
 									navigate({
 										search: {
 											search: undefined,
+											tag: undefined,
 											skill: undefined,
 											category: undefined,
 										},

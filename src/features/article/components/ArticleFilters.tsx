@@ -71,7 +71,7 @@ export function ArticleFilters({
 						</Select>
 					</div>
 
-					{(search.category || search.search) && (
+					{(search.category || search.search || search.tag) && (
 						<Button
 							variant="ghost"
 							size="sm"
@@ -85,27 +85,29 @@ export function ArticleFilters({
 				</div>
 			</div>
 
-			<div className="rounded-2xl border border-zinc-200/70 bg-primary/10 dark:bg-primary/15 p-5">
-				<h4 className="text-sm font-bold text-primary mb-2">Trending Tags</h4>
+			<div className="rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm shadow-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-4">
+				<h4 className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400 uppercase mb-3">
+					Trending Tags
+				</h4>
 				{isLoadingTags ? (
-					<div className="flex flex-wrap gap-2 animate-pulse">
+					<div className="flex flex-wrap gap-1.5 animate-pulse">
 						{[1, 2, 3, 4].map((i) => (
 							<div
 								key={i}
-								className="h-6 w-16 bg-white/60 dark:bg-zinc-900/40 rounded-full"
+								className="h-5 w-14 bg-zinc-200 dark:bg-zinc-800 rounded-md"
 							/>
 						))}
 					</div>
 				) : topTags.length === 0 ? (
 					<p className="text-xs text-zinc-500 italic">No tags yet</p>
 				) : (
-					<div className="flex flex-wrap gap-2">
+					<div className="flex flex-wrap gap-1.5">
 						{topTags.map((t) => (
 							<Badge
 								key={t.tag}
 								variant="secondary"
-								onClick={() => onUpdate({ search: t.tag })}
-								className="bg-white/80 dark:bg-zinc-900/50 hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer border-transparent"
+								onClick={() => onUpdate({ tag: t.tag })}
+								className="bg-zinc-100/80 dark:bg-zinc-800/60 text-zinc-500 dark:text-zinc-400 text-[10px] font-normal border border-zinc-200 dark:border-zinc-700/60 rounded-md px-1.5 py-0 hover:bg-zinc-200 dark:hover:bg-zinc-700 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors cursor-pointer"
 							>
 								#{t.tag}
 							</Badge>

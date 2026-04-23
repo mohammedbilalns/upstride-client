@@ -4,10 +4,11 @@ import {
 	passwordSchema,
 } from "@/shared/validators/password.schema";
 import { phoneSchema } from "@/shared/validators/phone.schema";
+import { nameSchema } from "@/shared/validators/name.schema";
 
 export const registerSchema = z
 	.object({
-		name: z.string().trim().min(2, "Name must be at least 2 characters"),
+		name: nameSchema,
 		email: z.email("Please enter a valid email").trim(),
 		phone: phoneSchema,
 		password: passwordSchema,

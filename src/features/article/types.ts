@@ -62,6 +62,7 @@ export interface ArticleReaction {
 export interface GetArticlesInput {
 	page: number;
 	search?: string;
+	tag?: string;
 	skill?: string;
 	category?: string;
 	authorId?: string;

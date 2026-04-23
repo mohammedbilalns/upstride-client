@@ -25,6 +25,7 @@ export const mentorSkillSchema = z.object({
 	}),
 });
 
+//TODO: update the schemas to be more stricter
 export const RegisterMentorSchema = z.object({
 	bio: z.string().trim().min(10, "Bio must be at least 10 characters long"),
 	currentRoleId: z.string().trim().min(1, "Please select your current role"),

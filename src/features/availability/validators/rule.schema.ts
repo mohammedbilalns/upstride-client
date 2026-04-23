@@ -1,3 +1,4 @@
+import { nameSchema } from "@/shared/validators/name.schema";
 import { z } from "zod";
 
 export const DaySchema = z.enum([
@@ -12,11 +13,7 @@ export const DaySchema = z.enum([
 
 export const availabilityRuleSchema = z
 	.object({
-		name: z
-			.string()
-			.trim()
-			.min(2, "Name must be at least 2 characters")
-			.max(100, "Name must be at most 100 characters"),
+		name: nameSchema,
 		description: z
 			.string()
 			.trim()
