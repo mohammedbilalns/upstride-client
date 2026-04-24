@@ -61,6 +61,9 @@ export interface AvailabilitySlot {
 	endTime: string; // ISO
 	durationMinutes: number;
 	price: number;
+	status: "AVAILABLE" | "BOOKED" | "BOOKED_PENDING";
+	bookingId?: string;
+	bookingPaymentStatus?: "PENDING" | "COMPLETED" | "FAILED" | "REFUNDED";
 }
 
 export interface PublicMentorAvailableSlotsResponse {

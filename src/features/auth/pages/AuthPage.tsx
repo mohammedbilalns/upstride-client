@@ -1,6 +1,8 @@
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Zap } from "lucide-react";
 import { useState } from "react";
 import { OnboardingView } from "@/features/onboarding/components/OnboardingView";
+import { env } from "@/shared/config/env";
 import { AuthQuoteCarousel } from "../components/AuthQuoteCarousel";
 import { ChangePasswordView } from "../components/ChangePasswordView";
 import { ForgotPasswordOtpView } from "../components/ForgotPasswordOtpView";
@@ -40,57 +42,63 @@ export default function AuthPage() {
 	};
 
 	return (
-		<div className="min-h-screen bg-background flex">
-			{/* Left Slider */}
-			<AuthQuoteCarousel />
+		<GoogleOAuthProvider clientId={env.GOOGLE_CLIENT_ID}>
+			<div className="min-h-screen bg-background flex">
+				{/* Left Slider */}
+				<AuthQuoteCarousel />
 
-			{/* Right form  */}
-			<div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
-				{/* Mobile logo */}
-				<div className="md:hidden flex items-center gap-2.5 mb-8">
-					<div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-						<Zap className="h-4 w-4 text-primary-foreground" />
+				{/* Right form  */}
+				<div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
+					{/* Mobile logo */}
+					<div className="md:hidden flex items-center gap-2.5 mb-8">
+						<div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+							<Zap className="h-4 w-4 text-primary-foreground" />
+						</div>
+						<span className="text-xl font-bold tracking-tight">UpStride</span>
 					</div>
-					<span className="text-xl font-bold tracking-tight">UpStride</span>
-				</div>
 
-				<noscript>
-					<title>{titles[view]}</title>
-				</noscript>
+					<noscript>
+						<title>{titles[view]}</title>
+					</noscript>
 
-				<div
-					className={`w-full ${view === "onboarding" ? "max-w-2xl" : "max-w-sm"}`}
-				>
-					{view === "login" && <LoginView onNavigate={handleNavigate} />}
+					<div
+						className={`w-full ${view === "onboarding" ? "max-w-2xl" : "max-w-sm"}`}
+					>
+						{view === "login" && <LoginView onNavigate={handleNavigate} />}
 
-					{view === "register" && <RegisterView onNavigate={handleNavigate} />}
+						{view === "register" && (
+							<RegisterView onNavigate={handleNavigate} />
+						)}
 
-					{view === "register-otp" && (
-						<OtpView email={pendingEmail} onNavigate={handleNavigate} />
-					)}
+						{view === "register-otp" && (
+							<OtpView email={pendingEmail} onNavigate={handleNavigate} />
+						)}
 
-					{view === "forgot-password" && (
-						<ForgotPasswordView onNavigate={handleNavigate} />
-					)}
+						{view === "forgot-password" && (
+							<ForgotPasswordView onNavigate={handleNavigate} />
+						)}
 
-					{view === "forgot-password-otp" && (
-						<ForgotPasswordOtpView
-							email={pendingEmail}
-							onNavigate={handleNavigate}
-						/>
-					)}
+						{view === "forgot-password-otp" && (
+							<ForgotPasswordOtpView
+								email={pendingEmail}
+								onNavigate={handleNavigate}
+							/>
+						)}
 
-					{view === "change-password" && (
-						<ChangePasswordView
-							email={pendingEmail}
-							resetToken={resetToken}
-							onNavigate={handleNavigate}
-						/>
-					)}
+						{view === "change-password" && (
+							<ChangePasswordView
+								email={pendingEmail}
+								resetToken={resetToken}
+								onNavigate={handleNavigate}
+							/>
+						)}
 
-					{view === "onboarding" && <OnboardingView setupToken={setupToken} />}
+						{view === "onboarding" && (
+							<OnboardingView setupToken={setupToken} />
+						)}
+					</div>
 				</div>
 			</div>
-		</div>
+		</GoogleOAuthProvider>
 	);
 }

@@ -1,11 +1,9 @@
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClientProvider } from "@tanstack/react-query";
 import ReactDOM from "react-dom/client";
 import App from "./app/App";
 import { ThemeProvider } from "./app/contexts/ThemeContext";
 import { queryClient } from "./app/router/routerConfig";
 import { Toaster } from "./components/ui/Sonner";
-import { env } from "./shared/config/env";
 import { PushNotificationService } from "./shared/services/push-notification.service";
 
 PushNotificationService.register();
@@ -18,10 +16,8 @@ if (!rootElement.innerHTML) {
 	root.render(
 		<ThemeProvider>
 			<QueryClientProvider client={queryClient}>
-				<GoogleOAuthProvider clientId={env.GOOGLE_CLIENT_ID}>
-					<App />
-					<Toaster richColors position="bottom-right" />
-				</GoogleOAuthProvider>
+				<App />
+				<Toaster richColors position="bottom-right" />
 			</QueryClientProvider>
 		</ThemeProvider>,
 	);

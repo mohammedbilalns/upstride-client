@@ -157,7 +157,7 @@ export function PublicMentorProfilePage({
 
 	const profile = profileQuery.data?.data.profile;
 	const isReported = profileQuery.data?.data.isReported ?? false;
-	const availableSlots = slotsQuery.data?.data.slots ?? [];
+	const slots = slotsQuery.data?.data.slots ?? [];
 	const coinBalance = coinBalanceQuery.data?.coinBalance ?? 0;
 	const coinValue = coinBalanceQuery.data?.coinValue;
 	const directPaymentAmount =
@@ -296,7 +296,7 @@ export function PublicMentorProfilePage({
 						selectedDate={selectedDate}
 						setSelectedDate={setSelectedDate}
 						isLoading={slotsQuery.isLoading}
-						availableSlots={availableSlots}
+						availableSlots={slots}
 						handleBookClick={handleBookClick}
 						bookingSlotId={bookingSlotId}
 						isBooking={bookMutation.isPending}

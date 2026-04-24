@@ -5,7 +5,6 @@ import {
 	Clock,
 	Coins,
 	CreditCard,
-	Download,
 	Video,
 	XCircle,
 } from "lucide-react";
@@ -195,6 +194,7 @@ export function MentorSessionsPage() {
 				selectedBooking={selectedBooking}
 				personLabel="Mentee"
 				personName={selectedBooking?.menteeName}
+				showReceipt={false}
 			/>
 		</div>
 	);
@@ -227,12 +227,6 @@ function MentorSessionCard({
 
 	const canCancel =
 		showCancel && !isCancelled && booking.status !== "COMPLETED";
-
-	const canDownloadReceipt =
-		!isCancelled &&
-		booking.paymentType === "STRIPE" &&
-		booking.paymentStatus === "COMPLETED" &&
-		["CONFIRMED", "STARTED", "COMPLETED"].includes(booking.status);
 
 	return (
 		<div className="flex flex-col gap-3 rounded-xl border border-border/60 bg-card/40 p-4 sm:flex-row sm:items-center sm:justify-between hover:border-border transition-colors">
@@ -293,17 +287,6 @@ function MentorSessionCard({
 				>
 					View details
 				</Button>
-				{canDownloadReceipt && (
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => sessionBookingService.downloadReceipt(booking.id)}
-						className="text-xs"
-					>
-						<Download className="h-3.5 w-3.5 mr-1.5" />
-						Download Receipt
-					</Button>
-				)}
 				{canCancel && (
 					<Button
 						variant="outline"

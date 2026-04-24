@@ -62,14 +62,16 @@ export function BookingCalendarSelector({
 					)}
 					{!isLoading && availableSlots.length === 0 && (
 						<p className="text-sm text-muted-foreground">
-							No available slots for this day.
+							No slots for this day.
 						</p>
 					)}
 					<div className="grid grid-cols-1 gap-3">
 						{availableSlots.map((slot) => (
 							<div
 								key={slot.startTime}
-								className="flex flex-wrap sm:flex-nowrap items-center justify-between rounded-lg border border-border/60 p-3 gap-2"
+								className={`flex flex-wrap sm:flex-nowrap items-center justify-between rounded-lg border border-border/60 p-3 gap-2 ${
+									slot.status === "AVAILABLE" ? "bg-background" : "bg-muted/40"
+								}`}
 							>
 								<div>
 									<p className="font-medium text-sm">
@@ -81,18 +83,34 @@ export function BookingCalendarSelector({
 									</p>
 								</div>
 								<div className="flex items-center gap-2">
-									<Badge variant="secondary" className="hidden sm:inline-flex">
-										Available
-									</Badge>
-									<Button
-										size="sm"
-										onClick={() => handleBookClick(slot)}
-										disabled={isBooking && bookingSlotId === slot.startTime}
-									>
-										{isBooking && bookingSlotId === slot.startTime
-											? "Booking..."
-											: "Book"}
-									</Button>
+									{slot.status === "AVAILABLE" ? (
+										<>
+											<Badge
+												variant="secondary"
+												className="hidden sm:inline-flex"
+											>
+												Available
+											</Badge>
+											<Button
+												size="sm"
+												onClick={() => handleBookClick(slot)}
+												disabled={isBooking && bookingSlotId === slot.startTime}
+											>
+												{isBooking && bookingSlotId === slot.startTime
+													? "Booking..."
+													: "Book"}
+											</Button>
+										</>
+									) : (
+										<Badge
+											variant="outline"
+											className="hidden sm:inline-flex border-amber-300 text-amber-700 dark:border-amber-900 dark:text-amber-300"
+										>
+											{slot.status === "BOOKED_PENDING"
+												? "Booked, payment pending"
+												: "Booked"}
+										</Badge>
+									)}
 								</div>
 							</div>
 						))}

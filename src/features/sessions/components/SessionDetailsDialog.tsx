@@ -19,6 +19,7 @@ interface SessionDetailsDialogProps {
 	selectedBooking: Booking | null;
 	personLabel?: string;
 	personName?: string | null;
+	showReceipt?: boolean;
 }
 
 export function SessionDetailsDialog({
@@ -27,6 +28,7 @@ export function SessionDetailsDialog({
 	selectedBooking,
 	personLabel = "Mentor",
 	personName,
+	showReceipt = true,
 }: SessionDetailsDialogProps) {
 	const isCancelled =
 		selectedBooking?.status === "CANCELLED_BY_MENTEE" ||
@@ -175,7 +177,7 @@ export function SessionDetailsDialog({
 							</div>
 						)}
 
-						{canDownloadReceipt && (
+						{showReceipt && canDownloadReceipt && (
 							<div className="space-y-1">
 								<p className="text-xs uppercase tracking-wide text-muted-foreground">
 									Receipt
