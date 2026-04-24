@@ -97,6 +97,10 @@ export const ROUTES = {
 		CONTENT: "/content",
 		SESSIONS: "/sessions",
 	},
+	DASHBOARD: {
+		BASE: "/dashboard",
+		ACTIVITY_OVERVIEW: "/activity-overview",
+	},
 	MENTOR_LISTS: {
 		BASE: "/mentor-lists",
 		ROOT: "/",
