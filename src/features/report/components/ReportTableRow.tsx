@@ -35,7 +35,10 @@ export function ReportTableRow({
 	onAction,
 	isProcessing,
 }: ReportTableRowProps) {
-	const canUnblock =
+	const isArticleRestored =
+		report.targetType === "ARTICLE" &&
+		report.actionTaken?.toLowerCase().includes("unblocked article");
+	const canRestore =
 		report.targetType === "ARTICLE" &&
 		report.isAppealSubmitted &&
 		report.appealedAt &&
@@ -175,21 +178,37 @@ export function ReportTableRow({
 									</Button>
 								)
 							))}
-						{canUnblock && (
-							<Button
-								variant="ghost"
-								size="sm"
-								className="h-8 px-3 text-primary hover:text-primary hover:bg-primary/10 transition-all font-bold text-[11px] rounded-lg gap-1.5"
-								onClick={(e) => {
-									e.stopPropagation();
-									onAction(report, "unblock-article");
-								}}
-								disabled={isProcessing}
-							>
-								<RotateCcw className="w-3 h-3" />
-								Restore Content
-							</Button>
-						)}
+						{report.targetType === "ARTICLE" &&
+							(isArticleRestored ? (
+								<Button
+									variant="ghost"
+									size="sm"
+									className="h-8 px-3 text-rose-600 hover:text-rose-700 hover:bg-rose-50/50 transition-all font-bold text-[11px] rounded-lg"
+									onClick={(e) => {
+										e.stopPropagation();
+										onAction(report, "block-article");
+									}}
+									disabled={isProcessing}
+								>
+									Block Article
+								</Button>
+							) : (
+								canRestore && (
+									<Button
+										variant="ghost"
+										size="sm"
+										className="h-8 px-3 text-primary hover:text-primary hover:bg-primary/10 transition-all font-bold text-[11px] rounded-lg gap-1.5"
+										onClick={(e) => {
+											e.stopPropagation();
+											onAction(report, "unblock-article");
+										}}
+										disabled={isProcessing}
+									>
+										<RotateCcw className="w-3 h-3" />
+										Restore Content
+									</Button>
+								)
+							))}
 					</div>
 				</TableCell>
 			</TableRow>

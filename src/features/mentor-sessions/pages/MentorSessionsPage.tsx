@@ -105,7 +105,7 @@ export function MentorSessionsPage() {
 					<div className="flex items-center gap-3">
 						<span className="text-sm text-muted-foreground">Show</span>
 						<Select value={search.filter} onValueChange={handleFilterChange}>
-							<SelectTrigger className="w-[180px]">
+							<SelectTrigger className="w-45">
 								<SelectValue placeholder="Upcoming" />
 							</SelectTrigger>
 							<SelectContent>

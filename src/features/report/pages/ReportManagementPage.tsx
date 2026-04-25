@@ -58,7 +58,6 @@ export function ReportManagementPage() {
 								value === "all" ||
 								value === "PENDING" ||
 								value === "RESOLVED" ||
-								value === "REJECTED" ||
 								value === "CLOSED"
 									? value
 									: "all";
@@ -72,7 +71,6 @@ export function ReportManagementPage() {
 							<SelectItem value="all">All status</SelectItem>
 							<SelectItem value="PENDING">Pending</SelectItem>
 							<SelectItem value="RESOLVED">Resolved</SelectItem>
-							<SelectItem value="REJECTED">Rejected</SelectItem>
 							<SelectItem value="CLOSED">Closed</SelectItem>
 						</SelectContent>
 					</Select>
