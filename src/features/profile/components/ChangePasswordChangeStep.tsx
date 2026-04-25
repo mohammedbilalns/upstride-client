@@ -1,6 +1,7 @@
 import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { PasswordField } from "@/features/auth/components/PasswordField";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import type { ChangeForm, ChangePasswordStep } from "./ChangePasswordModal";
 import { ChangePasswordStepBadge } from "./ChangePasswordStepBadge";
 
@@ -40,7 +41,7 @@ export function ChangePasswordChangeStep({
 						onBlur={field.handleBlur}
 						onChange={(value) => field.handleChange(value)}
 						disabled={step !== "change" || isLoading}
-						error={field.state.meta.errors?.[0]?.message?.toString()}
+						error={getErrorMessage(field.state.meta.errors?.[0])}
 					/>
 				)}
 			</form.Field>
@@ -54,7 +55,7 @@ export function ChangePasswordChangeStep({
 						onBlur={field.handleBlur}
 						onChange={(value) => field.handleChange(value)}
 						disabled={step !== "change" || isLoading}
-						error={field.state.meta.errors?.[0]?.message?.toString()}
+						error={getErrorMessage(field.state.meta.errors?.[0])}
 					/>
 				)}
 			</form.Field>

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import { useCreateAdmin } from "../hooks/mutations/useCreateAdmin";
 import { createAdminSchema } from "../validators/create-admin.schema";
 
@@ -77,7 +78,9 @@ export function CreateAdminDialog({
 									onBlur={field.handleBlur}
 									onChange={(event) => field.handleChange(event.target.value)}
 								/>
-								<FieldError message={field.state.meta.errors?.[0]?.message} />
+								<FieldError
+									message={getErrorMessage(field.state.meta.errors?.[0])}
+								/>
 							</div>
 						)}
 					</form.Field>
@@ -93,7 +96,9 @@ export function CreateAdminDialog({
 									onBlur={field.handleBlur}
 									onChange={(event) => field.handleChange(event.target.value)}
 								/>
-								<FieldError message={field.state.meta.errors?.[0]?.message} />
+								<FieldError
+									message={getErrorMessage(field.state.meta.errors?.[0])}
+								/>
 							</div>
 						)}
 					</form.Field>

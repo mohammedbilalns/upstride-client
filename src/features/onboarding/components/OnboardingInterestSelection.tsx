@@ -1,6 +1,7 @@
 import { ArrowRight, CheckCircle } from "lucide-react";
 import FieldError from "@/components/common/FieldError";
 import { Button } from "@/components/ui/Button";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import type { OnboardingForm } from "./OnboardingView";
 
 interface OnboardingInterestSelectionProps {
@@ -65,7 +66,7 @@ export function OnboardingInterestSelection({
 					<p className="text-xs text-muted-foreground">
 						{field.state.value.length} / 5 selected
 					</p>
-					<FieldError message={field.state.meta.errors?.[0]?.message} />
+					<FieldError message={getErrorMessage(field.state.meta.errors?.[0])} />
 
 					<Button
 						type="button"

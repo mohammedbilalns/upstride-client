@@ -3,6 +3,7 @@ import { Loader2, Send } from "lucide-react";
 import FieldError from "@/components/common/FieldError";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Textarea";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import { commentSchema } from "@/features/article/validators/comment.schema";
 import { useProfile } from "@/features/profile/hooks/queries/useProfile";
 import { useArticleMutations } from "../hooks/mutations";
@@ -84,7 +85,7 @@ export function CommentForm({
 							onChange={(e) => field.handleChange(e.target.value)}
 						/>
 						<FieldError
-							message={field.state.meta.errors?.[0]?.message as string}
+							message={getErrorMessage(field.state.meta.errors?.[0])}
 						/>
 					</div>
 				)}

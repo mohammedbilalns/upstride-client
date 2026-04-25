@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Separator } from "@/components/ui/Separator";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import { useLogin } from "../hooks/mutations/useLogin";
 import type { AuthView } from "../types";
 import { loginSchema } from "../validators";
@@ -96,7 +97,7 @@ export function LoginView({ onNavigate }: Props) {
 							<FieldError
 								message={
 									field.state.meta.isTouched
-										? field.state.meta.errors?.[0]?.message
+										? getErrorMessage(field.state.meta.errors?.[0])
 										: undefined
 								}
 							/>
@@ -113,7 +114,7 @@ export function LoginView({ onNavigate }: Props) {
 							onBlur={field.handleBlur}
 							onChange={field.handleChange}
 							autoComplete="current-password"
-							error={field.state.meta.errors?.[0]?.message}
+							error={getErrorMessage(field.state.meta.errors?.[0])}
 							labelAction={
 								<button
 									type="button"

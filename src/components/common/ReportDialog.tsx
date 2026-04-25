@@ -13,6 +13,7 @@ import {
 	DialogTrigger,
 } from "@/components/ui/Dialog";
 import { Label } from "@/components/ui/Label";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import {
 	Select,
 	SelectContent,
@@ -139,7 +140,7 @@ export function ReportDialog({
 									</SelectContent>
 								</Select>
 								<FieldError
-									message={field.state.meta.errors?.[0]?.message as string}
+									message={getErrorMessage(field.state.meta.errors?.[0])}
 								/>
 							</div>
 						)}
@@ -158,7 +159,7 @@ export function ReportDialog({
 									onChange={(e) => field.handleChange(e.target.value)}
 								/>
 								<FieldError
-									message={field.state.meta.errors?.[0]?.message as string}
+									message={getErrorMessage(field.state.meta.errors?.[0])}
 								/>
 							</div>
 						)}

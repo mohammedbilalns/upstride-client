@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Separator } from "@/components/ui/Separator";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import { useRegister } from "../hooks/mutations/useRegister";
 import type { AuthView } from "../types";
 import { registerSchema } from "../validators";
@@ -93,7 +94,9 @@ export function RegisterView({ onNavigate }: Props) {
 								onBlur={field.handleBlur}
 								onChange={(e) => field.handleChange(e.target.value)}
 							/>
-							<FieldError message={field.state.meta.errors?.[0]?.message} />
+							<FieldError
+								message={getErrorMessage(field.state.meta.errors?.[0])}
+							/>
 						</div>
 					)}
 				</form.Field>
@@ -111,7 +114,9 @@ export function RegisterView({ onNavigate }: Props) {
 								onBlur={field.handleBlur}
 								onChange={(e) => field.handleChange(e.target.value)}
 							/>
-							<FieldError message={field.state.meta.errors?.[0]?.message} />
+							<FieldError
+								message={getErrorMessage(field.state.meta.errors?.[0])}
+							/>
 						</div>
 					)}
 				</form.Field>
@@ -142,7 +147,9 @@ export function RegisterView({ onNavigate }: Props) {
 									}}
 								/>
 							</div>
-							<FieldError message={field.state.meta.errors?.[0]?.message} />
+							<FieldError
+								message={getErrorMessage(field.state.meta.errors?.[0])}
+							/>
 						</div>
 					)}
 				</form.Field>
@@ -157,7 +164,7 @@ export function RegisterView({ onNavigate }: Props) {
 								onBlur={field.handleBlur}
 								onChange={field.handleChange}
 								autoComplete="new-password"
-								error={field.state.meta.errors?.[0]?.message}
+								error={getErrorMessage(field.state.meta.errors?.[0])}
 							/>
 						)}
 					</form.Field>
@@ -171,7 +178,7 @@ export function RegisterView({ onNavigate }: Props) {
 								onBlur={field.handleBlur}
 								onChange={field.handleChange}
 								autoComplete="new-password"
-								error={field.state.meta.errors?.[0]?.message}
+								error={getErrorMessage(field.state.meta.errors?.[0])}
 							/>
 						)}
 					</form.Field>

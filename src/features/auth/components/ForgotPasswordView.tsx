@@ -6,6 +6,7 @@ import FieldError from "@/components/common/FieldError";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import { useRequestPasswordReset } from "../hooks/mutations/useRequestPasswordReset";
 import type { AuthView } from "../types";
 import { forgotPasswordSchema } from "../validators";
@@ -84,7 +85,9 @@ export function ForgotPasswordView({ onNavigate }: Props) {
 								onBlur={field.handleBlur}
 								onChange={(e) => field.handleChange(e.target.value)}
 							/>
-							<FieldError message={field.state.meta.errors?.[0]?.message} />
+							<FieldError
+								message={getErrorMessage(field.state.meta.errors?.[0])}
+							/>
 						</div>
 					)}
 				</form.Field>

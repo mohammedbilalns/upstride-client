@@ -2,6 +2,7 @@ import FieldError from "@/components/common/FieldError";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import type { AvailabilityFormApi } from "./CreateRuleForm";
 
 interface CreateRuleSlotSettingsProps {
@@ -33,13 +34,7 @@ export function CreateRuleSlotSettings({ form }: CreateRuleSlotSettingsProps) {
 							</div>
 						</RadioGroup>
 						<FieldError
-							message={
-								typeof field.state.meta.errors?.[0] === "string"
-									? field.state.meta.errors[0]
-									: field.state.meta.errors?.[0]
-										? String(field.state.meta.errors[0])
-										: undefined
-							}
+							message={getErrorMessage(field.state.meta.errors?.[0])}
 						/>
 					</div>
 				)}
@@ -64,13 +59,7 @@ export function CreateRuleSlotSettings({ form }: CreateRuleSlotSettingsProps) {
 							onBlur={field.handleBlur}
 						/>
 						<FieldError
-							message={
-								typeof field.state.meta.errors?.[0] === "string"
-									? field.state.meta.errors[0]
-									: field.state.meta.errors?.[0]
-										? String(field.state.meta.errors[0])
-										: undefined
-							}
+							message={getErrorMessage(field.state.meta.errors?.[0])}
 						/>
 					</div>
 				)}

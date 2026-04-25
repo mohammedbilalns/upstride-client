@@ -1,6 +1,7 @@
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import FieldError from "@/components/common/FieldError";
 import { Button } from "@/components/ui/Button";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import type { OnboardingForm } from "./OnboardingView";
 import { LEVEL_LABELS } from "./OnboardingView";
 
@@ -139,7 +140,9 @@ export function OnboardingSkillsStep({
 								</div>
 							);
 						})}
-						<FieldError message={skillsField.state.meta.errors?.[0]?.message} />
+						<FieldError
+							message={getErrorMessage(skillsField.state.meta.errors?.[0])}
+						/>
 					</div>
 				)}
 			</form.Field>

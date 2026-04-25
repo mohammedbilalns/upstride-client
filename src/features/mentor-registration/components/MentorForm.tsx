@@ -3,6 +3,7 @@ import { ArrowRight, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import {
 	useRegisterMentor,
 	useResubmitMentor,
@@ -72,8 +73,8 @@ export function MentorForm({ existingProfile, onCancel }: MentorFormProps) {
 		},
 	});
 
-	const getErrorMessage = (errors: unknown[]) => {
-		return errors?.[0]?.message || errors?.[0]?.toString() || undefined;
+	const getFieldErrorMessage = (errors: unknown[]) => {
+		return getErrorMessage(errors?.[0]);
 	};
 
 	if (catalogQuery.isLoading) {
@@ -97,19 +98,19 @@ export function MentorForm({ existingProfile, onCancel }: MentorFormProps) {
 			<div className="grid gap-8">
 				<ProfessionalSummarySection
 					form={form}
-					getErrorMessage={getErrorMessage}
+					getErrorMessage={getFieldErrorMessage}
 				/>
 				<ExpertiseSection
 					form={form}
 					interests={interests}
-					getErrorMessage={getErrorMessage}
+					getErrorMessage={getFieldErrorMessage}
 				/>
-				<ExperienceSection form={form} getErrorMessage={getErrorMessage} />
+				<ExperienceSection form={form} getErrorMessage={getFieldErrorMessage} />
 				<EducationSection
 					form={form}
 					isUploading={isUploading}
 					setIsUploading={setIsUploading}
-					getErrorMessage={getErrorMessage}
+					getErrorMessage={getFieldErrorMessage}
 					existingProfile={existingProfile}
 				/>
 			</div>

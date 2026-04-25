@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/InputOtp";
 import { Label } from "@/components/ui/Label";
 import { formatSecondsToClock } from "@/features/auth/hooks/useOtpFlow";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import type { ChangePasswordStep, VerifyForm } from "./ChangePasswordModal";
 import { ChangePasswordStepBadge } from "./ChangePasswordStepBadge";
 
@@ -67,7 +68,7 @@ export function ChangePasswordVerifyStep({
 							</InputOTP>
 						</div>
 						<FieldError
-							message={field.state.meta.errors?.[0]?.message?.toString()}
+							message={getErrorMessage(field.state.meta.errors?.[0])}
 						/>
 					</div>
 				)}

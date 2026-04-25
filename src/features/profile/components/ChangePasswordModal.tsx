@@ -21,10 +21,9 @@ import {
 } from "../index";
 import { ChangePasswordChangeStep } from "./ChangePasswordChangeStep";
 import { ChangePasswordRequestStep } from "./ChangePasswordRequestStep";
-import { ChangePasswordSuccessStep } from "./ChangePasswordSuccessStep";
 import { ChangePasswordVerifyStep } from "./ChangePasswordVerifyStep";
 
-export type ChangePasswordStep = "request" | "verify" | "change" | "success";
+export type ChangePasswordStep = "request" | "verify" | "change";
 export type RequestForm = ReturnType<typeof useForm>;
 export type VerifyForm = ReturnType<typeof useForm>;
 export type ChangeForm = ReturnType<typeof useForm>;
@@ -87,7 +86,8 @@ export function ChangePasswordModal({
 
 	const changeMutation = useChangePassword({
 		onSuccess: () => {
-			setStep("success");
+			toast.success("Password changed successfully");
+			resetModal();
 		},
 		onError: (error: ApiError) => {
 			toast.error(error.response?.data?.message || "Failed to change password");
@@ -184,9 +184,6 @@ export function ChangePasswordModal({
 						step={step}
 						isLoading={isLoading}
 					/>
-					{step === "success" && (
-						<ChangePasswordSuccessStep onDone={resetModal} />
-					)}
 				</div>
 			</DialogContent>
 		</Dialog>

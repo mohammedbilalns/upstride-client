@@ -3,6 +3,7 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import type { ApiError } from "@/api/apiError";
 import { Button } from "@/components/ui/Button";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import { useResetPassword } from "../hooks/mutations/useResetPassword";
 import type { AuthView } from "../types";
 import { changePasswordSchema } from "../validators";
@@ -71,7 +72,7 @@ export function ChangePasswordView({ email, resetToken, onNavigate }: Props) {
 							onBlur={field.handleBlur}
 							onChange={field.handleChange}
 							autoComplete="new-password"
-							error={field.state.meta.errors?.[0]?.message}
+							error={getErrorMessage(field.state.meta.errors?.[0])}
 						/>
 					)}
 				</form.Field>
@@ -85,7 +86,7 @@ export function ChangePasswordView({ email, resetToken, onNavigate }: Props) {
 							onBlur={field.handleBlur}
 							onChange={field.handleChange}
 							autoComplete="new-password"
-							error={field.state.meta.errors?.[0]?.message}
+							error={getErrorMessage(field.state.meta.errors?.[0])}
 						/>
 					)}
 				</form.Field>

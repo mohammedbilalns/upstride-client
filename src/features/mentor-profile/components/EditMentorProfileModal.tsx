@@ -140,7 +140,7 @@ export function EditMentorProfileModal({
 				}
 			}}
 		>
-			<DialogContent>
+			<DialogContent className="sm:max-w-3xl max-h-[calc(100vh-2rem)] overflow-y-auto overscroll-contain">
 				<DialogHeader>
 					<DialogTitle>Edit Mentor Profile</DialogTitle>
 				</DialogHeader>

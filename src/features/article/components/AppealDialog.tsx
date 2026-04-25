@@ -14,6 +14,7 @@ import {
 	DialogTrigger,
 } from "@/components/ui/Dialog";
 import { Textarea } from "@/components/ui/Textarea";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import { articleService } from "../services/article.service";
 import { appealSchema } from "../validators/appeal.schema";
 
@@ -100,7 +101,7 @@ export function AppealDialog({ articleId, onSuccess }: AppealDialogProps) {
 									className="min-h-37.5"
 								/>
 								<FieldError
-									message={field.state.meta.errors?.[0]?.message as string}
+									message={getErrorMessage(field.state.meta.errors?.[0])}
 								/>
 								<p className="text-xs text-muted-foreground mt-2">
 									Min 10 characters. Max 1000 characters.

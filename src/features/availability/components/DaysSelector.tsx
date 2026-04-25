@@ -1,6 +1,7 @@
 import FieldError from "@/components/common/FieldError";
 import { Label } from "@/components/ui/Label";
 import type { DayOfWeek } from "@/features/availability/types";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import { cn } from "@/shared/utils/cn";
 import type { AvailabilityFormApi } from "./CreateRuleForm";
 
@@ -41,15 +42,7 @@ export function CreateRuleDaysSelector({
 							);
 						})}
 					</div>
-					<FieldError
-						message={
-							typeof field.state.meta.errors?.[0] === "string"
-								? field.state.meta.errors[0]
-								: field.state.meta.errors?.[0]
-									? String(field.state.meta.errors[0])
-									: undefined
-						}
-					/>
+					<FieldError message={getErrorMessage(field.state.meta.errors?.[0])} />
 				</div>
 			)}
 		</form.Field>

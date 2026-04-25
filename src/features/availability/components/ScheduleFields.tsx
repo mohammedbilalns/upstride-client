@@ -10,6 +10,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/Popover";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import type { AvailabilityFormApi } from "./CreateRuleForm";
 
 interface CreateRuleScheduleFieldsProps {
@@ -59,13 +60,7 @@ export function CreateRuleScheduleFields({
 							</PopoverContent>
 						</Popover>
 						<FieldError
-							message={
-								typeof field.state.meta.errors?.[0] === "string"
-									? field.state.meta.errors[0]
-									: field.state.meta.errors?.[0]
-										? String(field.state.meta.errors[0])
-										: undefined
-							}
+							message={getErrorMessage(field.state.meta.errors?.[0])}
 						/>
 					</div>
 				)}
@@ -112,13 +107,7 @@ export function CreateRuleScheduleFields({
 							</PopoverContent>
 						</Popover>
 						<FieldError
-							message={
-								typeof field.state.meta.errors?.[0] === "string"
-									? field.state.meta.errors[0]
-									: field.state.meta.errors?.[0]
-										? String(field.state.meta.errors[0])
-										: undefined
-							}
+							message={getErrorMessage(field.state.meta.errors?.[0])}
 						/>
 					</div>
 				)}
@@ -135,13 +124,7 @@ export function CreateRuleScheduleFields({
 							onBlur={field.handleBlur}
 						/>
 						<FieldError
-							message={
-								typeof field.state.meta.errors?.[0] === "string"
-									? field.state.meta.errors[0]
-									: field.state.meta.errors?.[0]
-										? String(field.state.meta.errors[0])
-										: undefined
-							}
+							message={getErrorMessage(field.state.meta.errors?.[0])}
 						/>
 					</div>
 				)}
@@ -159,13 +142,7 @@ export function CreateRuleScheduleFields({
 							onBlur={field.handleBlur}
 						/>
 						<FieldError
-							message={
-								typeof field.state.meta.errors?.[0] === "string"
-									? field.state.meta.errors[0]
-									: field.state.meta.errors?.[0]
-										? String(field.state.meta.errors[0])
-										: undefined
-							}
+							message={getErrorMessage(field.state.meta.errors?.[0])}
 						/>
 					</div>
 				)}
