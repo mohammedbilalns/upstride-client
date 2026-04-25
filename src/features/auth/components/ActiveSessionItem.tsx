@@ -7,7 +7,7 @@ import {
 	Router,
 	ShieldCheck,
 	Smartphone,
-	XCircle,
+	Trash2,
 } from "lucide-react";
 import { useState } from "react";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
@@ -81,13 +81,13 @@ export function ActiveSessionItem({ session }: ActiveSessionItemProps) {
 
 				{!session.isCurrent && (
 					<Button
-						variant="ghost"
+						variant="destructive"
 						size="sm"
-						className="text-destructive hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-opacity"
+						className="shadow-sm shadow-destructive/20"
 						onClick={() => setIsConfirmOpen(true)}
 						disabled={revokeSession.isPending}
 					>
-						<XCircle className="h-4 w-4 mr-2" />
+						<Trash2 className="h-4 w-4 mr-2" />
 						Terminate
 					</Button>
 				)}

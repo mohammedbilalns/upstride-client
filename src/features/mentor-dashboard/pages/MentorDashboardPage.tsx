@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { catalogService } from "@/features/catalog/services/catalog.service";
 import { mentorProfileService } from "@/features/mentor-profile";
-import { EditMentorProfileModal } from "@/features/mentor-profile/components/EditMentorProfileModal";
+import { EditMentorProfileEditor } from "@/features/mentor-profile/components/EditMentorProfileEditor";
 import { UpcomingSessionsWidget } from "@/features/mentor-sessions/components/UpcomingSessionsWidget";
 import { useMentorSessions } from "@/features/mentor-sessions/hooks/queries/useMentorSessions";
 
@@ -70,7 +70,7 @@ export function MentorDashboardPage() {
 								<div className="md:ml-auto grid grid-cols-1 sm:grid-cols-2 gap-4">
 									<div className="p-4 border border-border/60 rounded-lg">
 										<p className="text-xs text-muted-foreground">
-											Current Price
+											Session Rate
 										</p>
 										<p className="text-lg font-semibold flex items-center gap-2">
 											<Coins className="h-4 w-4 text-primary" />
@@ -97,7 +97,16 @@ export function MentorDashboardPage() {
 					<CardTitle className="text-xl">Profile Details</CardTitle>
 				</CardHeader>
 				<CardContent className="p-0">
-					{profile && (
+					{isEditOpen && profile ? (
+						<div className="p-6 md:p-8">
+							<EditMentorProfileEditor
+								profile={profile}
+								catalogData={catalogData}
+								onDone={() => setIsEditOpen(false)}
+								onCancel={() => setIsEditOpen(false)}
+							/>
+						</div>
+					) : profile ? (
 						<div className="p-6 md:p-8 space-y-6">
 							<div>
 								<p className="text-sm font-medium">Bio</p>
@@ -134,19 +143,12 @@ export function MentorDashboardPage() {
 								</ul>
 							</div>
 						</div>
-					)}
+					) : null}
 					{!profile && !isLoading && (
 						<p className="text-muted-foreground p-6">No profile data found.</p>
 					)}
 				</CardContent>
 			</Card>
-
-			<EditMentorProfileModal
-				isOpen={isEditOpen}
-				onClose={setIsEditOpen}
-				profile={profile}
-				catalogData={catalogData}
-			/>
 		</div>
 	);
 }

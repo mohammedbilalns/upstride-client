@@ -9,7 +9,7 @@ import { cn } from "@/shared/utils/cn";
 function Select({
 	...props
 }: React.ComponentProps<typeof SelectPrimitive.Root>) {
-	return <SelectPrimitive.Root data-slot="select" {...props} />;
+	return <SelectPrimitive.Root data-slot="select" modal={false} {...props} />;
 }
 
 function SelectGroup({
@@ -53,8 +53,8 @@ function SelectTrigger({
 function SelectContent({
 	className,
 	children,
-	position = "item-aligned",
-	align = "center",
+	position = "popper",
+	align = "start",
 	...props
 }: React.ComponentProps<typeof SelectPrimitive.Content>) {
 	return (

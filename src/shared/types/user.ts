@@ -26,7 +26,6 @@ export interface User {
 		interests: string[];
 		skills: {
 			skillId: string;
-			level: SkillLevel;
 		}[];
 	};
 }

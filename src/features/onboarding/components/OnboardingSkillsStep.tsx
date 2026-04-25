@@ -1,9 +1,8 @@
-import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle, Loader2 } from "lucide-react";
 import FieldError from "@/components/common/FieldError";
 import { Button } from "@/components/ui/Button";
 import { getErrorMessage } from "@/shared/utils/formValidation";
 import type { OnboardingForm } from "./OnboardingView";
-import { LEVEL_LABELS } from "./OnboardingView";
 
 interface OnboardingSkillsStepProps {
 	form: OnboardingForm;
@@ -60,8 +59,8 @@ export function OnboardingSkillsStep({
 						{currentInterest.name}
 					</h2>
 					<p className="text-sm text-muted-foreground mt-0.5">
-						Choose your skill level for each area you know (click the same level
-						to deselect).
+						Select the skills that match this interest. Click again to remove a
+						skill.
 					</p>
 				</div>
 			</div>
@@ -81,62 +80,55 @@ export function OnboardingSkillsStep({
 
 			<form.Field name="skills">
 				{(skillsField) => (
-					<div className="grid grid-cols-2 gap-2">
+					<div className="space-y-3">
 						{currentInterest.skills.map((skill) => {
-							const existingIndex = skillsField.state.value.findIndex(
-								(s) => s.skillId === skill.id,
-							);
-							const isSelected = existingIndex !== -1;
-							const currentLevel = isSelected
-								? skillsField.state.value[existingIndex].level
-								: null;
+							const isSelected = skillsField.state.value.includes(skill.id);
 
 							return (
 								<div
 									key={skill.id}
-									className={`flex flex-col gap-2 px-3 py-2.5 rounded-lg border transition-colors ${
+									className={`flex items-center justify-between gap-3 px-3 py-3 rounded-lg border transition-colors ${
 										isSelected
 											? "bg-primary/5 border-primary/30"
 											: "bg-background border-border hover:bg-muted/40"
 									}`}
 								>
-									<span className="text-sm font-medium leading-none">
-										{skill.name}
-									</span>
-
-									<div className="flex items-center gap-1.5">
-										{(["BEGINNER", "INTERMEDIATE", "ADVANCED"] as const).map(
-											(level) => (
-												<button
-													key={level}
-													type="button"
-													onClick={() => {
-														const newValue = [...skillsField.state.value];
-														if (isSelected) {
-															if (currentLevel === level) {
-																newValue.splice(existingIndex, 1);
-															} else {
-																newValue[existingIndex] = {
-																	skillId: skill.id,
-																	level,
-																};
-															}
-														} else {
-															newValue.push({ skillId: skill.id, level });
-														}
-														skillsField.handleChange(newValue);
-													}}
-													className={`flex-1 text-xs py-1 rounded-md font-medium transition-colors ${
-														isSelected && currentLevel === level
-															? "bg-primary text-primary-foreground"
-															: "bg-background border border-border text-muted-foreground hover:bg-muted"
-													}`}
-												>
-													{LEVEL_LABELS[level]}
-												</button>
-											),
-										)}
+									<div className="min-w-0">
+										<p className="text-sm font-medium leading-none">
+											{skill.name}
+										</p>
+										<p className="text-xs text-muted-foreground mt-1">
+											{isSelected ? "Selected" : "Tap to add to this interest"}
+										</p>
 									</div>
+
+									<button
+										type="button"
+										onClick={() => {
+											if (isSelected) {
+												skillsField.handleChange(
+													skillsField.state.value.filter(
+														(selected) => selected !== skill.id,
+													),
+												);
+											} else {
+												skillsField.handleChange([
+													...skillsField.state.value,
+													skill.id,
+												]);
+											}
+										}}
+										className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+											isSelected
+												? "border-primary bg-primary text-primary-foreground"
+												: "border-border bg-background text-muted-foreground hover:border-primary hover:text-foreground"
+										}`}
+									>
+										{isSelected && (
+											<CheckCircle className="mr-1.5 h-3.5 w-3.5" />
+										)}
+										{isSelected ? "Remove" : "Add"}
+									</button>
 								</div>
 							);
 						})}

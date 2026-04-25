@@ -1,4 +1,4 @@
-import type { AuthType, SkillLevel, UserRole } from "@/shared/types/user";
+import type { AuthType, UserRole } from "@/shared/types/user";
 
 export interface UserProfile {
 	id: string;
@@ -15,7 +15,6 @@ export interface UserProfile {
 			skills: {
 				skillId: string;
 				name: string;
-				level: SkillLevel;
 			}[];
 		}[];
 	};
@@ -31,7 +30,6 @@ export interface UpdateProfileInput {
 	interests?: string[];
 	skills?: {
 		skillId: string;
-		level: SkillLevel;
 	}[];
 }
 

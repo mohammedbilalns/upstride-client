@@ -74,7 +74,7 @@ export function ActiveSessionList() {
 							disabled={revokeAllOther.isPending}
 						>
 							<Trash2 className="h-4 w-4 mr-2" />
-							Terminate All Others
+							Terminate All Other Sessions
 						</Button>
 					)}
 				</CardHeader>

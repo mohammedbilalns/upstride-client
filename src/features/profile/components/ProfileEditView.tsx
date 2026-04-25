@@ -1,11 +1,18 @@
 import { useForm } from "@tanstack/react-form";
-import { Camera, Loader2, Save, X } from "lucide-react";
+import { Camera, Loader2, Mail, Phone, Save, User, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import FieldError from "@/components/common/FieldError";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { Card, CardContent } from "@/components/ui/Card";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { fileService } from "@/shared/services/file.service";
@@ -38,7 +45,6 @@ export function ProfileEditView({ profile, onCancel }: Props) {
 		},
 	});
 
-	// FIX : simplify form validation here
 	const form = useForm({
 		defaultValues: {
 			name: profile.name,
@@ -86,7 +92,6 @@ export function ProfileEditView({ profile, onCancel }: Props) {
 			const key = await fileService.handleFileUpload(file, "profile-picture");
 			form.setFieldValue("profilePictureId", key);
 			setPreviewUrl(URL.createObjectURL(croppedBlob));
-			toast.success("Profile picture cropped and uploaded");
 		} catch (_error) {
 			toast.error("Failed to upload image");
 		} finally {
@@ -95,43 +100,43 @@ export function ProfileEditView({ profile, onCancel }: Props) {
 	};
 
 	return (
-		<div className="space-y-8 animate-in fade-in duration-500 max-w-2xl mx-auto">
-			<div className="flex items-center justify-between border-b pb-4">
-				<h3 className="text-2xl font-bold tracking-tight text-foreground">
-					Edit Profile
-				</h3>
+		<Card className="border-border/60 shadow-sm overflow-hidden bg-gradient-to-b from-primary/5 to-background animate-in fade-in duration-500">
+			<CardHeader className="flex flex-row items-start justify-between gap-3 pb-3">
+				<div className="space-y-1">
+					<CardTitle className="flex items-center gap-2 text-xl">
+						<User className="h-5 w-5 text-primary" />
+						Edit Profile
+					</CardTitle>
+					<CardDescription>
+						Update your name and profile picture. Email and phone stay
+						read-only.
+					</CardDescription>
+				</div>
 				<Button
-					variant="ghost"
+					type="button"
+					variant="outline"
 					size="sm"
 					onClick={onCancel}
-					className="text-muted-foreground hover:bg-secondary/80 rounded-xl"
+					className="rounded-full"
 				>
 					<X className="h-4 w-4 mr-2" />
-					Cancel
+					Close
 				</Button>
-			</div>
+			</CardHeader>
 
-			<form
-				onSubmit={(e) => {
-					e.preventDefault();
-					form.handleSubmit();
-				}}
-				className="space-y-10"
-			>
-				{/* Basic Info Section */}
-				<div className="space-y-6">
-					<div className="flex items-center gap-3">
-						<div className="h-8 w-1 rounded-full bg-primary" />
-						<h4 className="font-bold text-lg text-foreground/80">
-							Basic Information
-						</h4>
-					</div>
-
-					<Card className="border-none shadow-md bg-secondary/5 rounded-3xl overflow-hidden">
-						<CardContent className="p-8">
-							<div className="flex flex-col md:flex-row items-center gap-10">
+			<CardContent>
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						form.handleSubmit();
+					}}
+					className="space-y-8"
+				>
+					<div className="grid gap-6 lg:grid-cols-[260px_1fr]">
+						<div className="rounded-3xl border border-border/60 bg-background/70 p-6 shadow-sm">
+							<div className="flex flex-col items-center gap-4 text-center">
 								<div className="relative group">
-									<Avatar className="h-32 w-32 border-4 border-background shadow-2xl transition-transform group-hover:scale-105 duration-300">
+									<Avatar className="h-32 w-32 border-4 border-background shadow-xl transition-transform duration-300 group-hover:scale-[1.02]">
 										<AvatarImage src={previewUrl || ""} alt={profile.name} />
 										<AvatarFallback className="text-3xl font-bold bg-primary/10 text-primary">
 											{profile.name.charAt(0).toUpperCase()}
@@ -139,11 +144,11 @@ export function ProfileEditView({ profile, onCancel }: Props) {
 									</Avatar>
 									<label
 										htmlFor="profile-upload-edit-cropper"
-										className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer backdrop-blur-[2px]"
+										className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black/45 opacity-0 backdrop-blur-[2px] transition-all duration-300 group-hover:opacity-100"
 									>
 										<div className="flex flex-col items-center gap-1">
 											<Camera className="h-6 w-6 text-white" />
-											<span className="text-[10px] text-white font-bold uppercase">
+											<span className="text-[10px] font-bold uppercase text-white">
 												Change
 											</span>
 										</div>
@@ -157,103 +162,114 @@ export function ProfileEditView({ profile, onCancel }: Props) {
 										disabled={isUploading}
 									/>
 									{isUploading && (
-										<div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full backdrop-blur-sm">
-											<Loader2 className="h-8 w-8 text-white animate-spin" />
+										<div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 backdrop-blur-sm">
+											<Loader2 className="h-8 w-8 animate-spin text-white" />
 										</div>
 									)}
 								</div>
 
-								<div className="flex-1 space-y-6 w-full">
-									<form.Field name="name">
-										{(field) => (
-											<div className="space-y-2">
-												<Label
-													htmlFor={field.name}
-													className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-												>
-													Full Name
-												</Label>
-												<Input
-													id={field.name}
-													value={field.state.value}
-													onBlur={field.handleBlur}
-													onChange={(e) => field.handleChange(e.target.value)}
-													placeholder="Your full name"
-													className="h-12 bg-background border-border/50 rounded-xl focus-visible:ring-primary font-medium"
-												/>
-												<FieldError
-													message={getErrorMessage(
-														field.state.meta.errors?.[0],
-													)}
-												/>
-											</div>
-										)}
-									</form.Field>
+								<div className="space-y-1">
+									<p className="text-base font-semibold">{profile.name}</p>
+									<Badge variant="secondary" className="rounded-full px-3 py-1">
+										{profile.role}
+									</Badge>
+								</div>
+								<p className="text-sm text-muted-foreground">
+									Hover the avatar to update your picture.
+								</p>
+							</div>
+						</div>
 
-									<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-										<div className="space-y-2 opacity-60">
-											<Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-												Email (Read-only)
-											</Label>
+						<div className="space-y-6">
+							<div className="space-y-2">
+								<Label
+									htmlFor="name"
+									className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground"
+								>
+									Full Name
+								</Label>
+								<form.Field name="name">
+									{(field) => (
+										<div className="space-y-2">
 											<Input
-												value={profile.email}
-												readOnly
-												className="h-12 bg-muted/50 border-transparent rounded-xl cursor-not-allowed font-medium"
+												id={field.name}
+												value={field.state.value}
+												onBlur={field.handleBlur}
+												onChange={(e) => field.handleChange(e.target.value)}
+												placeholder="Your full name"
+												className="h-12 rounded-xl border-border/60 bg-background font-medium focus-visible:ring-primary"
+											/>
+											<FieldError
+												message={getErrorMessage(field.state.meta.errors?.[0])}
 											/>
 										</div>
-										<div className="space-y-2 opacity-60">
-											<Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-												Phone (Read-only)
-											</Label>
-											<Input
-												value={profile.phone || "Not provided"}
-												readOnly
-												className="h-12 bg-muted/50 border-transparent rounded-xl cursor-not-allowed font-medium"
-											/>
-										</div>
+									)}
+								</form.Field>
+							</div>
+
+							<div className="grid gap-4 sm:grid-cols-2">
+								<div className="rounded-2xl border border-border/60 bg-muted/10 p-4">
+									<div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+										<Mail className="h-3.5 w-3.5 text-primary" />
+										Email
 									</div>
+									<p className="mt-2 text-sm font-medium text-foreground">
+										{profile.email}
+									</p>
+								</div>
+								<div className="rounded-2xl border border-border/60 bg-muted/10 p-4">
+									<div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+										<Phone className="h-3.5 w-3.5 text-primary" />
+										Phone
+									</div>
+									<p className="mt-2 text-sm font-medium text-foreground">
+										{profile.phone || "Not provided"}
+									</p>
 								</div>
 							</div>
-						</CardContent>
-					</Card>
-				</div>
+						</div>
+					</div>
 
-				<div className="flex flex-col-reverse sm:flex-row gap-4 border-t pt-10">
-					<Button
-						type="button"
-						variant="outline"
-						className="flex-1 h-14 rounded-2xl font-bold text-base border-border/60"
-						onClick={onCancel}
-					>
-						Discard Changes
-					</Button>
-					<form.Subscribe selector={(s) => s.isSubmitting}>
-						{(isSubmitting) => (
-							<Button
-								type="submit"
-								className="flex-[2] h-14 rounded-2xl font-bold text-base shadow-2xl shadow-primary/30"
-								disabled={
-									isSubmitting || updateProfileMutation.isPending || isUploading
-								}
-							>
-								{(isSubmitting || updateProfileMutation.isPending) && (
-									<Loader2 className="mr-2 h-5 w-5 animate-spin" />
-								)}
-								<Save className="mr-2 h-5 w-5" />
-								Update Profile
-							</Button>
-						)}
-					</form.Subscribe>
-				</div>
-			</form>
+					<div className="flex flex-col-reverse gap-3 border-t pt-6 sm:flex-row sm:justify-end">
+						<Button
+							type="button"
+							variant="outline"
+							className="rounded-full px-5"
+							onClick={onCancel}
+							disabled={isUploading || updateProfileMutation.isPending}
+						>
+							Discard Changes
+						</Button>
+						<form.Subscribe selector={(s) => s.isSubmitting}>
+							{(isSubmitting) => (
+								<Button
+									type="submit"
+									className="rounded-full px-5"
+									disabled={
+										isSubmitting ||
+										updateProfileMutation.isPending ||
+										isUploading
+									}
+								>
+									{(isSubmitting || updateProfileMutation.isPending) && (
+										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									)}
+									<Save className="mr-2 h-4 w-4" />
+									Update Profile
+								</Button>
+							)}
+						</form.Subscribe>
+					</div>
+				</form>
 
-			{croppingImage && (
-				<ImageCropper
-					image={croppingImage}
-					onCropComplete={handleCropComplete}
-					onCancel={() => setCroppingImage(null)}
-				/>
-			)}
-		</div>
+				{croppingImage && (
+					<ImageCropper
+						image={croppingImage}
+						onCropComplete={handleCropComplete}
+						onCancel={() => setCroppingImage(null)}
+					/>
+				)}
+			</CardContent>
+		</Card>
 	);
 }

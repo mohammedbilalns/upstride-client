@@ -1,71 +1,102 @@
 import type { Dispatch, SetStateAction } from "react";
 import FieldError from "@/components/common/FieldError";
-import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
-import type { EditMentorProfileForm } from "./EditMentorProfileModal";
+
+type QualificationRow = {
+	id: string;
+	value: string;
+};
 
 interface EditMentorProfileQualificationsSectionProps {
-	form: EditMentorProfileForm;
-	pendingQualifications: string[];
-	setPendingQualifications: Dispatch<SetStateAction<string[]>>;
+	qualificationRows: QualificationRow[];
+	setQualificationRows: Dispatch<SetStateAction<QualificationRow[]>>;
+	newQualification: string;
+	setNewQualification: Dispatch<SetStateAction<string>>;
 	qualificationError: string | null;
 	setQualificationError: Dispatch<SetStateAction<string | null>>;
 }
 
 export function EditMentorProfileQualificationsSection({
-	form,
-	pendingQualifications,
-	setPendingQualifications,
+	qualificationRows,
+	setQualificationRows,
+	newQualification,
+	setNewQualification,
 	qualificationError,
 	setQualificationError,
 }: EditMentorProfileQualificationsSectionProps) {
 	return (
 		<div className="space-y-2">
-			<Label>Add Educational Qualification</Label>
-			<form.Field name="newQualification">
-				{(field) => (
-					<>
-						<div className="flex gap-2">
-							<Input
-								placeholder="Qualification"
-								value={field.state.value}
-								onChange={(e) => {
-									setQualificationError(null);
-									field.handleChange(e.target.value);
-								}}
-							/>
-							<Button
-								variant="outline"
-								type="button"
-								onClick={() => {
-									const nextValue = field.state.value.trim();
-									if (!nextValue) {
-										setQualificationError("Please enter a qualification");
-										return;
+			<Label>Educational Qualifications</Label>
+			{qualificationRows.length > 0 && (
+				<div className="space-y-2 rounded-2xl border border-border/60 bg-muted/10 p-4">
+					<div className="space-y-3">
+						{qualificationRows.map((row) => (
+							<div key={row.id} className="flex gap-2">
+								<Input
+									value={row.value}
+									onChange={(e) => {
+										setQualificationRows((prev) =>
+											prev.map((item) =>
+												item.id === row.id
+													? { ...item, value: e.target.value }
+													: item,
+											),
+										);
+									}}
+								/>
+								<Button
+									type="button"
+									variant="outline"
+									onClick={() =>
+										setQualificationRows((prev) =>
+											prev.filter((item) => item.id !== row.id),
+										)
 									}
-									setPendingQualifications((prev) => [...prev, nextValue]);
-									field.handleChange("");
-									setQualificationError(null);
-								}}
-							>
-								Add
-							</Button>
-						</div>
-						<FieldError message={qualificationError ?? undefined} />
-					</>
-				)}
-			</form.Field>
-			{pendingQualifications.length > 0 && (
-				<div className="flex flex-wrap gap-2">
-					{pendingQualifications.map((item) => (
-						<Badge key={item} variant="secondary">
-							{item}
-						</Badge>
-					))}
+								>
+									Remove
+								</Button>
+							</div>
+						))}
+					</div>
 				</div>
 			)}
+			<div className="flex gap-2">
+				<Input
+					placeholder="Qualification"
+					value={newQualification}
+					onChange={(e) => {
+						setQualificationError(null);
+						setNewQualification(e.target.value);
+					}}
+				/>
+				<Button
+					variant="outline"
+					type="button"
+					onClick={() => {
+						const nextValue = newQualification.trim();
+						if (!nextValue) {
+							setQualificationError("Please enter a qualification");
+							return;
+						}
+						setQualificationRows((prev) => [
+							...prev,
+							{
+								id:
+									globalThis.crypto?.randomUUID?.() ??
+									`${Date.now()}-${Math.random()}`,
+								value: nextValue,
+							},
+						]);
+						setNewQualification("");
+						setQualificationError(null);
+					}}
+				>
+					Add
+				</Button>
+			</div>
+			<FieldError message={qualificationError ?? undefined} />
 		</div>
 	);
 }

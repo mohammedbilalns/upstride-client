@@ -1,6 +1,7 @@
 import { ArrowRight, CheckCircle } from "lucide-react";
 import FieldError from "@/components/common/FieldError";
 import { Button } from "@/components/ui/Button";
+import { UserPreferencesLimits } from "@/features/onboarding/validators/onboarding.schema";
 import { getErrorMessage } from "@/shared/utils/formValidation";
 import type { OnboardingForm } from "./OnboardingView";
 
@@ -24,14 +25,17 @@ export function OnboardingInterestSelection({
 							Personalize your journey
 						</h2>
 						<p className="text-sm text-muted-foreground mt-1">
-							Select 2–5 interests to continue.
+							Select{" "}
+							{`${UserPreferencesLimits.MIN_INTERESTS}-${UserPreferencesLimits.MAX_INTERESTS}`}{" "}
+							interests to continue.
 						</p>
 					</div>
 
 					<div className="flex flex-wrap gap-2">
 						{catalog.map((interest) => {
 							const isSelected = field.state.value.includes(interest.id);
-							const atMax = field.state.value.length >= 5;
+							const atMax =
+								field.state.value.length >= UserPreferencesLimits.MAX_INTERESTS;
 							return (
 								<button
 									key={interest.id}
@@ -64,14 +68,17 @@ export function OnboardingInterestSelection({
 					</div>
 
 					<p className="text-xs text-muted-foreground">
-						{field.state.value.length} / 5 selected
+						{field.state.value.length} / {UserPreferencesLimits.MAX_INTERESTS}{" "}
+						selected
 					</p>
 					<FieldError message={getErrorMessage(field.state.meta.errors?.[0])} />
 
 					<Button
 						type="button"
 						className="w-full"
-						disabled={field.state.value.length < 2}
+						disabled={
+							field.state.value.length < UserPreferencesLimits.MIN_INTERESTS
+						}
 						onClick={onNext}
 					>
 						Next: Choose Skills

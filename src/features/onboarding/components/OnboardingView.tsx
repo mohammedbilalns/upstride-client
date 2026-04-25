@@ -13,15 +13,6 @@ interface Props {
 	setupToken: string;
 }
 
-export const LEVEL_LABELS: Record<
-	"BEGINNER" | "INTERMEDIATE" | "ADVANCED",
-	string
-> = {
-	BEGINNER: "Beginner",
-	INTERMEDIATE: "Intermediate",
-	ADVANCED: "Advanced",
-};
-
 export type OnboardingForm = ReturnType<typeof useForm>;
 
 export function OnboardingView({ setupToken }: Props) {
@@ -58,7 +49,6 @@ export function OnboardingView({ setupToken }: Props) {
 			interests: [] as string[],
 			skills: [] as {
 				skillId: string;
-				level: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
 			}[],
 		},
 		validators: { onSubmit: saveInterestsSchema },

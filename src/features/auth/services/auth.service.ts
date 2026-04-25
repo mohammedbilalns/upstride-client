@@ -114,7 +114,7 @@ export const authService = {
 	saveInterests: async (data: {
 		setupToken: string;
 		interests: string[];
-		skills: { skillId: string; level: string }[];
+		skills: { skillId: string }[];
 	}) => {
 		const response = await api.post<ApiSuccess<SaveUserInterestsResponse>>(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.SAVE_INTERESTS}`,

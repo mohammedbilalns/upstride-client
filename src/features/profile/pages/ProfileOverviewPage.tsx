@@ -14,13 +14,16 @@ import {
 } from "@/components/ui/Card";
 import { catalogService } from "@/features/catalog/services/catalog.service";
 import { mentorProfileService } from "@/features/mentor-profile";
-import { EditMentorProfileModal } from "@/features/mentor-profile/components/EditMentorProfileModal";
+import { EditMentorProfileEditor } from "@/features/mentor-profile/components/EditMentorProfileEditor";
+import { EditPreferencesEditor } from "@/features/profile/components/EditPreferencesEditor";
+import { ProfilePreferencesCard } from "@/features/profile/components/ProfilePreferencesCard";
 import { ProfileEditView, useProfile } from "@/features/profile";
 
 export function ProfileOverviewPage() {
 	const { data: profile, isLoading } = useProfile();
 	const [isEditing, setIsEditing] = useState(false);
-	const [isMentorEditOpen, setIsMentorEditOpen] = useState(false);
+	const [isPreferencesEditing, setIsPreferencesEditing] = useState(false);
+	const [isMentorEditing, setIsMentorEditing] = useState(false);
 	const { auth } = useRouteContext({
 		from: "/_app-layout/_user-layout/profile",
 	});
@@ -56,12 +59,6 @@ export function ProfileOverviewPage() {
 		);
 	}
 
-	if (isEditing) {
-		return (
-			<ProfileEditView profile={profile} onCancel={() => setIsEditing(false)} />
-		);
-	}
-
 	return (
 		<div className="animate-in fade-in duration-500 space-y-6">
 			<div className="flex items-center gap-2.5">
@@ -74,74 +71,104 @@ export function ProfileOverviewPage() {
 			</div>
 
 			<div className="grid gap-6 lg:grid-cols-12">
-				<Card className="lg:col-span-12 shadow-md overflow-hidden border-none bg-gradient-to-b from-primary/5 to-background">
-					<CardHeader className="text-center pb-2 relative">
-						<Button
-							variant="ghost"
-							size="icon"
-							className="absolute top-2 right-2 rounded-full h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
-							onClick={() => setIsEditing(true)}
-						>
-							<Pencil className="h-4 w-4" />
-						</Button>
-						<div className="flex justify-center mb-4">
-							<Avatar className="h-32 w-32 border-4 border-background shadow-xl">
-								<AvatarImage
-									src={profile.profilePictureUrl || ""}
-									alt={profile.name}
-								/>
-								<AvatarFallback className="text-3xl font-bold bg-primary/10 text-primary">
-									{profile.name.charAt(0).toUpperCase()}
-								</AvatarFallback>
-							</Avatar>
-						</div>
-						<CardTitle className="text-2xl font-bold">{profile.name}</CardTitle>
-						<Badge
-							variant="secondary"
-							className="w-fit mx-auto mt-2 px-4 py-1 font-semibold tracking-wide"
-						>
-							{profile.role}
-						</Badge>
-					</CardHeader>
-					<CardContent className="space-y-4 pt-4">
-						<div className="flex items-center gap-3 text-sm p-3 rounded-xl bg-background/50 border border-border/50 hover:bg-background transition-colors">
-							<Mail className="h-4 w-4 text-primary shrink-0" />
-							<div className="min-w-0">
-								<p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-									Email
-								</p>
-								<p className="truncate font-medium">{profile.email}</p>
-							</div>
-						</div>
-						<div className="flex items-center gap-3 text-sm p-3 rounded-xl bg-background/50 border border-border/50 hover:bg-background transition-colors">
-							<Phone className="h-4 w-4 text-primary shrink-0" />
-							<div className="min-w-0">
-								<p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-									Phone
-								</p>
-								<p className="truncate font-medium">
-									{profile.phone || "Not provided"}
-								</p>
-							</div>
-						</div>
+				<div className="lg:col-span-12">
+					{isEditing ? (
+						<ProfileEditView
+							profile={profile}
+							onCancel={() => setIsEditing(false)}
+						/>
+					) : (
+						<Card className="shadow-md overflow-hidden border-none bg-gradient-to-b from-primary/5 to-background">
+							<CardHeader className="text-center pb-2 relative">
+								<Button
+									variant="ghost"
+									size="icon"
+									className="absolute top-2 right-2 rounded-full h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
+									onClick={() => setIsEditing(true)}
+								>
+									<Pencil className="h-4 w-4" />
+								</Button>
+								<div className="flex justify-center mb-4">
+									<Avatar className="h-32 w-32 border-4 border-background shadow-xl">
+										<AvatarImage
+											src={profile.profilePictureUrl || ""}
+											alt={profile.name}
+										/>
+										<AvatarFallback className="text-3xl font-bold bg-primary/10 text-primary">
+											{profile.name.charAt(0).toUpperCase()}
+										</AvatarFallback>
+									</Avatar>
+								</div>
+								<CardTitle className="text-2xl font-bold">
+									{profile.name}
+								</CardTitle>
+								<Badge
+									variant="secondary"
+									className="w-fit mx-auto mt-2 px-4 py-1 font-semibold tracking-wide"
+								>
+									{profile.role}
+								</Badge>
+							</CardHeader>
+							<CardContent className="space-y-4 pt-4">
+								<div className="flex items-center gap-3 text-sm p-3 rounded-xl bg-background/50 border border-border/50 hover:bg-background transition-colors">
+									<Mail className="h-4 w-4 text-primary shrink-0" />
+									<div className="min-w-0">
+										<p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+											Email
+										</p>
+										<p className="truncate font-medium">{profile.email}</p>
+									</div>
+								</div>
+								<div className="flex items-center gap-3 text-sm p-3 rounded-xl bg-background/50 border border-border/50 hover:bg-background transition-colors">
+									<Phone className="h-4 w-4 text-primary shrink-0" />
+									<div className="min-w-0">
+										<p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+											Phone
+										</p>
+										<p className="truncate font-medium">
+											{profile.phone || "Not provided"}
+										</p>
+									</div>
+								</div>
 
-						<Button
-							variant="outline"
-							className="w-full mt-4 rounded-xl font-bold text-sm h-11 border-primary/20 hover:bg-primary/5 hover:text-primary transition-all group"
-							onClick={() => setIsEditing(true)}
-						>
-							<Pencil className="h-3.5 w-3.5 mr-2 group-hover:scale-110 transition-transform" />
-							Edit Profile
-						</Button>
-					</CardContent>
-				</Card>
+								<Button
+									variant="outline"
+									className="w-full mt-4 rounded-xl font-bold text-sm h-11 border-primary/20 hover:bg-primary/5 hover:text-primary transition-all group"
+									onClick={() => setIsEditing(true)}
+								>
+									<Pencil className="h-3.5 w-3.5 mr-2 group-hover:scale-110 transition-transform" />
+									Edit Profile
+								</Button>
+							</CardContent>
+						</Card>
+					)}
+				</div>
+
+				<div className="lg:col-span-12">
+					{isPreferencesEditing ? (
+						<EditPreferencesEditor
+							profile={profile}
+							onDone={() => setIsPreferencesEditing(false)}
+							onCancel={() => setIsPreferencesEditing(false)}
+						/>
+					) : (
+						<ProfilePreferencesCard
+							profile={profile}
+							onEdit={() => setIsPreferencesEditing(true)}
+						/>
+					)}
+				</div>
 			</div>
 
 			{isMentor && (
 				<div className="space-y-6">
 					<Card className="border-border/60 shadow-sm">
 						<CardHeader className="pb-3">
-							<CardTitle className="text-xl">Mentor Profile</CardTitle>
+							<CardTitle className="text-xl"> Public Mentor Profile</CardTitle>
+							<CardDescription>
+								{" "}
+								Information visible to mentees when they view your profile.
+							</CardDescription>
 						</CardHeader>
 						<CardContent className="space-y-4">
 							{mentorProfileLoading && (
@@ -149,16 +176,23 @@ export function ProfileOverviewPage() {
 									Loading mentor profile...
 								</p>
 							)}
-							{mentorProfile && (
+							{isMentorEditing && mentorProfile ? (
+								<EditMentorProfileEditor
+									profile={mentorProfile}
+									catalogData={catalogData}
+									onDone={() => setIsMentorEditing(false)}
+									onCancel={() => setIsMentorEditing(false)}
+								/>
+							) : mentorProfile ? (
 								<div className="grid gap-6 md:grid-cols-[1.2fr_0.8fr] items-start">
 									<div className="space-y-5">
 										<div className="flex items-center gap-3 flex-wrap">
 											<Button
 												variant="outline"
 												size="sm"
-												onClick={() => setIsMentorEditOpen(true)}
+												onClick={() => setIsMentorEditing(true)}
 											>
-												Edit Mentor Profile
+												Update Mentor Details
 											</Button>
 										</div>
 										<div className="space-y-2">
@@ -190,7 +224,7 @@ export function ProfileOverviewPage() {
 										</div>
 										<div className="space-y-2">
 											<p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-												Expertises
+												Areas of Interest
 											</p>
 											<div className="flex flex-wrap gap-2">
 												{mentorProfile.expertises.map((exp) => (
@@ -202,7 +236,7 @@ export function ProfileOverviewPage() {
 										</div>
 										<div className="space-y-2">
 											<p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-												Skills
+												Skills & Proficiency
 											</p>
 											<div className="flex flex-wrap gap-2">
 												{mentorProfile.skills.map((skill) => (
@@ -214,7 +248,7 @@ export function ProfileOverviewPage() {
 										</div>
 										<div className="space-y-2">
 											<p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-												Education
+												Academic Background
 											</p>
 											<ul className="list-disc pl-6 text-sm text-muted-foreground">
 												{mentorProfile.educationalQualifications.map((item) => (
@@ -226,7 +260,7 @@ export function ProfileOverviewPage() {
 									<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 										<div className="p-4 border border-border/60 rounded-lg">
 											<p className="text-xs text-muted-foreground">
-												Current Price
+												Session Rate Per 30 minute
 											</p>
 											<p className="text-lg font-semibold flex items-center gap-2">
 												<Coins className="h-4 w-4 text-primary" />
@@ -238,7 +272,7 @@ export function ProfileOverviewPage() {
 										</div>
 									</div>
 								</div>
-							)}
+							) : null}
 							{!mentorProfile && !mentorProfileLoading && (
 								<p className="text-sm text-muted-foreground">
 									No mentor profile data found.
@@ -246,13 +280,6 @@ export function ProfileOverviewPage() {
 							)}
 						</CardContent>
 					</Card>
-
-					<EditMentorProfileModal
-						isOpen={isMentorEditOpen}
-						onClose={setIsMentorEditOpen}
-						profile={mentorProfile}
-						catalogData={catalogData}
-					/>
 				</div>
 			)}
 		</div>

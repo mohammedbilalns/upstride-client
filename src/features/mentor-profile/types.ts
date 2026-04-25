@@ -24,12 +24,17 @@ export interface MentorProfileResponse {
 }
 
 export interface UpdateMentorProfileInput {
+	currentRoleId?: string;
+	organization?: string;
+	areasOfExpertise?: string[];
 	currentPricePer30Min?: number;
 	bio?: string;
+	educationalQualifications?: string[];
 	addSkills?: {
 		skillId: string;
 		level: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
 	}[];
+	removeSkills?: string[];
 	addEducationalQualifications?: string[];
 }
 

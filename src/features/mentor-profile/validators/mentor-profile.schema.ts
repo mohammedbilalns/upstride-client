@@ -1,6 +1,14 @@
 import { z } from "zod";
 
+export const MAX_MENTOR_AREAS_OF_EXPERTISE = 2;
+
 export const mentorProfileSchema = z.object({
+	currentRoleId: z.string().trim().min(1, "Current role is required"),
+	organization: z.string().trim().min(1, "Organization is required"),
+	areasOfExpertise: z
+		.array(z.string().trim().min(1, "Area of interest is required"))
+		.min(1, "Select at least one area of interest")
+		.max(MAX_MENTOR_AREAS_OF_EXPERTISE, "Select up to 2 areas of interest"),
 	currentPricePer30Min: z
 		.string()
 		.refine(
