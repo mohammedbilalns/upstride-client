@@ -5,6 +5,7 @@ import {
 	Clock,
 	Coins,
 	CreditCard,
+	Star,
 	Video,
 	XCircle,
 } from "lucide-react";
@@ -195,6 +196,7 @@ export function MentorSessionsPage() {
 				personLabel="Mentee"
 				personName={selectedBooking?.menteeName}
 				showReceipt={false}
+				canSubmitReview={false}
 			/>
 		</div>
 	);
@@ -261,6 +263,12 @@ function MentorSessionCard({
 						)}
 						{booking.totalAmount} {booking.currency.toUpperCase()}
 					</div>
+					{booking.review && (
+						<div className="flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/30 px-2 py-0.5 rounded text-xs text-zinc-700 dark:text-zinc-300">
+							<Star className="h-3 w-3 fill-current text-amber-500" />
+							{booking.review.rating}/5
+						</div>
+					)}
 				</div>
 			</div>
 			<div className="flex items-center gap-3">

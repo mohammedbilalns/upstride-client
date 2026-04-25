@@ -7,6 +7,7 @@ import type { ApiError } from "@/api/apiError";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
 import { sessionBookingService } from "@/features/session-booking";
 import type { Booking, BookingFilter } from "@/features/session-booking/types";
+import { reviewService } from "@/features/reviews";
 import { Pagination } from "@/features/users/components/Pagination";
 import { useCoinBalance } from "@/features/wallet/hooks/queries/useCoinManagement";
 import { Route } from "@/routes/_app-layout/_user-layout/sessions/index";
@@ -170,7 +171,37 @@ export function SessionsPage() {
 	const pendingCancelBooking = bookings.find(
 		(booking) => booking.id === pendingCancelId,
 	);
+	const canReviewSelectedBooking = Boolean(
+		selectedBooking &&
+			selectedBooking.status === "COMPLETED" &&
+			selectedBooking.paymentStatus === "COMPLETED" &&
+			selectedBooking.settledAt &&
+			!selectedBooking.review,
+	);
 	const refundPreview = getRefundPreview(pendingCancelBooking, coinValue);
+
+	const reviewMutation = useMutation({
+		mutationFn: (input: {
+			bookingId: string;
+			rating: number;
+			comment: string;
+		}) => reviewService.createReview(input),
+		onSuccess: () => {
+			if (selectedBooking) {
+				queryClient.invalidateQueries({
+					queryKey: ["sessions", "user"],
+				});
+				queryClient.invalidateQueries({
+					queryKey: ["public-mentor-profile", selectedBooking.mentorId],
+				});
+			}
+			setSelectedBooking(null);
+			toast.success("Review submitted successfully.");
+		},
+		onError: (error: ApiError) => {
+			toast.error(error?.response?.data?.message || "Failed to submit review.");
+		},
+	});
 
 	return (
 		<div className="relative">
@@ -299,6 +330,22 @@ export function SessionsPage() {
 					if (!open) setSelectedBooking(null);
 				}}
 				selectedBooking={selectedBooking}
+				personLabel="Mentor"
+				personName={selectedBooking?.mentorName}
+				showReceipt
+				canSubmitReview={canReviewSelectedBooking}
+				onSubmitReview={
+					selectedBooking
+						? async (input) => {
+								await reviewMutation.mutateAsync({
+									bookingId: selectedBooking.id,
+									rating: input.rating,
+									comment: input.comment,
+								});
+							}
+						: undefined
+				}
+				isSubmittingReview={reviewMutation.isPending}
 			/>
 
 			<CancelSessionDialog

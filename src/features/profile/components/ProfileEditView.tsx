@@ -9,6 +9,8 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { fileService } from "@/shared/services/file.service";
+import { buildFieldErrorsFromIssues } from "@/shared/utils/formValidation";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import { useUpdateProfile } from "../hooks/mutations/useUpdateProfile";
 import type { UserProfile } from "../types";
 import { profileUpdateSchema } from "../validators";
@@ -42,10 +44,15 @@ export function ProfileEditView({ profile, onCancel }: Props) {
 			name: profile.name,
 			profilePictureId: undefined as string | undefined,
 		},
+		validators: {
+			onSubmit: ({ value }) => {
+				const result = profileUpdateSchema.safeParse(value);
+				return result.success
+					? undefined
+					: { fields: buildFieldErrorsFromIssues(result.error.issues) };
+			},
+		},
 		onSubmit: async ({ value }) => {
-			const result = profileUpdateSchema.safeParse(value);
-			if (!result.success) return;
-
 			const payload: { name: string; profilePictureId?: string } = {
 				name: value.name,
 			};
@@ -54,7 +61,7 @@ export function ProfileEditView({ profile, onCancel }: Props) {
 				payload.profilePictureId = value.profilePictureId;
 			}
 
-			updateProfileMutation.mutate(payload);
+			await updateProfileMutation.mutateAsync(payload);
 		},
 	});
 
@@ -175,13 +182,9 @@ export function ProfileEditView({ profile, onCancel }: Props) {
 													className="h-12 bg-background border-border/50 rounded-xl focus-visible:ring-primary font-medium"
 												/>
 												<FieldError
-													message={
-														(
-															field.state.meta.errors?.[0] as
-																| { message?: string }
-																| undefined
-														)?.message
-													}
+													message={getErrorMessage(
+														field.state.meta.errors?.[0],
+													)}
 												/>
 											</div>
 										)}

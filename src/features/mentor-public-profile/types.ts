@@ -1,3 +1,5 @@
+import type { ReviewDto } from "@/features/reviews";
+
 export interface PublicMentorSlot {
 	startTime: string; // ISO
 	endTime: string; // ISO
@@ -27,6 +29,8 @@ export interface PublicMentorProfile {
 	skills: { id: string; name: string; level: string }[];
 	yearsOfExperience: number;
 	avgRating: number;
+	recentReviews: ReviewDto[];
+	reviewsTotal: number;
 }
 
 export interface PublicMentorProfileResponse {

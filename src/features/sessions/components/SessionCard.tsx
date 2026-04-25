@@ -5,6 +5,7 @@ import {
 	Coins,
 	CreditCard,
 	Download,
+	Star,
 	Video,
 	XCircle,
 } from "lucide-react";
@@ -125,6 +126,12 @@ export function SessionCard({
 							{booking.totalAmount}{" "}
 							{booking.currency === "inr" ? "₹" : booking.currency}
 						</span>
+						{booking.review && (
+							<span className="flex items-center gap-1 text-xs font-semibold text-zinc-600 dark:text-zinc-400 bg-amber-50 dark:bg-amber-950/30 px-2 py-0.5 rounded-md">
+								<Star className="h-3 w-3 fill-current text-amber-500" />
+								{booking.review.rating}/5
+							</span>
+						)}
 						{showMeetingInfo && (
 							<Link
 								to="/call/$bookingId"

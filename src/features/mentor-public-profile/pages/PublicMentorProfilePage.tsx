@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Coins, CreditCard } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { ApiError } from "@/api/apiError";
 import { AddBalanceForm } from "@/components/common/AddBalanceForm";
@@ -20,6 +20,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
 import { Separator } from "@/components/ui/Separator";
 import type { AvailabilitySlot } from "@/features/availability/types";
 import { publicMentorProfileService } from "@/features/mentor-public-profile";
+import { reviewService } from "@/features/reviews";
+import type { ReviewDto } from "@/features/reviews";
 import { useProfile } from "@/features/profile/hooks/queries/useProfile";
 import { sessionBookingService } from "@/features/session-booking";
 import { coinManagementService, useCoinBalance } from "@/features/wallet";
@@ -61,6 +63,9 @@ export function PublicMentorProfilePage({
 	const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 	const [isTopUpOpen, setIsTopUpOpen] = useState(false);
 	const [paymentType, setPaymentType] = useState<"COINS" | "STRIPE">("COINS");
+	const [loadedReviews, setLoadedReviews] = useState<ReviewDto[]>([]);
+	const [reviewsPage, setReviewsPage] = useState(1);
+	const lastAppendedReviewsPage = useRef<number | null>(null);
 	const today = useMemo(() => {
 		const d = new Date();
 		d.setHours(0, 0, 0, 0);
@@ -72,6 +77,13 @@ export function PublicMentorProfilePage({
 		queryFn: () => publicMentorProfileService.getPublicProfile(mentorId),
 	});
 	const mentorProfileId = profileQuery.data?.data.profile.id;
+	const profile = profileQuery.data?.data.profile;
+
+	useEffect(() => {
+		setLoadedReviews([]);
+		setReviewsPage(1);
+		lastAppendedReviewsPage.current = null;
+	}, [profile?.id]);
 
 	const coinBalanceQuery = useCoinBalance();
 
@@ -97,6 +109,24 @@ export function PublicMentorProfilePage({
 		enabled:
 			Boolean(selectedDateKey) && !isAdminView && Boolean(mentorProfileId),
 	});
+
+	const reviewsQuery = useQuery({
+		queryKey: ["mentor-profile-reviews", mentorProfileId, reviewsPage],
+		queryFn: () =>
+			reviewService.getMentorReviews({
+				mentorId: mentorProfileId ?? mentorId,
+				page: reviewsPage,
+			}),
+		enabled: Boolean(mentorProfileId) && reviewsPage > 1,
+	});
+
+	useEffect(() => {
+		const response = reviewsQuery.data?.data;
+		if (!response || reviewsPage <= 1) return;
+		if (lastAppendedReviewsPage.current === response.page) return;
+		lastAppendedReviewsPage.current = response.page;
+		setLoadedReviews((prev) => [...prev, ...response.reviews]);
+	}, [reviewsPage, reviewsQuery.data]);
 
 	const clearTopupState = useCallback(() => {
 		localStorage.removeItem("pending_booking_topup");
@@ -126,11 +156,15 @@ export function PublicMentorProfilePage({
 			clearTopupState();
 			navigate({
 				to: "/sessions",
-				search: (prev) => ({
-					...prev,
+				search: {
+					tab: "upcoming",
+					page: 1,
+					limit: 10,
+					upcomingFilter: "upcoming",
+					pastFilter: "completed",
 					booking_success: true,
 					booking_id: response.data.bookingId,
-				}),
+				},
 			});
 			setIsConfirmOpen(false);
 			setSelectedSlot(null);
@@ -155,9 +189,11 @@ export function PublicMentorProfilePage({
 		},
 	});
 
-	const profile = profileQuery.data?.data.profile;
 	const isReported = profileQuery.data?.data.isReported ?? false;
 	const slots = slotsQuery.data?.data.slots ?? [];
+	const reviews = [...(profile?.recentReviews ?? []), ...loadedReviews];
+	const reviewsTotal = profile?.reviewsTotal ?? reviews.length;
+	const hasMoreReviews = reviews.length < reviewsTotal;
 	const coinBalance = coinBalanceQuery.data?.coinBalance ?? 0;
 	const coinValue = coinBalanceQuery.data?.coinValue;
 	const directPaymentAmount =
@@ -289,6 +325,13 @@ export function PublicMentorProfilePage({
 					isAdminView={isAdminView}
 					currentUser={currentUser}
 					isReported={isReported}
+					reviews={reviews}
+					onViewMoreReviews={
+						hasMoreReviews
+							? () => setReviewsPage((current) => current + 1)
+							: undefined
+					}
+					isLoadingMoreReviews={reviewsQuery.isFetching && reviewsPage > 1}
 				/>
 				{!isAdminView && (
 					<BookingCalendarSelector

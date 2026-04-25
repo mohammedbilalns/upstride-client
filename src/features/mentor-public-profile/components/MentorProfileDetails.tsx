@@ -1,11 +1,13 @@
 import { Link } from "@tanstack/react-router";
-import { Flag } from "lucide-react";
+import { Flag, Star } from "lucide-react";
 import { ReportDialog } from "@/components/common/ReportDialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader } from "@/components/ui/Card";
 import { Separator } from "@/components/ui/Separator";
+import { formatDateShort } from "@/shared/utils/date";
+import type { ReviewDto } from "@/features/reviews";
 import type { UserProfile } from "@/features/profile/types";
 import type { PublicMentorProfile } from "../types";
 
@@ -14,6 +16,9 @@ interface MentorProfileDetailsProps {
 	isAdminView: boolean;
 	currentUser: UserProfile | null | undefined;
 	isReported: boolean;
+	reviews: ReviewDto[];
+	onViewMoreReviews?: () => void;
+	isLoadingMoreReviews?: boolean;
 }
 
 export function MentorProfileDetails({
@@ -21,6 +26,9 @@ export function MentorProfileDetails({
 	isAdminView,
 	currentUser,
 	isReported,
+	reviews,
+	onViewMoreReviews,
+	isLoadingMoreReviews = false,
 }: MentorProfileDetailsProps) {
 	return (
 		<Card className="border-border/60 shadow-sm h-fit">
@@ -103,7 +111,8 @@ export function MentorProfileDetails({
 					<Badge variant="secondary">
 						{profile.yearsOfExperience} years experience
 					</Badge>
-					<Badge variant="secondary">
+					<Badge variant="secondary" className="gap-1">
+						<Star className="h-3.5 w-3.5 fill-current text-amber-500" />
 						{profile.avgRating.toFixed(1)} rating
 					</Badge>
 				</div>
@@ -140,6 +149,58 @@ export function MentorProfileDetails({
 							<li key={edu}>{edu}</li>
 						))}
 					</ul>
+				</div>
+				<div className="space-y-3">
+					<h3 className="text-sm font-semibold">Recent Reviews</h3>
+					{reviews.length > 0 ? (
+						<div className="space-y-3">
+							{reviews.map((review) => (
+								<div
+									key={review.id}
+									className="rounded-2xl border border-zinc-200/60 p-4 dark:border-zinc-800"
+								>
+									<div className="flex items-center justify-between gap-3">
+										<div>
+											<p className="font-medium text-sm">
+												{review.reviewerName || "Anonymous"}
+											</p>
+											<p className="text-xs text-muted-foreground">
+												{formatDateShort(review.createdAt)}
+											</p>
+										</div>
+										<div className="flex items-center gap-1 text-amber-500">
+											<Star className="h-4 w-4 fill-current" />
+											<span className="text-sm font-semibold">
+												{review.rating}
+											</span>
+										</div>
+									</div>
+									<p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+										{review.comment}
+									</p>
+								</div>
+							))}
+							{onViewMoreReviews && reviews.length < profile.reviewsTotal && (
+								<div className="pt-1">
+									<Button
+										type="button"
+										variant="outline"
+										className="w-full rounded-xl"
+										onClick={onViewMoreReviews}
+										disabled={isLoadingMoreReviews}
+									>
+										{isLoadingMoreReviews
+											? "Loading more reviews..."
+											: "View more reviews"}
+									</Button>
+								</div>
+							)}
+						</div>
+					) : (
+						<p className="text-sm text-muted-foreground">
+							No reviews have been posted yet.
+						</p>
+					)}
 				</div>
 			</CardContent>
 		</Card>

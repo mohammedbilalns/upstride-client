@@ -195,4 +195,9 @@ export const ROUTES = {
 		BLOCK_ARTICLE: (articleId: string) => `/articles/${articleId}/block`,
 		UNBLOCK_ARTICLE: (articleId: string) => `/articles/${articleId}/unblock`,
 	},
+	REVIEWS: {
+		BASE: "/reviews",
+		BOOKING: (bookingId: string) => `/bookings/${bookingId}`,
+		MENTOR: (mentorId: string) => `/mentors/${mentorId}`,
+	},
 };
