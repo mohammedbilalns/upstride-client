@@ -3,6 +3,7 @@ export type PaymentStatus = "PENDING" | "COMPLETED" | "FAILED" | "REFUNDED";
 export type BookingStatus =
 	| "PENDING"
 	| "CONFIRMED"
+	| "SLOT_TAKEN_BY_ANOTHER_USER"
 	| "STARTED"
 	| "COMPLETED"
 	| "CANCELLED_BY_MENTEE"
@@ -30,7 +31,7 @@ export interface CancelBookingInput {
 
 export interface CancelBookingResponse {
 	bookingId: string;
-	status: string;
+	status: BookingStatus;
 	refund?: {
 		amount: number;
 		percentage: number;

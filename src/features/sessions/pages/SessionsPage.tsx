@@ -71,24 +71,13 @@ export function SessionsPage() {
 	const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 	const coinBalanceQuery = useCoinBalance();
 	const coinValue = coinBalanceQuery.data?.coinValue;
-
-	const filter = useMemo(() => {
-		if (search.tab === "past") {
-			return search.pastFilter === "cancelled"
-				? ("past_cancelled" as const)
-				: (search.pastFilter as BookingFilter);
-		}
-		return search.upcomingFilter === "cancelled"
-			? ("upcoming_cancelled" as const)
-			: (search.upcomingFilter as BookingFilter);
-	}, [search.tab, search.pastFilter, search.upcomingFilter]);
 	const params = useMemo(
 		() => ({
 			page: search.page,
 			limit: search.limit,
-			filter,
+			filter: search.filter as BookingFilter,
 		}),
-		[filter, search.limit, search.page],
+		[search.filter, search.limit, search.page],
 	);
 
 	const { data, isLoading } = useUserSessions(params);
@@ -171,6 +160,9 @@ export function SessionsPage() {
 	const pendingCancelBooking = bookings.find(
 		(booking) => booking.id === pendingCancelId,
 	);
+	const pendingRepayBooking = bookings.find(
+		(booking) => booking.id === pendingRepayId,
+	);
 	const canReviewSelectedBooking = Boolean(
 		selectedBooking &&
 			selectedBooking.status === "COMPLETED" &&
@@ -179,6 +171,14 @@ export function SessionsPage() {
 			!selectedBooking.review,
 	);
 	const refundPreview = getRefundPreview(pendingCancelBooking, coinValue);
+	const repayTitle =
+		pendingRepayBooking?.paymentStatus === "FAILED"
+			? "Retry payment"
+			: "Complete payment";
+	const repayMessage =
+		pendingRepayBooking?.paymentStatus === "FAILED"
+			? "This session payment failed. Retry to complete the booking."
+			: "This session payment is still pending. Continue to complete the payment?";
 
 	const reviewMutation = useMutation({
 		mutationFn: (input: {
@@ -226,8 +226,7 @@ export function SessionsPage() {
 									navigate({
 										search: {
 											tab: "upcoming",
-											upcomingFilter: "upcoming",
-											pastFilter: "completed",
+											filter: "upcoming",
 											page: 1,
 											limit: 10,
 										},
@@ -333,6 +332,13 @@ export function SessionsPage() {
 				personLabel="Mentor"
 				personName={selectedBooking?.mentorName}
 				showReceipt
+				onRepay={
+					selectedBooking
+						? async () => {
+								await repayMutation.mutateAsync(selectedBooking.id);
+							}
+						: undefined
+				}
 				canSubmitReview={canReviewSelectedBooking}
 				onSubmitReview={
 					selectedBooking
@@ -366,9 +372,9 @@ export function SessionsPage() {
 				onConfirm={() => {
 					if (pendingRepayId) repayMutation.mutate(pendingRepayId);
 				}}
-				title="Retry payment"
-				message="This session payment is still pending. Continue to complete the payment?"
-				confirmText="Pay now"
+				title={repayTitle}
+				message={repayMessage}
+				confirmText={repayTitle}
 				isLoading={repayMutation.isPending}
 			/>
 		</div>

@@ -1,7 +1,15 @@
-import { Star } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Coins, CreditCard, Download, Video } from "lucide-react";
+import {
+	Calendar,
+	Clock,
+	Coins,
+	CreditCard,
+	Download,
+	Star,
+	Video,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { format } from "date-fns";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import {
@@ -13,6 +21,7 @@ import {
 	DialogTitle,
 } from "@/components/ui/Dialog";
 import { Textarea } from "@/components/ui/Textarea";
+import { sessionBookingService } from "@/features/session-booking";
 import type { Booking } from "@/features/session-booking/types";
 import { cn } from "@/shared/utils/cn";
 import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
@@ -25,6 +34,7 @@ interface SessionDetailsDialogProps {
 	personName?: string | null;
 	showReceipt?: boolean;
 	canSubmitReview?: boolean;
+	onRepay?: () => void | Promise<void>;
 	onSubmitReview?: (input: {
 		rating: number;
 		comment: string;
@@ -40,6 +50,7 @@ export function SessionDetailsDialog({
 	personName,
 	showReceipt = true,
 	canSubmitReview = false,
+	onRepay,
 	onSubmitReview,
 	isSubmittingReview = false,
 }: SessionDetailsDialogProps) {
@@ -57,7 +68,7 @@ export function SessionDetailsDialog({
 	if (!booking) {
 		return (
 			<Dialog open={isOpen} onOpenChange={onClose}>
-				<DialogContent className="sm:max-w-140">
+				<DialogContent className="sm:max-w-3xl">
 					<DialogHeader>
 						<DialogTitle>Session Details</DialogTitle>
 					</DialogHeader>
@@ -76,8 +87,11 @@ export function SessionDetailsDialog({
 	const isCancelled =
 		booking.status === "CANCELLED_BY_MENTEE" ||
 		booking.status === "CANCELLED_BY_MENTOR";
+	const isSlotTakenByAnotherUser =
+		booking.status === "SLOT_TAKEN_BY_ANOTHER_USER";
 	const canJoinMeeting =
 		!isCancelled &&
+		!isSlotTakenByAnotherUser &&
 		booking.status !== "COMPLETED" &&
 		booking.status !== "PENDING" &&
 		new Date(booking.endTime).getTime() >= Date.now();
@@ -102,51 +116,137 @@ export function SessionDetailsDialog({
 					: "Payment refunded"
 		: "";
 	const bookingStatusLabel = booking
-		? booking.status === "STARTED"
-			? "Ongoing"
-			: booking.status === "COMPLETED"
-				? "Completed"
-				: booking.status === "CONFIRMED"
-					? "Confirmed"
-					: booking.status === "PENDING"
-						? "Payment Pending"
-						: booking.status === "CANCELLED_BY_MENTEE"
-							? "Cancelled by mentee"
-							: "Cancelled by mentor"
+		? booking.paymentStatus === "FAILED"
+			? isSlotTakenByAnotherUser
+				? "Slot taken by another user"
+				: "Booking failed"
+			: booking.status === "STARTED"
+				? "Ongoing"
+				: booking.status === "COMPLETED"
+					? "Completed"
+					: booking.status === "CONFIRMED"
+						? "Confirmed"
+						: booking.status === "PENDING"
+							? "Payment Pending"
+							: booking.status === "SLOT_TAKEN_BY_ANOTHER_USER"
+								? "Slot taken by another user"
+								: booking.status === "CANCELLED_BY_MENTEE"
+									? "Cancelled by mentee"
+									: "Cancelled by mentor"
 		: "";
 
 	const handleDownloadReceipt = () => {
-		if (!booking) return;
+		sessionBookingService.downloadReceipt(booking.id);
+	};
 
-		const receiptLines = [
-			"Upstride Session Receipt",
-			`Receipt Date: ${new Date().toLocaleString()}`,
-			`Booking ID: ${booking.id}`,
-			`Status: ${bookingStatusLabel}`,
-			`Payment Status: ${paymentStatusLabel}`,
-			`${personLabel}: ${personName ?? booking.mentorName ?? personLabel}`,
-			`Session Date: ${formatDateShort(booking.startTime)}`,
-			`Session Time: ${formatTimeShort(booking.startTime)} - ${formatTimeShort(booking.endTime)}`,
-			`Amount: ${booking.totalAmount} ${booking.currency.toUpperCase()}`,
-			`Payment Type: ${booking.paymentType}`,
-		];
-
-		if (booking.notes) {
-			receiptLines.push(`Notes: ${booking.notes}`);
+	const spotlight = (() => {
+		if (isSlotTakenByAnotherUser) {
+			return {
+				title: "Slot taken by another user",
+				description:
+					"Another user completed payment for this time slot before this booking was confirmed.",
+				node: (
+					<Badge
+						variant="destructive"
+						className="w-fit rounded-full px-3 py-1 uppercase bg-amber-500 text-white hover:bg-amber-500"
+					>
+						Slot taken
+					</Badge>
+				),
+			};
 		}
 
-		const blob = new Blob([receiptLines.join("\n")], {
-			type: "text/plain;charset=utf-8",
-		});
-		const url = URL.createObjectURL(blob);
-		const anchor = document.createElement("a");
-		anchor.href = url;
-		anchor.download = `receipt-${booking.id}.txt`;
-		document.body.appendChild(anchor);
-		anchor.click();
-		anchor.remove();
-		URL.revokeObjectURL(url);
-	};
+		if (booking.paymentStatus === "FAILED") {
+			return {
+				title: "Booking failed",
+				description:
+					"Payment did not complete. Complete payment to confirm the booking.",
+				node: (
+					<div className="flex flex-wrap items-center gap-2">
+						<Badge
+							variant="destructive"
+							className="w-fit rounded-full px-3 py-1 uppercase"
+						>
+							Failed
+						</Badge>
+						{onRepay && (
+							<Button type="button" onClick={onRepay}>
+								<CreditCard className="h-4 w-4" />
+								<span>Complete payment</span>
+							</Button>
+						)}
+					</div>
+				),
+			};
+		}
+
+		if (booking.paymentStatus === "PENDING") {
+			return {
+				title: "Payment pending",
+				description:
+					"Complete payment to confirm this booking and unlock the session details.",
+				node: onRepay ? (
+					<Button type="button" onClick={onRepay}>
+						<CreditCard className="h-4 w-4" />
+						<span>Complete payment</span>
+					</Button>
+				) : null,
+			};
+		}
+
+		if (canJoinMeeting) {
+			return {
+				title: "Join meeting room",
+				description:
+					"The session is active. Open the room from here when you're ready.",
+				node: (
+					<Link
+						to="/call/$bookingId"
+						params={{ bookingId: booking.id }}
+						className="inline-flex items-center gap-2 rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+					>
+						<Video className="h-4 w-4" />
+						<span>Join Meeting Room</span>
+					</Link>
+				),
+			};
+		}
+
+		if (canReviewSession) {
+			return {
+				title: "Review available",
+				description: "Submit a short review to share how the session went.",
+				node: (
+					<Badge variant="secondary" className="w-fit rounded-full px-3 py-1">
+						Review ready
+					</Badge>
+				),
+			};
+		}
+
+		if (showReceipt && canDownloadReceipt) {
+			return {
+				title: "Receipt ready",
+				description: "Download the receipt or keep it for your records.",
+				node: (
+					<Button
+						type="button"
+						variant="outline"
+						onClick={handleDownloadReceipt}
+					>
+						<Download className="h-4 w-4" />
+						<span>Download Receipt</span>
+					</Button>
+				),
+			};
+		}
+
+		return {
+			title: "No immediate action",
+			description: "Use the overview below to review the session details.",
+			node: null,
+		};
+	})();
 
 	const handleReviewSubmit = async () => {
 		if (!booking || !onSubmitReview || reviewRating < 1) return;
@@ -156,76 +256,256 @@ export function SessionDetailsDialog({
 		});
 	};
 
+	type TimelineStep = {
+		label: string;
+		active: boolean;
+		tone?: "warning";
+		badgeLabel?: string;
+	};
+
+	const timeline: TimelineStep[] = isCancelled
+		? [
+				{ label: "Booked", active: true },
+				{ label: "Cancelled", active: true },
+			]
+		: isSlotTakenByAnotherUser
+			? [
+					{
+						label:
+							booking.paymentStatus === "FAILED"
+								? "Payment failed"
+								: "Payment pending",
+						active: true,
+						tone: "warning" as const,
+						badgeLabel:
+							booking.paymentStatus === "FAILED"
+								? "Payment failed"
+								: "Payment pending",
+					},
+					{
+						label: "Another user booked slot",
+						active: true,
+						tone: "warning" as const,
+						badgeLabel: "Slot taken",
+					},
+				]
+			: booking.paymentStatus === "PENDING"
+				? [
+						{
+							label: "Payment pending",
+							active: true,
+							tone: "warning" as const,
+							badgeLabel: "Payment pending",
+						},
+					]
+				: booking.paymentStatus === "FAILED"
+					? [
+							{
+								label: "Booking failed",
+								active: true,
+								tone: "warning" as const,
+								badgeLabel: "Payment failed",
+							},
+						]
+					: [
+							{ label: "Booked", active: true },
+							{
+								label: "Confirmed",
+								active: booking.status !== "PENDING",
+							},
+							{
+								label: "Live",
+								active:
+									booking.status === "STARTED" ||
+									booking.status === "COMPLETED",
+							},
+							{
+								label: "Completed",
+								active: booking.status === "COMPLETED",
+							},
+						];
+
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="sm:max-w-140">
-				<DialogHeader>
-					<DialogTitle>Session Details</DialogTitle>
-				</DialogHeader>
-
-				{booking && (
-					<div className="space-y-4 text-sm">
+			<DialogContent className="sm:max-w-3xl">
+				<DialogHeader className="space-y-3">
+					<div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
 						<div className="space-y-1">
-							<p className="text-xs uppercase tracking-wide text-muted-foreground">
-								{personLabel}
-							</p>
-							<p className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
-								{personName ?? booking.mentorName ?? personLabel}
+							<DialogTitle>Session Details</DialogTitle>
+							<p className="text-sm text-muted-foreground">
+								{personLabel}: {personName ?? booking.mentorName ?? personLabel}
 							</p>
 						</div>
-
-						<div className="grid gap-3 sm:grid-cols-2">
-							<div className="rounded-xl border border-zinc-200/60 dark:border-zinc-800 p-3">
-								<p className="text-xs uppercase tracking-wide text-muted-foreground">
-									Session Date
-								</p>
-								<p className="mt-1 font-medium">
-									{formatDateShort(booking.startTime)}
-								</p>
-								<p className="text-xs text-muted-foreground">
-									{formatTimeShort(booking.startTime)} -{" "}
-									{formatTimeShort(booking.endTime)}
-								</p>
-							</div>
-							<div className="rounded-xl border border-zinc-200/60 dark:border-zinc-800 p-3">
-								<p className="text-xs uppercase tracking-wide text-muted-foreground">
-									Booked On
-								</p>
-								<p className="mt-1 font-medium">
-									{formatDateShort(booking.createdAt)}
-								</p>
-							</div>
-						</div>
-
 						<div className="flex flex-wrap items-center gap-2">
-							<Badge variant="outline" className="text-[10px] uppercase">
+							<Badge variant="outline" className="uppercase text-[10px]">
 								{bookingStatusLabel}
 							</Badge>
-							<Badge variant="secondary" className="text-[10px] uppercase">
+							<Badge variant="secondary" className="uppercase text-[10px]">
 								{paymentStatusLabel}
 							</Badge>
-							<span className="flex items-center gap-1 text-xs font-semibold text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-900/50 px-2 py-0.5 rounded-md">
-								{booking.paymentType === "COINS" ? (
-									<Coins className="h-3 w-3 text-amber-500" />
-								) : (
-									<CreditCard className="h-3 w-3 text-blue-500" />
-								)}
-								{booking.totalAmount}{" "}
-								{booking.currency === "inr" ? "₹" : booking.currency}
-							</span>
 						</div>
+					</div>
+				</DialogHeader>
 
-						{review && (
-							<div className="rounded-xl border border-zinc-200/60 dark:border-zinc-800 p-4 space-y-3">
-								<div className="flex items-center justify-between gap-3">
-									<div>
-										<p className="text-xs uppercase tracking-wide text-muted-foreground">
-											Your Review
+				<div className="space-y-4 text-sm">
+					<div className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
+						<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-4">
+							<p className="text-xs uppercase tracking-wide text-muted-foreground">
+								Overview
+							</p>
+							<div className="mt-3 grid gap-3 sm:grid-cols-2">
+								<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-3">
+									<p className="text-xs uppercase tracking-wide text-muted-foreground">
+										Session Date
+									</p>
+									<p className="mt-1 flex items-center gap-2 font-medium">
+										<Calendar className="h-4 w-4 text-primary" />
+										{formatDateShort(booking.startTime)}
+									</p>
+									<p className="text-xs text-muted-foreground">
+										<Clock className="mr-1 inline-block h-3.5 w-3.5" />
+										{formatTimeShort(booking.startTime)} -{" "}
+										{formatTimeShort(booking.endTime)}
+									</p>
+								</div>
+								<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-3">
+									<p className="text-xs uppercase tracking-wide text-muted-foreground">
+										Booked On
+									</p>
+									<p className="mt-1 font-medium">
+										{formatDateShort(booking.createdAt)}
+									</p>
+									<p className="text-xs text-muted-foreground">
+										{format(
+											booking.createdAt
+												? new Date(booking.createdAt)
+												: new Date(),
+											"HH:mm:ss",
+										)}
+									</p>
+								</div>
+								<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-3">
+									<p className="text-xs uppercase tracking-wide text-muted-foreground">
+										Amount
+									</p>
+									<p className="mt-1 flex items-center gap-2 font-medium">
+										{booking.paymentType === "COINS" ? (
+											<Coins className="h-4 w-4 text-amber-500" />
+										) : (
+											<CreditCard className="h-4 w-4 text-blue-500" />
+										)}
+										{booking.totalAmount} {booking.currency.toUpperCase()}
+									</p>
+									<p className="text-xs text-muted-foreground">
+										{booking.paymentType === "COINS"
+											? "Coin payment"
+											: "Card payment"}
+									</p>
+								</div>
+								<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-3">
+									<p className="text-xs uppercase tracking-wide text-muted-foreground">
+										Meeting
+									</p>
+									<p className="mt-1 font-medium">
+										{isCancelled
+											? "Not available"
+											: booking.status === "PENDING"
+												? "Waiting for confirmation"
+												: "Ready when session opens"}
+									</p>
+									<p className="text-xs text-muted-foreground">
+										{booking.meetingLink ? "Room assigned" : "No meeting URL"}
+									</p>
+								</div>
+							</div>
+						</section>
+
+						<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-4">
+							<p className="text-xs uppercase tracking-wide text-muted-foreground">
+								Next step
+							</p>
+							<div className="mt-3 rounded-xl border border-primary/15 bg-primary/5 p-4 space-y-3">
+								<div className="space-y-1">
+									<p className="font-semibold text-zinc-900 dark:text-zinc-50">
+										{spotlight.title}
+									</p>
+									<p className="text-sm text-muted-foreground">
+										{spotlight.description}
+									</p>
+								</div>
+								{spotlight.node}
+							</div>
+						</section>
+					</div>
+
+					<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-4">
+						<div className="flex items-center justify-between gap-3">
+							<p className="text-xs uppercase tracking-wide text-muted-foreground">
+								Status timeline
+							</p>
+							<Badge variant="outline" className="text-[10px] uppercase">
+								{isCancelled
+									? "Cancelled"
+									: booking.status.replaceAll("_", " ")}
+							</Badge>
+						</div>
+						<div className="mt-4 grid gap-2 sm:grid-cols-4">
+							{timeline.map((step, index) => (
+								<div key={step.label} className="space-y-2">
+									<div
+										className={cn(
+											"h-1.5 rounded-full",
+											step.tone === "warning"
+												? "bg-amber-500"
+												: step.active
+													? "bg-primary"
+													: "bg-zinc-200 dark:bg-zinc-800",
+											index === timeline.length - 1 ? "" : "",
+										)}
+									/>
+									<div className="flex items-center justify-between gap-2">
+										<p
+											className={cn(
+												"text-xs font-semibold",
+												step.tone === "warning"
+													? "text-amber-700 dark:text-amber-400"
+													: step.active
+														? "text-zinc-900 dark:text-zinc-50"
+														: "text-zinc-500 dark:text-zinc-400",
+											)}
+										>
+											{step.label}
 										</p>
-										<p className="mt-1 text-sm font-medium">
-											{submittedReviewLabel(review.rating)}
-										</p>
+										{step.tone === "warning" ? (
+											<Badge
+												variant="destructive"
+												className="text-[9px] uppercase bg-amber-500 text-white hover:bg-amber-500"
+											>
+												{step.badgeLabel ?? "Warning"}
+											</Badge>
+										) : (
+											step.active && (
+												<Badge
+													variant="secondary"
+													className="text-[9px] uppercase"
+												>
+													Active
+												</Badge>
+											)
+										)}
 									</div>
+								</div>
+							))}
+						</div>
+					</section>
+
+					<div className="grid gap-4 lg:grid-cols-2">
+						{review && (
+							<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-4 space-y-3">
+								<div className="flex items-center justify-between gap-3">
+									<p className="text-xs uppercase tracking-wide text-muted-foreground">
+										Your Review
+									</p>
 									<div className="flex items-center gap-1 text-amber-500">
 										{[1, 2, 3, 4, 5].map((star) => (
 											<Star
@@ -238,14 +518,17 @@ export function SessionDetailsDialog({
 										))}
 									</div>
 								</div>
+								<p className="text-sm font-medium">
+									{submittedReviewLabel(review.rating)}
+								</p>
 								<p className="text-sm text-muted-foreground">
 									{review.comment}
 								</p>
-							</div>
+							</section>
 						)}
 
 						{canReviewSession && (
-							<div className="rounded-xl border border-zinc-200/60 dark:border-zinc-800 p-4 space-y-4">
+							<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-4 space-y-4">
 								<div>
 									<p className="text-xs uppercase tracking-wide text-muted-foreground">
 										Leave a review
@@ -292,54 +575,44 @@ export function SessionDetailsDialog({
 										{isSubmittingReview ? "Submitting..." : "Submit Review"}
 									</Button>
 								</div>
-							</div>
-						)}
-
-						{canJoinMeeting && (
-							<div className="space-y-1">
-								<p className="text-xs uppercase tracking-wide text-muted-foreground">
-									Virtual Meeting Room
-								</p>
-								<Link
-									to="/call/$bookingId"
-									params={{ bookingId: booking.id }}
-									className="flex items-center gap-2 text-primary font-medium hover:underline bg-primary/5 px-3 py-2 rounded-xl"
-								>
-									<Video className="h-4 w-4" />
-									<span>Join Meeting Room</span>
-								</Link>
-							</div>
+							</section>
 						)}
 
 						{showReceipt && canDownloadReceipt && (
-							<div className="space-y-1">
-								<p className="text-xs uppercase tracking-wide text-muted-foreground">
-									Receipt
-								</p>
+							<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-4 space-y-3">
+								<div className="flex items-center justify-between gap-3">
+									<div>
+										<p className="text-xs uppercase tracking-wide text-muted-foreground">
+											Receipt
+										</p>
+										<p className="mt-1 text-sm text-muted-foreground">
+											Download a record of this booking.
+										</p>
+									</div>
+								</div>
 								<Button
 									type="button"
 									variant="outline"
 									onClick={handleDownloadReceipt}
-									className="rounded-xl"
 								>
 									<Download className="h-4 w-4" />
 									<span>Download Receipt</span>
 								</Button>
-							</div>
+							</section>
 						)}
 
 						{booking.notes && (
-							<div className="rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 p-3">
+							<section className="rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800 p-4">
 								<p className="text-xs uppercase tracking-wide text-muted-foreground">
 									Notes
 								</p>
 								<p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">
 									{booking.notes}
 								</p>
-							</div>
+							</section>
 						)}
 					</div>
-				)}
+				</div>
 
 				<DialogFooter>
 					<DialogClose asChild>

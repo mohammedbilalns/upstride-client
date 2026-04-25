@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
+	ArrowUpDown,
 	Calendar,
 	Clock,
 	Coins,
@@ -27,8 +28,17 @@ import type { Booking } from "@/features/session-booking/types";
 import { SessionDetailsDialog } from "@/features/sessions/components/SessionDetailsDialog";
 import { Pagination } from "@/features/users/components/Pagination";
 import { Route } from "@/routes/_app-layout/_mentor-layout/mentor-sessions";
+import { cn } from "@/shared/utils/cn";
 import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
 import { useMentorSessions } from "../hooks/queries/useMentorSessions";
+
+type MentorSort = "soonest" | "latest";
+
+const filterOptions = [
+	{ value: "upcoming", label: "Upcoming" },
+	{ value: "past", label: "Past" },
+	{ value: "cancelled", label: "Cancelled" },
+] as const;
 
 export function MentorSessionsPage() {
 	const navigate = useNavigate({ from: Route.fullPath });
@@ -37,6 +47,7 @@ export function MentorSessionsPage() {
 	const [pendingCancelId, setPendingCancelId] = useState<string | null>(null);
 	const [cancelReason, setCancelReason] = useState("");
 	const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+	const [sortBy, setSortBy] = useState<MentorSort>("soonest");
 
 	const params = useMemo(
 		() => ({
@@ -49,6 +60,38 @@ export function MentorSessionsPage() {
 
 	const { data, isLoading } = useMentorSessions(params);
 	const sessions = data?.data.items ?? [];
+
+	const visibleSessions = useMemo(() => {
+		return [...sessions].sort((a, b) => {
+			const timeA = new Date(a.startTime).getTime();
+			const timeB = new Date(b.startTime).getTime();
+			return sortBy === "soonest" ? timeA - timeB : timeB - timeA;
+		});
+	}, [sessions, sortBy]);
+
+	const summary = useMemo(() => {
+		const now = Date.now();
+		const todayKey = new Date().toDateString();
+
+		return visibleSessions.reduce(
+			(acc, booking) => {
+				const isCancelled = booking.status.startsWith("CANCELLED");
+				const isCompleted = booking.status === "COMPLETED";
+				const isToday = new Date(booking.startTime).toDateString() === todayKey;
+				const isUpcoming =
+					!isCancelled &&
+					!isCompleted &&
+					new Date(booking.endTime).getTime() >= now;
+
+				if (isUpcoming) acc.upcoming += 1;
+				if (isToday) acc.today += 1;
+				if (isCompleted) acc.completed += 1;
+				if (isCancelled) acc.cancelled += 1;
+				return acc;
+			},
+			{ upcoming: 0, today: 0, completed: 0, cancelled: 0 },
+		);
+	}, [visibleSessions]);
 
 	const cancelMutation = useMutation({
 		mutationFn: (bookingId: string) =>
@@ -100,40 +143,97 @@ export function MentorSessionsPage() {
 	return (
 		<div className="p-4 md:p-6 space-y-6 max-w-[90rem] mx-auto animate-in fade-in duration-500">
 			<Card className="border-border/60 shadow-sm">
-				<CardHeader className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-					<CardTitle className="text-2xl">Mentoring Sessions</CardTitle>
-					<div className="flex items-center gap-3">
-						<span className="text-sm text-muted-foreground">Show</span>
-						<Select value={search.filter} onValueChange={handleFilterChange}>
-							<SelectTrigger className="w-45">
-								<SelectValue placeholder="Upcoming" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="upcoming">Upcoming</SelectItem>
-								<SelectItem value="past">Past</SelectItem>
-								<SelectItem value="cancelled">Cancelled</SelectItem>
-							</SelectContent>
-						</Select>
+				<CardHeader className="space-y-5">
+					<div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+						<div className="space-y-1">
+							<CardTitle className="text-2xl">Mentoring Sessions</CardTitle>
+							<p className="text-sm text-muted-foreground">
+								Sessions booked by mentees for your guidance.
+							</p>
+						</div>
+
+						<div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:min-w-[32rem]">
+							<SummaryChip
+								label="Visible"
+								value={visibleSessions.length}
+								accent="text-slate-700 dark:text-slate-200"
+							/>
+							<SummaryChip
+								label="Upcoming"
+								value={summary.upcoming}
+								accent="text-primary"
+							/>
+							<SummaryChip
+								label="Today"
+								value={summary.today}
+								accent="text-emerald-600"
+							/>
+							<SummaryChip
+								label="Cancelled"
+								value={summary.cancelled}
+								accent="text-rose-600"
+							/>
+						</div>
+					</div>
+
+					<div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
+						<div className="space-y-2">
+							<p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400 uppercase">
+								Quick filters
+							</p>
+							<div className="flex flex-wrap gap-2">
+								{filterOptions.map((option) => {
+									const active = search.filter === option.value;
+									return (
+										<button
+											key={option.value}
+											type="button"
+											onClick={() => handleFilterChange(option.value)}
+											className={cn(
+												"rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors",
+												active
+													? "border-primary bg-primary/10 text-primary"
+													: "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-950/20 dark:text-zinc-300 dark:hover:text-zinc-50",
+											)}
+										>
+											{option.label}
+										</button>
+									);
+								})}
+							</div>
+						</div>
+
+						<div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+							<Select
+								value={sortBy}
+								onValueChange={(value) => setSortBy(value as MentorSort)}
+							>
+								<SelectTrigger className="h-10 w-full sm:w-44 rounded-xl">
+									<ArrowUpDown className="mr-2 h-4 w-4 text-muted-foreground" />
+									<SelectValue placeholder="Sort" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="soonest">Soonest first</SelectItem>
+									<SelectItem value="latest">Latest first</SelectItem>
+								</SelectContent>
+							</Select>
+						</div>
 					</div>
 				</CardHeader>
-				<CardContent className="space-y-2">
-					<p className="text-sm text-muted-foreground">
-						Sessions booked by mentees for your guidance.
-					</p>
-				</CardContent>
+
 				<CardContent className="space-y-4">
 					{isLoading && (
 						<p className="text-sm text-muted-foreground">Loading sessions...</p>
 					)}
 
-					{!isLoading && sessions.length === 0 && (
+					{!isLoading && visibleSessions.length === 0 && (
 						<div className="border border-dashed border-border/60 rounded-xl p-8 text-center text-sm text-muted-foreground">
 							No sessions found for this filter.
 						</div>
 					)}
 
 					<div className="grid gap-3">
-						{sessions.map((session) => (
+						{visibleSessions.map((session) => (
 							<MentorSessionCard
 								key={session.id}
 								booking={session}
@@ -157,6 +257,7 @@ export function MentorSessionsPage() {
 					)}
 				</CardContent>
 			</Card>
+
 			<ConfirmModal
 				isOpen={Boolean(pendingCancelId)}
 				onClose={() => setPendingCancelId(null)}
@@ -187,6 +288,7 @@ export function MentorSessionsPage() {
 					/>
 				</div>
 			</ConfirmModal>
+
 			<SessionDetailsDialog
 				isOpen={Boolean(selectedBooking)}
 				onClose={(open) => {
@@ -198,6 +300,25 @@ export function MentorSessionsPage() {
 				showReceipt={false}
 				canSubmitReview={false}
 			/>
+		</div>
+	);
+}
+
+function SummaryChip({
+	label,
+	value,
+	accent,
+}: {
+	label: string;
+	value: number;
+	accent: string;
+}) {
+	return (
+		<div className="rounded-2xl border border-zinc-200/70 bg-zinc-50/70 px-3 py-2 shadow-sm dark:border-zinc-800 dark:bg-zinc-950/20">
+			<p className="text-[10px] uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
+				{label}
+			</p>
+			<p className={cn("mt-1 text-lg font-semibold", accent)}>{value}</p>
 		</div>
 	);
 }
@@ -216,35 +337,51 @@ function MentorSessionCard({
 	isCancelling: boolean;
 }) {
 	const isCancelled = booking.status.startsWith("CANCELLED");
+	const isSlotTakenByAnotherUser =
+		booking.status === "SLOT_TAKEN_BY_ANOTHER_USER";
 	const now = Date.now();
 	const timeUntilStartMs = new Date(booking.startTime).getTime() - now;
 	const hasEnded = new Date(booking.endTime).getTime() < now;
 	const showJoinButton =
 		!isCancelled &&
+		!isSlotTakenByAnotherUser &&
 		!hasEnded &&
 		booking.status !== "COMPLETED" &&
 		booking.status !== "PENDING" &&
-		timeUntilStartMs <= 60 * 60 * 1000 && // 1 hour before
-		timeUntilStartMs >= -(120 * 60 * 1000); // Keep late joins blocked once the session is already past
+		timeUntilStartMs <= 60 * 60 * 1000 &&
+		timeUntilStartMs >= -(120 * 60 * 1000);
 
 	const canCancel =
-		showCancel && !isCancelled && booking.status !== "COMPLETED";
+		showCancel &&
+		!isCancelled &&
+		!isSlotTakenByAnotherUser &&
+		booking.status !== "COMPLETED";
 
 	return (
 		<div className="flex flex-col gap-3 rounded-xl border border-border/60 bg-card/40 p-4 sm:flex-row sm:items-center sm:justify-between hover:border-border transition-colors">
-			<div className="space-y-2 flex-1">
-				<div className="flex items-center gap-3">
-					<div className="flex items-center gap-2 text-sm font-semibold">
+			<div className="space-y-2 flex-1 min-w-0">
+				<div className="flex items-center gap-3 flex-wrap">
+					<div className="flex items-center gap-2 text-sm font-semibold min-w-0">
 						<Calendar className="h-4 w-4 text-primary" />
-						{formatDateShort(booking.startTime)}
+						<span className="truncate">
+							{formatDateShort(booking.startTime)}
+						</span>
 					</div>
 					{isCancelled && <Badge variant="destructive">Cancelled</Badge>}
+					{isSlotTakenByAnotherUser && (
+						<Badge
+							variant="destructive"
+							className="bg-amber-500 text-white hover:bg-amber-500"
+						>
+							Slot taken
+						</Badge>
+					)}
 					{booking.status === "PENDING" && (
 						<Badge variant="secondary">Payment Pending</Badge>
 					)}
 					{booking.status === "STARTED" && (
-						<Badge className="bg-emerald-500 hover:bg-emerald-600 text-white flex items-center gap-1.5 animate-pulse">
-							<span className="h-1.5 w-1.5 rounded-full bg-white transition-opacity" />
+						<Badge className="bg-emerald-500 hover:bg-emerald-600 text-white flex items-center gap-1.5 animate-pulse border-none">
+							<span className="h-1.5 w-1.5 rounded-full bg-white" />
 							Ongoing
 						</Badge>
 					)}
@@ -269,41 +406,44 @@ function MentorSessionCard({
 							{booking.review.rating}/5
 						</div>
 					)}
+					{showJoinButton && (
+						<Link
+							to="/call/$bookingId"
+							params={{ bookingId: booking.id }}
+							className="flex items-center gap-1.5 text-xs text-primary font-medium hover:underline"
+						>
+							<Video className="h-3.5 w-3.5" />
+							<span>Join Session</span>
+						</Link>
+					)}
 				</div>
 			</div>
-			<div className="flex items-center gap-3">
-				{isCancelled && booking.notes && (
-					<div className="text-xs text-muted-foreground italic max-w-[200px] truncate">
-						"{booking.notes}"
-					</div>
-				)}
-				{showJoinButton && (
-					<Link
-						to="/call/$bookingId"
-						params={{ bookingId: booking.id }}
-						className="flex items-center gap-1.5 text-xs text-primary font-medium hover:underline bg-primary/5 px-2 py-1 rounded-md"
-					>
-						<Video className="h-4 w-4" />
-						<span>Join Session</span>
-					</Link>
-				)}
+
+			<div className="flex flex-wrap items-center gap-2 sm:flex-col sm:items-end sm:gap-2">
 				<Button
-					variant="ghost"
+					variant="outline"
 					size="sm"
 					onClick={onViewDetails}
-					className="text-xs"
+					className="h-9 px-4 rounded-xl text-xs font-semibold"
 				>
 					View details
 				</Button>
+
+				{isCancelled && booking.notes && (
+					<div className="hidden lg:block text-[10px] text-zinc-500 text-right max-w-[220px] line-clamp-1 italic">
+						"{booking.notes}"
+					</div>
+				)}
+
 				{canCancel && (
 					<Button
 						variant="outline"
 						size="sm"
 						onClick={onCancel}
 						disabled={isCancelling}
-						className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 border-rose-100 dark:border-rose-900/30"
+						className="h-9 px-4 rounded-xl text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 border-rose-100 dark:border-rose-900/30"
 					>
-						<XCircle className="h-4 w-4 mr-2" />
+						<XCircle className="h-3.5 w-3.5 mr-2" />
 						Cancel
 					</Button>
 				)}

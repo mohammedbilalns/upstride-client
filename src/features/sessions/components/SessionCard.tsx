@@ -4,14 +4,12 @@ import {
 	Clock,
 	Coins,
 	CreditCard,
-	Download,
 	Star,
 	Video,
 	XCircle,
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { sessionBookingService } from "@/features/session-booking";
 import type { Booking } from "@/features/session-booking/types";
 import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
 
@@ -34,6 +32,17 @@ export function SessionCard({
 }) {
 	const timeUntilStartMs = new Date(booking.startTime).getTime() - Date.now();
 	const isCancelled = booking.status.startsWith("CANCELLED");
+	const isSlotTakenByAnotherUser =
+		booking.status === "SLOT_TAKEN_BY_ANOTHER_USER";
+	const statusAccentClass = isCancelled
+		? "bg-rose-500"
+		: isSlotTakenByAnotherUser
+			? "bg-amber-500"
+			: booking.status === "PENDING"
+				? "bg-amber-500"
+				: booking.status === "STARTED"
+					? "bg-emerald-500"
+					: "bg-primary";
 	const isUpcoming =
 		(booking.status === "CONFIRMED" || booking.status === "PENDING") &&
 		timeUntilStartMs >= 0;
@@ -48,23 +57,27 @@ export function SessionCard({
 	const canCancel =
 		showCancel &&
 		!isCancelled &&
+		!isSlotTakenByAnotherUser &&
+		booking.paymentStatus !== "PENDING" &&
 		!["COMPLETED", "STARTED"].includes(booking.status);
 	const canRepay =
 		!isCancelled &&
+		!isSlotTakenByAnotherUser &&
 		booking.paymentType === "STRIPE" &&
 		booking.paymentStatus !== "COMPLETED" &&
 		timeUntilStartMs >= 0;
-
-	const canDownloadReceipt =
-		!isCancelled &&
-		booking.paymentType === "STRIPE" &&
-		booking.paymentStatus === "COMPLETED" &&
-		["CONFIRMED", "STARTED", "COMPLETED"].includes(booking.status);
+	const repayLabel =
+		booking.paymentStatus === "FAILED" ? "Retry payment" : "Complete payment";
 
 	return (
-		<div className="group flex flex-col gap-4 rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-5 sm:flex-row sm:items-center sm:justify-between transition-all hover:border-zinc-300 dark:hover:border-zinc-700 shadow-sm hover:shadow-md">
-			<div className="flex gap-4">
-				<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+		<div className="group relative overflow-hidden flex flex-col gap-4 rounded-2xl border border-zinc-200/70 bg-white/70 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-950/40 p-5 sm:flex-row sm:items-center sm:justify-between transition-all hover:border-zinc-300 dark:hover:border-zinc-700 shadow-sm hover:shadow-md">
+			<div
+				className={`absolute left-0 top-0 h-full w-1.5 ${statusAccentClass}`}
+			/>
+			<div className="flex gap-4 pl-1">
+				<div
+					className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${statusAccentClass}/10 ${isCancelled ? "text-rose-600" : booking.status === "PENDING" ? "text-amber-600" : booking.status === "STARTED" ? "text-emerald-600" : "text-primary"}`}
+				>
 					{isCancelled ? (
 						<XCircle className="h-6 w-6" />
 					) : (
@@ -72,7 +85,7 @@ export function SessionCard({
 					)}
 				</div>
 				<div className="space-y-1.5 min-w-0">
-					<div className="flex items-center gap-2">
+					<div className="flex flex-wrap items-center gap-2">
 						<Link
 							to="/mentors/$mentorId"
 							params={{ mentorId: booking.mentorId }}
@@ -88,6 +101,14 @@ export function SessionCard({
 								Cancelled
 							</Badge>
 						)}
+						{isSlotTakenByAnotherUser && (
+							<Badge
+								variant="destructive"
+								className="h-5 text-[10px] px-2 rounded-full uppercase tracking-wider bg-amber-500 text-white hover:bg-amber-500"
+							>
+								Slot Taken
+							</Badge>
+						)}
 						{booking.status === "PENDING" && (
 							<Badge
 								variant="secondary"
@@ -100,6 +121,14 @@ export function SessionCard({
 							<Badge className="h-5 text-[10px] px-2 rounded-full uppercase tracking-wider bg-emerald-500 hover:bg-emerald-600 text-white flex items-center gap-1.5 animate-pulse border-none">
 								<span className="h-1.5 w-1.5 rounded-full bg-white" />
 								Ongoing
+							</Badge>
+						)}
+						{!isCancelled && booking.status === "CONFIRMED" && (
+							<Badge
+								variant="outline"
+								className="h-5 text-[10px] px-2 rounded-full uppercase tracking-wider border-primary/20 text-primary"
+							>
+								Scheduled
 							</Badge>
 						)}
 					</div>
@@ -146,16 +175,14 @@ export function SessionCard({
 				</div>
 			</div>
 
-			<div className="flex items-center gap-3 sm:flex-col sm:items-end sm:gap-2">
+			<div className="flex flex-wrap items-center gap-2 sm:flex-col sm:items-end sm:gap-2">
 				<Button
-					asChild
 					variant="outline"
 					size="sm"
+					onClick={onViewDetails}
 					className="h-9 px-4 rounded-xl text-xs font-semibold"
 				>
-					<button type="button" onClick={onViewDetails}>
-						View details
-					</button>
+					View details
 				</Button>
 
 				{isCancelled && booking.notes && (
@@ -172,19 +199,7 @@ export function SessionCard({
 						disabled={isRepaying}
 						className="h-9 px-4 rounded-xl text-xs font-semibold"
 					>
-						Pay now
-					</Button>
-				)}
-
-				{canDownloadReceipt && (
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => sessionBookingService.downloadReceipt(booking.id)}
-						className="h-9 px-4 rounded-xl text-xs font-semibold"
-					>
-						<Download className="h-3.5 w-3.5 mr-2" />
-						Download Receipt
+						{repayLabel}
 					</Button>
 				)}
 
