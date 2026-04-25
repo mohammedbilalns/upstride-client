@@ -1,10 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { Calendar, History } from "lucide-react";
+import { ArrowUpDown, Calendar, History } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import type { ApiError } from "@/api/apiError";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/Select";
 import { sessionBookingService } from "@/features/session-booking";
 import type { Booking, BookingFilter } from "@/features/session-booking/types";
 import { reviewService } from "@/features/reviews";
@@ -22,6 +29,7 @@ import { useUserSessions } from "../hooks/queries/useSessions";
 // const formatBookedDate = (value: string) =>
 // 	format(new Date(value), "MMM dd, yyyy");
 const DAY_MS = 24 * 60 * 60 * 1000;
+type SessionSort = "soonest" | "latest";
 
 const getRefundPreview = (booking: Booking | undefined, coinValue?: number) => {
 	if (!booking || booking.paymentStatus !== "COMPLETED") {
@@ -69,6 +77,7 @@ export function SessionsPage() {
 	const [cancelReason, setCancelReason] = useState("");
 	const [pendingRepayId, setPendingRepayId] = useState<string | null>(null);
 	const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+	const [sortBy, setSortBy] = useState<SessionSort>("soonest");
 	const coinBalanceQuery = useCoinBalance();
 	const coinValue = coinBalanceQuery.data?.coinValue;
 	const params = useMemo(
@@ -153,14 +162,27 @@ export function SessionsPage() {
 
 	const handlePageChange = (page: number) => updateSearch({ page });
 	const handleLimitChange = (limit: number) => updateSearch({ limit, page: 1 });
+	const handleSortChange = (value: string) =>
+		setSortBy(value === "latest" ? "latest" : "soonest");
+	const canShowSort =
+		search.tab === "upcoming" &&
+		(search.filter === "upcoming" || search.filter === "payment_pending");
 
 	const bookings = data?.data.items ?? [];
+	const effectiveSortBy: SessionSort = canShowSort ? sortBy : "soonest";
+	const sortedBookings = useMemo(() => {
+		return [...bookings].sort((a, b) => {
+			const timeA = new Date(a.startTime).getTime();
+			const timeB = new Date(b.startTime).getTime();
+			return effectiveSortBy === "soonest" ? timeA - timeB : timeB - timeA;
+		});
+	}, [bookings, effectiveSortBy]);
 	const total = data?.data.total ?? 0;
 	const isDetailsOpen = Boolean(selectedBooking);
-	const pendingCancelBooking = bookings.find(
+	const pendingCancelBooking = sortedBookings.find(
 		(booking) => booking.id === pendingCancelId,
 	);
-	const pendingRepayBooking = bookings.find(
+	const pendingRepayBooking = sortedBookings.find(
 		(booking) => booking.id === pendingRepayId,
 	);
 	const canReviewSelectedBooking = Boolean(
@@ -246,7 +268,7 @@ export function SessionsPage() {
 									<p className="text-xs text-zinc-500">
 										Showing{" "}
 										<span className="font-medium text-zinc-700 dark:text-zinc-300">
-											{bookings.length}
+											{sortedBookings.length}
 										</span>{" "}
 										of{" "}
 										<span className="font-medium text-zinc-700 dark:text-zinc-300">
@@ -256,6 +278,24 @@ export function SessionsPage() {
 									</p>
 								)}
 							</div>
+
+							{canShowSort && (
+								<div className="flex flex-col gap-2 sm:flex-row sm:items-center mt-3 pt-1">
+									<span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+										Sort
+									</span>
+									<Select value={sortBy} onValueChange={handleSortChange}>
+										<SelectTrigger className="w-full sm:w-44 h-10 rounded-xl bg-white/70 dark:bg-zinc-900/50">
+											<ArrowUpDown className="mr-2 h-4 w-4 text-muted-foreground" />
+											<SelectValue placeholder="Sort" />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value="soonest">Soonest first</SelectItem>
+											<SelectItem value="latest">Latest first</SelectItem>
+										</SelectContent>
+									</Select>
+								</div>
+							)}
 						</div>
 
 						<div className="min-w-0 space-y-4">
@@ -292,7 +332,7 @@ export function SessionsPage() {
 							)}
 
 							<div className="grid gap-4">
-								{bookings.map((booking) => (
+								{sortedBookings.map((booking) => (
 									<SessionCard
 										key={booking.id}
 										booking={booking}

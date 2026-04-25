@@ -69,30 +69,6 @@ export function MentorSessionsPage() {
 		});
 	}, [sessions, sortBy]);
 
-	const summary = useMemo(() => {
-		const now = Date.now();
-		const todayKey = new Date().toDateString();
-
-		return visibleSessions.reduce(
-			(acc, booking) => {
-				const isCancelled = booking.status.startsWith("CANCELLED");
-				const isCompleted = booking.status === "COMPLETED";
-				const isToday = new Date(booking.startTime).toDateString() === todayKey;
-				const isUpcoming =
-					!isCancelled &&
-					!isCompleted &&
-					new Date(booking.endTime).getTime() >= now;
-
-				if (isUpcoming) acc.upcoming += 1;
-				if (isToday) acc.today += 1;
-				if (isCompleted) acc.completed += 1;
-				if (isCancelled) acc.cancelled += 1;
-				return acc;
-			},
-			{ upcoming: 0, today: 0, completed: 0, cancelled: 0 },
-		);
-	}, [visibleSessions]);
-
 	const cancelMutation = useMutation({
 		mutationFn: (bookingId: string) =>
 			sessionBookingService.cancelBookingByMentor({
@@ -150,29 +126,6 @@ export function MentorSessionsPage() {
 							<p className="text-sm text-muted-foreground">
 								Sessions booked by mentees for your guidance.
 							</p>
-						</div>
-
-						<div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:min-w-[32rem]">
-							<SummaryChip
-								label="Visible"
-								value={visibleSessions.length}
-								accent="text-slate-700 dark:text-slate-200"
-							/>
-							<SummaryChip
-								label="Upcoming"
-								value={summary.upcoming}
-								accent="text-primary"
-							/>
-							<SummaryChip
-								label="Today"
-								value={summary.today}
-								accent="text-emerald-600"
-							/>
-							<SummaryChip
-								label="Cancelled"
-								value={summary.cancelled}
-								accent="text-rose-600"
-							/>
 						</div>
 					</div>
 
@@ -300,25 +253,6 @@ export function MentorSessionsPage() {
 				showReceipt={false}
 				canSubmitReview={false}
 			/>
-		</div>
-	);
-}
-
-function SummaryChip({
-	label,
-	value,
-	accent,
-}: {
-	label: string;
-	value: number;
-	accent: string;
-}) {
-	return (
-		<div className="rounded-2xl border border-zinc-200/70 bg-zinc-50/70 px-3 py-2 shadow-sm dark:border-zinc-800 dark:bg-zinc-950/20">
-			<p className="text-[10px] uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
-				{label}
-			</p>
-			<p className={cn("mt-1 text-lg font-semibold", accent)}>{value}</p>
 		</div>
 	);
 }
