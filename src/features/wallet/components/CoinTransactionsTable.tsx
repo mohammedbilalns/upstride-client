@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/Table";
 import { Pagination } from "@/features/users/components/Pagination";
 import type { GetCoinTransactionsResponse } from "../types";
+import { TransactionIdCell } from "./TransactionIdCell";
 
 interface CoinTransactionsTableProps {
 	isLoading: boolean;
@@ -36,18 +37,18 @@ export function CoinTransactionsTable({
 					</div>
 				) : data?.items?.length ? (
 					<div className="w-full overflow-x-auto">
-						<Table className="min-w-[720px] table-fixed">
+						<Table className="w-full table-fixed">
 							<TableHeader className="bg-muted/50">
 								<TableRow>
-									<TableHead className="w-[28%] py-2 pl-3 md:pl-5 text-xs">
+									<TableHead className="w-[30%] py-2 pl-3 md:pl-5 text-xs">
 										Date
 									</TableHead>
-									<TableHead className="w-[20%] py-2 text-xs">Type</TableHead>
-									<TableHead className="w-[14%] py-2 text-xs">
+									<TableHead className="w-[22%] py-2 text-xs">Type</TableHead>
+									<TableHead className="w-[16%] py-2 text-xs">
 										Direction
 									</TableHead>
-									<TableHead className="w-[10%] py-2 text-xs">Amount</TableHead>
-									<TableHead className="hidden md:table-cell w-[28%] py-2 pr-4 md:pr-5 text-xs">
+									<TableHead className="w-[12%] py-2 text-xs">Amount</TableHead>
+									<TableHead className="hidden md:table-cell w-[20%] py-2 pr-4 md:pr-5 text-xs">
 										Transaction ID
 									</TableHead>
 								</TableRow>
@@ -58,8 +59,13 @@ export function CoinTransactionsTable({
 										key={item.id}
 										className="hover:bg-muted/30 transition-colors"
 									>
-										<TableCell className="whitespace-normal text-xs pl-3 md:pl-5 py-2">
-											{new Date(item.createdAt).toLocaleString()}
+										<TableCell className="whitespace-normal align-top text-xs pl-3 md:pl-5 py-2">
+											<div className="space-y-1">
+												<div>{new Date(item.createdAt).toLocaleString()}</div>
+												<div className="md:hidden font-mono text-[11px] leading-4 break-all text-muted-foreground">
+													{item.id}
+												</div>
+											</div>
 										</TableCell>
 										<TableCell className="capitalize text-xs py-2">
 											{item.type.replaceAll("_", " ")}
@@ -80,8 +86,8 @@ export function CoinTransactionsTable({
 											{item.amount > 0 ? "+" : ""}
 											{item.amount}
 										</TableCell>
-										<TableCell className="hidden md:table-cell text-muted-foreground font-mono pr-4 md:pr-5 py-2">
-											<span title={item.id}>{item.id.slice(0, 16)}</span>
+										<TableCell className="hidden md:table-cell align-top text-muted-foreground pr-4 md:pr-5 py-2">
+											<TransactionIdCell value={item.id} />
 										</TableCell>
 									</TableRow>
 								))}
