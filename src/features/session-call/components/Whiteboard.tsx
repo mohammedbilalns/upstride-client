@@ -198,6 +198,9 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 					theme={isDarkMode ? "dark" : "light"}
 					gridModeEnabled={true}
 					UIOptions={{
+						tools: {
+							image: false,
+						},
 						canvasActions: {
 							loadScene: false,
 							saveToActiveFile: false,
