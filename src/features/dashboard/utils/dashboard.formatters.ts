@@ -14,9 +14,19 @@ export function formatNumber(value: number, fractionDigits = 0) {
 }
 
 export function formatMoney(value: number, currency = "INR") {
-	return new Intl.NumberFormat(undefined, {
-		style: "currency",
-		currency: currency.toUpperCase(),
-		maximumFractionDigits: 0,
-	}).format(value);
+	const normalizedCurrency = currency.toUpperCase();
+
+	if (normalizedCurrency === "COINS") {
+		return `${formatNumber(value)} COINS`;
+	}
+
+	try {
+		return new Intl.NumberFormat(undefined, {
+			style: "currency",
+			currency: normalizedCurrency,
+			maximumFractionDigits: 0,
+		}).format(value);
+	} catch {
+		return `${formatNumber(value)} ${normalizedCurrency}`;
+	}
 }
