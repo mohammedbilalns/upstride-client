@@ -369,12 +369,24 @@ export function SessionDetailsDialog({
 			</div>
 
 			<div className="space-y-3 text-sm">
-				<div className="grid gap-3 lg:grid-cols-[1.1fr_0.9fr]">
+				<div
+					className={cn(
+						"grid gap-3",
+						mode === "page"
+							? "xl:grid-cols-[1.35fr_0.95fr]"
+							: "lg:grid-cols-[1.1fr_0.9fr]",
+					)}
+				>
 					<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-3.5">
 						<p className="text-xs uppercase tracking-wide text-muted-foreground">
 							Overview
 						</p>
-						<div className="mt-2.5 grid gap-2.5 sm:grid-cols-2">
+						<div
+							className={cn(
+								"mt-2.5 grid gap-2.5 sm:grid-cols-2",
+								mode === "page" && "2xl:grid-cols-3",
+							)}
+						>
 							<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-2.5">
 								<p className="text-xs uppercase tracking-wide text-muted-foreground">
 									Session Date
@@ -539,7 +551,12 @@ export function SessionDetailsDialog({
 					</div>
 				</section>
 
-				<div className="grid gap-4 lg:grid-cols-2">
+				<div
+					className={cn(
+						"grid gap-4",
+						mode === "page" ? "xl:grid-cols-[1.1fr_0.9fr]" : "lg:grid-cols-2",
+					)}
+				>
 					{review && (
 						<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-3.5 space-y-2.5">
 							<div className="flex items-center justify-between gap-3">
@@ -656,20 +673,59 @@ export function SessionDetailsDialog({
 
 	if (mode === "page") {
 		return (
-			<div className="mx-auto max-w-5xl space-y-4 p-4 md:p-6">
-				{onBack ? (
-					<Button
-						type="button"
-						variant="ghost"
-						onClick={onBack}
-						className="px-0"
-					>
-						<ArrowLeft className="h-4 w-4" />
-						<span>{backLabel}</span>
-					</Button>
-				) : null}
-				<div className="rounded-3xl border border-border/60 bg-card p-4 shadow-sm md:p-6">
-					{detailsContent}
+			<div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.08),transparent_28%),linear-gradient(180deg,hsl(var(--background))_0%,hsl(var(--background))_100%)]">
+				<div className="mx-auto max-w-7xl space-y-6 px-4 py-6 md:px-6 md:py-8">
+					{onBack ? (
+						<Button
+							type="button"
+							variant="ghost"
+							onClick={onBack}
+							className="px-0 text-muted-foreground hover:text-foreground"
+						>
+							<ArrowLeft className="h-4 w-4" />
+							<span>{backLabel}</span>
+						</Button>
+					) : null}
+					<div className="grid gap-6 xl:grid-cols-[minmax(0,1.7fr)_minmax(320px,0.9fr)]">
+						<section className="rounded-[28px] border border-border/60 bg-card/95 p-5 shadow-sm md:p-7">
+							{detailsContent}
+						</section>
+						<aside className="space-y-4">
+							<div className="rounded-[24px] border border-border/60 bg-card/95 p-5 shadow-sm">
+								<p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+									Session Snapshot
+								</p>
+								<div className="mt-4 space-y-3">
+									<div className="rounded-2xl border border-zinc-200/60 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-950/30">
+										<p className="text-xs uppercase tracking-wide text-muted-foreground">
+											{personLabel}
+										</p>
+										<p className="mt-1 text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+											{personName ?? booking.mentorName ?? personLabel}
+										</p>
+									</div>
+									<div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
+										<div className="rounded-2xl border border-zinc-200/60 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-950/30">
+											<p className="text-xs uppercase tracking-wide text-muted-foreground">
+												Status
+											</p>
+											<p className="mt-1 text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+												{bookingStatusLabel}
+											</p>
+										</div>
+										<div className="rounded-2xl border border-zinc-200/60 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-950/30">
+											<p className="text-xs uppercase tracking-wide text-muted-foreground">
+												Payment
+											</p>
+											<p className="mt-1 text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+												{paymentStatusLabel}
+											</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</aside>
+					</div>
 				</div>
 			</div>
 		);
