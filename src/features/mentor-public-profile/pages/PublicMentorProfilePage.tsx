@@ -316,7 +316,7 @@ export function PublicMentorProfilePage({
 				className={cn(
 					"grid gap-6",
 					!isAdminView
-						? "grid-cols-1 lg:grid-cols-[1.2fr_1fr]"
+						? "grid-cols-1 xl:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)] xl:items-start"
 						: "grid-cols-1 max-w-4xl",
 				)}
 			>
