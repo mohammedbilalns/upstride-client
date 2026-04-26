@@ -770,16 +770,12 @@ export function AdminDashboardPage() {
 
 	const dashboard = dashboardQuery.data;
 
-	const userGrowth = userGrowthQuery.data ?? dashboard?.userGrowth;
-	const revenueAnalytics =
-		revenueAnalyticsQuery.data ?? dashboard?.revenueAnalytics;
-	const sessionOverview =
-		sessionOverviewQuery.data ?? dashboard?.sessionOverview;
-	const isRefreshingHealth =
-		dashboardQuery.isRefetching || sessionOverviewQuery.isRefetching;
+	const userGrowth = userGrowthQuery.data;
+	const revenueAnalytics = revenueAnalyticsQuery.data;
+	const sessionOverview = sessionOverviewQuery.data;
 
 	const metricCards = useMemo(() => {
-		if (!dashboard || !userGrowth || !revenueAnalytics) {
+		if (!dashboard || !revenueAnalytics) {
 			return [];
 		}
 
@@ -808,7 +804,7 @@ export function AdminDashboardPage() {
 				chartColor: "#f59e0b",
 			},
 		];
-	}, [dashboard, revenueAnalytics, userGrowth]);
+	}, [dashboard, revenueAnalytics]);
 
 	if (dashboardQuery.isLoading && !dashboard) {
 		return <PendingComponent resource="admin dashboard" />;
@@ -1094,24 +1090,24 @@ export function AdminDashboardPage() {
 								<div>
 									<CardTitle className="text-lg">System Health</CardTitle>
 								</div>
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={() => {
-										void dashboardQuery.refetch();
-										void sessionOverviewQuery.refetch();
-									}}
-									disabled={isRefreshingHealth}
-									className="border-border bg-background/70"
-								>
-									<RefreshCcw
-										className={cn(
-											"h-4 w-4",
-											isRefreshingHealth && "animate-spin",
-										)}
-									/>
-									Recheck
-								</Button>
+								{/* <Button */}
+								{/* 	variant="outline" */}
+								{/* 	size="sm" */}
+								{/* 	onClick={() => { */}
+								{/* 		void dashboardQuery.refetch(); */}
+								{/* 		void sessionOverviewQuery.refetch(); */}
+								{/* 	}} */}
+								{/* 	disabled={isRefreshingHealth} */}
+								{/* 	className="border-border bg-background/70" */}
+								{/* > */}
+								{/* 	<RefreshCcw */}
+								{/* 		className={cn( */}
+								{/* 			"h-4 w-4", */}
+								{/* 			isRefreshingHealth && "animate-spin", */}
+								{/* 		)} */}
+								{/* 	/> */}
+								{/* 	Recheck */}
+								{/* </Button> */}
 							</div>
 						</CardHeader>
 						<CardContent className="space-y-2.5 px-4 pb-4">

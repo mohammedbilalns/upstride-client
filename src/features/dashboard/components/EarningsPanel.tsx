@@ -11,8 +11,8 @@ interface EarningsPanelProps {
 export function EarningsPanel({ dashboard }: EarningsPanelProps) {
 	const chart = dashboard.earningsChart ?? {
 		period: "month" as const,
-		labels: dashboard.activityOverview.labels,
-		values: dashboard.activityOverview.sessions,
+		labels: [],
+		values: [],
 	};
 	const total = dashboard.netEarnings ?? dashboard.totalRevenue ?? 0;
 	const fees = dashboard.platformFees ?? 0;

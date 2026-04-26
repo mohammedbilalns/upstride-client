@@ -96,12 +96,7 @@ export interface AdminDashboardResponse {
 		totalMentors: AdminDashboardMetric;
 		totalSessions: AdminDashboardMetric;
 		totalRevenue: AdminDashboardMetric;
-		activeUsersNow: AdminDashboardMetric;
 	};
-	activeUsersTrend: AdminDashboardSparkline;
-	userGrowth: AdminDashboardUserGrowthResponse;
-	sessionOverview: AdminDashboardSessionOverviewResponse;
-	revenueAnalytics: AdminDashboardRevenueAnalyticsResponse;
 	topMentors: AdminDashboardTopMentor[];
 	topCategories: AdminDashboardTopCategory[];
 	systemHealth: SystemHealthSnapshot;

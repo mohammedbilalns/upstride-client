@@ -83,7 +83,6 @@ export interface DashboardSummaryDto {
 	sessionGrowth: DashboardGrowthMetric;
 	hoursLearnedGrowth: DashboardGrowthMetric;
 	upcomingSessions: DashboardUpcomingSessionDto[];
-	activityOverview: DashboardActivityOverviewDto;
 	recentActivity: DashboardActivityItemDto[];
 	recommendedArticles: DashboardArticleDto[];
 	earningsChart?: DashboardEarningsChartDto;

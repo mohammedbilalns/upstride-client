@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import type { DashboardRole } from "../types";
 import { DASHBOARD_ROLE_LABELS } from "../utils/dashboard.constants";
 
@@ -40,6 +41,16 @@ export function DashboardHero({
 						Track your sessions, activity, articles, and momentum from one
 						place.
 					</p>
+					{dashboardRole === "USER" && (
+						<div className="pt-1">
+							<Link
+								to="/mentor/register"
+								className="inline-flex items-center justify-center rounded-full border border-primary/20 bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+							>
+								Register as Mentor
+							</Link>
+						</div>
+					)}
 				</div>
 				{highlights.length > 0 && (
 					<div className="grid w-full gap-2 sm:grid-cols-2 lg:max-w-xl lg:grid-cols-3">

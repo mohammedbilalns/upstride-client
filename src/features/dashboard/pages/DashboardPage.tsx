@@ -36,8 +36,7 @@ export function DashboardPage({
 		useDashboardActivityOverviewQuery(dashboardRole, period);
 
 	const dashboard = summaryData ? mapDashboardSummary(summaryData) : null;
-	const activityOverview =
-		overviewData ?? dashboard?.activityOverview ?? fallbackOverview(period);
+	const activityOverview = overviewData ?? fallbackOverview(period);
 	const isMentor = dashboard?.role === "MENTOR" || dashboardRole === "MENTOR";
 	const sessionLabel = dashboard
 		? `${formatNumber(dashboard.totalSessionsAttended ?? dashboard.completedSessionCount, 0)} sessions attended`
