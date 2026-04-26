@@ -14,9 +14,8 @@ export function EarningsPanel({ dashboard }: EarningsPanelProps) {
 		labels: dashboard.activityOverview.labels,
 		values: dashboard.activityOverview.sessions,
 	};
-	const total = dashboard.totalRevenue ?? 0;
+	const total = dashboard.netEarnings ?? dashboard.totalRevenue ?? 0;
 	const fees = dashboard.platformFees ?? 0;
-	const net = dashboard.netEarnings ?? total - fees;
 	const unit = dashboard.earningsCurrency ?? "COINS";
 
 	return (
@@ -25,7 +24,7 @@ export function EarningsPanel({ dashboard }: EarningsPanelProps) {
 				<div className="space-y-1">
 					<CardTitle className="text-lg">Earnings Overview</CardTitle>
 					<p className="text-xs text-muted-foreground">
-						Revenue from completed sessions this month.
+						Actual credited earnings from completed sessions this month.
 					</p>
 				</div>
 				<Badge variant="secondary" className="h-7 px-2.5 text-[11px]">
@@ -37,7 +36,7 @@ export function EarningsPanel({ dashboard }: EarningsPanelProps) {
 				<div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
 					<div className="rounded-2xl border border-border/60 p-3.5">
 						<p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
-							Total Earnings
+							Credited Earnings
 						</p>
 						<p className="mt-1 text-base font-semibold">
 							{formatUnitAmount(total, unit)}
@@ -53,10 +52,10 @@ export function EarningsPanel({ dashboard }: EarningsPanelProps) {
 					</div>
 					<div className="rounded-2xl border border-border/60 p-3.5">
 						<p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
-							Net Earnings
+							Completed Sessions
 						</p>
 						<p className="mt-1 text-base font-semibold">
-							{formatUnitAmount(net, unit)}
+							{dashboard.totalSessionsAttended ?? 0}
 						</p>
 					</div>
 				</div>

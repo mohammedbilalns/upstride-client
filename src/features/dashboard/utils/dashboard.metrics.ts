@@ -67,12 +67,12 @@ export function buildDashboardMetricCards(
 
 	return [
 		{
-			title: "Total Revenue",
+			title: "Credited Earnings",
 			value: formatUnitAmount(
-				dashboard.totalRevenue ?? 0,
+				dashboard.netEarnings ?? dashboard.totalRevenue ?? 0,
 				dashboard.earningsCurrency ?? "COINS",
 			),
-			subtitle: "Completed sessions only",
+			subtitle: "After platform fee",
 			icon: Wallet,
 			tone: "violet",
 		},

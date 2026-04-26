@@ -48,10 +48,10 @@ export function DashboardPage({
 					{
 						label: "Revenue",
 						value: formatUnitAmount(
-							dashboard.totalRevenue ?? 0,
+							dashboard.netEarnings ?? dashboard.totalRevenue ?? 0,
 							dashboard.earningsCurrency ?? "COINS",
 						),
-						subtitle: "Completed sessions",
+						subtitle: "Credited after completed sessions",
 					},
 					{
 						label: "Mentees",

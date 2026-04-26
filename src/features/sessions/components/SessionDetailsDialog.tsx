@@ -70,7 +70,7 @@ export function SessionDetailsDialog({
 	if (!booking) {
 		return (
 			<Dialog open={isOpen} onOpenChange={onClose}>
-				<DialogContent className="sm:max-w-3xl">
+				<DialogContent className="sm:max-w-2xl">
 					<DialogHeader>
 						<DialogTitle>Session Details</DialogTitle>
 					</DialogHeader>
@@ -334,8 +334,8 @@ export function SessionDetailsDialog({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="sm:max-w-3xl">
-				<DialogHeader className="space-y-3">
+			<DialogContent className="sm:max-w-2xl">
+				<DialogHeader className="space-y-2">
 					<div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
 						<div className="space-y-1">
 							<DialogTitle>Session Details</DialogTitle>
@@ -354,14 +354,14 @@ export function SessionDetailsDialog({
 					</div>
 				</DialogHeader>
 
-				<div className="space-y-4 text-sm">
-					<div className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
-						<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-4">
+				<div className="space-y-3 text-sm">
+					<div className="grid gap-3 lg:grid-cols-[1.1fr_0.9fr]">
+						<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-3.5">
 							<p className="text-xs uppercase tracking-wide text-muted-foreground">
 								Overview
 							</p>
-							<div className="mt-3 grid gap-3 sm:grid-cols-2">
-								<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-3">
+							<div className="mt-2.5 grid gap-2.5 sm:grid-cols-2">
+								<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-2.5">
 									<p className="text-xs uppercase tracking-wide text-muted-foreground">
 										Session Date
 									</p>
@@ -375,7 +375,7 @@ export function SessionDetailsDialog({
 										{formatTimeShort(booking.endTime)}
 									</p>
 								</div>
-								<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-3">
+								<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-2.5">
 									<p className="text-xs uppercase tracking-wide text-muted-foreground">
 										Booked On
 									</p>
@@ -391,7 +391,7 @@ export function SessionDetailsDialog({
 										)}
 									</p>
 								</div>
-								<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-3">
+								<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-2.5">
 									<p className="text-xs uppercase tracking-wide text-muted-foreground">
 										Amount
 									</p>
@@ -409,7 +409,7 @@ export function SessionDetailsDialog({
 											: "Card payment"}
 									</p>
 								</div>
-								<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-3">
+								<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-2.5">
 									<p className="text-xs uppercase tracking-wide text-muted-foreground">
 										{resolvedPayoutLabel}
 									</p>
@@ -427,7 +427,7 @@ export function SessionDetailsDialog({
 									</p>
 								</div>
 								{!isCompleted && (
-									<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-3">
+									<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-2.5">
 										<p className="text-xs uppercase tracking-wide text-muted-foreground">
 											Meeting
 										</p>
@@ -447,11 +447,11 @@ export function SessionDetailsDialog({
 						</section>
 
 						{showNextStep && (
-							<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-4">
+							<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-3.5">
 								<p className="text-xs uppercase tracking-wide text-muted-foreground">
 									Next step
 								</p>
-								<div className="mt-3 rounded-xl border border-primary/15 bg-primary/5 p-4 space-y-3">
+								<div className="mt-2.5 rounded-xl border border-primary/15 bg-primary/5 p-3 space-y-2.5">
 									<div className="space-y-1">
 										<p className="font-semibold text-zinc-900 dark:text-zinc-50">
 											{spotlight.title}
@@ -466,7 +466,7 @@ export function SessionDetailsDialog({
 						)}
 					</div>
 
-					<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-4">
+					<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-3.5">
 						<div className="flex items-center justify-between gap-3">
 							<p className="text-xs uppercase tracking-wide text-muted-foreground">
 								Status timeline
@@ -477,7 +477,7 @@ export function SessionDetailsDialog({
 									: booking.status.replaceAll("_", " ")}
 							</Badge>
 						</div>
-						<div className="mt-4 grid gap-2 sm:grid-cols-4">
+						<div className="mt-3 grid gap-2 sm:grid-cols-4">
 							{timeline.map((step, index) => (
 								<div key={step.label} className="space-y-2">
 									<div
@@ -529,7 +529,7 @@ export function SessionDetailsDialog({
 
 					<div className="grid gap-4 lg:grid-cols-2">
 						{review && (
-							<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-4 space-y-3">
+							<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-3.5 space-y-2.5">
 								<div className="flex items-center justify-between gap-3">
 									<p className="text-xs uppercase tracking-wide text-muted-foreground">
 										Your Review
@@ -556,7 +556,7 @@ export function SessionDetailsDialog({
 						)}
 
 						{canReviewSession && (
-							<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-4 space-y-4">
+							<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-3.5 space-y-3">
 								<div>
 									<p className="text-xs uppercase tracking-wide text-muted-foreground">
 										Leave a review
@@ -607,7 +607,7 @@ export function SessionDetailsDialog({
 						)}
 
 						{showReceipt && canDownloadReceipt && (
-							<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-4 space-y-3">
+							<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-3.5 space-y-2.5">
 								<div className="flex items-center justify-between gap-3">
 									<div>
 										<p className="text-xs uppercase tracking-wide text-muted-foreground">
