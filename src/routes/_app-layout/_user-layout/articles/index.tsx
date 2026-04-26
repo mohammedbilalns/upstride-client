@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { articleQueries } from "@/features/article/hooks/queries";
-import { ArticlesPage } from "@/features/article/pages/ArticlesPage";
 import {
 	type ArticleSearch,
 	articleSearchSchema,
@@ -22,5 +21,4 @@ export const Route = createFileRoute("/_app-layout/_user-layout/articles/")({
 			queryClient.ensureQueryData(articleQueries.topTags()),
 		]);
 	},
-	component: ArticlesPage,
 });

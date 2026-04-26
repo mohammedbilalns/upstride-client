@@ -126,7 +126,9 @@ const AdminLayoutDashboardRoute = AdminLayoutDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AdminLayoutRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_admin-layout/dashboard.lazy').then((d) => d.Route),
+)
 const AdminLayoutCatalogManagementRoute =
   AdminLayoutCatalogManagementRouteImport.update({
     id: '/catalog-management',
@@ -250,7 +252,11 @@ const AppLayoutUserLayoutArticlesIndexRoute =
     id: '/articles/',
     path: '/articles/',
     getParentRoute: () => AppLayoutUserLayoutRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_app-layout/_user-layout/articles/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 const AppLayoutMentorLayoutMentorSessionsIndexRoute =
   AppLayoutMentorLayoutMentorSessionsIndexRouteImport.update({
     id: '/',
@@ -286,7 +292,11 @@ const AppLayoutUserLayoutChatsChatIdRoute =
     id: '/$chatId',
     path: '/$chatId',
     getParentRoute: () => AppLayoutUserLayoutChatsRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_app-layout/_user-layout/chats/$chatId.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 const AppLayoutMentorLayoutMentorSessionsSessionIdRoute =
   AppLayoutMentorLayoutMentorSessionsSessionIdRouteImport.update({
     id: '/$sessionId',

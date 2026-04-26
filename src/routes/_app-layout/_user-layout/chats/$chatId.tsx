@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import ErrorComponent from "@/components/common/ErrorComponent";
 import { ChatNotFound } from "@/features/chat/components/ChatNotFound";
 import { getChatInfiniteQueryOptions } from "@/features/chat/hooks/queries/useChatQueries";
-import { ChatDetailPage } from "@/features/chat/pages/ChatDetailPage";
 
 export const Route = createFileRoute("/_app-layout/_user-layout/chats/$chatId")(
 	{
@@ -30,6 +29,5 @@ export const Route = createFileRoute("/_app-layout/_user-layout/chats/$chatId")(
 			}
 			return <ErrorComponent error={error} />;
 		},
-		component: ChatDetailPage,
 	},
 );
