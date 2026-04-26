@@ -44,11 +44,13 @@ import { Route as AppLayoutUserLayoutProfileIndexRouteImport } from './routes/_a
 import { Route as AppLayoutUserLayoutMentorsIndexRouteImport } from './routes/_app-layout/_user-layout/mentors/index'
 import { Route as AppLayoutUserLayoutChatsIndexRouteImport } from './routes/_app-layout/_user-layout/chats/index'
 import { Route as AppLayoutUserLayoutArticlesIndexRouteImport } from './routes/_app-layout/_user-layout/articles/index'
+import { Route as AppLayoutMentorLayoutMentorSessionsIndexRouteImport } from './routes/_app-layout/_mentor-layout/mentor-sessions/index'
 import { Route as AppLayoutUserLayoutSessionsSessionIdRouteImport } from './routes/_app-layout/_user-layout/sessions/$sessionId'
 import { Route as AppLayoutUserLayoutProfileSecurityRouteImport } from './routes/_app-layout/_user-layout/profile/security'
 import { Route as AppLayoutUserLayoutMentorsMentorIdRouteImport } from './routes/_app-layout/_user-layout/mentors/$mentorId'
 import { Route as AppLayoutUserLayoutMentorRegisterRouteImport } from './routes/_app-layout/_user-layout/mentor.register'
 import { Route as AppLayoutUserLayoutChatsChatIdRouteImport } from './routes/_app-layout/_user-layout/chats/$chatId'
+import { Route as AppLayoutMentorLayoutMentorSessionsSessionIdRouteImport } from './routes/_app-layout/_mentor-layout/mentor-sessions/$sessionId'
 import { Route as AppLayoutUserLayoutProfileBookmarkedMentorsIndexRouteImport } from './routes/_app-layout/_user-layout/profile/bookmarked-mentors/index'
 import { Route as AppLayoutUserLayoutArticlesArticleIdIndexRouteImport } from './routes/_app-layout/_user-layout/articles/$articleId/index'
 import { Route as AppLayoutUserLayoutProfileBookmarkedMentorsListIdRouteImport } from './routes/_app-layout/_user-layout/profile/bookmarked-mentors/$listId'
@@ -249,6 +251,12 @@ const AppLayoutUserLayoutArticlesIndexRoute =
     path: '/articles/',
     getParentRoute: () => AppLayoutUserLayoutRoute,
   } as any)
+const AppLayoutMentorLayoutMentorSessionsIndexRoute =
+  AppLayoutMentorLayoutMentorSessionsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AppLayoutMentorLayoutMentorSessionsRoute,
+  } as any)
 const AppLayoutUserLayoutSessionsSessionIdRoute =
   AppLayoutUserLayoutSessionsSessionIdRouteImport.update({
     id: '/$sessionId',
@@ -278,6 +286,12 @@ const AppLayoutUserLayoutChatsChatIdRoute =
     id: '/$chatId',
     path: '/$chatId',
     getParentRoute: () => AppLayoutUserLayoutChatsRoute,
+  } as any)
+const AppLayoutMentorLayoutMentorSessionsSessionIdRoute =
+  AppLayoutMentorLayoutMentorSessionsSessionIdRouteImport.update({
+    id: '/$sessionId',
+    path: '/$sessionId',
+    getParentRoute: () => AppLayoutMentorLayoutMentorSessionsRoute,
   } as any)
 const AppLayoutUserLayoutProfileBookmarkedMentorsIndexRoute =
   AppLayoutUserLayoutProfileBookmarkedMentorsIndexRouteImport.update({
@@ -327,7 +341,7 @@ export interface FileRoutesByFullPath {
   '/mentor-articles': typeof AppLayoutMentorLayoutMentorArticlesRoute
   '/mentor-dashboard': typeof AppLayoutMentorLayoutMentorDashboardRoute
   '/mentor-rule-management': typeof AppLayoutMentorLayoutMentorRuleManagementRoute
-  '/mentor-sessions': typeof AppLayoutMentorLayoutMentorSessionsRoute
+  '/mentor-sessions': typeof AppLayoutMentorLayoutMentorSessionsRouteWithChildren
   '/chats': typeof AppLayoutUserLayoutChatsRouteWithChildren
   '/coins': typeof AppLayoutUserLayoutCoinsRoute
   '/home': typeof AppLayoutUserLayoutHomeRoute
@@ -336,11 +350,13 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AppLayoutUserLayoutProfileRouteWithChildren
   '/sessions': typeof AppLayoutUserLayoutSessionsRouteWithChildren
   '/call/$bookingId': typeof AppLayoutCallBookingIdRoute
+  '/mentor-sessions/$sessionId': typeof AppLayoutMentorLayoutMentorSessionsSessionIdRoute
   '/chats/$chatId': typeof AppLayoutUserLayoutChatsChatIdRoute
   '/mentor/register': typeof AppLayoutUserLayoutMentorRegisterRoute
   '/mentors/$mentorId': typeof AppLayoutUserLayoutMentorsMentorIdRoute
   '/profile/security': typeof AppLayoutUserLayoutProfileSecurityRoute
   '/sessions/$sessionId': typeof AppLayoutUserLayoutSessionsSessionIdRoute
+  '/mentor-sessions/': typeof AppLayoutMentorLayoutMentorSessionsIndexRoute
   '/articles/': typeof AppLayoutUserLayoutArticlesIndexRoute
   '/chats/': typeof AppLayoutUserLayoutChatsIndexRoute
   '/mentors/': typeof AppLayoutUserLayoutMentorsIndexRoute
@@ -369,16 +385,17 @@ export interface FileRoutesByTo {
   '/mentor-articles': typeof AppLayoutMentorLayoutMentorArticlesRoute
   '/mentor-dashboard': typeof AppLayoutMentorLayoutMentorDashboardRoute
   '/mentor-rule-management': typeof AppLayoutMentorLayoutMentorRuleManagementRoute
-  '/mentor-sessions': typeof AppLayoutMentorLayoutMentorSessionsRoute
   '/coins': typeof AppLayoutUserLayoutCoinsRoute
   '/home': typeof AppLayoutUserLayoutHomeRoute
   '/mentor': typeof AppLayoutUserLayoutMentorRouteWithChildren
   '/call/$bookingId': typeof AppLayoutCallBookingIdRoute
+  '/mentor-sessions/$sessionId': typeof AppLayoutMentorLayoutMentorSessionsSessionIdRoute
   '/chats/$chatId': typeof AppLayoutUserLayoutChatsChatIdRoute
   '/mentor/register': typeof AppLayoutUserLayoutMentorRegisterRoute
   '/mentors/$mentorId': typeof AppLayoutUserLayoutMentorsMentorIdRoute
   '/profile/security': typeof AppLayoutUserLayoutProfileSecurityRoute
   '/sessions/$sessionId': typeof AppLayoutUserLayoutSessionsSessionIdRoute
+  '/mentor-sessions': typeof AppLayoutMentorLayoutMentorSessionsIndexRoute
   '/articles': typeof AppLayoutUserLayoutArticlesIndexRoute
   '/chats': typeof AppLayoutUserLayoutChatsIndexRoute
   '/mentors': typeof AppLayoutUserLayoutMentorsIndexRoute
@@ -413,7 +430,7 @@ export interface FileRoutesById {
   '/_app-layout/_mentor-layout/mentor-articles': typeof AppLayoutMentorLayoutMentorArticlesRoute
   '/_app-layout/_mentor-layout/mentor-dashboard': typeof AppLayoutMentorLayoutMentorDashboardRoute
   '/_app-layout/_mentor-layout/mentor-rule-management': typeof AppLayoutMentorLayoutMentorRuleManagementRoute
-  '/_app-layout/_mentor-layout/mentor-sessions': typeof AppLayoutMentorLayoutMentorSessionsRoute
+  '/_app-layout/_mentor-layout/mentor-sessions': typeof AppLayoutMentorLayoutMentorSessionsRouteWithChildren
   '/_app-layout/_user-layout/chats': typeof AppLayoutUserLayoutChatsRouteWithChildren
   '/_app-layout/_user-layout/coins': typeof AppLayoutUserLayoutCoinsRoute
   '/_app-layout/_user-layout/home': typeof AppLayoutUserLayoutHomeRoute
@@ -422,11 +439,13 @@ export interface FileRoutesById {
   '/_app-layout/_user-layout/profile': typeof AppLayoutUserLayoutProfileRouteWithChildren
   '/_app-layout/_user-layout/sessions': typeof AppLayoutUserLayoutSessionsRouteWithChildren
   '/_app-layout/call/$bookingId': typeof AppLayoutCallBookingIdRoute
+  '/_app-layout/_mentor-layout/mentor-sessions/$sessionId': typeof AppLayoutMentorLayoutMentorSessionsSessionIdRoute
   '/_app-layout/_user-layout/chats/$chatId': typeof AppLayoutUserLayoutChatsChatIdRoute
   '/_app-layout/_user-layout/mentor/register': typeof AppLayoutUserLayoutMentorRegisterRoute
   '/_app-layout/_user-layout/mentors/$mentorId': typeof AppLayoutUserLayoutMentorsMentorIdRoute
   '/_app-layout/_user-layout/profile/security': typeof AppLayoutUserLayoutProfileSecurityRoute
   '/_app-layout/_user-layout/sessions/$sessionId': typeof AppLayoutUserLayoutSessionsSessionIdRoute
+  '/_app-layout/_mentor-layout/mentor-sessions/': typeof AppLayoutMentorLayoutMentorSessionsIndexRoute
   '/_app-layout/_user-layout/articles/': typeof AppLayoutUserLayoutArticlesIndexRoute
   '/_app-layout/_user-layout/chats/': typeof AppLayoutUserLayoutChatsIndexRoute
   '/_app-layout/_user-layout/mentors/': typeof AppLayoutUserLayoutMentorsIndexRoute
@@ -466,11 +485,13 @@ export interface FileRouteTypes {
     | '/profile'
     | '/sessions'
     | '/call/$bookingId'
+    | '/mentor-sessions/$sessionId'
     | '/chats/$chatId'
     | '/mentor/register'
     | '/mentors/$mentorId'
     | '/profile/security'
     | '/sessions/$sessionId'
+    | '/mentor-sessions/'
     | '/articles/'
     | '/chats/'
     | '/mentors/'
@@ -499,16 +520,17 @@ export interface FileRouteTypes {
     | '/mentor-articles'
     | '/mentor-dashboard'
     | '/mentor-rule-management'
-    | '/mentor-sessions'
     | '/coins'
     | '/home'
     | '/mentor'
     | '/call/$bookingId'
+    | '/mentor-sessions/$sessionId'
     | '/chats/$chatId'
     | '/mentor/register'
     | '/mentors/$mentorId'
     | '/profile/security'
     | '/sessions/$sessionId'
+    | '/mentor-sessions'
     | '/articles'
     | '/chats'
     | '/mentors'
@@ -551,11 +573,13 @@ export interface FileRouteTypes {
     | '/_app-layout/_user-layout/profile'
     | '/_app-layout/_user-layout/sessions'
     | '/_app-layout/call/$bookingId'
+    | '/_app-layout/_mentor-layout/mentor-sessions/$sessionId'
     | '/_app-layout/_user-layout/chats/$chatId'
     | '/_app-layout/_user-layout/mentor/register'
     | '/_app-layout/_user-layout/mentors/$mentorId'
     | '/_app-layout/_user-layout/profile/security'
     | '/_app-layout/_user-layout/sessions/$sessionId'
+    | '/_app-layout/_mentor-layout/mentor-sessions/'
     | '/_app-layout/_user-layout/articles/'
     | '/_app-layout/_user-layout/chats/'
     | '/_app-layout/_user-layout/mentors/'
@@ -822,6 +846,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLayoutUserLayoutArticlesIndexRouteImport
       parentRoute: typeof AppLayoutUserLayoutRoute
     }
+    '/_app-layout/_mentor-layout/mentor-sessions/': {
+      id: '/_app-layout/_mentor-layout/mentor-sessions/'
+      path: '/'
+      fullPath: '/mentor-sessions/'
+      preLoaderRoute: typeof AppLayoutMentorLayoutMentorSessionsIndexRouteImport
+      parentRoute: typeof AppLayoutMentorLayoutMentorSessionsRoute
+    }
     '/_app-layout/_user-layout/sessions/$sessionId': {
       id: '/_app-layout/_user-layout/sessions/$sessionId'
       path: '/$sessionId'
@@ -856,6 +887,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/chats/$chatId'
       preLoaderRoute: typeof AppLayoutUserLayoutChatsChatIdRouteImport
       parentRoute: typeof AppLayoutUserLayoutChatsRoute
+    }
+    '/_app-layout/_mentor-layout/mentor-sessions/$sessionId': {
+      id: '/_app-layout/_mentor-layout/mentor-sessions/$sessionId'
+      path: '/$sessionId'
+      fullPath: '/mentor-sessions/$sessionId'
+      preLoaderRoute: typeof AppLayoutMentorLayoutMentorSessionsSessionIdRouteImport
+      parentRoute: typeof AppLayoutMentorLayoutMentorSessionsRoute
     }
     '/_app-layout/_user-layout/profile/bookmarked-mentors/': {
       id: '/_app-layout/_user-layout/profile/bookmarked-mentors/'
@@ -927,11 +965,29 @@ const AdminLayoutRouteWithChildren = AdminLayoutRoute._addFileChildren(
   AdminLayoutRouteChildren,
 )
 
+interface AppLayoutMentorLayoutMentorSessionsRouteChildren {
+  AppLayoutMentorLayoutMentorSessionsSessionIdRoute: typeof AppLayoutMentorLayoutMentorSessionsSessionIdRoute
+  AppLayoutMentorLayoutMentorSessionsIndexRoute: typeof AppLayoutMentorLayoutMentorSessionsIndexRoute
+}
+
+const AppLayoutMentorLayoutMentorSessionsRouteChildren: AppLayoutMentorLayoutMentorSessionsRouteChildren =
+  {
+    AppLayoutMentorLayoutMentorSessionsSessionIdRoute:
+      AppLayoutMentorLayoutMentorSessionsSessionIdRoute,
+    AppLayoutMentorLayoutMentorSessionsIndexRoute:
+      AppLayoutMentorLayoutMentorSessionsIndexRoute,
+  }
+
+const AppLayoutMentorLayoutMentorSessionsRouteWithChildren =
+  AppLayoutMentorLayoutMentorSessionsRoute._addFileChildren(
+    AppLayoutMentorLayoutMentorSessionsRouteChildren,
+  )
+
 interface AppLayoutMentorLayoutRouteChildren {
   AppLayoutMentorLayoutMentorArticlesRoute: typeof AppLayoutMentorLayoutMentorArticlesRoute
   AppLayoutMentorLayoutMentorDashboardRoute: typeof AppLayoutMentorLayoutMentorDashboardRoute
   AppLayoutMentorLayoutMentorRuleManagementRoute: typeof AppLayoutMentorLayoutMentorRuleManagementRoute
-  AppLayoutMentorLayoutMentorSessionsRoute: typeof AppLayoutMentorLayoutMentorSessionsRoute
+  AppLayoutMentorLayoutMentorSessionsRoute: typeof AppLayoutMentorLayoutMentorSessionsRouteWithChildren
 }
 
 const AppLayoutMentorLayoutRouteChildren: AppLayoutMentorLayoutRouteChildren = {
@@ -942,7 +998,7 @@ const AppLayoutMentorLayoutRouteChildren: AppLayoutMentorLayoutRouteChildren = {
   AppLayoutMentorLayoutMentorRuleManagementRoute:
     AppLayoutMentorLayoutMentorRuleManagementRoute,
   AppLayoutMentorLayoutMentorSessionsRoute:
-    AppLayoutMentorLayoutMentorSessionsRoute,
+    AppLayoutMentorLayoutMentorSessionsRouteWithChildren,
 }
 
 const AppLayoutMentorLayoutRouteWithChildren =

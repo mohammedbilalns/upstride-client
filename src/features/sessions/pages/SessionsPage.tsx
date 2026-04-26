@@ -14,13 +14,11 @@ import {
 } from "@/components/ui/Select";
 import { sessionBookingService } from "@/features/session-booking";
 import type { Booking, BookingFilter } from "@/features/session-booking/types";
-import { reviewService } from "@/features/reviews";
 import { Pagination } from "@/features/users/components/Pagination";
 import { useCoinBalance } from "@/features/wallet/hooks/queries/useCoinManagement";
 import { Route } from "@/routes/_app-layout/_user-layout/sessions/index";
 import { CancelSessionDialog } from "../components/CancelSessionDialog";
 import { SessionCard } from "../components/SessionCard";
-import { SessionDetailsDialog } from "../components/SessionDetailsDialog";
 import { SessionFilters } from "../components/SessionFilters";
 import { useUserSessions } from "../hooks/queries/useSessions";
 
@@ -76,7 +74,6 @@ export function SessionsPage() {
 	const [pendingCancelId, setPendingCancelId] = useState<string | null>(null);
 	const [cancelReason, setCancelReason] = useState("");
 	const [pendingRepayId, setPendingRepayId] = useState<string | null>(null);
-	const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 	const [sortBy, setSortBy] = useState<SessionSort>("soonest");
 	const coinBalanceQuery = useCoinBalance();
 	const coinValue = coinBalanceQuery.data?.coinValue;
@@ -178,19 +175,11 @@ export function SessionsPage() {
 		});
 	}, [bookings, effectiveSortBy]);
 	const total = data?.data.total ?? 0;
-	const isDetailsOpen = Boolean(selectedBooking);
 	const pendingCancelBooking = sortedBookings.find(
 		(booking) => booking.id === pendingCancelId,
 	);
 	const pendingRepayBooking = sortedBookings.find(
 		(booking) => booking.id === pendingRepayId,
-	);
-	const canReviewSelectedBooking = Boolean(
-		selectedBooking &&
-			selectedBooking.status === "COMPLETED" &&
-			selectedBooking.paymentStatus === "COMPLETED" &&
-			selectedBooking.settledAt &&
-			!selectedBooking.review,
 	);
 	const refundPreview = getRefundPreview(pendingCancelBooking, coinValue);
 	const repayTitle =
@@ -201,29 +190,6 @@ export function SessionsPage() {
 		pendingRepayBooking?.paymentStatus === "FAILED"
 			? "This session payment failed. Retry to complete the booking."
 			: "This session payment is still pending. Continue to complete the payment?";
-
-	const reviewMutation = useMutation({
-		mutationFn: (input: {
-			bookingId: string;
-			rating: number;
-			comment: string;
-		}) => reviewService.createReview(input),
-		onSuccess: () => {
-			if (selectedBooking) {
-				queryClient.invalidateQueries({
-					queryKey: ["sessions", "user"],
-				});
-				queryClient.invalidateQueries({
-					queryKey: ["public-mentor-profile", selectedBooking.mentorId],
-				});
-			}
-			setSelectedBooking(null);
-			toast.success("Review submitted successfully.");
-		},
-		onError: (error: ApiError) => {
-			toast.error(error?.response?.data?.message || "Failed to submit review.");
-		},
-	});
 
 	return (
 		<div className="relative">
@@ -337,7 +303,12 @@ export function SessionsPage() {
 										key={booking.id}
 										booking={booking}
 										showCancel={search.tab === "upcoming"}
-										onViewDetails={() => setSelectedBooking(booking)}
+										onViewDetails={() =>
+											navigate({
+												to: "/sessions/$sessionId",
+												params: { sessionId: booking.id },
+											})
+										}
 										onCancel={() => setPendingCancelId(booking.id)}
 										onRepay={() => setPendingRepayId(booking.id)}
 										isCancelling={cancelMutation.isPending}
@@ -362,37 +333,6 @@ export function SessionsPage() {
 					</section>
 				</div>
 			</div>
-
-			<SessionDetailsDialog
-				isOpen={isDetailsOpen}
-				onClose={(open) => {
-					if (!open) setSelectedBooking(null);
-				}}
-				selectedBooking={selectedBooking}
-				personLabel="Mentor"
-				personName={selectedBooking?.mentorName}
-				showReceipt
-				onRepay={
-					selectedBooking
-						? async () => {
-								await repayMutation.mutateAsync(selectedBooking.id);
-							}
-						: undefined
-				}
-				canSubmitReview={canReviewSelectedBooking}
-				onSubmitReview={
-					selectedBooking
-						? async (input) => {
-								await reviewMutation.mutateAsync({
-									bookingId: selectedBooking.id,
-									rating: input.rating,
-									comment: input.comment,
-								});
-							}
-						: undefined
-				}
-				isSubmittingReview={reviewMutation.isPending}
-			/>
 
 			<CancelSessionDialog
 				isOpen={Boolean(pendingCancelId)}

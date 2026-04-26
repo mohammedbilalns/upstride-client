@@ -25,7 +25,6 @@ import {
 import { Textarea } from "@/components/ui/Textarea";
 import { sessionBookingService } from "@/features/session-booking";
 import type { Booking } from "@/features/session-booking/types";
-import { SessionDetailsDialog } from "@/features/sessions/components/SessionDetailsDialog";
 import { Pagination } from "@/features/users/components/Pagination";
 import { Route } from "@/routes/_app-layout/_mentor-layout/mentor-sessions";
 import { cn } from "@/shared/utils/cn";
@@ -47,7 +46,6 @@ export function MentorSessionsPage() {
 	const search = Route.useSearch();
 	const [pendingCancelId, setPendingCancelId] = useState<string | null>(null);
 	const [cancelReason, setCancelReason] = useState("");
-	const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 	const [sortBy, setSortBy] = useState<MentorSort>("soonest");
 
 	const params = useMemo(
@@ -193,7 +191,12 @@ export function MentorSessionsPage() {
 								booking={session}
 								showCancel={search.filter === "upcoming"}
 								onCancel={() => setPendingCancelId(session.id)}
-								onViewDetails={() => setSelectedBooking(session)}
+								onViewDetails={() =>
+									navigate({
+										to: "/mentor-sessions/$sessionId",
+										params: { sessionId: session.id },
+									})
+								}
 								isCancelling={cancelMutation.isPending}
 							/>
 						))}
@@ -242,19 +245,6 @@ export function MentorSessionsPage() {
 					/>
 				</div>
 			</ConfirmModal>
-
-			<SessionDetailsDialog
-				isOpen={Boolean(selectedBooking)}
-				onClose={(open) => {
-					if (!open) setSelectedBooking(null);
-				}}
-				selectedBooking={selectedBooking}
-				personLabel="Mentee"
-				personName={selectedBooking?.menteeName}
-				payoutLabel="You Receive"
-				showReceipt={false}
-				canSubmitReview={false}
-			/>
 		</div>
 	);
 }
