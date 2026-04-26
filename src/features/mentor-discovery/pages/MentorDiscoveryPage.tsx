@@ -34,9 +34,7 @@ export function MentorDiscoveryPage() {
 
 	const clearFilters = () => {
 		navigate({
-			search: {
-				sort: "rating",
-			},
+			search: {},
 		});
 	};
 

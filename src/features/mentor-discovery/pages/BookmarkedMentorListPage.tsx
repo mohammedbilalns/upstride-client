@@ -83,9 +83,7 @@ export function BookmarkedMentorListPage() {
 						Delete list
 					</Button>
 					<Button asChild variant="outline">
-						<Link to="/mentors" search={{ sort: "rating" }}>
-							Find more mentors
-						</Link>
+						<Link to="/mentors">Find more mentors</Link>
 					</Button>
 				</div>
 			</div>

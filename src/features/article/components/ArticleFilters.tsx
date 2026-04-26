@@ -61,7 +61,7 @@ export function ArticleFilters({
 								<SelectValue placeholder="Select Category" />
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="all">All Categories</SelectItem>
+								<SelectItem value="all">All Skills</SelectItem>
 								{categories.map((cat) => (
 									<SelectItem key={cat.id} value={cat.name}>
 										{cat.name}

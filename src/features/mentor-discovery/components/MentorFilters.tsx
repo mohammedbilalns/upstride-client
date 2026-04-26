@@ -1,5 +1,6 @@
 import { SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import {
 	Select,
 	SelectContent,
@@ -50,6 +51,7 @@ export function MentorFilters({
 	const hasFilters =
 		search.search ||
 		search.category ||
+		search.sort !== undefined ||
 		search.minExperience !== undefined ||
 		search.maxExperience !== undefined;
 
@@ -64,22 +66,23 @@ export function MentorFilters({
 			<div className="px-4 pb-4 space-y-6">
 				<div className="space-y-2">
 					<p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">
-						SORT BY
+						DISCOVERY MODE
 					</p>
-					<Select
-						value={search.sort}
-						onValueChange={(val) =>
-							onUpdate({ sort: val as "rating" | "recent" })
+					<Tabs
+						value={search.sort === "recent" ? "recent" : "feed"}
+						onValueChange={(value) =>
+							onUpdate({ sort: value === "recent" ? "recent" : undefined })
 						}
 					>
-						<SelectTrigger className="h-10 w-full justify-between bg-white/60 dark:bg-zinc-950/40">
-							<SelectValue placeholder="Recommended" />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectItem value="rating">Recommended</SelectItem>
-							<SelectItem value="recent">Recently Joined</SelectItem>
-						</SelectContent>
-					</Select>
+						<TabsList className="grid h-auto w-full grid-cols-2 bg-zinc-100/70 p-1 dark:bg-zinc-900/60">
+							<TabsTrigger value="feed" className="text-xs">
+								For You
+							</TabsTrigger>
+							<TabsTrigger value="recent" className="text-xs">
+								Recently Joined
+							</TabsTrigger>
+						</TabsList>
+					</Tabs>
 				</div>
 
 				<div className="space-y-2">
@@ -96,14 +99,12 @@ export function MentorFilters({
 						<SelectTrigger className="h-10 w-full justify-between bg-white/60 dark:bg-zinc-950/40">
 							<SelectValue
 								placeholder={
-									isLoadingCategories
-										? "Loading categories..."
-										: "All categories"
+									isLoadingCategories ? "Loading categories..." : "All Skills"
 								}
 							/>
 						</SelectTrigger>
 						<SelectContent>
-							<SelectItem value="all">All categories</SelectItem>
+							<SelectItem value="all">All Skills</SelectItem>
 							{categories.map((category) => (
 								<SelectItem key={category.id} value={category.name}>
 									{category.name}
