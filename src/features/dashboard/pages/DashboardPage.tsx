@@ -16,8 +16,8 @@ import { mapDashboardSummary } from "../mappers/dashboard.mapper";
 import type { DashboardPeriod, DashboardRole } from "../types";
 import {
 	fallbackOverview,
-	formatMoney,
 	formatNumber,
+	formatUnitAmount,
 } from "../utils/dashboard.utils";
 
 interface DashboardPageProps {
@@ -47,7 +47,10 @@ export function DashboardPage({
 			? [
 					{
 						label: "Revenue",
-						value: formatMoney(dashboard.totalRevenue ?? 0),
+						value: formatUnitAmount(
+							dashboard.totalRevenue ?? 0,
+							dashboard.earningsCurrency ?? "COINS",
+						),
 						subtitle: "Completed sessions",
 					},
 					{
@@ -101,19 +104,11 @@ export function DashboardPage({
 				highlights={heroHighlights}
 			/>
 
-			<div className="grid grid-cols-1 items-stretch gap-2.5 xl:grid-cols-[1.05fr_1.35fr_0.9fr]">
+			<div className="grid grid-cols-1 items-stretch gap-2.5 xl:grid-cols-[1.2fr_0.8fr]">
 				<UpcomingSessionsPanel
 					dashboardRole={dashboardRole}
 					sessions={dashboard?.upcomingSessions.slice(0, 2) ?? []}
 				/>
-
-				<ActivityOverviewPanel
-					activityOverview={activityOverview}
-					period={period}
-					setPeriod={setPeriod}
-					isFetching={overviewFetching}
-				/>
-
 				<InsightsPanel
 					dashboardRole={dashboardRole}
 					consistentLoginDays={dashboard?.consistentLoginDays ?? 0}
@@ -132,6 +127,15 @@ export function DashboardPage({
 				<SessionSummaryPanel dashboard={dashboard} />
 				<RecommendedArticlesPanel
 					articles={dashboard?.recommendedArticles.slice(0, 3) ?? []}
+				/>
+			</div>
+
+			<div className="grid grid-cols-1 gap-2.5">
+				<ActivityOverviewPanel
+					activityOverview={activityOverview}
+					period={period}
+					setPeriod={setPeriod}
+					isFetching={overviewFetching}
 				/>
 			</div>
 

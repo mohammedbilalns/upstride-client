@@ -20,9 +20,6 @@ export function ReviewsPanel({ reviews, rating }: ReviewsPanelProps) {
 						Recent feedback from completed sessions.
 					</p>
 				</div>
-				<Badge variant="secondary" className="h-7 px-2.5 text-[11px]">
-					Live data
-				</Badge>
 			</CardHeader>
 			<CardContent className="space-y-3">
 				{reviews.length > 0 ? (

@@ -7,8 +7,6 @@ import {
 	Database,
 	RefreshCcw,
 	Server,
-	UserCheck,
-	Users,
 } from "lucide-react";
 import { useMemo, useState, type ComponentType } from "react";
 import ErrorComponent from "@/components/common/ErrorComponent";
@@ -58,9 +56,58 @@ const currency = new Intl.NumberFormat("en-IN", {
 });
 
 const numberFormatter = new Intl.NumberFormat("en-IN");
+const today = new Date().toISOString().slice(0, 10);
 
 const percent = (value: number) =>
 	`${value > 0 ? "+" : ""}${value.toFixed(1)}%`;
+
+const formatDisplayDate = (value: string) => {
+	if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+		return value;
+	}
+
+	const [year, month, day] = value.split("-");
+	return `${day}/${month}/${year.slice(-2)}`;
+};
+
+const formatMaybeDateLabel = (value: string) => formatDisplayDate(value);
+
+const getComparisonLabel = (
+	period: AdminDashboardPeriod,
+	startDate?: string,
+	endDate?: string,
+) => {
+	if (period === "custom" && startDate && endDate) {
+		return `vs ${formatDisplayDate(startDate)} to ${formatDisplayDate(endDate)}`;
+	}
+
+	switch (period) {
+		case "week":
+			return "vs last week";
+		case "year":
+			return "vs last year";
+		case "custom":
+		case "month":
+		default:
+			return "vs last month";
+	}
+};
+
+const getDateRangeError = (startDate: string, endDate: string) => {
+	if (!startDate || !endDate) {
+		return "";
+	}
+
+	if (startDate > today || endDate > today) {
+		return "Future dates are not allowed.";
+	}
+
+	if (startDate > endDate) {
+		return "Start date must be before or equal to end date.";
+	}
+
+	return "";
+};
 
 const formatCompact = (value: number) => {
 	if (value >= 100000) {
@@ -94,13 +141,22 @@ const formatDuration = (totalSeconds: number) => {
 	return parts.join(" ");
 };
 
-const buildLinePath = (values: number[], width: number, height: number) => {
+const buildLinePath = (
+	values: number[],
+	width: number,
+	height: number,
+	options?: {
+		padding?: number;
+		minValue?: number;
+		maxValue?: number;
+	},
+) => {
 	if (values.length === 0) return "";
-	const padding = 16;
+	const padding = options?.padding ?? 16;
 	const chartWidth = width - padding * 2;
 	const chartHeight = height - padding * 2;
-	const minValue = Math.min(...values);
-	const maxValue = Math.max(...values);
+	const minValue = options?.minValue ?? Math.min(...values);
+	const maxValue = options?.maxValue ?? Math.max(...values);
 	const range = maxValue - minValue || 1;
 	const step = values.length === 1 ? 0 : chartWidth / (values.length - 1);
 
@@ -153,11 +209,11 @@ function MetricCard({
 
 	return (
 		<Card className="gap-3 border-border/70 bg-card/95 shadow-sm">
-			<CardHeader className="px-4 pt-4 pb-0">
+			<CardHeader className="px-4 pt-3 pb-0">
 				<div className="flex items-start justify-between gap-4">
 					<div>
 						<CardDescription>{title}</CardDescription>
-						<CardTitle className="mt-1 text-2xl font-semibold">
+						<CardTitle className="mt-1 text-xl font-semibold">
 							{value}
 						</CardTitle>
 					</div>
@@ -166,10 +222,10 @@ function MetricCard({
 					</div>
 				</div>
 			</CardHeader>
-			<CardContent className="px-4 pb-4">
+			<CardContent className="px-4 pb-3">
 				<div
 					className={cn(
-						"mb-3 inline-flex items-center gap-1 text-sm font-medium",
+						"mb-2 inline-flex items-center gap-1 text-xs font-medium",
 						isPositive ? "text-emerald-500" : "text-rose-500",
 					)}
 				>
@@ -182,7 +238,7 @@ function MetricCard({
 					<span className="text-muted-foreground">vs last month</span>
 				</div>
 				<div className="overflow-hidden rounded-2xl border border-border/70 bg-background/60">
-					<svg viewBox="0 0 320 90" className="h-16 w-full">
+					<svg viewBox="0 0 320 90" className="h-14 w-full">
 						<path
 							d={path}
 							fill="none"
@@ -193,9 +249,30 @@ function MetricCard({
 						/>
 					</svg>
 				</div>
-				<p className="mt-2 text-xs text-muted-foreground">{subtitle}</p>
+				<p className="mt-1 text-xs text-muted-foreground">{subtitle}</p>
 			</CardContent>
 		</Card>
+	);
+}
+
+function TrendIndicator({ value, label }: { value: number; label: string }) {
+	const isPositive = value >= 0;
+
+	return (
+		<div
+			className={cn(
+				"mt-1 inline-flex items-center gap-1 text-xs font-medium",
+				isPositive ? "text-emerald-500" : "text-rose-500",
+			)}
+		>
+			{isPositive ? (
+				<ArrowUpRight className="h-3.5 w-3.5" />
+			) : (
+				<ArrowDownRight className="h-3.5 w-3.5" />
+			)}
+			<span>{percent(value)}</span>
+			<span className="text-muted-foreground">{label}</span>
+		</div>
 	);
 }
 
@@ -208,6 +285,7 @@ function FilterControl({
 	onEndDateChange,
 	onApply,
 	disabled,
+	error,
 }: {
 	value: AdminDashboardPeriod;
 	onChange: (value: AdminDashboardPeriod) => void;
@@ -217,62 +295,122 @@ function FilterControl({
 	onEndDateChange: (value: string) => void;
 	onApply: () => void;
 	disabled: boolean;
+	error?: string;
 }) {
 	return (
-		<div className="flex flex-wrap items-center justify-end gap-2">
-			<Select
-				value={value}
-				onValueChange={(next) => onChange(next as AdminDashboardPeriod)}
-			>
-				<SelectTrigger className="min-w-32 border-border bg-background/70 text-foreground">
-					<SelectValue />
-				</SelectTrigger>
-				<SelectContent>
-					{FILTER_OPTIONS.map((option) => (
-						<SelectItem key={option.value} value={option.value}>
-							{option.label}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
-			{value === "custom" ? (
-				<>
-					<Input
-						type="date"
-						value={startDate}
-						onChange={(event) => onStartDateChange(event.target.value)}
-						className="w-36 border-border bg-background/70 text-foreground"
-					/>
-					<Input
-						type="date"
-						value={endDate}
-						onChange={(event) => onEndDateChange(event.target.value)}
-						className="w-36 border-border bg-background/70 text-foreground"
-					/>
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={onApply}
-						disabled={disabled}
-						className="border-border bg-background/70 text-foreground hover:bg-muted"
-					>
-						Apply
-					</Button>
-				</>
+		<div className="flex flex-col items-stretch gap-2 md:items-end">
+			<div className="flex flex-wrap items-center justify-end gap-2">
+				<Select
+					value={value}
+					onValueChange={(next) => onChange(next as AdminDashboardPeriod)}
+				>
+					<SelectTrigger className="min-w-32 border-border bg-background/70 text-foreground">
+						<SelectValue />
+					</SelectTrigger>
+					<SelectContent>
+						{FILTER_OPTIONS.map((option) => (
+							<SelectItem key={option.value} value={option.value}>
+								{option.label}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+				{value === "custom" ? (
+					<>
+						<Input
+							type="date"
+							value={startDate}
+							onChange={(event) => onStartDateChange(event.target.value)}
+							max={today}
+							className="w-36 border-border bg-background/70 text-foreground"
+						/>
+						<Input
+							type="date"
+							value={endDate}
+							onChange={(event) => onEndDateChange(event.target.value)}
+							min={startDate || undefined}
+							max={today}
+							className="w-36 border-border bg-background/70 text-foreground"
+						/>
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={onApply}
+							disabled={disabled}
+							className="border-border bg-background/70 text-foreground hover:bg-muted"
+						>
+							Apply
+						</Button>
+					</>
+				) : null}
+			</div>
+			{value === "custom" && error ? (
+				<p className="text-right text-xs text-rose-500">{error}</p>
 			) : null}
 		</div>
 	);
 }
 
 function DualSeriesChart({ data }: { data: AdminDashboardUserGrowthResponse }) {
-	const width = 640;
-	const height = 240;
+	const width = 920;
+	const height = 270;
+	const paddingTop = 20;
+	const paddingRight = 24;
+	const paddingBottom = 42;
+	const paddingLeft = 44;
+	const chartWidth = width - paddingLeft - paddingRight;
+	const chartHeight = height - paddingTop - paddingBottom;
 	const userValues = data.series.map((item) => item.users);
 	const mentorValues = data.series.map((item) => item.mentors);
+	const minValue = 0;
+	const maxValue = Math.max(...userValues, ...mentorValues, 1);
+	const tickCount = 4;
+	const xStep =
+		data.labels.length > 1 ? chartWidth / (data.labels.length - 1) : 0;
+	const maxVisibleLabels = 8;
+	const labelInterval = Math.max(
+		1,
+		Math.ceil(data.labels.length / maxVisibleLabels),
+	);
+	const visibleLabelIndices = data.labels.reduce<number[]>(
+		(indices, _label, index) => {
+			const isFirst = index === 0;
+			const isLast = index === data.labels.length - 1;
+			const isIntervalLabel = index % labelInterval === 0;
+
+			if (!isFirst && !isLast && !isIntervalLabel) {
+				return indices;
+			}
+
+			if (
+				isLast &&
+				indices.length > 0 &&
+				index - indices[indices.length - 1] < labelInterval
+			) {
+				indices[indices.length - 1] = index;
+				return indices;
+			}
+
+			indices.push(index);
+			return indices;
+		},
+		[],
+	);
+	const visibleLabelIndexSet = new Set(visibleLabelIndices);
+	const userPath = buildLinePath(userValues, chartWidth, chartHeight, {
+		padding: 0,
+		minValue,
+		maxValue,
+	});
+	const mentorPath = buildLinePath(mentorValues, chartWidth, chartHeight, {
+		padding: 0,
+		minValue,
+		maxValue,
+	});
 
 	return (
-		<div className="space-y-4">
-			<div className="flex items-center gap-5 text-xs text-muted-foreground">
+		<div className="space-y-3">
+			<div className="flex items-center gap-4 text-[11px] text-muted-foreground">
 				<div className="flex items-center gap-2">
 					<span className="h-2.5 w-2.5 rounded-full bg-sky-500" />
 					Users
@@ -282,49 +420,127 @@ function DualSeriesChart({ data }: { data: AdminDashboardUserGrowthResponse }) {
 					Mentors
 				</div>
 			</div>
-			<div className="overflow-hidden rounded-2xl border border-border/70 bg-background/60 p-3">
+			<div className="overflow-hidden rounded-2xl border border-border/70 bg-background/60 p-2.5">
 				<svg
 					viewBox={`0 0 ${width} ${height}`}
-					className="h-56 w-full text-foreground"
+					className="h-60 w-full text-foreground"
 				>
-					{[0, 1, 2, 3].map((line) => {
-						const y = 24 + ((height - 48) / 3) * line;
+					{Array.from({ length: tickCount + 1 }, (_, index) => {
+						const tickValue = maxValue - (maxValue / tickCount) * index;
+						const y = paddingTop + (chartHeight / tickCount) * index;
 						return (
-							<line
-								key={y}
-								x1={24}
-								y1={y}
-								x2={width - 24}
-								y2={y}
-								stroke="currentColor"
-								strokeOpacity="0.08"
-							/>
+							<g key={`grid-${y}`}>
+								<line
+									x1={paddingLeft}
+									y1={y}
+									x2={width - paddingRight}
+									y2={y}
+									stroke="currentColor"
+									strokeOpacity="0.08"
+								/>
+								<text
+									x={paddingLeft - 10}
+									y={y + 4}
+									fill="currentColor"
+									fontSize="11"
+									textAnchor="end"
+									opacity="0.7"
+								>
+									{numberFormatter.format(Math.round(tickValue))}
+								</text>
+							</g>
 						);
 					})}
-					<path
-						d={buildLinePath(userValues, width, height)}
-						fill="none"
-						stroke="#0ea5e9"
-						strokeWidth="3.5"
-						strokeLinecap="round"
-						strokeLinejoin="round"
+					<line
+						x1={paddingLeft}
+						y1={paddingTop + chartHeight}
+						x2={width - paddingRight}
+						y2={paddingTop + chartHeight}
+						stroke="currentColor"
+						strokeOpacity="0.14"
 					/>
-					<path
-						d={buildLinePath(mentorValues, width, height)}
-						fill="none"
-						stroke="#8b5cf6"
-						strokeWidth="3.5"
-						strokeLinecap="round"
-						strokeLinejoin="round"
+					<line
+						x1={paddingLeft}
+						y1={paddingTop}
+						x2={paddingLeft}
+						y2={paddingTop + chartHeight}
+						stroke="currentColor"
+						strokeOpacity="0.14"
 					/>
+					<g transform={`translate(${paddingLeft}, ${paddingTop})`}>
+						<path
+							d={userPath}
+							fill="none"
+							stroke="#0ea5e9"
+							strokeWidth="3.5"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						/>
+						<path
+							d={mentorPath}
+							fill="none"
+							stroke="#8b5cf6"
+							strokeWidth="3.5"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						/>
+					</g>
+					{data.labels.map((label, index) => {
+						if (!visibleLabelIndexSet.has(index)) {
+							return null;
+						}
+
+						return (
+							<g key={label}>
+								<line
+									x1={paddingLeft + index * xStep}
+									y1={paddingTop + chartHeight}
+									x2={paddingLeft + index * xStep}
+									y2={paddingTop + chartHeight + 6}
+									stroke="currentColor"
+									strokeOpacity="0.14"
+								/>
+								<text
+									x={paddingLeft + index * xStep}
+									y={height - 20}
+									fill="currentColor"
+									fontSize="11"
+									textAnchor={
+										index === 0
+											? "start"
+											: index === data.labels.length - 1
+												? "end"
+												: "middle"
+									}
+									opacity="0.7"
+								>
+									{formatMaybeDateLabel(label)}
+								</text>
+							</g>
+						);
+					})}
+					<text
+						x={width / 2}
+						y={height - 4}
+						fill="currentColor"
+						fontSize="11"
+						textAnchor="middle"
+						opacity="0.55"
+					>
+						Time
+					</text>
+					<text
+						x={16}
+						y={height / 2}
+						fill="currentColor"
+						fontSize="11"
+						textAnchor="middle"
+						opacity="0.55"
+						transform={`rotate(-90 16 ${height / 2})`}
+					>
+						Users / Mentors
+					</text>
 				</svg>
-			</div>
-			<div className="grid grid-cols-4 gap-2 text-xs text-muted-foreground md:grid-cols-8">
-				{data.labels.map((label) => (
-					<span key={label} className="truncate">
-						{label}
-					</span>
-				))}
 			</div>
 		</div>
 	);
@@ -340,9 +556,9 @@ function SingleSeriesChart({
 	color: string;
 }) {
 	return (
-		<div className="space-y-4">
-			<div className="overflow-hidden rounded-2xl border border-border/70 bg-background/60 p-3">
-				<svg viewBox="0 0 640 240" className="h-56 w-full text-foreground">
+		<div className="space-y-3">
+			<div className="overflow-hidden rounded-2xl border border-border/70 bg-background/60 p-2.5">
+				<svg viewBox="0 0 640 240" className="h-48 w-full text-foreground">
 					{[0, 1, 2, 3].map((line) => {
 						const y = 24 + ((240 - 48) / 3) * line;
 						return (
@@ -367,10 +583,10 @@ function SingleSeriesChart({
 					/>
 				</svg>
 			</div>
-			<div className="grid grid-cols-4 gap-2 text-xs text-muted-foreground md:grid-cols-8">
+			<div className="grid grid-cols-4 gap-1.5 text-[11px] text-muted-foreground md:grid-cols-8">
 				{labels.map((label) => (
 					<span key={label} className="truncate">
-						{label}
+						{formatMaybeDateLabel(label)}
 					</span>
 				))}
 			</div>
@@ -391,16 +607,16 @@ function SessionOverviewPanel({
 
 	return (
 		<Card className="gap-0 border-border/70 bg-card/95 shadow-sm">
-			<CardHeader className="flex flex-row items-center justify-between px-5 pt-5">
+			<CardHeader className="flex flex-row items-center justify-between px-4 pt-4">
 				<div>
-					<CardTitle className="text-xl">Session Overview</CardTitle>
+					<CardTitle className="text-lg">Session Overview</CardTitle>
 				</div>
 			</CardHeader>
-			<CardContent className="px-5 pb-5">
-				<div className="grid gap-6 lg:grid-cols-[220px_1fr]">
+			<CardContent className="px-4 pb-4">
+				<div className="grid gap-4 lg:grid-cols-[200px_1fr]">
 					<div className="flex items-center justify-center">
 						<div
-							className="relative flex h-48 w-48 items-center justify-center rounded-full"
+							className="relative flex h-40 w-40 items-center justify-center rounded-full"
 							style={{
 								background: `conic-gradient(${buildDonutGradient(
 									slices,
@@ -408,20 +624,20 @@ function SessionOverviewPanel({
 								)})`,
 							}}
 						>
-							<div className="flex h-32 w-32 flex-col items-center justify-center rounded-full border border-border bg-card text-center">
-								<p className="text-4xl font-semibold">
+							<div className="flex h-28 w-28 flex-col items-center justify-center rounded-full border border-border bg-card text-center">
+								<p className="text-3xl font-semibold">
 									{numberFormatter.format(overview.totalSessions)}
 								</p>
 								<p className="text-xs text-muted-foreground">Total Sessions</p>
 							</div>
 						</div>
 					</div>
-					<div className="space-y-5">
+					<div className="space-y-3">
 						<div className="grid gap-3 md:grid-cols-3">
 							{slices.map((slice) => (
 								<div
 									key={slice.label}
-									className="rounded-2xl border border-border/70 bg-background/60 px-4 py-3 text-sm"
+									className="rounded-2xl border border-border/70 bg-background/60 px-3 py-2.5 text-sm"
 								>
 									<div className="flex items-center gap-3">
 										<span
@@ -440,20 +656,20 @@ function SessionOverviewPanel({
 								</div>
 							))}
 						</div>
-						<div className="grid gap-3 sm:grid-cols-2">
-							<div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4">
+						<div className="grid gap-2.5 sm:grid-cols-2">
+							<div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-3">
 								<p className="text-xs uppercase tracking-[0.16em] text-emerald-500">
 									Completion Rate
 								</p>
-								<p className="mt-2 text-3xl font-semibold">
+								<p className="mt-1 text-2xl font-semibold">
 									{overview.completionRate.toFixed(1)}%
 								</p>
 							</div>
-							<div className="rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4">
+							<div className="rounded-2xl border border-rose-500/20 bg-rose-500/10 p-3">
 								<p className="text-xs uppercase tracking-[0.16em] text-rose-500">
 									Cancellation Rate
 								</p>
-								<p className="mt-2 text-3xl font-semibold">
+								<p className="mt-1 text-2xl font-semibold">
 									{overview.cancellationRate.toFixed(1)}%
 								</p>
 							</div>
@@ -475,14 +691,16 @@ function HealthStatusRow({
 	icon: ComponentType<{ className?: string }>;
 }) {
 	return (
-		<div className="flex items-center justify-between rounded-2xl border border-border/70 bg-background/60 px-4 py-3">
+		<div className="flex items-center justify-between rounded-2xl border border-border/70 bg-background/60 px-3 py-2.5">
 			<div className="flex items-center gap-3">
 				<div className="rounded-xl border border-border bg-muted/40 p-2">
 					<Icon className="h-4 w-4 text-primary" />
 				</div>
 				<div>
 					<p className="text-sm font-medium">{label}</p>
-					<p className="text-xs text-muted-foreground">{result.latencyMs} ms</p>
+					<p className="text-[11px] text-muted-foreground">
+						{result.latencyMs} ms
+					</p>
 				</div>
 			</div>
 			<span
@@ -520,6 +738,25 @@ export function AdminDashboardPage() {
 		endDate: "",
 	});
 
+	const userGrowthDateError = getDateRangeError(
+		userGrowthDraft.startDate,
+		userGrowthDraft.endDate,
+	);
+	const revenueDateError = getDateRangeError(
+		revenueDraft.startDate,
+		revenueDraft.endDate,
+	);
+	const userGrowthComparisonLabel = getComparisonLabel(
+		userGrowthFilter.period,
+		userGrowthFilter.startDate,
+		userGrowthFilter.endDate,
+	);
+	const revenueComparisonLabel = getComparisonLabel(
+		revenueFilter.period,
+		revenueFilter.startDate,
+		revenueFilter.endDate,
+	);
+
 	const userGrowthQuery = useAdminDashboardUserGrowth(
 		userGrowthFilter,
 		userGrowthFilter.period !== "custom" ||
@@ -551,33 +788,7 @@ export function AdminDashboardPage() {
 			dashboard.metrics.totalSessions.current,
 			dashboard.metrics.totalSessions.total,
 		];
-		const activeTrend =
-			dashboard.activeUsersTrend.values.length > 0
-				? dashboard.activeUsersTrend.values
-				: [
-						dashboard.metrics.activeUsersNow.previous,
-						dashboard.metrics.activeUsersNow.current,
-					];
-
 		return [
-			{
-				title: "Total Users",
-				value: numberFormatter.format(dashboard.metrics.totalUsers.total),
-				changePercent: dashboard.metrics.totalUsers.changePercent,
-				subtitle: "Registered platform users",
-				icon: Users,
-				sparkline: userGrowth.series.map((item) => item.users),
-				chartColor: "#38bdf8",
-			},
-			{
-				title: "Total Mentors",
-				value: numberFormatter.format(dashboard.metrics.totalMentors.total),
-				changePercent: dashboard.metrics.totalMentors.changePercent,
-				subtitle: "Approved mentor profiles",
-				icon: UserCheck,
-				sparkline: userGrowth.series.map((item) => item.mentors),
-				chartColor: "#a78bfa",
-			},
 			{
 				title: "Total Sessions",
 				value: numberFormatter.format(dashboard.metrics.totalSessions.total),
@@ -591,19 +802,10 @@ export function AdminDashboardPage() {
 				title: "Total Revenue",
 				value: currency.format(dashboard.metrics.totalRevenue.total),
 				changePercent: dashboard.metrics.totalRevenue.changePercent,
-				subtitle: "Platform fees and other income",
+				subtitle: "Historical revenue analytics",
 				icon: CircleDollarSign,
 				sparkline: revenueAnalytics.series.map((item) => item.value),
 				chartColor: "#f59e0b",
-			},
-			{
-				title: "Active Users Now",
-				value: numberFormatter.format(dashboard.metrics.activeUsersNow.total),
-				changePercent: dashboard.metrics.activeUsersNow.changePercent,
-				subtitle: "Recent active sessions",
-				icon: Activity,
-				sparkline: activeTrend,
-				chartColor: "#22d3ee",
 			},
 		];
 	}, [dashboard, revenueAnalytics, userGrowth]);
@@ -625,34 +827,29 @@ export function AdminDashboardPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.08),transparent_28%),linear-gradient(180deg,hsl(var(--background))_0%,hsl(var(--background))_100%)] px-4 py-5 text-foreground sm:px-6 lg:px-8">
-			<div className="mx-auto max-w-7xl space-y-6">
-				<div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+		<div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.08),transparent_28%),linear-gradient(180deg,hsl(var(--background))_0%,hsl(var(--background))_100%)] px-3 py-4 text-foreground sm:px-5 lg:px-6">
+			<div className="mx-auto max-w-7xl space-y-3.5">
+				<div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
 					<div>
-						<p className="text-xs uppercase tracking-[0.24em] text-primary">
-							Admin Console
-						</p>
-						<h1 className="mt-2 text-3xl font-semibold tracking-tight">
-							Dashboard
-						</h1>
-						<p className="mt-2 text-sm text-muted-foreground">
+						<h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+						<p className="mt-1 text-sm text-muted-foreground">
 							Operational metrics, revenue signals, and backend health in one
 							view.
 						</p>
 					</div>
 				</div>
 
-				<div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+				<div className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-2">
 					{metricCards.map((card) => (
 						<MetricCard key={card.title} {...card} />
 					))}
 				</div>
 
-				<div className="space-y-5">
+				<div className="space-y-3.5">
 					<Card className="gap-0 border-border/70 bg-card/95 shadow-sm">
-						<CardHeader className="flex flex-col gap-4 px-5 pt-5 md:flex-row md:items-start md:justify-between">
+						<CardHeader className="flex flex-col gap-3 px-4 pt-4 md:flex-row md:items-start md:justify-between">
 							<div>
-								<CardTitle className="text-xl">User Growth</CardTitle>
+								<CardTitle className="text-lg">User Growth</CardTitle>
 								<CardDescription>Users and mentors over time</CardDescription>
 							</div>
 							<FilterControl
@@ -684,36 +881,41 @@ export function AdminDashboardPage() {
 									})
 								}
 								disabled={
-									!userGrowthDraft.startDate || !userGrowthDraft.endDate
+									!userGrowthDraft.startDate ||
+									!userGrowthDraft.endDate ||
+									Boolean(userGrowthDateError)
 								}
+								error={userGrowthDateError}
 							/>
 						</CardHeader>
-						<CardContent className="px-5 pb-5">
+						<CardContent className="px-4 pb-4">
 							{userGrowth ? <DualSeriesChart data={userGrowth} /> : null}
-							<div className="mt-5 grid gap-3 sm:grid-cols-2">
-								<div className="rounded-2xl border border-border/70 bg-background/60 p-4">
+							<div className="mt-3 grid gap-2.5 sm:grid-cols-2">
+								<div className="rounded-2xl border border-border/70 bg-background/60 p-3">
 									<p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
 										Users
 									</p>
-									<p className="mt-2 text-3xl font-semibold">
+									<p className="mt-1 text-2xl font-semibold">
 										{numberFormatter.format(dashboard.metrics.totalUsers.total)}
 									</p>
-									<p className="mt-1 text-sm text-emerald-500">
-										{percent(dashboard.metrics.totalUsers.changePercent)}
-									</p>
+									<TrendIndicator
+										value={dashboard.metrics.totalUsers.changePercent}
+										label={userGrowthComparisonLabel}
+									/>
 								</div>
-								<div className="rounded-2xl border border-border/70 bg-background/60 p-4">
+								<div className="rounded-2xl border border-border/70 bg-background/60 p-3">
 									<p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
 										Mentors
 									</p>
-									<p className="mt-2 text-3xl font-semibold">
+									<p className="mt-1 text-2xl font-semibold">
 										{numberFormatter.format(
 											dashboard.metrics.totalMentors.total,
 										)}
 									</p>
-									<p className="mt-1 text-sm text-emerald-500">
-										{percent(dashboard.metrics.totalMentors.changePercent)}
-									</p>
+									<TrendIndicator
+										value={dashboard.metrics.totalMentors.changePercent}
+										label={userGrowthComparisonLabel}
+									/>
 								</div>
 							</div>
 						</CardContent>
@@ -724,11 +926,11 @@ export function AdminDashboardPage() {
 					) : null}
 
 					<Card className="gap-0 border-border/70 bg-card/95 shadow-sm">
-						<CardHeader className="flex flex-col gap-4 px-5 pt-5 md:flex-row md:items-start md:justify-between">
+						<CardHeader className="flex flex-col gap-3 px-4 pt-4 md:flex-row md:items-start md:justify-between">
 							<div>
-								<CardTitle className="text-xl">Revenue Analytics</CardTitle>
+								<CardTitle className="text-lg">Revenue Analytics</CardTitle>
 								<CardDescription>
-									Platform revenue and wallet inflows
+									Effective platform revenue over time
 								</CardDescription>
 							</div>
 							<FilterControl
@@ -756,10 +958,15 @@ export function AdminDashboardPage() {
 										endDate: revenueDraft.endDate,
 									})
 								}
-								disabled={!revenueDraft.startDate || !revenueDraft.endDate}
+								disabled={
+									!revenueDraft.startDate ||
+									!revenueDraft.endDate ||
+									Boolean(revenueDateError)
+								}
+								error={revenueDateError}
 							/>
 						</CardHeader>
-						<CardContent className="px-5 pb-5">
+						<CardContent className="px-4 pb-4">
 							{revenueAnalytics ? (
 								<SingleSeriesChart
 									labels={revenueAnalytics.labels}
@@ -768,31 +975,44 @@ export function AdminDashboardPage() {
 								/>
 							) : null}
 							{revenueAnalytics ? (
-								<div className="mt-5 grid gap-3 sm:grid-cols-3">
-									<div className="rounded-2xl border border-border/70 bg-background/60 p-4">
+								<div className="mt-3 grid gap-2.5 sm:grid-cols-3">
+									<div className="rounded-2xl border border-border/70 bg-background/60 p-3">
 										<p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
-											Platform Fees
+											Effective Revenue
 										</p>
-										<p className="mt-2 text-2xl font-semibold">
-											{currency.format(revenueAnalytics.breakdown.platformFees)}
-										</p>
-									</div>
-									<div className="rounded-2xl border border-border/70 bg-background/60 p-4">
-										<p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
-											Mentor Payouts
-										</p>
-										<p className="mt-2 text-2xl font-semibold">
+										<p className="mt-1 text-xl font-semibold">
 											{currency.format(
-												revenueAnalytics.breakdown.mentorPayouts,
+												revenueAnalytics.breakdown.effectiveRevenue,
 											)}
 										</p>
-									</div>
-									<div className="rounded-2xl border border-border/70 bg-background/60 p-4">
-										<p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
-											Other Income
+										<p className="mt-1 text-xs text-muted-foreground">
+											{revenueComparisonLabel}
 										</p>
-										<p className="mt-2 text-2xl font-semibold">
-											{currency.format(revenueAnalytics.breakdown.otherIncome)}
+									</div>
+									<div className="rounded-2xl border border-border/70 bg-background/60 p-3">
+										<p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+											Platform Wallet Balance
+										</p>
+										<p className="mt-1 text-xl font-semibold">
+											{currency.format(
+												revenueAnalytics.breakdown.platformWalletBalance,
+											)}
+										</p>
+										<p className="mt-1 text-xs text-muted-foreground">
+											{revenueComparisonLabel}
+										</p>
+									</div>
+									<div className="rounded-2xl border border-border/70 bg-background/60 p-3">
+										<p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+											Upcoming Session Liability
+										</p>
+										<p className="mt-1 text-xl font-semibold">
+											{currency.format(
+												revenueAnalytics.breakdown.upcomingSessionLiability,
+											)}
+										</p>
+										<p className="mt-1 text-xs text-muted-foreground">
+											{revenueComparisonLabel}
 										</p>
 									</div>
 								</div>
@@ -801,18 +1021,18 @@ export function AdminDashboardPage() {
 					</Card>
 				</div>
 
-				<div className="grid gap-6 xl:grid-cols-3">
+				<div className="grid gap-3 xl:grid-cols-3">
 					<Card className="gap-0 border-border/70 bg-card/95 shadow-sm">
-						<CardHeader className="px-5 pt-5">
-							<CardTitle className="text-xl">Top Mentors By Revenue</CardTitle>
+						<CardHeader className="px-4 pt-4">
+							<CardTitle className="text-lg">Top Mentors By Revenue</CardTitle>
 							<CardDescription>Current top earning mentors</CardDescription>
 						</CardHeader>
-						<CardContent className="px-5 pb-5">
-							<div className="space-y-3">
+						<CardContent className="px-4 pb-4">
+							<div className="space-y-2.5">
 								{dashboard.topMentors.map((mentor, index) => (
 									<div
 										key={mentor.mentorId}
-										className="flex items-center justify-between rounded-2xl border border-border/70 bg-background/60 px-4 py-3"
+										className="flex items-center justify-between rounded-2xl border border-border/70 bg-background/60 px-3 py-2.5"
 									>
 										<div className="flex items-center gap-3">
 											<span className="text-sm text-muted-foreground">
@@ -835,16 +1055,16 @@ export function AdminDashboardPage() {
 					</Card>
 
 					<Card className="gap-0 border-border/70 bg-card/95 shadow-sm">
-						<CardHeader className="px-5 pt-5">
-							<CardTitle className="text-xl">
+						<CardHeader className="px-4 pt-4">
+							<CardTitle className="text-lg">
 								Top Categories By Sessions
 							</CardTitle>
 							<CardDescription>
 								Session distribution by expertise
 							</CardDescription>
 						</CardHeader>
-						<CardContent className="px-5 pb-5">
-							<div className="space-y-4">
+						<CardContent className="px-4 pb-4">
+							<div className="space-y-3">
 								{dashboard.topCategories.map((category) => (
 									<div key={category.categoryId} className="space-y-2">
 										<div className="flex items-center justify-between text-sm">
@@ -869,10 +1089,10 @@ export function AdminDashboardPage() {
 					</Card>
 
 					<Card className="gap-0 border-border/70 bg-card/95 shadow-sm">
-						<CardHeader className="px-5 pt-5">
+						<CardHeader className="px-4 pt-4">
 							<div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
 								<div>
-									<CardTitle className="text-xl">System Health</CardTitle>
+									<CardTitle className="text-lg">System Health</CardTitle>
 								</div>
 								<Button
 									variant="outline"
@@ -894,12 +1114,16 @@ export function AdminDashboardPage() {
 								</Button>
 							</div>
 						</CardHeader>
-						<CardContent className="space-y-3 px-5 pb-5">
+						<CardContent className="space-y-2.5 px-4 pb-4">
 							<div className="flex items-center gap-2 rounded-2xl border border-border/70 bg-background/60 px-4 py-3 text-sm text-muted-foreground">
 								<RefreshCcw className="h-4 w-4 text-primary" />
 								<span>
 									Last health snapshot:{" "}
-									{new Date(dashboard.systemHealth.timestamp).toLocaleString()}
+									{formatDisplayDate(
+										new Date(dashboard.systemHealth.timestamp)
+											.toISOString()
+											.slice(0, 10),
+									)}
 								</span>
 							</div>
 							<HealthStatusRow
@@ -917,16 +1141,16 @@ export function AdminDashboardPage() {
 								result={dashboard.systemHealth.services.notificationQueue}
 								icon={Activity}
 							/>
-							<div className="rounded-3xl border border-border/70 bg-[radial-gradient(circle_at_top,rgba(34,197,94,0.16),transparent_45%),hsl(var(--background))] p-5 text-center">
-								<div className="mx-auto flex h-18 w-[4.5rem] items-center justify-center rounded-full border border-emerald-500/30 bg-emerald-500/10">
-									<Activity className="h-8 w-8 text-emerald-500" />
+							<div className="rounded-3xl border border-border/70 bg-[radial-gradient(circle_at_top,rgba(34,197,94,0.16),transparent_45%),hsl(var(--background))] p-4 text-center">
+								<div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-emerald-500/30 bg-emerald-500/10">
+									<Activity className="h-7 w-7 text-emerald-500" />
 								</div>
-								<p className="mt-4 text-lg font-semibold">
+								<p className="mt-3 text-base font-semibold">
 									{dashboard.systemHealth.status === "ok"
 										? "All Systems Operational"
 										: "System Needs Attention"}
 								</p>
-								<p className="mt-2 text-sm text-muted-foreground">
+								<p className="mt-1.5 text-sm text-muted-foreground">
 									Uptime {formatDuration(dashboard.systemHealth.uptimeSeconds)}
 								</p>
 							</div>

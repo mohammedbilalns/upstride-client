@@ -11,7 +11,12 @@ import {
 } from "lucide-react";
 import type { DashboardRole, DashboardSummaryDto } from "../types";
 import type { DASHBOARD_TONE_CLASSES } from "./dashboard.constants";
-import { formatMoney, formatNumber, growthLabel } from "./dashboard.formatters";
+import {
+	formatMoney,
+	formatNumber,
+	formatUnitAmount,
+	growthLabel,
+} from "./dashboard.formatters";
 
 export interface DashboardMetricCardViewModel {
 	title: string;
@@ -63,7 +68,10 @@ export function buildDashboardMetricCards(
 	return [
 		{
 			title: "Total Revenue",
-			value: formatMoney(dashboard.totalRevenue ?? 0),
+			value: formatUnitAmount(
+				dashboard.totalRevenue ?? 0,
+				dashboard.earningsCurrency ?? "COINS",
+			),
 			subtitle: "Completed sessions only",
 			icon: Wallet,
 			tone: "violet",

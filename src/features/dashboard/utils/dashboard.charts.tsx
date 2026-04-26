@@ -3,12 +3,13 @@ export function buildLinePath(
 	width: number,
 	height: number,
 	padding: number,
+	maxValueOverride?: number,
 ) {
 	if (values.length === 0) return "";
 
 	const chartWidth = width - padding * 2;
 	const chartHeight = height - padding * 2;
-	const maxValue = Math.max(...values, 1);
+	const maxValue = maxValueOverride ?? Math.max(...values, 1);
 	const step = values.length === 1 ? 0 : chartWidth / (values.length - 1);
 
 	return values
@@ -26,12 +27,13 @@ export function buildDots(
 	height: number,
 	padding: number,
 	color: string,
+	maxValueOverride?: number,
 ) {
 	if (values.length === 0) return null;
 
 	const chartWidth = width - padding * 2;
 	const chartHeight = height - padding * 2;
-	const maxValue = Math.max(...values, 1);
+	const maxValue = maxValueOverride ?? Math.max(...values, 1);
 	const step = values.length === 1 ? 0 : chartWidth / (values.length - 1);
 
 	return values.map((value, index) => {

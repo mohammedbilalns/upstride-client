@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/Badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import type { DashboardViewModel } from "../types";
-import { formatMoney } from "../utils/dashboard.formatters";
+import { formatUnitAmount } from "../utils/dashboard.formatters";
 import { BarChart } from "./BarChart";
 
 interface EarningsPanelProps {
@@ -15,8 +15,9 @@ export function EarningsPanel({ dashboard }: EarningsPanelProps) {
 		values: dashboard.activityOverview.sessions,
 	};
 	const total = dashboard.totalRevenue ?? 0;
-	const fees = total * 0.1;
-	const net = total - fees;
+	const fees = dashboard.platformFees ?? 0;
+	const net = dashboard.netEarnings ?? total - fees;
+	const unit = dashboard.earningsCurrency ?? "COINS";
 
 	return (
 		<Card className="gap-0 border-border/60 shadow-sm">
@@ -32,25 +33,31 @@ export function EarningsPanel({ dashboard }: EarningsPanelProps) {
 				</Badge>
 			</CardHeader>
 			<CardContent className="space-y-3">
-				<BarChart labels={chart.labels} values={chart.values} />
+				<BarChart labels={chart.labels} values={chart.values} unit={unit} />
 				<div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
 					<div className="rounded-2xl border border-border/60 p-3.5">
 						<p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
 							Total Earnings
 						</p>
-						<p className="mt-1 text-base font-semibold">{formatMoney(total)}</p>
+						<p className="mt-1 text-base font-semibold">
+							{formatUnitAmount(total, unit)}
+						</p>
 					</div>
 					<div className="rounded-2xl border border-border/60 p-3.5">
 						<p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
 							Platform Fees
 						</p>
-						<p className="mt-1 text-base font-semibold">{formatMoney(fees)}</p>
+						<p className="mt-1 text-base font-semibold">
+							{formatUnitAmount(fees, unit)}
+						</p>
 					</div>
 					<div className="rounded-2xl border border-border/60 p-3.5">
 						<p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
 							Net Earnings
 						</p>
-						<p className="mt-1 text-base font-semibold">{formatMoney(net)}</p>
+						<p className="mt-1 text-base font-semibold">
+							{formatUnitAmount(net, unit)}
+						</p>
 					</div>
 				</div>
 			</CardContent>

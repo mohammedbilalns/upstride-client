@@ -9,6 +9,7 @@ import {
 	TableRow,
 } from "@/components/ui/Table";
 import { Pagination } from "@/features/users/components/Pagination";
+import { formatDateShort, formatLocaleTimeShort } from "@/shared/utils/date";
 import type { GetPaymentTransactionsResponse } from "../types";
 import { TransactionIdCell } from "./TransactionIdCell";
 
@@ -18,6 +19,7 @@ interface PaymentTransactionsTableProps {
 	onPageChange: (page: number) => void;
 	onLimitChange: (limit: number) => void;
 	showCoins?: boolean;
+	showTime?: boolean;
 	sessionDebitLabel?: string;
 }
 
@@ -27,6 +29,7 @@ export function PaymentTransactionsTable({
 	onPageChange,
 	onLimitChange,
 	showCoins = true,
+	showTime = false,
 	sessionDebitLabel = "Session refund",
 }: PaymentTransactionsTableProps) {
 	return (
@@ -42,7 +45,7 @@ export function PaymentTransactionsTable({
 							<TableHeader className="bg-muted/50">
 								<TableRow>
 									<TableHead className="w-[26%] py-2 pl-3 md:pl-5 text-xs">
-										Date
+										{showTime ? "Date & Time" : "Date"}
 									</TableHead>
 									<TableHead className="w-[15%] py-2 text-xs">
 										Purpose
@@ -70,7 +73,12 @@ export function PaymentTransactionsTable({
 									>
 										<TableCell className="whitespace-normal align-top text-xs pl-3 md:pl-5 py-2">
 											<div className="space-y-1">
-												<div>{new Date(item.createdAt).toLocaleString()}</div>
+												<div>{formatDateShort(item.createdAt)}</div>
+												{showTime ? (
+													<div className="text-muted-foreground">
+														{formatLocaleTimeShort(item.createdAt)}
+													</div>
+												) : null}
 												<div className="md:hidden font-mono text-[11px] leading-4 break-all text-muted-foreground">
 													{item.paymentId}
 												</div>

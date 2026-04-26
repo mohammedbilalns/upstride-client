@@ -9,16 +9,14 @@ interface SessionSummaryPanelProps {
 export function SessionSummaryPanel({ dashboard }: SessionSummaryPanelProps) {
 	const completed = dashboard?.completedSessionCount ?? 0;
 	const upcoming = dashboard?.upcomingSessionsCount ?? 0;
-	const cancelled = dashboard ? 1 : 0;
-	const rescheduled = dashboard ? 1 : 0;
-	const values = [completed, upcoming, cancelled, rescheduled];
+	const cancelled = 0;
+	const values = [completed, upcoming, cancelled];
 	const total = values.reduce((sum, value) => sum + value, 0) || 1;
 
 	const slices = [
 		{ label: "Completed", value: completed, color: "#22c55e" },
 		{ label: "Upcoming", value: upcoming, color: "#3b82f6" },
 		{ label: "Cancelled", value: cancelled, color: "#f87171" },
-		{ label: "Rescheduled", value: rescheduled, color: "#f59e0b" },
 	];
 
 	return (
@@ -36,7 +34,7 @@ export function SessionSummaryPanel({ dashboard }: SessionSummaryPanelProps) {
 					>
 						<div className="flex h-20 w-20 flex-col items-center justify-center rounded-full border border-border/60 bg-card text-center">
 							<p className="text-xl font-semibold">
-								{completed + upcoming + cancelled + rescheduled}
+								{completed + upcoming + cancelled}
 							</p>
 							<p className="text-xs text-muted-foreground">Total Sessions</p>
 						</div>

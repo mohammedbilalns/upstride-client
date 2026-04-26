@@ -83,6 +83,25 @@ export function PlatformTransactionsPage() {
 						</span>
 					</div>
 				</div>
+				<div className="rounded-xl border bg-card p-6 shadow-sm flex flex-col gap-1 border-l-4 border-l-amber-500">
+					<span className="text-xs font-bold uppercase tracking-wider text-muted-foreground/70">
+						Effective Platform Revenue
+					</span>
+					<div className="flex items-baseline gap-2">
+						<span className="text-3xl font-black tracking-tight text-foreground">
+							₹
+							{(
+								paymentTransactions?.summary?.effectiveRevenue ?? 0
+							).toLocaleString(undefined, {
+								minimumFractionDigits: 2,
+								maximumFractionDigits: 2,
+							})}
+						</span>
+					</div>
+					<p className="text-xs text-muted-foreground mt-1">
+						Platform wallet balance minus upcoming paid session amounts.
+					</p>
+				</div>
 			</div>
 
 			<div className="flex items-center justify-between gap-3 pt-4 border-t border-border/40">
@@ -117,6 +136,7 @@ export function PlatformTransactionsPage() {
 				isLoading={paymentLoading}
 				data={paymentTransactions}
 				showCoins={false}
+				showTime
 				onPageChange={(page) =>
 					navigate({
 						search: buildPaymentSearch({ paymentPage: page }),

@@ -107,7 +107,7 @@ export function BookingCalendarSelector({
 											className="hidden sm:inline-flex border-amber-300 text-amber-700 dark:border-amber-900 dark:text-amber-300"
 										>
 											{slot.status === "BOOKED_PENDING"
-												? "Booked, payment pending"
+												? "payment pending"
 												: "Booked"}
 										</Badge>
 									)}

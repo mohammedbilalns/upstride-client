@@ -68,6 +68,9 @@ export interface GetPaymentTransactionsResponse {
 	page: number;
 	limit: number;
 	totalPages: number;
+	summary?: {
+		effectiveRevenue: number;
+	};
 }
 
 export interface CreateCheckoutSessionInput {

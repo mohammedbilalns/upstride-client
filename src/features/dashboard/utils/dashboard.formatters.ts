@@ -30,3 +30,7 @@ export function formatMoney(value: number, currency = "INR") {
 		return `${formatNumber(value)} ${normalizedCurrency}`;
 	}
 }
+
+export function formatUnitAmount(value: number, unit = "COINS") {
+	return `${formatNumber(value)} ${unit.toUpperCase()}`;
+}
