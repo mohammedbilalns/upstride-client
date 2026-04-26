@@ -11,12 +11,13 @@ import type { AuthView } from "../types";
 
 interface Props {
 	onNavigate?: (view: AuthView, payload?: string) => void;
+	showLinkedIn?: boolean;
 }
 
 const LINKEDIN_OAUTH_STATE_KEY = "linkedin_oauth_state";
 const LINKEDIN_MESSAGE_SOURCE = "linkedin-oauth";
 
-export function SocialAuthButtons({ onNavigate }: Props) {
+export function SocialAuthButtons({ onNavigate, showLinkedIn = true }: Props) {
 	const router = useRouter();
 	const [activeProvider, setActiveProvider] = useState<
 		"GOOGLE" | "LINKEDIN" | null
@@ -192,7 +193,9 @@ export function SocialAuthButtons({ onNavigate }: Props) {
 	};
 
 	return (
-		<div className="grid grid-cols-2 gap-3">
+		<div
+			className={`grid gap-3 ${showLinkedIn ? "grid-cols-2" : "grid-cols-1"}`}
+		>
 			<Button
 				type="button"
 				variant="outline"
@@ -230,7 +233,7 @@ export function SocialAuthButtons({ onNavigate }: Props) {
 				Continue with Google
 			</Button>
 
-			{true && (
+			{showLinkedIn && (
 				<Button
 					type="button"
 					variant="outline"
