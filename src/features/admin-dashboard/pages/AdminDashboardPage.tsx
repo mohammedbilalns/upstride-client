@@ -856,7 +856,7 @@ export function AdminDashboardPage() {
 										</div>
 										<div className="h-2 overflow-hidden rounded-full bg-muted">
 											<div
-												className="h-full rounded-full bg-gradient-to-r from-primary to-sky-500"
+												className="h-full rounded-full bg-linear-to-r from-primary to-sky-500"
 												style={{
 													width: `${Math.max(category.sharePercent, 6)}%`,
 												}}
@@ -918,7 +918,7 @@ export function AdminDashboardPage() {
 								icon={Activity}
 							/>
 							<div className="rounded-3xl border border-border/70 bg-[radial-gradient(circle_at_top,rgba(34,197,94,0.16),transparent_45%),hsl(var(--background))] p-5 text-center">
-								<div className="mx-auto flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full border border-emerald-500/30 bg-emerald-500/10">
+								<div className="mx-auto flex h-18 w-[4.5rem] items-center justify-center rounded-full border border-emerald-500/30 bg-emerald-500/10">
 									<Activity className="h-8 w-8 text-emerald-500" />
 								</div>
 								<p className="mt-4 text-lg font-semibold">
