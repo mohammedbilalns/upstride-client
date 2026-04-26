@@ -89,25 +89,29 @@ export function SessionDetailsDialog({
 	const isCancelled =
 		booking.status === "CANCELLED_BY_MENTEE" ||
 		booking.status === "CANCELLED_BY_MENTOR";
+	const isCompleted = booking.status === "COMPLETED";
 	const isSlotTakenByAnotherUser =
 		booking.status === "SLOT_TAKEN_BY_ANOTHER_USER";
 	const canJoinMeeting =
 		!isCancelled &&
 		!isSlotTakenByAnotherUser &&
-		booking.status !== "COMPLETED" &&
+		!isCompleted &&
 		booking.status !== "PENDING" &&
 		new Date(booking.endTime).getTime() >= Date.now();
 	const canDownloadReceipt =
 		booking.status === "CONFIRMED" ||
 		booking.status === "STARTED" ||
-		booking.status === "COMPLETED";
+		isCompleted;
 	const canReviewSession =
 		canSubmitReview &&
-		booking.status === "COMPLETED" &&
+		isCompleted &&
 		booking.paymentStatus === "COMPLETED" &&
 		Boolean(booking.settledAt) &&
 		!existingReview;
-	const showNextStep = booking.status !== "COMPLETED";
+	const showNextStep = !isCompleted;
+	const resolvedPayoutLabel = isCompleted
+		? payoutLabel.replace("Receives", "Received").replace("Receive", "Received")
+		: payoutLabel;
 	const review = booking.review;
 	const paymentStatusLabel = booking
 		? booking.paymentStatus === "COMPLETED"
@@ -407,7 +411,7 @@ export function SessionDetailsDialog({
 								</div>
 								<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-3">
 									<p className="text-xs uppercase tracking-wide text-muted-foreground">
-										{payoutLabel}
+										{resolvedPayoutLabel}
 									</p>
 									<p className="mt-1 flex items-center gap-2 font-medium">
 										{booking.mentorPayout.currency === "COINS" ? (
@@ -419,24 +423,26 @@ export function SessionDetailsDialog({
 										{booking.mentorPayout.currency.toUpperCase()}
 									</p>
 									<p className="text-xs text-muted-foreground">
-										{booking.mentorPayout.percentage}% of the booked amount
+										{booking.mentorPayout.percentage}% of the amount
 									</p>
 								</div>
-								<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-3">
-									<p className="text-xs uppercase tracking-wide text-muted-foreground">
-										Meeting
-									</p>
-									<p className="mt-1 font-medium">
-										{isCancelled
-											? "Not available"
-											: booking.status === "PENDING"
-												? "Waiting for confirmation"
-												: "Ready when session opens"}
-									</p>
-									<p className="text-xs text-muted-foreground">
-										{booking.meetingLink ? "Room assigned" : "No meeting URL"}
-									</p>
-								</div>
+								{!isCompleted && (
+									<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-3">
+										<p className="text-xs uppercase tracking-wide text-muted-foreground">
+											Meeting
+										</p>
+										<p className="mt-1 font-medium">
+											{isCancelled
+												? "Not available"
+												: booking.status === "PENDING"
+													? "Waiting for confirmation"
+													: "Ready when session opens"}
+										</p>
+										<p className="text-xs text-muted-foreground">
+											{booking.meetingLink ? "Room assigned" : "No meeting URL"}
+										</p>
+									</div>
+								)}
 							</div>
 						</section>
 
