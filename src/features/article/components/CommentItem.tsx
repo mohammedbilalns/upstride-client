@@ -1,3 +1,4 @@
+import { memo, useCallback, useMemo, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import {
@@ -10,7 +11,6 @@ import {
 	Reply,
 	Trash2,
 } from "lucide-react";
-import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import {
@@ -28,16 +28,14 @@ interface CommentItemProps {
 	articleId: string;
 	comment: ArticleComment;
 	currentUserId?: string;
-	onEdit: (commentId: string) => void;
 	onDelete: (commentId: string, parentId?: string | null) => void;
 	isReply?: boolean;
 }
 
-export function CommentItem({
+export const CommentItem = memo(function CommentItem({
 	articleId,
 	comment,
 	currentUserId,
-	onEdit,
 	onDelete,
 	isReply = false,
 }: CommentItemProps) {
@@ -56,12 +54,31 @@ export function CommentItem({
 		enabled: showReplies,
 	});
 
-	const replies = repliesData?.pages.flatMap((page) => page.items) || [];
+	const replies = useMemo(
+		() => repliesData?.pages.flatMap((page) => page.items) ?? [],
+		[repliesData],
+	);
 
-	const handleReplySuccess = () => {
+	const handleReplySuccess = useCallback(() => {
 		setIsReplying(false);
 		setShowReplies(true);
-	};
+	}, []);
+
+	const handleEditSuccess = useCallback(() => {
+		setIsEditing(false);
+	}, []);
+
+	const handleEditCancel = useCallback(() => {
+		setIsEditing(false);
+	}, []);
+
+	const handleReplyCancel = useCallback(() => {
+		setIsReplying(false);
+	}, []);
+
+	const handleDelete = useCallback(() => {
+		onDelete(comment.id, comment.parentId);
+	}, [comment.id, comment.parentId, onDelete]);
 
 	return (
 		<div
@@ -137,7 +154,7 @@ export function CommentItem({
 											</DropdownMenuItem>
 											<DropdownMenuItem
 												className="text-red-600 focus:text-red-500 rounded-lg"
-												onClick={() => onDelete(comment.id, comment.parentId)}
+												onClick={handleDelete}
 											>
 												<Trash2 className="h-4 w-4 mr-2" />
 												Delete
@@ -154,8 +171,8 @@ export function CommentItem({
 									commentId={comment.id}
 									parentId={comment.parentId}
 									initialContent={comment.content}
-									onSuccess={() => setIsEditing(false)}
-									onCancel={() => setIsEditing(false)}
+									onSuccess={handleEditSuccess}
+									onCancel={handleEditCancel}
 								/>
 							</div>
 						) : (
@@ -215,7 +232,7 @@ export function CommentItem({
 								articleId={articleId}
 								parentId={comment.id}
 								onSuccess={handleReplySuccess}
-								onCancel={() => setIsReplying(false)}
+								onCancel={handleReplyCancel}
 							/>
 						</div>
 					)}
@@ -236,7 +253,6 @@ export function CommentItem({
 											articleId={articleId}
 											comment={reply}
 											currentUserId={currentUserId}
-											onEdit={onEdit}
 											onDelete={onDelete}
 											isReply={true}
 										/>
@@ -261,4 +277,4 @@ export function CommentItem({
 			</div>
 		</div>
 	);
-}
+});

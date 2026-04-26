@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle, Loader2, MessageSquare } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import {
 	Dialog,
@@ -45,7 +45,37 @@ export function CommentsSection({
 		parentId: string | null;
 	} | null>(null);
 
-	const comments = data?.pages.flatMap((page) => page.items) || [];
+	const comments = useMemo(
+		() => data?.pages.flatMap((page) => page.items) ?? [],
+		[data],
+	);
+
+	const handleCommentSuccess = useCallback(() => {
+		queryClient.invalidateQueries({
+			queryKey: articleKeys.all,
+		});
+	}, [queryClient]);
+
+	const handleDeleteRequest = useCallback(
+		(id: string, parentId?: string | null) => {
+			setDeletingComment({ id, parentId: parentId ?? null });
+		},
+		[],
+	);
+
+	const handleCloseDeleteDialog = useCallback(() => {
+		setDeletingComment(null);
+	}, []);
+
+	const handleConfirmDelete = useCallback(async () => {
+		if (!deletingComment) return;
+		await deleteComment.mutateAsync({
+			articleId,
+			commentId: deletingComment.id,
+			parentId: deletingComment.parentId,
+		});
+		setDeletingComment(null);
+	}, [articleId, deleteComment, deletingComment]);
 
 	if (isLoading) {
 		return (
@@ -97,11 +127,7 @@ export function CommentsSection({
 					<div className="bg-white dark:bg-zinc-900/40 p-5 rounded-[22px] border border-zinc-100 dark:border-zinc-800/60">
 						<CommentForm
 							articleId={articleId}
-							onSuccess={() => {
-								queryClient.invalidateQueries({
-									queryKey: articleKeys.all,
-								});
-							}}
+							onSuccess={handleCommentSuccess}
 						/>
 					</div>
 				</div>
@@ -127,19 +153,13 @@ export function CommentsSection({
 							articleId={articleId}
 							comment={comment}
 							currentUserId={currentUserId}
-							onEdit={() => {}}
-							onDelete={(id, pId) =>
-								setDeletingComment({ id, parentId: pId ?? null })
-							}
+							onDelete={handleDeleteRequest}
 						/>
 					))
 				)}
 			</div>
 
-			<Dialog
-				open={!!deletingComment}
-				onOpenChange={() => setDeletingComment(null)}
-			>
+			<Dialog open={!!deletingComment} onOpenChange={handleCloseDeleteDialog}>
 				<DialogContent className="sm:max-w-106.25">
 					<DialogHeader>
 						<DialogTitle className="flex items-center gap-2 text-red-600">
@@ -154,23 +174,14 @@ export function CommentsSection({
 					<DialogFooter className="gap-2 sm:gap-0">
 						<Button
 							variant="ghost"
-							onClick={() => setDeletingComment(null)}
+							onClick={handleCloseDeleteDialog}
 							disabled={deleteComment.isPending}
 						>
 							Cancel
 						</Button>
 						<Button
 							variant="destructive"
-							onClick={async () => {
-								if (deletingComment) {
-									await deleteComment.mutateAsync({
-										articleId,
-										commentId: deletingComment.id,
-										parentId: deletingComment.parentId,
-									});
-									setDeletingComment(null);
-								}
-							}}
+							onClick={handleConfirmDelete}
 							disabled={deleteComment.isPending}
 						>
 							{deleteComment.isPending ? (
