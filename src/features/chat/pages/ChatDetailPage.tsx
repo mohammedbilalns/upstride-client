@@ -15,7 +15,14 @@ import {
 	Send,
 	Smile,
 } from "lucide-react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+	useCallback,
+	useEffect,
+	useLayoutEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
@@ -87,13 +94,16 @@ export function ChatDetailPage() {
 	const errorStatus = (error as { response?: { status?: number } })?.response
 		?.status;
 
-	const allMessages: ChatMessage[] =
-		data?.pages
-			.flatMap((page) => page.messages)
-			.sort(
-				(a, b) =>
-					new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-			) ?? [];
+	const allMessages = useMemo<ChatMessage[]>(
+		() =>
+			data?.pages
+				.flatMap((page) => page.messages)
+				.sort(
+					(a, b) =>
+						new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+				) ?? [],
+		[data],
+	);
 
 	const chat = data?.pages[0]?.chat;
 	const receiverFromApi = data?.pages[0]?.receiver;
@@ -210,30 +220,33 @@ export function ChatDetailPage() {
 		});
 	}, [chat, queryClient]);
 
-	const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
+	const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
 		if (scrollRef.current) {
 			const el = scrollRef.current;
 			el.scrollTo({ top: el.scrollHeight, behavior });
 		}
-	};
+	}, []);
 
-	const handleSend = (e?: React.FormEvent) => {
-		e?.preventDefault();
-		if (!newMessage.trim()) return;
-		sendMessage.mutate({
-			content: newMessage.trim(),
-			messageType: "TEXT",
-			senderId: currentUserId,
-		});
-		setNewMessage("");
-		requestAnimationFrame(() => scrollToBottom("smooth"));
-	};
+	const handleSend = useCallback(
+		(e?: React.FormEvent) => {
+			e?.preventDefault();
+			if (!newMessage.trim()) return;
+			sendMessage.mutate({
+				content: newMessage.trim(),
+				messageType: "TEXT",
+				senderId: currentUserId,
+			});
+			setNewMessage("");
+			requestAnimationFrame(() => scrollToBottom("smooth"));
+		},
+		[currentUserId, newMessage, scrollToBottom, sendMessage],
+	);
 
-	const handleEmojiSelect = (emoji: Emoji) => {
+	const handleEmojiSelect = useCallback((emoji: Emoji) => {
 		setNewMessage((prev) => `${prev}${emoji.emoji}`);
 		setIsEmojiPickerOpen(false);
 		requestAnimationFrame(() => messageInputRef.current?.focus());
-	};
+	}, []);
 
 	const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
@@ -420,7 +433,10 @@ export function ChatDetailPage() {
 									key={msg.id}
 									message={msg}
 									isMe={msg.senderId === currentUserId}
-									localMediaPreviews={localMediaPreviews}
+									previewUrl={
+										msg.mediaUrl ||
+										(msg.content ? localMediaPreviews[msg.content] : null)
+									}
 								/>
 							))}
 						</div>

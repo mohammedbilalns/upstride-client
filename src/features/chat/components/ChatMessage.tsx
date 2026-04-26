@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Clock, FileIcon, FileText } from "lucide-react";
 import { ProgressiveImage } from "@/components/common/ProgressiveImage";
 import type { ChatMessage } from "@/features/chat/types";
@@ -6,21 +7,17 @@ import { formatChatTimestamp } from "@/shared/utils/date";
 interface ChatMessageProps {
 	message: ChatMessage;
 	isMe: boolean;
-	localMediaPreviews?: Record<string, string>;
+	previewUrl?: string | null;
 }
 
-export function ChatMessage({
+export const ChatMessage = memo(function ChatMessage({
 	message,
 	isMe,
-	localMediaPreviews,
+	previewUrl,
 }: ChatMessageProps) {
 	const bubbleClass = isMe
 		? "bg-primary text-primary-foreground rounded-br-sm"
 		: "bg-muted text-foreground rounded-bl-sm";
-
-	const previewUrl =
-		message.mediaUrl ||
-		(message.content ? localMediaPreviews?.[message.content] : null);
 
 	return (
 		<div
@@ -93,4 +90,4 @@ export function ChatMessage({
 			</div>
 		</div>
 	);
-}
+});
