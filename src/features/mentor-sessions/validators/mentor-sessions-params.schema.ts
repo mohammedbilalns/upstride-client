@@ -2,7 +2,9 @@ import { z } from "zod";
 import { limitSchema, pageSchema } from "@/shared/validators/pagination.schema";
 
 export const MentorSessionsSearchSchema = z.object({
-	filter: z.enum(["upcoming", "past", "cancelled"]).catch("upcoming"),
+	filter: z
+		.enum(["upcoming", "past", "completed", "cancelled"])
+		.catch("upcoming"),
 	page: pageSchema,
 	limit: limitSchema,
 });

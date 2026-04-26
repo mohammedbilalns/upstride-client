@@ -37,6 +37,7 @@ type MentorSort = "soonest" | "latest";
 const filterOptions = [
 	{ value: "upcoming", label: "Upcoming" },
 	{ value: "past", label: "Past" },
+	{ value: "completed", label: "Completed" },
 	{ value: "cancelled", label: "Cancelled" },
 ] as const;
 
@@ -110,7 +111,7 @@ export function MentorSessionsPage() {
 		navigate({
 			search: (prev) => ({
 				...prev,
-				filter: value as "upcoming" | "past" | "cancelled",
+				filter: value as "upcoming" | "past" | "completed" | "cancelled",
 				page: 1,
 			}),
 		});
@@ -250,6 +251,7 @@ export function MentorSessionsPage() {
 				selectedBooking={selectedBooking}
 				personLabel="Mentee"
 				personName={selectedBooking?.menteeName}
+				payoutLabel="You Receive"
 				showReceipt={false}
 				canSubmitReview={false}
 			/>
@@ -289,6 +291,7 @@ function MentorSessionCard({
 		showCancel &&
 		!isCancelled &&
 		!isSlotTakenByAnotherUser &&
+		booking.status !== "STARTED" &&
 		booking.status !== "COMPLETED";
 
 	return (

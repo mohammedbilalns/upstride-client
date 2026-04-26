@@ -32,6 +32,7 @@ interface SessionDetailsDialogProps {
 	selectedBooking: Booking | null;
 	personLabel?: string;
 	personName?: string | null;
+	payoutLabel?: string;
 	showReceipt?: boolean;
 	canSubmitReview?: boolean;
 	onRepay?: () => void | Promise<void>;
@@ -48,6 +49,7 @@ export function SessionDetailsDialog({
 	selectedBooking,
 	personLabel = "Mentor",
 	personName,
+	payoutLabel = "Mentor Receives",
 	showReceipt = true,
 	canSubmitReview = false,
 	onRepay,
@@ -105,6 +107,7 @@ export function SessionDetailsDialog({
 		booking.paymentStatus === "COMPLETED" &&
 		Boolean(booking.settledAt) &&
 		!existingReview;
+	const showNextStep = booking.status !== "COMPLETED";
 	const review = booking.review;
 	const paymentStatusLabel = booking
 		? booking.paymentStatus === "COMPLETED"
@@ -404,6 +407,23 @@ export function SessionDetailsDialog({
 								</div>
 								<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-3">
 									<p className="text-xs uppercase tracking-wide text-muted-foreground">
+										{payoutLabel}
+									</p>
+									<p className="mt-1 flex items-center gap-2 font-medium">
+										{booking.mentorPayout.currency === "COINS" ? (
+											<Coins className="h-4 w-4 text-amber-500" />
+										) : (
+											<CreditCard className="h-4 w-4 text-blue-500" />
+										)}
+										{booking.mentorPayout.amount}{" "}
+										{booking.mentorPayout.currency.toUpperCase()}
+									</p>
+									<p className="text-xs text-muted-foreground">
+										{booking.mentorPayout.percentage}% of the booked amount
+									</p>
+								</div>
+								<div className="rounded-xl bg-zinc-50/70 dark:bg-zinc-950/30 p-3">
+									<p className="text-xs uppercase tracking-wide text-muted-foreground">
 										Meeting
 									</p>
 									<p className="mt-1 font-medium">
@@ -420,22 +440,24 @@ export function SessionDetailsDialog({
 							</div>
 						</section>
 
-						<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-4">
-							<p className="text-xs uppercase tracking-wide text-muted-foreground">
-								Next step
-							</p>
-							<div className="mt-3 rounded-xl border border-primary/15 bg-primary/5 p-4 space-y-3">
-								<div className="space-y-1">
-									<p className="font-semibold text-zinc-900 dark:text-zinc-50">
-										{spotlight.title}
-									</p>
-									<p className="text-sm text-muted-foreground">
-										{spotlight.description}
-									</p>
+						{showNextStep && (
+							<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-4">
+								<p className="text-xs uppercase tracking-wide text-muted-foreground">
+									Next step
+								</p>
+								<div className="mt-3 rounded-xl border border-primary/15 bg-primary/5 p-4 space-y-3">
+									<div className="space-y-1">
+										<p className="font-semibold text-zinc-900 dark:text-zinc-50">
+											{spotlight.title}
+										</p>
+										<p className="text-sm text-muted-foreground">
+											{spotlight.description}
+										</p>
+									</div>
+									{spotlight.node}
 								</div>
-								{spotlight.node}
-							</div>
-						</section>
+							</section>
+						)}
 					</div>
 
 					<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-4">
