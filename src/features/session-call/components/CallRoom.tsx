@@ -1,7 +1,7 @@
 import { useRouter } from "@tanstack/react-router";
 import { AlertCircle, ArrowLeft, Loader2 } from "lucide-react";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useSocket } from "@/app/contexts/SocketContext";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
@@ -43,6 +43,7 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 	const [joinError, setJoinError] = useState<string | null>(null);
 	const [isAuthorized, setIsAuthorized] = useState(false);
 	const [isValidating, setIsValidating] = useState(true);
+	const hasSentLeaveRef = useRef(false);
 
 	const router = useRouter();
 	const currentUserId = router.options.context?.auth?.user?.id;
@@ -95,6 +96,12 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 	};
 	const localLabel = localParticipantName.trim() || "You";
 	const remoteLabel = remoteParticipantName.trim() || "Participant";
+
+	const emitLeaveOnce = () => {
+		if (!socket || hasSentLeaveRef.current) return;
+		hasSentLeaveRef.current = true;
+		socket.emit("call:leave", { bookingId });
+	};
 
 	const {
 		localStream,
@@ -162,7 +169,7 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 
 		return () => {
 			leaveSession();
-			socket.emit("call:leave", { bookingId });
+			emitLeaveOnce();
 			socket.off("call:pre-join-check:success", handlePreJoinSuccess);
 			socket.off("call:user-joined", handleUserJoined);
 			socket.off("call:user-left", handleUserLeft);
@@ -207,7 +214,7 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 
 	const handleLeaveSession = () => {
 		leaveSession();
-		socket?.emit("call:leave", { bookingId });
+		emitLeaveOnce();
 		navigateToSessionList();
 	};
 
