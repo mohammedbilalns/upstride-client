@@ -291,7 +291,9 @@ export function SessionsPage() {
 									</h3>
 									<p className="text-sm text-zinc-500 max-w-xs">
 										{search.tab === "past"
-											? "You haven't completed any sessions yet. Book a session with a mentor to get started!"
+											? search.filter === "past_cancelled"
+												? "You have no cancelled sessions."
+												: "You haven't completed any sessions yet. Book a session with a mentor to get started!"
 											: "You don't have any scheduled sessions for this period."}
 									</p>
 								</div>
