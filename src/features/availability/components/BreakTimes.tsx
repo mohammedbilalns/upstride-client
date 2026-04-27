@@ -1,0 +1,87 @@
+import { Plus, X } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
+import type { BreakTime } from "@/features/availability/types";
+import type { AvailabilityFormApi } from "./CreateRuleForm";
+
+interface CreateRuleBreakTimesProps {
+	form: AvailabilityFormApi;
+	onAddBreakTime: () => void;
+	onUpdateBreakTime: (
+		index: number,
+		field: keyof BreakTime,
+		value: string,
+	) => void;
+	onRemoveBreakTime: (index: number) => void;
+}
+
+export function CreateRuleBreakTimes({
+	form,
+	onAddBreakTime,
+	onUpdateBreakTime,
+	onRemoveBreakTime,
+}: CreateRuleBreakTimesProps) {
+	return (
+		<div className="flex flex-col gap-4 p-6 border rounded-xl bg-transparent">
+			<div className="flex items-center justify-between">
+				<Label className="text-base font-semibold">Break Times</Label>
+				<Button
+					type="button"
+					variant="outline"
+					size="sm"
+					disabled={(form.state.values.breakTimes?.length ?? 0) >= 5}
+					onClick={onAddBreakTime}
+				>
+					<Plus className="h-4 w-4 mr-2" /> Add Break
+				</Button>
+			</div>
+			{/* FIX: type error  */}
+			<form.Subscribe selector={(state) => state.values.breakTimes}>
+				{(breakTimes) =>
+					!breakTimes?.length ? (
+						<p className="text-sm text-muted-foreground">
+							No breaks configured. You will be available consecutively.
+						</p>
+					) : (
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+							{breakTimes.map((bt, i) => (
+								<div
+									key={`${bt.startTime}-${bt.endTime}`}
+									className="flex items-center gap-2 p-3 bg-background border rounded-lg"
+								>
+									<Input
+										type="time"
+										value={bt.startTime}
+										className="h-9"
+										onChange={(e) =>
+											onUpdateBreakTime(i, "startTime", e.target.value)
+										}
+									/>
+									<span className="text-muted-foreground">to</span>
+									<Input
+										type="time"
+										value={bt.endTime}
+										className="h-9"
+										onChange={(e) =>
+											onUpdateBreakTime(i, "endTime", e.target.value)
+										}
+									/>
+									<Button
+										type="button"
+										variant="ghost"
+										size="icon"
+										className="text-rose-500 h-9 w-9 shrink-0"
+										onClick={() => onRemoveBreakTime(i)}
+									>
+										<X className="h-4 w-4" />
+									</Button>
+								</div>
+							))}
+						</div>
+					)
+				}
+			</form.Subscribe>
+		</div>
+	);
+}

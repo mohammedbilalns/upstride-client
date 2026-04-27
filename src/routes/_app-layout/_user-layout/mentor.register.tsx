@@ -1,0 +1,12 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { professionsQueryOptions } from "@/features/mentor-registration/hooks/queries/useMentorRegistration";
+import { MentorRegistrationPage } from "@/features/mentor-registration/pages/MentorRegistrationPage";
+
+export const Route = createFileRoute(
+	"/_app-layout/_user-layout/mentor/register",
+)({
+	loader: async ({ context }) => {
+		await context.queryClient.ensureQueryData(professionsQueryOptions);
+	},
+	component: MentorRegistrationPage,
+});

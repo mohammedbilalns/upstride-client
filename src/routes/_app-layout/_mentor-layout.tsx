@@ -1,0 +1,61 @@
+import { useQuery } from "@tanstack/react-query";
+import {
+	createFileRoute,
+	Outlet,
+	redirect,
+	useRouteContext,
+} from "@tanstack/react-router";
+import { ProfileSidebar } from "@/features/profile/components/ProfileSidebar";
+import { profileQueryOptions } from "@/features/profile/hooks/queries/useProfile";
+
+export const Route = createFileRoute("/_app-layout/_mentor-layout")({
+	beforeLoad: async ({ context }) => {
+		if (context.auth.user?.role !== "MENTOR") {
+			throw redirect({
+				to: "/home",
+			});
+		}
+	},
+	component: MentorLayout,
+});
+
+function MentorLayout() {
+	const { auth } = useRouteContext({ from: "/_app-layout/_mentor-layout" });
+	const { user } = auth;
+	const { data: profile } = useQuery({
+		...profileQueryOptions,
+		enabled: Boolean(user?.id),
+	});
+
+	if (!user) return null;
+
+	return (
+		<div className="relative min-h-screen flex flex-col">
+			<div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-zinc-50 to-transparent dark:from-zinc-950 dark:to-transparent" />
+			<div className="container mx-auto px-4 md:px-6 py-8 flex flex-col gap-6 relative">
+				<div className="flex flex-col lg:flex-row gap-8">
+					<aside className="lg:w-75 shrink-0 relative z-[60]">
+						<div className="lg:sticky top-0">
+							<ProfileSidebar
+								user={{
+									name: profile?.name ?? user.name,
+									email: user.email,
+									role: user.role,
+									profilePictureUrl:
+										profile?.profilePictureUrl ?? user.profilePictureUrl,
+								}}
+								isMentor={true}
+							/>
+						</div>
+					</aside>
+
+					<section className="flex-1 min-w-0">
+						<div className="pb-10">
+							<Outlet />
+						</div>
+					</section>
+				</div>
+			</div>
+		</div>
+	);
+}

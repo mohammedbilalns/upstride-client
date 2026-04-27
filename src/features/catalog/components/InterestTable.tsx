@@ -1,0 +1,210 @@
+import {
+	ChevronDown,
+	ChevronRight,
+	Pencil,
+	Plus,
+	RotateCcw,
+	Trash2,
+} from "lucide-react";
+import { Fragment, useState } from "react";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/Table";
+import { cn } from "@/shared/utils/cn";
+import type { CatalogInterest } from "../types";
+import { SkillTable } from "./SkillTable";
+
+interface InterestTableProps {
+	interests: CatalogInterest[];
+	onEditInterest: (id: string) => void;
+	onEditSkill: (id: string) => void;
+	onAddSkill: (interestId: string) => void;
+	onDisableInterest: (id: string) => void;
+	onEnableInterest: (id: string) => void;
+	onDisableSkill: (id: string) => void;
+	onEnableSkill: (id: string) => void;
+}
+
+export function InterestTable({
+	interests,
+	onEditInterest,
+	onEditSkill,
+	onAddSkill,
+	onDisableInterest,
+	onEnableInterest,
+	onDisableSkill,
+	onEnableSkill,
+}: InterestTableProps) {
+	const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+
+	const toggleExpand = (id: string) => {
+		const newIds = new Set(expandedIds);
+		if (newIds.has(id)) {
+			newIds.delete(id);
+		} else {
+			newIds.add(id);
+		}
+		setExpandedIds(newIds);
+	};
+
+	return (
+		<div className="rounded-md border border-border/50 overflow-hidden bg-background">
+			<Table>
+				<TableHeader className="bg-muted/50">
+					<TableRow className="hover:bg-transparent">
+						<TableHead className="w-10 pl-4"></TableHead>
+						<TableHead className="w-[300px] text-xs font-bold uppercase tracking-wider">
+							Interest Name
+						</TableHead>
+						<TableHead className="text-xs font-bold uppercase tracking-wider">
+							Slug
+						</TableHead>
+						<TableHead className="text-right pr-6 text-xs font-bold uppercase tracking-wider">
+							Actions
+						</TableHead>
+					</TableRow>
+				</TableHeader>
+				<TableBody>
+					{interests.length === 0 ? (
+						<TableRow>
+							<TableCell
+								colSpan={4}
+								className="text-center py-12 text-muted-foreground font-medium italic"
+							>
+								No interests added yet.
+							</TableCell>
+						</TableRow>
+					) : (
+						interests.map((interest) => (
+							<Fragment key={interest.id}>
+								<TableRow
+									className={cn(
+										"group transition-colors",
+										!interest.isActive && "opacity-60 bg-muted/20",
+										expandedIds.has(interest.id) && "bg-muted/30",
+									)}
+								>
+									<TableCell className="w-10 pl-4">
+										<div className="w-6 h-6 flex items-center justify-center">
+											<Button
+												variant="ghost"
+												size="sm"
+												className="h-8 w-8 p-0 text-muted-foreground/60 hover:text-foreground transition-colors"
+												onClick={() => toggleExpand(interest.id)}
+											>
+												{expandedIds.has(interest.id) ? (
+													<ChevronDown className="h-4 w-4 text-primary" />
+												) : (
+													<ChevronRight className="h-4 w-4" />
+												)}
+											</Button>
+										</div>
+									</TableCell>
+									<TableCell className="font-semibold">
+										<div className="flex items-center gap-2">
+											{interest.name}
+											{!interest.isActive && (
+												<Badge
+													variant="outline"
+													className="bg-rose-500/10 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400 border-rose-500/20 hover:bg-rose-500/20 h-5 px-2 text-[10px]"
+												>
+													Disabled
+												</Badge>
+											)}
+										</div>
+									</TableCell>
+									<TableCell>
+										<span className="text-xs font-mono bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-md">
+											{interest.slug}
+										</span>
+									</TableCell>
+									<TableCell className="text-right pr-6">
+										<div className="flex items-center justify-end gap-2">
+											<Button
+												size="sm"
+												variant="ghost"
+												className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10 opacity-40 group-hover:opacity-100"
+												onClick={() => onEditInterest(interest.id)}
+												title="Edit Interest"
+											>
+												<Pencil className="w-3.5 h-3.5" />
+											</Button>
+											<Button
+												size="sm"
+												variant="ghost"
+												className={cn(
+													"h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10",
+													interest.isActive
+														? "opacity-40 group-hover:opacity-100"
+														: "opacity-0 cursor-not-allowed",
+												)}
+												disabled={!interest.isActive}
+												onClick={() => onAddSkill(interest.id)}
+												title="Add Skill"
+											>
+												<Plus className="w-3.5 h-3.5" />
+											</Button>
+											{interest.isActive ? (
+												<Button
+													size="sm"
+													variant="ghost"
+													className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-destructive hover:bg-destructive/10 opacity-40 group-hover:opacity-100"
+													onClick={() => onDisableInterest(interest.id)}
+													title="Disable Interest"
+												>
+													<Trash2 className="w-3.5 h-3.5" />
+												</Button>
+											) : (
+												<Button
+													size="sm"
+													variant="ghost"
+													className="h-8 w-8 p-0 text-muted-foreground transition-all hover:text-primary hover:bg-primary/10 opacity-40 group-hover:opacity-100"
+													onClick={() => onEnableInterest(interest.id)}
+													title="Enable Interest"
+												>
+													<RotateCcw className="w-3.5 h-3.5" />
+												</Button>
+											)}
+										</div>
+									</TableCell>
+								</TableRow>
+								{expandedIds.has(interest.id) && (
+									<TableRow className="hover:bg-transparent bg-muted/10">
+										<TableCell colSpan={4} className="p-0 border-b">
+											<div className="px-12 py-4 bg-background/50">
+												<div className="flex items-center gap-2 mb-3">
+													<Badge
+														variant="outline"
+														className="text-[10px] uppercase font-bold tracking-wider opacity-60"
+													>
+														Skills for {interest.name}
+													</Badge>
+												</div>
+												<div className="rounded-lg border border-border/40 overflow-hidden shadow-sm">
+													<SkillTable
+														skills={interest.skills}
+														parentActive={interest.isActive}
+														onEditSkill={onEditSkill}
+														onDisableSkill={onDisableSkill}
+														onEnableSkill={onEnableSkill}
+													/>
+												</div>
+											</div>
+										</TableCell>
+									</TableRow>
+								)}
+							</Fragment>
+						))
+					)}
+				</TableBody>
+			</Table>
+		</div>
+	);
+}

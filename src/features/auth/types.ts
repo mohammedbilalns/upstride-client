@@ -1,0 +1,78 @@
+export type AuthView =
+	| "login"
+	| "register"
+	| "register-otp"
+	| "forgot-password"
+	| "forgot-password-otp"
+	| "change-password"
+	| "onboarding";
+
+import type { User } from "@/shared/types/user";
+
+export type AuthenticatedUser = Pick<
+	User,
+	"id" | "name" | "role" | "coinBalance" | "email"
+> & {
+	profilePictureUrl: string | null;
+	isLocalAuth: boolean;
+};
+
+export interface LoginResponse {
+	user: AuthenticatedUser;
+	accessToken: string;
+	csrfToken?: string;
+}
+
+export interface SocialOnboardingResponse {
+	setupToken: string;
+}
+
+export type SocialLoginResponse = LoginResponse | SocialOnboardingResponse;
+
+export interface RegisterResponse {
+	message: string;
+}
+
+export type SocialLoginInput =
+	| {
+			provider: "GOOGLE";
+			code: string;
+	  }
+	| {
+			provider: "LINKEDIN";
+			code: string;
+			redirectUri: string;
+	  };
+
+export interface VerifyRegisterOtpResponse {
+	setupToken: string;
+}
+
+export interface VerifyResetOtpResponse {
+	resetToken: string;
+}
+
+export type SaveUserInterestsResponse = LoginResponse;
+
+export interface RequestPasswordResetInput {
+	email: string;
+}
+
+export interface ChangePasswordInput {
+	tempToken: string;
+	email: string;
+	newPassword: string;
+}
+
+export interface ActiveSession {
+	id: string;
+	ip: string;
+	deviceName: string;
+	deviceType: string;
+	lastUsedAt: string;
+	isCurrent: boolean;
+}
+
+export interface GetActiveSessionsResponse {
+	sessions: ActiveSession[];
+}
