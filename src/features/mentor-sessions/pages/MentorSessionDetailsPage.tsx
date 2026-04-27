@@ -27,6 +27,7 @@ export function MentorSessionDetailsPage() {
 			personLabel="Mentee"
 			personName={booking.menteeName}
 			payoutLabel="You Receive"
+			reviewTitle="Mentee's Review"
 			showReceipt={false}
 			canSubmitReview={false}
 			mode="page"

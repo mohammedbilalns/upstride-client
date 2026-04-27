@@ -34,6 +34,7 @@ interface SessionDetailsDialogProps {
 	personLabel?: string;
 	personName?: string | null;
 	payoutLabel?: string;
+	reviewTitle?: string;
 	showReceipt?: boolean;
 	canSubmitReview?: boolean;
 	onRepay?: () => void | Promise<void>;
@@ -54,6 +55,7 @@ export function SessionDetailsDialog({
 	personLabel = "Mentor",
 	personName,
 	payoutLabel = "Mentor Receives",
+	reviewTitle = "Your Review",
 	showReceipt = true,
 	canSubmitReview = false,
 	onRepay,
@@ -561,7 +563,7 @@ export function SessionDetailsDialog({
 						<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-3.5 space-y-2.5">
 							<div className="flex items-center justify-between gap-3">
 								<p className="text-xs uppercase tracking-wide text-muted-foreground">
-									Your Review
+									{reviewTitle}
 								</p>
 								<div className="flex items-center gap-1 text-amber-500">
 									{[1, 2, 3, 4, 5].map((star) => (
