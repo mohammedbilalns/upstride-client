@@ -80,7 +80,7 @@ export function DashboardPage({
 					{
 						label: "Hours",
 						value: formatNumber(dashboard.hoursLearned, 1),
-						subtitle: "Learned this period",
+						subtitle: "Learned",
 					},
 				]
 		: [];
