@@ -109,37 +109,147 @@ export function ExperienceSection({
 				<form.Field name="experience">
 					{(field) => (
 						<div className="space-y-6">
-							{field.state.value.map((entry, index: number) => (
-								<Card key={index} className="border-border/50 bg-background/50">
-									<CardHeader className="py-3 px-4 flex flex-row items-center justify-between border-b border-border/10">
-										<span className="text-sm font-semibold opacity-70">
-											Experience {index + 1}
-										</span>
-										{field.state.value.length > 1 && (
-											<Button
-												type="button"
-												variant="ghost"
-												size="icon"
-												className="h-8 w-8 text-muted-foreground hover:text-destructive"
-												onClick={() => {
-													const newValue = field.state.value.filter(
-														(_entry, i: number) => i !== index,
-													);
-													field.handleChange(newValue);
-												}}
-											>
-												<Trash2 className="h-3.5 w-3.5" />
-											</Button>
-										)}
-									</CardHeader>
-									<CardContent className="p-4 space-y-4">
-										<div className="grid sm:grid-cols-2 gap-4">
-											<form.Field name={`experience[${index}].company`}>
+							{field.state.value.map((_entry, index: number) => {
+								const experienceFieldName = `experience[${index}]` as const;
+
+								return (
+									<Card
+										key={experienceFieldName}
+										className="border-border/50 bg-background/50"
+									>
+										<CardHeader className="py-3 px-4 flex flex-row items-center justify-between border-b border-border/10">
+											<span className="text-sm font-semibold opacity-70">
+												Experience {index + 1}
+											</span>
+											{field.state.value.length > 1 && (
+												<Button
+													type="button"
+													variant="ghost"
+													size="icon"
+													className="h-8 w-8 text-muted-foreground hover:text-destructive"
+													onClick={() => {
+														const newValue = field.state.value.filter(
+															(_entry, i: number) => i !== index,
+														);
+														field.handleChange(newValue);
+													}}
+												>
+													<Trash2 className="h-3.5 w-3.5" />
+												</Button>
+											)}
+										</CardHeader>
+										<CardContent className="p-4 space-y-4">
+											<div className="grid sm:grid-cols-2 gap-4">
+												<form.Field name={`experience[${index}].company`}>
+													{(subField) => (
+														<div className="space-y-1.5">
+															<Label className="text-xs">Company</Label>
+															<Input
+																placeholder="Google"
+																value={subField.state.value}
+																onChange={(e) =>
+																	subField.handleChange(e.target.value)
+																}
+																onBlur={subField.handleBlur}
+															/>
+															<FieldError
+																message={getErrorMessage(
+																	subField.state.meta.errors,
+																)}
+															/>
+														</div>
+													)}
+												</form.Field>
+												<form.Field name={`experience[${index}].role`}>
+													{(subField) => (
+														<div className="space-y-1.5">
+															<Label className="text-xs">Role</Label>
+															<Select
+																value={subField.state.value}
+																onValueChange={(value) =>
+																	subField.handleChange(value)
+																}
+															>
+																<SelectTrigger className="w-full">
+																	<SelectValue placeholder="Select Role" />
+																</SelectTrigger>
+																<SelectContent>
+																	{professions?.map((prof: Profession) => (
+																		<SelectItem key={prof.id} value={prof.id}>
+																			{prof.name}
+																		</SelectItem>
+																	))}
+																</SelectContent>
+															</Select>
+															<FieldError
+																message={getErrorMessage(
+																	subField.state.meta.errors,
+																)}
+															/>
+														</div>
+													)}
+												</form.Field>
+											</div>
+											<div className="grid sm:grid-cols-2 gap-4">
+												<form.Field name={`experience[${index}].from`}>
+													{(subField) => (
+														<div className="space-y-1.5">
+															<Label className="text-xs">From Date</Label>
+															<Input
+																type="date"
+																value={formatDateInput(subField.state.value)}
+																onChange={(e) => {
+																	handleDateChange(
+																		field,
+																		index,
+																		"from",
+																		e.target.value,
+																	);
+																}}
+																onBlur={subField.handleBlur}
+															/>
+															<FieldError
+																message={getErrorMessage(
+																	subField.state.meta.errors,
+																)}
+															/>
+														</div>
+													)}
+												</form.Field>
+												<form.Field name={`experience[${index}].to`}>
+													{(subField) => (
+														<div className="space-y-1.5">
+															<Label className="text-xs">
+																To Date (or empty for current)
+															</Label>
+															<Input
+																type="date"
+																value={formatDateInput(subField.state.value)}
+																onChange={(e) => {
+																	handleDateChange(
+																		field,
+																		index,
+																		"to",
+																		e.target.value,
+																	);
+																}}
+																onBlur={subField.handleBlur}
+															/>
+															<FieldError
+																message={getErrorMessage(
+																	subField.state.meta.errors,
+																)}
+															/>
+														</div>
+													)}
+												</form.Field>
+											</div>
+											<form.Field name={`experience[${index}].description`}>
 												{(subField) => (
 													<div className="space-y-1.5">
-														<Label className="text-xs">Company</Label>
+														<Label className="text-xs">Description</Label>
 														<Input
-															placeholder="Google"
+															placeholder="What was your main impact?"
 															value={subField.state.value}
 															onChange={(e) =>
 																subField.handleChange(e.target.value)
@@ -154,113 +264,10 @@ export function ExperienceSection({
 													</div>
 												)}
 											</form.Field>
-											<form.Field name={`experience[${index}].role`}>
-												{(subField) => (
-													<div className="space-y-1.5">
-														<Label className="text-xs">Role</Label>
-														<Select
-															value={subField.state.value}
-															onValueChange={(value) =>
-																subField.handleChange(value)
-															}
-														>
-															<SelectTrigger className="w-full">
-																<SelectValue placeholder="Select Role" />
-															</SelectTrigger>
-															<SelectContent>
-																{professions?.map((prof: Profession) => (
-																	<SelectItem key={prof.id} value={prof.id}>
-																		{prof.name}
-																	</SelectItem>
-																))}
-															</SelectContent>
-														</Select>
-														<FieldError
-															message={getErrorMessage(
-																subField.state.meta.errors,
-															)}
-														/>
-													</div>
-												)}
-											</form.Field>
-										</div>
-										<div className="grid sm:grid-cols-2 gap-4">
-											<form.Field name={`experience[${index}].from`}>
-												{(subField) => (
-													<div className="space-y-1.5">
-														<Label className="text-xs">From Date</Label>
-														<Input
-															type="date"
-															value={formatDateInput(subField.state.value)}
-															onChange={(e) => {
-																handleDateChange(
-																	field,
-																	index,
-																	"from",
-																	e.target.value,
-																);
-															}}
-															onBlur={subField.handleBlur}
-														/>
-														<FieldError
-															message={getErrorMessage(
-																subField.state.meta.errors,
-															)}
-														/>
-													</div>
-												)}
-											</form.Field>
-											<form.Field name={`experience[${index}].to`}>
-												{(subField) => (
-													<div className="space-y-1.5">
-														<Label className="text-xs">
-															To Date (or empty for current)
-														</Label>
-														<Input
-															type="date"
-															value={formatDateInput(subField.state.value)}
-															onChange={(e) => {
-																handleDateChange(
-																	field,
-																	index,
-																	"to",
-																	e.target.value,
-																);
-															}}
-															onBlur={subField.handleBlur}
-														/>
-														<FieldError
-															message={getErrorMessage(
-																subField.state.meta.errors,
-															)}
-														/>
-													</div>
-												)}
-											</form.Field>
-										</div>
-										<form.Field name={`experience[${index}].description`}>
-											{(subField) => (
-												<div className="space-y-1.5">
-													<Label className="text-xs">Description</Label>
-													<Input
-														placeholder="What was your main impact?"
-														value={subField.state.value}
-														onChange={(e) =>
-															subField.handleChange(e.target.value)
-														}
-														onBlur={subField.handleBlur}
-													/>
-													<FieldError
-														message={getErrorMessage(
-															subField.state.meta.errors,
-														)}
-													/>
-												</div>
-											)}
-										</form.Field>
-									</CardContent>
-								</Card>
-							))}
+										</CardContent>
+									</Card>
+								);
+							})}
 							<Button
 								type="button"
 								variant="outline"

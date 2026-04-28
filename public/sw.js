@@ -10,6 +10,7 @@ self.addEventListener("push", (event) => {
 			"[Service Worker] Push data was not valid JSON:",
 			event.data.text(),
 		);
+		console.log(err);
 	}
 
 	const title = data.title || "New Notification";

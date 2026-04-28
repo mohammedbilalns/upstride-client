@@ -14,7 +14,19 @@ import { EditMentorProfilePricingAndBioFields } from "./EditMentorProfilePricing
 import { EditMentorProfileQualificationsSection } from "./EditMentorProfileQualificationsSection";
 import { EditMentorProfileSkillsSection } from "./EditMentorProfileSkillsSection";
 
-export type EditMentorProfileForm = any;
+export type EditMentorProfileFormValues = {
+	currentRoleId: string;
+	organization: string;
+	areasOfExpertise: string[];
+	currentPricePer30Min: string;
+	bio: string;
+	newSkillId: string;
+	newSkillLevel: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+	newQualification: string;
+};
+export type EditMentorProfileForm = ReturnType<
+	typeof useForm<EditMentorProfileFormValues>
+>;
 export type PendingSkill = {
 	skillId: string;
 	level: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";

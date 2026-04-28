@@ -86,8 +86,6 @@ const getComparisonLabel = (
 			return "vs last week";
 		case "year":
 			return "vs last year";
-		case "custom":
-		case "month":
 		default:
 			return "vs last month";
 	}
@@ -238,7 +236,13 @@ function MetricCard({
 					<span className="text-muted-foreground">vs last month</span>
 				</div>
 				<div className="overflow-hidden rounded-2xl border border-border/70 bg-background/60">
-					<svg viewBox="0 0 320 90" className="h-14 w-full">
+					<svg
+						viewBox="0 0 320 90"
+						className="h-14 w-full"
+						role="img"
+						aria-label={`${title} trend`}
+					>
+						<title>{`${title} trend`}</title>
 						<path
 							d={path}
 							fill="none"
@@ -424,7 +428,10 @@ function DualSeriesChart({ data }: { data: AdminDashboardUserGrowthResponse }) {
 				<svg
 					viewBox={`0 0 ${width} ${height}`}
 					className="h-60 w-full text-foreground"
+					role="img"
+					aria-label="User and mentor growth chart"
 				>
+					<title>User and mentor growth chart</title>
 					{Array.from({ length: tickCount + 1 }, (_, index) => {
 						const tickValue = maxValue - (maxValue / tickCount) * index;
 						const y = paddingTop + (chartHeight / tickCount) * index;
@@ -558,7 +565,13 @@ function SingleSeriesChart({
 	return (
 		<div className="space-y-3">
 			<div className="overflow-hidden rounded-2xl border border-border/70 bg-background/60 p-2.5">
-				<svg viewBox="0 0 640 240" className="h-48 w-full text-foreground">
+				<svg
+					viewBox="0 0 640 240"
+					className="h-48 w-full text-foreground"
+					role="img"
+					aria-label="Revenue trend chart"
+				>
+					<title>Revenue trend chart</title>
 					{[0, 1, 2, 3].map((line) => {
 						const y = 24 + ((240 - 48) / 3) * line;
 						return (
