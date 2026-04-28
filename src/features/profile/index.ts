@@ -1,6 +1,6 @@
 export * from "./components/ChangePasswordModal";
-export * from "./components/EditProfileDialog";
 export * from "./components/EditPreferencesEditor";
+export * from "./components/EditProfileDialog";
 export * from "./components/ProfileEditView";
 export * from "./components/ProfilePreferencesCard";
 export * from "./hooks/mutations/useChangePassword";

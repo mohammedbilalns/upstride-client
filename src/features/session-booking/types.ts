@@ -109,4 +109,5 @@ export interface HandleRescheduleResponse {
 		status: "confirmed";
 	};
 }
+
 import type { ReviewDto } from "@/features/reviews";

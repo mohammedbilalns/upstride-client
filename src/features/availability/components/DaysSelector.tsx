@@ -1,8 +1,8 @@
 import FieldError from "@/components/common/FieldError";
 import { Label } from "@/components/ui/Label";
 import type { DayOfWeek } from "@/features/availability/types";
-import { getErrorMessage } from "@/shared/utils/formValidation";
 import { cn } from "@/shared/utils/cn";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import type { AvailabilityFormApi } from "./CreateRuleForm";
 
 interface CreateRuleDaysSelectorProps {

@@ -4,10 +4,10 @@ import FieldError from "@/components/common/FieldError";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
-import { getErrorMessage } from "@/shared/utils/formValidation";
 import { Textarea } from "@/components/ui/Textarea";
-import type { Profession } from "@/features/mentor-registration/services/catalog.service";
 import { useProfessions } from "@/features/mentor-registration/hooks/queries/useCatalog";
+import type { Profession } from "@/features/mentor-registration/services/catalog.service";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import type { MentorProfileResponse } from "../types";
 import type { EditMentorProfileForm } from "./EditMentorProfileEditor";
 

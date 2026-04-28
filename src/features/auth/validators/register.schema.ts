@@ -1,10 +1,10 @@
 import { z } from "zod";
+import { nameSchema } from "@/shared/validators/name.schema";
 import {
 	isPasswordEqual,
 	passwordSchema,
 } from "@/shared/validators/password.schema";
 import { phoneSchema } from "@/shared/validators/phone.schema";
-import { nameSchema } from "@/shared/validators/name.schema";
 
 export const registerSchema = z
 	.object({

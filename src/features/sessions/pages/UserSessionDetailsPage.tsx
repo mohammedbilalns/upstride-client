@@ -2,11 +2,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import type { ApiError } from "@/api/apiError";
-import { sessionBookingService } from "@/features/session-booking";
 import { reviewService } from "@/features/reviews";
+import { sessionBookingService } from "@/features/session-booking";
+import { Route } from "@/routes/_app-layout/_user-layout/sessions/$sessionId";
 import { SessionDetailsDialog } from "../components/SessionDetailsDialog";
 import { useSessionDetails } from "../hooks/queries/useSessionDetails";
-import { Route } from "@/routes/_app-layout/_user-layout/sessions/$sessionId";
 
 export function UserSessionDetailsPage() {
 	const navigate = useNavigate({ from: Route.fullPath });

@@ -1,7 +1,7 @@
-import { Target, Pencil } from "lucide-react";
+import { Pencil, Target } from "lucide-react";
+import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
 import type { UserProfile } from "../types";
 
 interface ProfilePreferencesCardProps {

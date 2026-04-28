@@ -8,7 +8,7 @@ import {
 	RefreshCcw,
 	Server,
 } from "lucide-react";
-import { useMemo, useState, type ComponentType } from "react";
+import { type ComponentType, useMemo, useState } from "react";
 import ErrorComponent from "@/components/common/ErrorComponent";
 import PendingComponent from "@/components/common/PendingComponent";
 import { Button } from "@/components/ui/Button";

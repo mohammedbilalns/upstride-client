@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import ErrorComponent from "@/components/common/ErrorComponent";
 import NotFoundComponent from "@/components/common/NotFound";
-import { UserSessionDetailsPage } from "@/features/sessions/pages/UserSessionDetailsPage";
 import { sessionDetailsQueryOptions } from "@/features/sessions/hooks/queries/useSessionDetails";
+import { UserSessionDetailsPage } from "@/features/sessions/pages/UserSessionDetailsPage";
 
 export const Route = createFileRoute(
 	"/_app-layout/_user-layout/sessions/$sessionId",

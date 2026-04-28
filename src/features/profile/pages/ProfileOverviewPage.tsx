@@ -15,9 +15,9 @@ import {
 import { catalogService } from "@/features/catalog/services/catalog.service";
 import { mentorProfileService } from "@/features/mentor-profile";
 import { EditMentorProfileEditor } from "@/features/mentor-profile/components/EditMentorProfileEditor";
+import { ProfileEditView, useProfile } from "@/features/profile";
 import { EditPreferencesEditor } from "@/features/profile/components/EditPreferencesEditor";
 import { ProfilePreferencesCard } from "@/features/profile/components/ProfilePreferencesCard";
-import { ProfileEditView, useProfile } from "@/features/profile";
 
 export function ProfileOverviewPage() {
 	const { data: profile, isLoading } = useProfile();
