@@ -7,11 +7,11 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/Select";
-import type { DashboardActivityOverviewDto, DashboardPeriod } from "../types";
+import type { DashboardActivityOverview, DashboardPeriod } from "../types";
 import { LineChart } from "./LineChart";
 
 interface ActivityOverviewPanelProps {
-	activityOverview: DashboardActivityOverviewDto;
+	activityOverview: DashboardActivityOverview;
 	period: DashboardPeriod;
 	setPeriod: (value: DashboardPeriod) => void;
 	isFetching: boolean;

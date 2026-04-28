@@ -1,6 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import { Bookmark, CalendarDays, CheckCircle2 } from "lucide-react";
-import type { DashboardActivityItemDto, DashboardRole } from "../types";
+import type { DashboardActivityItem, DashboardRole } from "../types";
 
 export const DASHBOARD_ROLE_LABELS: Record<DashboardRole, string> = {
 	USER: "Learner",
@@ -17,7 +17,7 @@ export const DASHBOARD_TONE_CLASSES = {
 } as const;
 
 export const DASHBOARD_ACTIVITY_ICON: Record<
-	DashboardActivityItemDto["type"],
+	DashboardActivityItem["type"],
 	LucideIcon
 > = {
 	SESSION_BOOKED: CalendarDays,

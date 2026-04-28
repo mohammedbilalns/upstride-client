@@ -127,7 +127,7 @@ export function EditMentorProfileSkillsSection({
 			<Label>Add Skill & Proficiency </Label>
 			<div className="space-y-3">
 				<form.Field name="newSkillId">
-					{(field: any) => (
+					{(field) => (
 						<div className="space-y-2">
 							<Button
 								type="button"
@@ -203,7 +203,7 @@ export function EditMentorProfileSkillsSection({
 										</p>
 									</div>
 									<form.Field name="newSkillLevel">
-										{(levelField: any) => (
+										{(levelField) => (
 											<div className="flex flex-wrap gap-2">
 												{(
 													[

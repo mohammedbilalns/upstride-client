@@ -2,11 +2,11 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { formatDateShort } from "@/shared/utils/date";
-import type { DashboardActivityItemDto, DashboardRole } from "../types";
+import type { DashboardActivityItem, DashboardRole } from "../types";
 import { DASHBOARD_ACTIVITY_ICON } from "../utils/dashboard.constants";
 
 interface RecentActivityPanelProps {
-	items: DashboardActivityItemDto[];
+	items: DashboardActivityItem[];
 	dashboardRole: DashboardRole;
 }
 

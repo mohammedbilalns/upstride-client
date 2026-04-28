@@ -30,8 +30,8 @@ export function EditMentorProfileExpertiseSection({
 
 	return (
 		<form.Field name="areasOfExpertise">
-			{(field: any) => {
-				const selectedInterestIds = field.state.value as string[];
+			{(field) => {
+				const selectedInterestIds = field.state.value;
 				const availableInterests = catalog.filter(
 					(interest) => !selectedInterestIds.includes(interest.id),
 				);

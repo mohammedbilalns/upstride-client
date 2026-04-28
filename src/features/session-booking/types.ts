@@ -78,7 +78,7 @@ export interface Booking {
 	notes: string | null;
 	menteeName: string | null;
 	mentorName: string | null;
-	review: ReviewDto | null;
+	review: Review | null;
 	settledAt: string | null;
 	createdAt: string;
 	updatedAt: string;
@@ -110,4 +110,4 @@ export interface HandleRescheduleResponse {
 	};
 }
 
-import type { ReviewDto } from "@/features/reviews";
+import type { Review } from "@/features/reviews";

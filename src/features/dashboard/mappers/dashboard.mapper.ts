@@ -1,7 +1,7 @@
-import type { DashboardSummaryDto, DashboardViewModel } from "../types";
+import type { DashboardSummary, DashboardViewModel } from "../types";
 
 export function mapDashboardSummary(
-	summary: DashboardSummaryDto,
+	summary: DashboardSummary,
 ): DashboardViewModel {
 	return {
 		...summary,

@@ -4,12 +4,12 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
-import type { DashboardRole, DashboardSummaryDto } from "../types";
+import type { DashboardRole, DashboardSummary } from "../types";
 import { formatMoney } from "../utils/dashboard.formatters";
 
 interface UpcomingSessionsPanelProps {
 	dashboardRole: DashboardRole;
-	sessions: DashboardSummaryDto["upcomingSessions"];
+	sessions: DashboardSummary["upcomingSessions"];
 }
 
 export function UpcomingSessionsPanel({

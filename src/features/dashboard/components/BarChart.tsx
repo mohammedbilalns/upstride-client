@@ -8,7 +8,7 @@ interface BarChartProps {
 
 export function BarChart({ labels, values, unit = "COINS" }: BarChartProps) {
 	const maxValue = Math.max(...values, 1);
-	const peakIndex = values.findIndex((value) => value === maxValue);
+	const peakIndex = values.indexOf(maxValue);
 	const activeDays = values.filter((value) => value > 0).length;
 	const maxVisibleLabels = 7;
 	const labelInterval = Math.max(

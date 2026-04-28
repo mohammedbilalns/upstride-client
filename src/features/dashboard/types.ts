@@ -7,13 +7,13 @@ export interface DashboardGrowthMetric {
 	changePercent: number;
 }
 
-export interface DashboardTopCategoryDto {
+export interface DashboardTopCategory {
 	id: string;
 	name: string;
 	count: number;
 }
 
-export interface DashboardUpcomingSessionDto {
+export interface DashboardUpcomingSession {
 	id: string;
 	startTime: string;
 	endTime: string;
@@ -25,7 +25,7 @@ export interface DashboardUpcomingSessionDto {
 	currency: string;
 }
 
-export interface DashboardActivityItemDto {
+export interface DashboardActivityItem {
 	id: string;
 	type: "SESSION_BOOKED" | "SESSION_COMPLETED" | "SAVED_MENTOR";
 	title: string;
@@ -33,7 +33,7 @@ export interface DashboardActivityItemDto {
 	occurredAt: string;
 }
 
-export interface DashboardArticleDto {
+export interface DashboardArticle {
 	id: string;
 	slug: string;
 	title: string;
@@ -43,7 +43,7 @@ export interface DashboardArticleDto {
 	createdAt: string;
 }
 
-export interface DashboardReviewDto {
+export interface DashboardReview {
 	id: string;
 	reviewerName: string;
 	rating: number;
@@ -51,7 +51,7 @@ export interface DashboardReviewDto {
 	createdAt: string;
 }
 
-export interface DashboardActivityOverviewDto {
+export interface DashboardActivityOverview {
 	period: DashboardPeriod;
 	labels: string[];
 	sessions: number[];
@@ -59,13 +59,13 @@ export interface DashboardActivityOverviewDto {
 	earnings?: number[];
 }
 
-export interface DashboardEarningsChartDto {
+export interface DashboardEarningsChart {
 	period: DashboardPeriod;
 	labels: string[];
 	values: number[];
 }
 
-export interface DashboardSummaryDto {
+export interface DashboardSummary {
 	role: DashboardRole;
 	upcomingSessionsCount: number;
 	completedSessionCount: number;
@@ -79,18 +79,18 @@ export interface DashboardSummaryDto {
 	averageRating?: number;
 	totalMentees?: number;
 	consistentLoginDays: number;
-	topCategory?: DashboardTopCategoryDto | null;
+	topCategory?: DashboardTopCategory | null;
 	sessionGrowth: DashboardGrowthMetric;
 	hoursLearnedGrowth: DashboardGrowthMetric;
-	upcomingSessions: DashboardUpcomingSessionDto[];
-	recentActivity: DashboardActivityItemDto[];
-	recommendedArticles: DashboardArticleDto[];
-	earningsChart?: DashboardEarningsChartDto;
-	recentReviews?: DashboardReviewDto[];
+	upcomingSessions: DashboardUpcomingSession[];
+	recentActivity: DashboardActivityItem[];
+	recommendedArticles: DashboardArticle[];
+	earningsChart?: DashboardEarningsChart;
+	recentReviews?: DashboardReview[];
 	totalAverageRating?: number;
 }
 
-export interface DashboardViewModel extends DashboardSummaryDto {
+export interface DashboardViewModel extends DashboardSummary {
 	totalAverageRating: number;
-	recentReviews: DashboardReviewDto[];
+	recentReviews: DashboardReview[];
 }

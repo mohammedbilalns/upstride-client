@@ -21,7 +21,7 @@ import { Separator } from "@/components/ui/Separator";
 import type { AvailabilitySlot } from "@/features/availability/types";
 import { publicMentorProfileService } from "@/features/mentor-public-profile";
 import { useProfile } from "@/features/profile/hooks/queries/useProfile";
-import type { ReviewDto } from "@/features/reviews";
+import type { Review } from "@/features/reviews";
 import { reviewService } from "@/features/reviews";
 import { sessionBookingService } from "@/features/session-booking";
 import { coinManagementService, useCoinBalance } from "@/features/wallet";
@@ -63,7 +63,7 @@ export function PublicMentorProfilePage({
 	const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 	const [isTopUpOpen, setIsTopUpOpen] = useState(false);
 	const [paymentType, setPaymentType] = useState<"COINS" | "STRIPE">("COINS");
-	const [loadedReviews, setLoadedReviews] = useState<ReviewDto[]>([]);
+	const [loadedReviews, setLoadedReviews] = useState<Review[]>([]);
 	const [reviewsPage, setReviewsPage] = useState(1);
 	const lastAppendedReviewsPage = useRef<number | null>(null);
 	const today = useMemo(() => {
@@ -83,7 +83,7 @@ export function PublicMentorProfilePage({
 		setLoadedReviews([]);
 		setReviewsPage(1);
 		lastAppendedReviewsPage.current = null;
-	}, [profile?.id]);
+	}, []);
 
 	const coinBalanceQuery = useCoinBalance();
 

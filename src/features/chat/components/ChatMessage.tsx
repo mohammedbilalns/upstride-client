@@ -1,11 +1,11 @@
 import { Clock, FileIcon, FileText } from "lucide-react";
 import { memo } from "react";
 import { ProgressiveImage } from "@/components/common/ProgressiveImage";
-import type { ChatMessage } from "@/features/chat/types";
+import type { ChatMessage as ChatMessageDto } from "@/features/chat/types";
 import { formatChatTimestamp } from "@/shared/utils/date";
 
 interface ChatMessageProps {
-	message: ChatMessage;
+	message: ChatMessageDto;
 	isMe: boolean;
 	previewUrl?: string | null;
 }

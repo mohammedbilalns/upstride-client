@@ -1,9 +1,9 @@
-import type { DashboardActivityOverviewDto } from "../types";
+import type { DashboardActivityOverview } from "../types";
 import { buildDots, buildLinePath } from "../utils/dashboard.charts";
 import { formatNumber } from "../utils/dashboard.formatters";
 
 interface LineChartProps {
-	overview: DashboardActivityOverviewDto;
+	overview: DashboardActivityOverview;
 }
 
 export function LineChart({ overview }: LineChartProps) {
