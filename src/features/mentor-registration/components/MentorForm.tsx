@@ -3,7 +3,6 @@ import { ArrowRight, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
-import { getErrorMessage } from "@/shared/utils/formValidation";
 import {
 	useRegisterMentor,
 	useResubmitMentor,
@@ -19,6 +18,7 @@ import {
 	ResubmitMentorSchema,
 } from "@/features/mentor-registration/validators/mentor-registration.schema";
 import { useOnboardingCatalog } from "@/features/onboarding/hooks/queries/useCatalog";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import { EducationSection } from "./EducationSection";
 import { ExperienceSection } from "./ExperienceSection";
 import { ExpertiseSection } from "./ExpertiseSection";

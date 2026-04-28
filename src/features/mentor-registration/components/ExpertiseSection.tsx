@@ -122,92 +122,100 @@ export function ExpertiseSection({
 										) : (
 											<div className="space-y-3">
 												{field.state.value.map(
-													(skill: MentorSkill, index: number) => (
-														<div
-															key={index}
-															className="flex flex-col gap-2 p-3 rounded-xl bg-muted/20 border border-border/50"
-														>
-															<div className="flex gap-3">
-																<form.Field
-																	name={`toolsAndSkills[${index}].skillId`}
-																>
-																	{(subField) => (
-																		<div className="flex-1 space-y-1">
-																			<Select
-																				value={subField.state.value}
-																				onValueChange={(val) =>
-																					subField.handleChange(val)
-																				}
-																			>
-																				<SelectTrigger>
-																					<SelectValue placeholder="Select a skill" />
-																				</SelectTrigger>
-																				<SelectContent>
-																					{relevantSkills.map((s) => (
-																						<SelectItem key={s.id} value={s.id}>
-																							{s.name}
-																						</SelectItem>
-																					))}
-																				</SelectContent>
-																			</Select>
-																			<FieldError
-																				message={getErrorMessage(
-																					subField.state.meta.errors,
-																				)}
-																			/>
-																		</div>
-																	)}
-																</form.Field>
-																<form.Field
-																	name={`toolsAndSkills[${index}].level`}
-																>
-																	{(subField) => (
-																		<div className="w-1/3 space-y-1">
-																			<Select
-																				value={subField.state.value}
-																				onValueChange={(val) =>
-																					subField.handleChange(val)
-																				}
-																			>
-																				<SelectTrigger>
-																					<SelectValue />
-																				</SelectTrigger>
-																				<SelectContent>
-																					{SkillLevelValues.map((level) => (
-																						<SelectItem
-																							key={level}
-																							value={level}
-																						>
-																							{level.charAt(0) +
-																								level.slice(1).toLowerCase()}
-																						</SelectItem>
-																					))}
-																				</SelectContent>
-																			</Select>
-																			<FieldError
-																				message={getErrorMessage(
-																					subField.state.meta.errors,
-																				)}
-																			/>
-																		</div>
-																	)}
-																</form.Field>
-																<Button
-																	type="button"
-																	variant="ghost"
-																	size="icon"
-																	className="text-muted-foreground hover:text-destructive transition-colors mt-px"
-																	onClick={() => {
-																		const newValue = [...field.state.value];
-																		newValue.splice(index, 1);
-																		field.handleChange(newValue);
-																	}}
-																>
-																	<Trash2 className="h-4 w-4" />
-																</Button>
+													(_skill: MentorSkill, index: number) => {
+														const skillFieldName =
+															`toolsAndSkills[${index}]` as const;
+
+														return (
+															<div
+																key={skillFieldName}
+																className="flex flex-col gap-2 rounded-xl border border-border/50 bg-muted/20 p-3"
+															>
+																<div className="flex gap-3">
+																	<form.Field
+																		name={`toolsAndSkills[${index}].skillId`}
+																	>
+																		{(subField) => (
+																			<div className="flex-1 space-y-1">
+																				<Select
+																					value={subField.state.value}
+																					onValueChange={(val) =>
+																						subField.handleChange(val)
+																					}
+																				>
+																					<SelectTrigger>
+																						<SelectValue placeholder="Select a skill" />
+																					</SelectTrigger>
+																					<SelectContent>
+																						{relevantSkills.map((s) => (
+																							<SelectItem
+																								key={s.id}
+																								value={s.id}
+																							>
+																								{s.name}
+																							</SelectItem>
+																						))}
+																					</SelectContent>
+																				</Select>
+																				<FieldError
+																					message={getErrorMessage(
+																						subField.state.meta.errors,
+																					)}
+																				/>
+																			</div>
+																		)}
+																	</form.Field>
+																	<form.Field
+																		name={`toolsAndSkills[${index}].level`}
+																	>
+																		{(subField) => (
+																			<div className="w-1/3 space-y-1">
+																				<Select
+																					value={subField.state.value}
+																					onValueChange={(val) =>
+																						subField.handleChange(val)
+																					}
+																				>
+																					<SelectTrigger>
+																						<SelectValue />
+																					</SelectTrigger>
+																					<SelectContent>
+																						{SkillLevelValues.map((level) => (
+																							<SelectItem
+																								key={level}
+																								value={level}
+																							>
+																								{level.charAt(0) +
+																									level.slice(1).toLowerCase()}
+																							</SelectItem>
+																						))}
+																					</SelectContent>
+																				</Select>
+																				<FieldError
+																					message={getErrorMessage(
+																						subField.state.meta.errors,
+																					)}
+																				/>
+																			</div>
+																		)}
+																	</form.Field>
+																	<Button
+																		type="button"
+																		variant="ghost"
+																		size="icon"
+																		className="text-muted-foreground hover:text-destructive transition-colors mt-px"
+																		onClick={() => {
+																			const newValue = [...field.state.value];
+																			newValue.splice(index, 1);
+																			field.handleChange(newValue);
+																		}}
+																	>
+																		<Trash2 className="h-4 w-4" />
+																	</Button>
+																</div>
 															</div>
-														</div>
-													),
+														);
+													},
 												)}
 											</div>
 										)}

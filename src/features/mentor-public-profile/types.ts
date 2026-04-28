@@ -1,4 +1,4 @@
-import type { ReviewDto } from "@/features/reviews";
+import type { Review } from "@/features/reviews";
 
 export interface PublicMentorSlot {
 	startTime: string; // ISO
@@ -29,7 +29,7 @@ export interface PublicMentorProfile {
 	skills: { id: string; name: string; level: string }[];
 	yearsOfExperience: number;
 	avgRating: number;
-	recentReviews: ReviewDto[];
+	recentReviews: Review[];
 	reviewsTotal: number;
 }
 

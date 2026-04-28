@@ -1,12 +1,11 @@
 import { Star } from "lucide-react";
-import { Badge } from "@/components/ui/Badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { formatDateShort } from "@/shared/utils/date";
-import type { DashboardReviewDto } from "../types";
+import type { DashboardReview } from "../types";
 import { formatNumber } from "../utils/dashboard.formatters";
 
 interface ReviewsPanelProps {
-	reviews: DashboardReviewDto[];
+	reviews: DashboardReview[];
 	rating: number;
 }
 

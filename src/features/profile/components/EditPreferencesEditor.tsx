@@ -3,7 +3,6 @@ import { Loader2, Plus, Target, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import FieldError from "@/components/common/FieldError";
-import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { useOnboardingCatalog } from "@/features/onboarding/hooks/queries/useCatalog";
@@ -32,7 +31,7 @@ export function EditPreferencesEditor({
 	const [isInterestMenuOpen, setIsInterestMenuOpen] = useState(false);
 
 	const updateProfileMutation = useUpdateProfile({
-		onSuccess: (response) => {
+		onSuccess: () => {
 			toast.success("Preferences updated successfully");
 			onDone();
 		},
@@ -72,7 +71,9 @@ export function EditPreferencesEditor({
 	const catalog = catalogQuery.data?.interests ?? [];
 	const catalogById = useMemo(() => {
 		const map = new Map<string, CatalogInterest>();
-		catalog.forEach((interest) => map.set(interest.id, interest));
+		catalog.forEach((interest) => {
+			map.set(interest.id, interest);
+		});
 		return map;
 	}, [catalog]);
 

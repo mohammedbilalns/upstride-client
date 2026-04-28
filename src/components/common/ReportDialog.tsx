@@ -13,7 +13,6 @@ import {
 	DialogTrigger,
 } from "@/components/ui/Dialog";
 import { Label } from "@/components/ui/Label";
-import { getErrorMessage } from "@/shared/utils/formValidation";
 import {
 	Select,
 	SelectContent,
@@ -24,6 +23,7 @@ import {
 import { Textarea } from "@/components/ui/Textarea";
 import { useArticleMutations } from "@/features/article/hooks/mutations";
 import { reportFormSchema } from "@/features/report/validators/report-form.schema";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 
 interface ReportDialogProps {
 	targetId: string;

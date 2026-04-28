@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { format } from "date-fns";
 import {
 	ArrowLeft,
 	Calendar,
@@ -10,7 +11,6 @@ import {
 	Video,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { format } from "date-fns";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import {

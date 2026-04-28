@@ -1,8 +1,8 @@
-import type { DashboardActivityOverviewDto, DashboardPeriod } from "../types";
+import type { DashboardActivityOverview, DashboardPeriod } from "../types";
 
 export function fallbackOverview(
 	period: DashboardPeriod,
-): DashboardActivityOverviewDto {
+): DashboardActivityOverview {
 	return {
 		period,
 		labels: [],

@@ -1,5 +1,5 @@
-import { nameSchema } from "@/shared/validators/name.schema";
 import { z } from "zod";
+import { nameSchema } from "@/shared/validators/name.schema";
 
 export const profileUpdateSchema = z.object({
 	name: nameSchema,

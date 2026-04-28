@@ -1,12 +1,12 @@
 import { BookOpen, Flame, Star } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import type { DashboardRole, DashboardTopCategoryDto } from "../types";
+import type { DashboardRole, DashboardTopCategory } from "../types";
 import { formatNumber } from "../utils/dashboard.formatters";
 
 interface InsightsPanelProps {
 	dashboardRole: DashboardRole;
 	consistentLoginDays: number;
-	topCategory: DashboardTopCategoryDto | null | undefined;
+	topCategory: DashboardTopCategory | null | undefined;
 	averageRating?: number;
 }
 

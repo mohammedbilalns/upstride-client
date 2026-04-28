@@ -16,8 +16,10 @@ import {
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { fileService } from "@/shared/services/file.service";
-import { buildFieldErrorsFromIssues } from "@/shared/utils/formValidation";
-import { getErrorMessage } from "@/shared/utils/formValidation";
+import {
+	buildFieldErrorsFromIssues,
+	getErrorMessage,
+} from "@/shared/utils/formValidation";
 import { useUpdateProfile } from "../hooks/mutations/useUpdateProfile";
 import type { UserProfile } from "../types";
 import { profileUpdateSchema } from "../validators";

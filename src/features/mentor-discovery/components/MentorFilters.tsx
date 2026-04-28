@@ -1,6 +1,5 @@
 import { SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import {
 	Select,
 	SelectContent,
@@ -8,6 +7,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/Select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import type { CatalogInterest } from "@/features/onboarding/types";
 import type { MentorDiscoverySearch } from "../validators/mentor-discovery-params.schema";
 

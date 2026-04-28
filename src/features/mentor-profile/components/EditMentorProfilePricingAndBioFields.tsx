@@ -4,10 +4,10 @@ import FieldError from "@/components/common/FieldError";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
-import { getErrorMessage } from "@/shared/utils/formValidation";
 import { Textarea } from "@/components/ui/Textarea";
-import type { Profession } from "@/features/mentor-registration/services/catalog.service";
 import { useProfessions } from "@/features/mentor-registration/hooks/queries/useCatalog";
+import type { Profession } from "@/features/mentor-registration/services/catalog.service";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import type { MentorProfileResponse } from "../types";
 import type { EditMentorProfileForm } from "./EditMentorProfileEditor";
 
@@ -38,7 +38,7 @@ export function EditMentorProfilePricingAndBioFields({
 				</p>
 			)}
 			<form.Field name="currentRoleId">
-				{(field: any) => {
+				{(field) => {
 					const selectedProfession = professions?.find(
 						(prof) => prof.id === field.state.value,
 					);
@@ -98,7 +98,7 @@ export function EditMentorProfilePricingAndBioFields({
 				}}
 			</form.Field>
 			<form.Field name="organization">
-				{(field: any) => (
+				{(field) => (
 					<div className="space-y-2">
 						<Label htmlFor={field.name}>Company / Organization</Label>
 						<Input
@@ -115,7 +115,7 @@ export function EditMentorProfilePricingAndBioFields({
 				)}
 			</form.Field>
 			<form.Field name="currentPricePer30Min">
-				{(field: any) => (
+				{(field) => (
 					<div className="space-y-2">
 						<div className="space-y-1">
 							<Label htmlFor={field.name}>
@@ -142,7 +142,7 @@ export function EditMentorProfilePricingAndBioFields({
 				)}
 			</form.Field>
 			<form.Field name="bio">
-				{(field: any) => (
+				{(field) => (
 					<div className="space-y-2">
 						<Label htmlFor={field.name}>Bio</Label>
 						<Textarea

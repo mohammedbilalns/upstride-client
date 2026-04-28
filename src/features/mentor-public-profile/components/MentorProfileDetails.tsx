@@ -6,9 +6,9 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader } from "@/components/ui/Card";
 import { Separator } from "@/components/ui/Separator";
-import { formatDateShort } from "@/shared/utils/date";
-import type { ReviewDto } from "@/features/reviews";
 import type { UserProfile } from "@/features/profile/types";
+import type { Review } from "@/features/reviews";
+import { formatDateShort } from "@/shared/utils/date";
 import type { PublicMentorProfile } from "../types";
 
 interface MentorProfileDetailsProps {
@@ -16,7 +16,7 @@ interface MentorProfileDetailsProps {
 	isAdminView: boolean;
 	currentUser: UserProfile | null | undefined;
 	isReported: boolean;
-	reviews: ReviewDto[];
+	reviews: Review[];
 	onViewMoreReviews?: () => void;
 	isLoadingMoreReviews?: boolean;
 }

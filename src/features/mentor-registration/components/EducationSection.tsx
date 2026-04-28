@@ -65,48 +65,53 @@ export function EducationSection({
 							<Label>Educational Qualifications</Label>
 							<div className="space-y-3">
 								{field.state.value.map(
-									(qualification: string, index: number) => (
-										<form.Field
-											key={index}
-											name={`educationalQualifications[${index}]`}
-										>
-											{(subField) => (
-												<div className="space-y-1">
-													<div className="flex gap-2">
-														<Input
-															placeholder="e.g. B.Tech in Computer Science, Stanford University"
-															value={subField.state.value}
-															onChange={(e) =>
-																subField.handleChange(e.target.value)
-															}
-															onBlur={subField.handleBlur}
+									(_qualification: string, index: number) => {
+										const qualificationFieldName =
+											`educationalQualifications[${index}]` as const;
+
+										return (
+											<form.Field
+												key={qualificationFieldName}
+												name={qualificationFieldName}
+											>
+												{(subField) => (
+													<div className="space-y-1">
+														<div className="flex gap-2">
+															<Input
+																placeholder="e.g. B.Tech in Computer Science, Stanford University"
+																value={subField.state.value}
+																onChange={(e) =>
+																	subField.handleChange(e.target.value)
+																}
+																onBlur={subField.handleBlur}
+															/>
+															{field.state.value.length > 1 && (
+																<Button
+																	type="button"
+																	variant="ghost"
+																	size="icon"
+																	className="text-muted-foreground hover:text-destructive"
+																	onClick={() => {
+																		const newValue = field.state.value.filter(
+																			(_value, i: number) => i !== index,
+																		);
+																		field.handleChange(newValue);
+																	}}
+																>
+																	<Trash2 className="h-4 w-4" />
+																</Button>
+															)}
+														</div>
+														<FieldError
+															message={getErrorMessage(
+																subField.state.meta.errors,
+															)}
 														/>
-														{field.state.value.length > 1 && (
-															<Button
-																type="button"
-																variant="ghost"
-																size="icon"
-																className="text-muted-foreground hover:text-destructive"
-																onClick={() => {
-																	const newValue = field.state.value.filter(
-																		(_value, i: number) => i !== index,
-																	);
-																	field.handleChange(newValue);
-																}}
-															>
-																<Trash2 className="h-4 w-4" />
-															</Button>
-														)}
 													</div>
-													<FieldError
-														message={getErrorMessage(
-															subField.state.meta.errors,
-														)}
-													/>
-												</div>
-											)}
-										</form.Field>
-									),
+												)}
+											</form.Field>
+										);
+									},
 								)}
 							</div>
 							<Button

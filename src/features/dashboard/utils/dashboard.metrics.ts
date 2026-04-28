@@ -9,10 +9,9 @@ import {
 	Users,
 	Wallet,
 } from "lucide-react";
-import type { DashboardRole, DashboardSummaryDto } from "../types";
+import type { DashboardRole, DashboardSummary } from "../types";
 import type { DASHBOARD_TONE_CLASSES } from "./dashboard.constants";
 import {
-	formatMoney,
 	formatNumber,
 	formatUnitAmount,
 	growthLabel,
@@ -27,7 +26,7 @@ export interface DashboardMetricCardViewModel {
 }
 
 export function buildDashboardMetricCards(
-	dashboard: DashboardSummaryDto | null,
+	dashboard: DashboardSummary | null,
 	dashboardRole: DashboardRole,
 ): DashboardMetricCardViewModel[] {
 	if (!dashboard) return [];

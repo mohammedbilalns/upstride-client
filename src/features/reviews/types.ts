@@ -1,4 +1,4 @@
-export interface ReviewDto {
+export interface Review {
 	id: string;
 	mentorId: string;
 	userId: string;
@@ -17,7 +17,7 @@ export interface CreateReviewInput {
 }
 
 export interface CreateReviewResponse {
-	review: ReviewDto;
+	review: Review;
 }
 
 export interface GetMentorReviewsInput {
@@ -26,7 +26,7 @@ export interface GetMentorReviewsInput {
 }
 
 export interface GetMentorReviewsResponse {
-	reviews: ReviewDto[];
+	reviews: Review[];
 	total: number;
 	page: number;
 	limit: number;

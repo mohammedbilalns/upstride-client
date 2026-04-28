@@ -185,41 +185,45 @@ function NotificationList({
 	return (
 		<div className="flex flex-col">
 			{notifications.map((notification) => (
-				<button
-					type="button"
+				<div
 					key={notification.id}
-					onClick={() => handleNotificationClick(notification)}
 					className={cn(
-						"flex flex-col gap-3 p-4 text-left transition-colors hover:bg-muted/50 cursor-pointer relative group border-b border-border/20 last:border-0",
+						"border-b border-border/20 last:border-0",
 						!notification.isRead && "bg-primary/5",
 					)}
 				>
-					<div className="flex items-start gap-3">
-						{getNotificationIcon(notification.type)}
+					<button
+						type="button"
+						onClick={() => handleNotificationClick(notification)}
+						className="group flex w-full cursor-pointer flex-col gap-3 p-4 text-left transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+					>
+						<div className="flex items-start gap-3">
+							{getNotificationIcon(notification.type)}
 
-						<div className="flex-1 flex flex-col gap-1 min-w-0">
-							<div className="flex items-start justify-between gap-2">
-								<p className="text-sm font-medium leading-tight text-foreground line-clamp-2">
-									{notification.title}
+							<div className="min-w-0 flex-1 flex flex-col gap-1">
+								<div className="flex items-start justify-between gap-2">
+									<p className="text-sm font-medium leading-tight text-foreground line-clamp-2">
+										{notification.title}
+									</p>
+									<span className="shrink-0 whitespace-nowrap pt-0.5 text-[10px] text-muted-foreground">
+										{formatDistanceToNow(new Date(notification.createdAt), {
+											addSuffix: true,
+										})}
+									</span>
+								</div>
+								<p className="text-xs text-muted-foreground line-clamp-2">
+									{notification.description}
 								</p>
-								<span className="text-[10px] text-muted-foreground shrink-0 whitespace-nowrap pt-0.5">
-									{formatDistanceToNow(new Date(notification.createdAt), {
-										addSuffix: true,
-									})}
-								</span>
 							</div>
-							<p className="text-xs text-muted-foreground line-clamp-2">
-								{notification.description}
-							</p>
 						</div>
-					</div>
+					</button>
 
 					{!notification.isRead && (
-						<div className="flex justify-end mt-1">
+						<div className="mt-1 flex justify-end px-4 pb-4">
 							<Button
 								variant="ghost"
 								size="sm"
-								className="h-auto p-0 text-[11px] font-semibold text-primary hover:text-primary/80 hover:bg-transparent transition-opacity"
+								className="h-auto p-0 text-[11px] font-semibold text-primary transition-opacity hover:bg-transparent hover:text-primary/80"
 								onClick={(e) => handleMarkRead(notification.id, e)}
 								disabled={isMarkReadPending}
 							>
@@ -227,7 +231,7 @@ function NotificationList({
 							</Button>
 						</div>
 					)}
-				</button>
+				</div>
 			))}
 
 			{hasNextPage && (

@@ -2,7 +2,6 @@ import type { ApiSuccess } from "@/api/apiSuccess";
 import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
 import type {
-	CheckAndCreateAvailabilityResponse,
 	CheckAndReenableAvailabilityResponse,
 	CreateAvailabilityInput,
 	GetMentorAvailabilitiesInput,

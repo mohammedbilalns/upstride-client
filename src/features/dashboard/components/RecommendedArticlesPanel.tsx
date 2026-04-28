@@ -2,11 +2,11 @@ import { Link } from "@tanstack/react-router";
 import { FileText } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { formatDateShort } from "@/shared/utils/date";
-import type { DashboardArticleDto } from "../types";
+import type { DashboardArticle } from "../types";
 import { stripHtmlTags } from "../utils/dashboard.html";
 
 interface RecommendedArticlesPanelProps {
-	articles: DashboardArticleDto[];
+	articles: DashboardArticle[];
 }
 
 export function RecommendedArticlesPanel({
