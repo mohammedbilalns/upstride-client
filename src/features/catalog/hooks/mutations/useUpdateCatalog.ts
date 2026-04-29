@@ -42,7 +42,7 @@ export function useUpdateCatalog() {
 				...catalog,
 				interests: catalog.interests.map((interest) =>
 					interest.id === variables.id
-						? { ...interest, name: variables.data.name }
+						? { ...interest, name: response.data.updatedName }
 						: interest,
 				),
 			}));
@@ -63,7 +63,7 @@ export function useUpdateCatalog() {
 					...interest,
 					skills: interest.skills.map((skill) =>
 						skill.id === variables.id
-							? { ...skill, name: variables.data.name }
+							? { ...skill, name: response.data.updatedName }
 							: skill,
 					),
 				})),
@@ -83,7 +83,7 @@ export function useUpdateCatalog() {
 				...catalog,
 				professions: catalog.professions.map((profession) =>
 					profession.id === variables.id
-						? { ...profession, name: variables.data.name }
+						? { ...profession, name: response.data.updatedName }
 						: profession,
 				),
 			}));

@@ -40,7 +40,7 @@ export const useChat = (
 		return () => {
 			socket.off("call:chat-message", handleChatMessage);
 		};
-	}, [socket, currentUserId]);
+	}, [socket, currentUserId, onMessageReceived]);
 
 	const sendMessage = useCallback(
 		(message: string) => {

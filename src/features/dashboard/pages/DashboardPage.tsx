@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ActivityOverviewPanel } from "../components/ActivityOverviewPanel";
 import { DashboardHero } from "../components/DashboardHero";
+import { DashboardSkeleton } from "../components/DashboardSkeleton";
 import { EarningsPanel } from "../components/EarningsPanel";
 import { InsightsPanel } from "../components/InsightsPanel";
 import { RecentActivityPanel } from "../components/RecentActivityPanel";
@@ -84,14 +85,9 @@ export function DashboardPage({
 					},
 				]
 		: [];
+	//
 	if (summaryLoading && !dashboard) {
-		return (
-			<div className="p-6 md:p-8">
-				<div className="rounded-3xl border border-border/60 bg-card p-8 text-muted-foreground">
-					Loading dashboard...
-				</div>
-			</div>
-		);
+		return <DashboardSkeleton isMentor={dashboardRole === "MENTOR"} />;
 	}
 
 	return (

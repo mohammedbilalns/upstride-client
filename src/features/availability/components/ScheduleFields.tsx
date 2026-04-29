@@ -23,7 +23,7 @@ export function CreateRuleScheduleFields({
 	todayDate,
 }: CreateRuleScheduleFieldsProps) {
 	return (
-		<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+		<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 xl:gap-6">
 			<form.Field name="startDate">
 				{/* FIX: type error  */}
 				{(field) => (
@@ -35,7 +35,7 @@ export function CreateRuleScheduleFields({
 									id={field.name}
 									type="button"
 									variant="outline"
-									className="w-full justify-start text-left font-normal"
+									className="h-auto w-full justify-start text-left font-normal whitespace-normal"
 								>
 									<CalendarIcon className="mr-2 h-4 w-4" />
 									{field.state.value
@@ -75,7 +75,7 @@ export function CreateRuleScheduleFields({
 									id={field.name}
 									type="button"
 									variant="outline"
-									className="w-full justify-start text-left font-normal"
+									className="h-auto w-full justify-start text-left font-normal whitespace-normal"
 								>
 									<CalendarIcon className="mr-2 h-4 w-4" />
 									{field.state.value

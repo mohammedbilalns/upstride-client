@@ -42,6 +42,7 @@ export interface AddInterestInput {
 }
 
 export interface AddProfessionResponse {
+	name: string;
 	newProfessionId: string;
 	slug: string;
 }
@@ -50,6 +51,7 @@ export interface AddProfessionInput {
 	name: string;
 }
 export interface AddInterestResponse {
+	name: string;
 	newInterestId: string;
 	slug: string;
 }
@@ -60,6 +62,7 @@ export interface AddSkillInput {
 }
 
 export interface AddSkillIResponse {
+	name: string;
 	newSkillId: string;
 	interestId: string;
 	slug: string;
@@ -91,4 +94,8 @@ export interface EnableSkillInput {
 
 export interface UpdateCatalogInput {
 	name: string;
+}
+
+export interface UpdateCatalogResponse {
+	updatedName: string;
 }

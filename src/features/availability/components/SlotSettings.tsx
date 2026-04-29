@@ -11,7 +11,7 @@ interface CreateRuleSlotSettingsProps {
 
 export function CreateRuleSlotSettings({ form }: CreateRuleSlotSettingsProps) {
 	return (
-		<div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+		<div className="grid grid-cols-1 gap-6 pt-2 lg:grid-cols-2">
 			<form.Field name="slotDuration">
 				{/* FIX: Type error */}
 				{(field) => (
@@ -22,7 +22,7 @@ export function CreateRuleSlotSettings({ form }: CreateRuleSlotSettingsProps) {
 							onValueChange={(val) =>
 								field.handleChange(Number(val) as 30 | 60)
 							}
-							className="flex items-center gap-4"
+							className="flex flex-wrap items-center gap-4"
 						>
 							<div className="flex items-center space-x-2">
 								<RadioGroupItem value="30" id="r30" />
