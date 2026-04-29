@@ -21,7 +21,7 @@ export function useCatalogMutations() {
 
 	const addInterest = useMutation({
 		mutationFn: (data: AddInterestInput) => catalogService.addInterest(data),
-		onSuccess: (res, variables) => {
+		onSuccess: (res) => {
 			toast.success(res.message);
 
 			queryClient.setQueryData<FetchCatalogResponse>(["catalog"], (old) => {
@@ -29,7 +29,7 @@ export function useCatalogMutations() {
 
 				const newInterest: CatalogInterest = {
 					id: res.data.newInterestId,
-					name: variables.name,
+					name: res.data.name,
 					slug: res.data.slug,
 					isActive: true,
 					skills: [],
@@ -159,7 +159,7 @@ export function useCatalogMutations() {
 
 	const addSkill = useMutation({
 		mutationFn: (data: AddSkillInput) => catalogService.addSkill(data),
-		onSuccess: (res, variables) => {
+		onSuccess: (res) => {
 			toast.success(res.message);
 
 			queryClient.setQueryData<FetchCatalogResponse>(["catalog"], (old) => {
@@ -167,7 +167,7 @@ export function useCatalogMutations() {
 
 				const newSkill: CatalogSkill = {
 					id: res.data.newSkillId,
-					name: variables.name,
+					name: res.data.name,
 					slug: res.data.slug,
 					isActive: true,
 				};

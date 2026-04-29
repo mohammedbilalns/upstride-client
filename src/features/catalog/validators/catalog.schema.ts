@@ -18,7 +18,7 @@ export const catalogUpdateSchema = z.object({
 	name: nameSchema,
 });
 
-export const catalogItemNameSchema = catalogUpdateSchema;
+export const catalogItemNameSchema = nameSchema;
 
 export const catalogSearchSchema = z.object({
 	tab: z.enum(["interests", "professions"]).catch("interests").optional(),
