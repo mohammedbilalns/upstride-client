@@ -8,6 +8,7 @@ import { RecommendedArticlesPanel } from "../components/RecommendedArticlesPanel
 import { ReviewsPanel } from "../components/ReviewsPanel";
 import { SessionSummaryPanel } from "../components/SessionSummaryPanel";
 import { UpcomingSessionsPanel } from "../components/UpcomingSessionsPanel";
+import { DashboardSkeleton } from "../components/DashboardSkeleton";
 import {
 	useDashboardActivityOverviewQuery,
 	useDashboardQuery,
@@ -84,14 +85,9 @@ export function DashboardPage({
 					},
 				]
 		: [];
+	//
 	if (summaryLoading && !dashboard) {
-		return (
-			<div className="p-6 md:p-8">
-				<div className="rounded-3xl border border-border/60 bg-card p-8 text-muted-foreground">
-					Loading dashboard...
-				</div>
-			</div>
-		);
+		return <DashboardSkeleton isMentor={dashboardRole === "MENTOR"} />;
 	}
 
 	return (

@@ -4,6 +4,7 @@ import {
 	dashboardActivityOverviewQueryOptions,
 	dashboardQueryOptions,
 } from "@/features/dashboard";
+import { DashboardSkeleton } from "@/features/dashboard/components/DashboardSkeleton";
 
 export const Route = createFileRoute("/_app-layout/_user-layout/home")({
 	loader: async ({ context: { auth, queryClient } }) => {
@@ -17,6 +18,7 @@ export const Route = createFileRoute("/_app-layout/_user-layout/home")({
 		]);
 	},
 	component: RouteComponent,
+	pendingComponent: DashboardSkeleton,
 });
 
 function RouteComponent() {
