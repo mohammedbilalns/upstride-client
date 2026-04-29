@@ -17,14 +17,14 @@ export function RuleCreationCard({
 	formKey,
 }: RuleCreationCardProps) {
 	return (
-		<Card className="border-border/60 shadow-sm overflow-hidden">
+		<Card className="overflow-hidden border-border/60 shadow-sm">
 			<CardHeader className="bg-muted/30">
 				<CardTitle className="text-lg flex items-center gap-2">
 					<Plus className="h-5 w-5 text-primary" />
 					Create New Rule
 				</CardTitle>
 			</CardHeader>
-			<CardContent className="p-6 space-y-6">
+			<CardContent className="space-y-6 p-4 sm:p-6">
 				<CreateRuleForm
 					key={formKey}
 					defaultValues={defaultValues}

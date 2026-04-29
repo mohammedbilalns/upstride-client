@@ -49,40 +49,41 @@ export function BookmarkedMentorListPage() {
 	};
 
 	return (
-		<div className="container mx-auto px-6 py-8 space-y-6">
-			<div className="flex items-start justify-between gap-6">
-				<div className="flex items-start gap-4">
+		<div className="container mx-auto px-4 py-6 space-y-6 sm:px-6 sm:py-8">
+			<div className="flex flex-col gap-4 sm:gap-6 lg:flex-row lg:items-start lg:justify-between">
+				<div className="flex min-w-0 items-start gap-3 sm:gap-4">
 					<Button asChild variant="ghost" size="icon">
 						<Link to="/profile/bookmarked-mentors">
 							<ArrowLeft className="h-4 w-4" />
 						</Link>
 					</Button>
-					<div>
-						<div className="flex items-center gap-2">
-							<Bookmark className="h-5 w-5 text-amber-500" />
-							<h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+					<div className="min-w-0">
+						<div className="flex min-w-0 items-center gap-2">
+							<Bookmark className="h-5 w-5 shrink-0 text-amber-500" />
+							<h1 className="truncate text-xl font-semibold tracking-tight text-zinc-900 sm:text-2xl dark:text-zinc-50">
 								{list?.name || "Saved mentors"}
 							</h1>
 						</div>
-						<p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+						<p className="mt-1 break-words text-sm text-zinc-500 dark:text-zinc-400">
 							{list?.description || "Mentors saved to this list."}
 						</p>
 						{list && (
-							<p className="text-xs text-zinc-500 mt-2">
+							<p className="mt-2 text-xs text-zinc-500">
 								{list.mentorCount ?? mentors.length} mentors
 							</p>
 						)}
 					</div>
 				</div>
-				<div className="flex items-center gap-2">
+				<div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap lg:justify-end">
 					<Button
 						variant="outline"
+						className="w-full sm:w-auto"
 						onClick={() => setIsDeleteOpen(true)}
 						disabled={deleteList.isPending}
 					>
 						Delete list
 					</Button>
-					<Button asChild variant="outline">
+					<Button asChild variant="outline" className="w-full sm:w-auto">
 						<Link to="/mentors">Find more mentors</Link>
 					</Button>
 				</div>

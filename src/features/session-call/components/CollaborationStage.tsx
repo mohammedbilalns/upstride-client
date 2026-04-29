@@ -68,6 +68,7 @@ export const CollaborationStage: React.FC<CollaborationStageProps> = ({
 					ref={remoteScreenRef}
 					autoPlay
 					playsInline
+					muted
 					className="w-full h-full object-contain bg-black"
 				/>
 			)}

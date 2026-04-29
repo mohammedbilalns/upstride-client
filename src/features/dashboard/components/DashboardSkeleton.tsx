@@ -1,5 +1,5 @@
-import { Skeleton } from "@/components/ui/Skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/Card";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 export function DashboardSkeleton({ isMentor }: { isMentor?: boolean }) {
 	return (

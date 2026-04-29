@@ -233,7 +233,7 @@ export function MentorRuleManagementPage() {
 	};
 
 	return (
-		<div className="p-4 md:p-8 space-y-8 max-w-5xl mx-auto">
+		<div className="mx-auto max-w-5xl space-y-8 p-3 sm:p-4 md:p-6 lg:p-8">
 			<RuleManagementHeader />
 
 			<RuleCreationCard

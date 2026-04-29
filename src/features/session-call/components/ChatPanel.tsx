@@ -39,10 +39,9 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 	};
 
 	useEffect(() => {
-		if (lastMessageRef.current) {
-			lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
-		}
-	}, [messages]);
+		if (messages.length === 0 || !lastMessageRef.current) return;
+		lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+	}, [messages.length]);
 
 	return (
 		<div className="flex flex-col h-full w-full bg-slate-900/95 backdrop-blur-xl border-l border-slate-800 shadow-2xl">

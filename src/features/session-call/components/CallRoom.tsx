@@ -1,7 +1,7 @@
 import { useRouter } from "@tanstack/react-router";
 import { AlertCircle, ArrowLeft, Loader2 } from "lucide-react";
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useSocket } from "@/app/contexts/SocketContext";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
@@ -71,7 +71,7 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 		},
 	);
 
-	const navigateToSessionList = () => {
+	const navigateToSessionList = useCallback(() => {
 		if (isMentor) {
 			router.navigate({
 				to: "/mentor-sessions",
@@ -93,15 +93,15 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 				},
 			});
 		}
-	};
+	}, [isMentor, router]);
 	const localLabel = localParticipantName.trim() || "You";
 	const remoteLabel = remoteParticipantName.trim() || "Participant";
 
-	const emitLeaveOnce = () => {
+	const emitLeaveOnce = useCallback(() => {
 		if (!socket || hasSentLeaveRef.current) return;
 		hasSentLeaveRef.current = true;
 		socket.emit("call:leave", { bookingId });
-	};
+	}, [bookingId, socket]);
 
 	const {
 		localStream,
@@ -175,7 +175,15 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 			socket.off("call:user-left", handleUserLeft);
 			socket.off("call:terminated", handleTerminated);
 		};
-	}, [socket, bookingId, isMentor, leaveSession, remoteLabel]);
+	}, [
+		socket,
+		bookingId,
+		isMentor,
+		leaveSession,
+		remoteLabel,
+		emitLeaveOnce,
+		navigateToSessionList,
+	]);
 
 	useEffect(() => {
 		if (!socket) return;

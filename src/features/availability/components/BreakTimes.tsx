@@ -23,13 +23,14 @@ export function CreateRuleBreakTimes({
 	onRemoveBreakTime,
 }: CreateRuleBreakTimesProps) {
 	return (
-		<div className="flex flex-col gap-4 p-6 border rounded-xl bg-transparent">
-			<div className="flex items-center justify-between">
+		<div className="flex flex-col gap-4 rounded-xl border bg-transparent p-4 sm:p-6">
+			<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 				<Label className="text-base font-semibold">Break Times</Label>
 				<Button
 					type="button"
 					variant="outline"
 					size="sm"
+					className="w-full sm:w-auto"
 					disabled={(form.state.values.breakTimes?.length ?? 0) >= 5}
 					onClick={onAddBreakTime}
 				>
@@ -44,25 +45,27 @@ export function CreateRuleBreakTimes({
 							No breaks configured. You will be available consecutively.
 						</p>
 					) : (
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
 							{breakTimes.map((bt, i) => (
 								<div
 									key={`${bt.startTime}-${bt.endTime}`}
-									className="flex items-center gap-2 p-3 bg-background border rounded-lg"
+									className="flex flex-col gap-3 rounded-lg border bg-background p-3 sm:flex-row sm:items-center"
 								>
 									<Input
 										type="time"
 										value={bt.startTime}
-										className="h-9"
+										className="h-9 min-w-0"
 										onChange={(e) =>
 											onUpdateBreakTime(i, "startTime", e.target.value)
 										}
 									/>
-									<span className="text-muted-foreground">to</span>
+									<span className="text-sm text-muted-foreground sm:text-base">
+										to
+									</span>
 									<Input
 										type="time"
 										value={bt.endTime}
-										className="h-9"
+										className="h-9 min-w-0"
 										onChange={(e) =>
 											onUpdateBreakTime(i, "endTime", e.target.value)
 										}
@@ -71,7 +74,7 @@ export function CreateRuleBreakTimes({
 										type="button"
 										variant="ghost"
 										size="icon"
-										className="text-rose-500 h-9 w-9 shrink-0"
+										className="h-9 w-full shrink-0 text-rose-500 sm:w-9"
 										onClick={() => onRemoveBreakTime(i)}
 									>
 										<X className="h-4 w-4" />

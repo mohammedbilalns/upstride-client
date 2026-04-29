@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ActivityOverviewPanel } from "../components/ActivityOverviewPanel";
 import { DashboardHero } from "../components/DashboardHero";
+import { DashboardSkeleton } from "../components/DashboardSkeleton";
 import { EarningsPanel } from "../components/EarningsPanel";
 import { InsightsPanel } from "../components/InsightsPanel";
 import { RecentActivityPanel } from "../components/RecentActivityPanel";
@@ -8,7 +9,6 @@ import { RecommendedArticlesPanel } from "../components/RecommendedArticlesPanel
 import { ReviewsPanel } from "../components/ReviewsPanel";
 import { SessionSummaryPanel } from "../components/SessionSummaryPanel";
 import { UpcomingSessionsPanel } from "../components/UpcomingSessionsPanel";
-import { DashboardSkeleton } from "../components/DashboardSkeleton";
 import {
 	useDashboardActivityOverviewQuery,
 	useDashboardQuery,
