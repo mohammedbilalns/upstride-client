@@ -44,15 +44,15 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 	}, [messages.length]);
 
 	return (
-		<div className="flex flex-col h-full w-full bg-slate-900/95 backdrop-blur-xl border-l border-slate-800 shadow-2xl">
+		<div className="flex flex-col h-full w-full bg-background/95 backdrop-blur-xl border-l border-border shadow-2xl">
 			{/* Header */}
-			<div className="flex items-center justify-between p-4 border-b border-slate-800">
+			<div className="flex items-center justify-between p-4 border-b border-border">
 				<div className="flex items-center gap-2">
 					<div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold text-xs">
 						CH
 					</div>
 					<div>
-						<h3 className="text-sm font-semibold text-slate-100">
+						<h3 className="text-sm font-semibold text-foreground">
 							In-Call Chat
 						</h3>
 					</div>
@@ -61,7 +61,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 					variant="ghost"
 					size="icon"
 					onClick={onClose}
-					className="h-8 w-8 rounded-full text-slate-400 hover:text-slate-100 hover:bg-slate-800"
+					className="h-8 w-8 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted"
 				>
 					<X className="h-4 w-4" />
 				</Button>
@@ -89,14 +89,14 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 									className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm shadow-sm ${
 										msg.isSelf
 											? "bg-primary text-primary-foreground rounded-tr-none"
-											: "bg-slate-800 text-slate-100 rounded-tl-none"
+											: "bg-muted text-foreground rounded-tl-none"
 									}`}
 								>
 									<p className="whitespace-pre-wrap break-words">
 										{msg.message}
 									</p>
 								</div>
-								<span className="text-[10px] text-slate-500 mt-1 px-1">
+								<span className="text-[10px] text-muted-foreground mt-1 px-1">
 									{msg.isSelf ? "You" : remoteParticipantName} •{" "}
 									{format(new Date(msg.timestamp), "HH:mm")}
 								</span>
@@ -107,8 +107,8 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 			</ScrollArea>
 
 			{/* Input Area */}
-			<div className="p-4 bg-slate-900 border-t border-slate-800">
-				<div className="flex items-end gap-2 bg-slate-950/50 border border-slate-700/50 rounded-2xl p-2 focus-within:border-primary/50 transition-colors">
+			<div className="p-4 bg-background border-t border-border">
+				<div className="flex items-end gap-2 bg-muted/50 border border-border rounded-2xl p-2 focus-within:border-primary/50 transition-colors">
 					<Input
 						value={inputValue}
 						onChange={(e) => setInputValue(e.target.value)}
@@ -123,7 +123,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 						className={`h-9 w-9 rounded-xl transition-all ${
 							inputValue.trim()
 								? "bg-primary text-primary-foreground scale-100"
-								: "bg-slate-800 text-slate-500 scale-90"
+								: "bg-muted text-muted-foreground scale-90"
 						}`}
 					>
 						<Send className="h-4 w-4" />

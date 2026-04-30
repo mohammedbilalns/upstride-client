@@ -47,13 +47,13 @@ export const CollaborationStage: React.FC<CollaborationStageProps> = ({
 		if (remoteScreenRef.current && remoteScreenStream) {
 			remoteScreenRef.current.srcObject = remoteScreenStream;
 		}
-	}, [remoteScreenStream]);
+	}, [remoteScreenStream, pinnedViewId]);
 
 	useEffect(() => {
 		if (localScreenRef.current && localScreenStream) {
 			localScreenRef.current.srcObject = localScreenStream;
 		}
-	}, [localScreenStream]);
+	}, [localScreenStream, pinnedViewId]);
 
 	return (
 		<div className="flex-1 relative m-4 rounded-3xl overflow-hidden border border-slate-800/50 bg-slate-900 shadow-2xl flex items-center justify-center">

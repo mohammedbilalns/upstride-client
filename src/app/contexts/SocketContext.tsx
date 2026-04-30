@@ -14,6 +14,7 @@ import {
 	disconnectSocket,
 	getSocketInstance,
 } from "@/shared/services/socket.service";
+import { IncomingCallOverlay } from "@/features/session-call/components/IncomingCallOverlay";
 
 interface SocketContextType {
 	socket: Socket | null;
@@ -32,6 +33,11 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
 	const [socket, setSocket] = useState<Socket | null>(null);
 	const [isConnected, setIsConnected] = useState(false);
+	const [incomingCallData, setIncomingCallData] = useState<{
+		bookingId: string;
+		joinerName: string;
+		joinerRole: string;
+	} | null>(null);
 	const queryClient = useQueryClient();
 	const location = useLocation();
 	const router = useRouter();
@@ -130,6 +136,27 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 				});
 			};
 
+			// Call incoming
+			const handleCallIncoming = (data: {
+				bookingId: string;
+				joinerName: string;
+				joinerRole: string;
+			}) => {
+				console.log("[WS] Received call:incoming", data);
+
+				if (pathnameRef.current.includes(data.bookingId)) {
+					return;
+				}
+
+				setIncomingCallData(data);
+
+				setTimeout(() => {
+					setIncomingCallData((prev) =>
+						prev?.bookingId === data.bookingId ? null : prev,
+					);
+				}, 60000);
+			};
+
 			// Centralized Socket Error Handling
 			const handleSocketError = (data: {
 				message: string;
@@ -144,6 +171,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 			socketInstance.on("connect_error", handleConnectError);
 			socketInstance.on("chat:message", handleChatMessage);
 			socketInstance.on("notification:new", handleNotificationNew);
+			socketInstance.on("call:incoming", handleCallIncoming);
 			socketInstance.on("socket:error", handleSocketError);
 
 			return () => {
@@ -152,6 +180,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 				socketInstance.off("connect_error", handleConnectError);
 				socketInstance.off("chat:message", handleChatMessage);
 				socketInstance.off("notification:new", handleNotificationNew);
+				socketInstance.off("call:incoming", handleCallIncoming);
 				socketInstance.off("socket:error", handleSocketError);
 			};
 		} else {
@@ -169,6 +198,23 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 	return (
 		<SocketContext.Provider value={{ socket, isConnected }}>
 			{children}
+			{incomingCallData && (
+				<IncomingCallOverlay
+					bookingId={incomingCallData.bookingId}
+					joinerName={incomingCallData.joinerName}
+					joinerRole={incomingCallData.joinerRole}
+					onAccept={() => {
+						setIncomingCallData(null);
+						router.navigate({
+							to: "/call/$bookingId",
+							params: { bookingId: incomingCallData.bookingId },
+						});
+					}}
+					onDecline={() => {
+						setIncomingCallData(null);
+					}}
+				/>
+			)}
 		</SocketContext.Provider>
 	);
 };

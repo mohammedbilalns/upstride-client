@@ -10,6 +10,7 @@ import FieldError from "@/components/common/FieldError";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Textarea";
 import { feedbackFormSchema } from "@/features/session-booking/validators/feedback.schema";
+import { playNotificationSound } from "@/shared/utils/audio";
 import { getErrorMessage } from "@/shared/utils/formValidation";
 import { useChat } from "../hooks/useChat";
 import { useWebRTC } from "../hooks/useWebrtc";
@@ -185,6 +186,7 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 
 		const handleUserJoined = () => {
 			setIsWaiting(false);
+			playNotificationSound();
 			toast.success(`${remoteLabel} joined the call.`);
 		};
 
@@ -354,16 +356,16 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 
 	if (isValidating) {
 		return (
-			<div className="flex flex-col items-center justify-center h-[calc(100vh-4rem)] w-full bg-slate-950 text-slate-50 p-6">
+			<div className="flex flex-col items-center justify-center h-[calc(100vh-4rem)] w-full bg-background text-foreground p-6">
 				<div className="max-w-md w-full space-y-6 text-center animate-in fade-in duration-500">
-					<div className="relative mx-auto w-16 h-16 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10">
-						<Loader2 className="h-8 w-8 animate-spin text-white" />
+					<div className="relative mx-auto w-16 h-16 flex items-center justify-center rounded-2xl bg-muted border border-border">
+						<Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
 					</div>
 					<div className="space-y-2">
 						<h2 className="text-xl font-medium tracking-tight">
 							Verifying Session...
 						</h2>
-						<p className="text-slate-400 text-sm italic">
+						<p className="text-muted-foreground text-sm italic">
 							Hang tight, we're getting things ready for you.
 						</p>
 					</div>
@@ -374,7 +376,7 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 
 	if (joinError) {
 		return (
-			<div className="flex flex-col items-center justify-center h-[calc(100vh-4rem)] w-full bg-slate-950 text-slate-50 p-6">
+			<div className="flex flex-col items-center justify-center h-[calc(100vh-4rem)] w-full bg-background text-foreground p-6">
 				<div className="max-w-md w-full space-y-8 text-center animate-in fade-in zoom-in duration-500">
 					<div className="relative mx-auto w-24 h-24 flex items-center justify-center rounded-3xl bg-rose-500/10 text-rose-500 border border-rose-500/20">
 						<AlertCircle className="h-12 w-12" />
@@ -385,14 +387,14 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 						<h2 className="text-3xl font-bold tracking-tight">
 							Access Restricted
 						</h2>
-						<p className="text-slate-400 leading-relaxed">{joinError}</p>
+						<p className="text-muted-foreground leading-relaxed">{joinError}</p>
 					</div>
 
 					<div className="pt-4">
 						<Button
 							onClick={navigateToSessionList}
 							variant="outline"
-							className="bg-white/5 border-white/10 hover:bg-white/10 text-white rounded-2xl px-8 h-12 gap-2"
+							className="rounded-2xl px-8 h-12 gap-2"
 						>
 							<ArrowLeft className="h-4 w-4" />
 							Back to Sessions
@@ -404,7 +406,7 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 	}
 
 	return (
-		<div className="flex h-[calc(100vh-4rem)] w-full bg-slate-950 relative overflow-hidden text-slate-50">
+		<div className="flex h-[calc(100vh-4rem)] w-full bg-background relative overflow-hidden text-foreground">
 			{/* Main Content Area */}
 			<div className="flex-1 flex flex-col relative z-0 min-w-0">
 				<div className="flex-1 relative z-0 overflow-hidden">

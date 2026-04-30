@@ -51,7 +51,7 @@ export interface GetMentorsDiscoveryInput {
 	tierId?: string;
 	minExperience?: number;
 	maxExperience?: number;
-	sort?: "recent";
+	sort?: "rating" | "recent";
 }
 
 export interface MentorDiscoveryItem {
