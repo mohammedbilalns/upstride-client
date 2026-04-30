@@ -6,6 +6,7 @@ import type {
 	BookSessionResponse,
 	CancelBookingInput,
 	CancelBookingResponse,
+	CreateFeedbackInput,
 	GetBookingDetailsResponse,
 	GetBookingsInput,
 	GetBookingsResponse,
@@ -54,6 +55,13 @@ export const sessionBookingService = {
 	getBookingDetails: async (bookingId: string) => {
 		const response = await api.get<ApiSuccess<GetBookingDetailsResponse>>(
 			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.BY_ID(bookingId)}`,
+		);
+		return response.data;
+	},
+	createFeedback: async (input: CreateFeedbackInput) => {
+		const response = await api.post<ApiSuccess>(
+			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.FEEDBACK}`,
+			input,
 		);
 		return response.data;
 	},

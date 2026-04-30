@@ -1,13 +1,19 @@
+import { useForm } from "@tanstack/react-form";
 import { useRouter } from "@tanstack/react-router";
 import { AlertCircle, ArrowLeft, Loader2 } from "lucide-react";
 import type React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useSocket } from "@/app/contexts/SocketContext";
 import { ConfirmModal } from "@/components/common/ConfirmModal";
+import FieldError from "@/components/common/FieldError";
 import { Button } from "@/components/ui/Button";
+import { Textarea } from "@/components/ui/Textarea";
+import { feedbackFormSchema } from "@/features/session-booking/validators/feedback.schema";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 import { useChat } from "../hooks/useChat";
 import { useWebRTC } from "../hooks/useWebrtc";
+import type { CallEndPayload } from "../types/call-events";
 import { CallControls } from "./CallControls";
 import { ChatPanel } from "./ChatPanel";
 import { CollaborationStage } from "./CollaborationStage";
@@ -47,6 +53,44 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 
 	const router = useRouter();
 	const currentUserId = router.options.context?.auth?.user?.id;
+	const terminateForm = useForm({
+		defaultValues: {
+			bookingId,
+			feedback: "",
+		},
+		onSubmit: async ({ value }) => {
+			if (!socket) return;
+			setIsTerminating(true);
+			const payload: CallEndPayload = {
+				bookingId: value.bookingId,
+				feedback: value.feedback,
+			};
+			socket.emit("call:terminate", payload);
+		},
+		validators: {
+			onSubmit: feedbackFormSchema
+				.partial({ feedback: true })
+				.superRefine((value, ctx) => {
+					if (value.feedback === "") {
+						return;
+					}
+					if (value.feedback && value.feedback.length < 10) {
+						ctx.addIssue({
+							code: "custom",
+							path: ["feedback"],
+							message: "Feedback must be atleast 10 characters",
+						});
+					}
+					if (value.feedback && value.feedback.length > 1000) {
+						ctx.addIssue({
+							code: "custom",
+							path: ["feedback"],
+							message: "Feedback must be less than 1000 characters",
+						});
+					}
+				}),
+		},
+	});
 
 	const { messages, sendMessage, hasUnread, clearUnread } = useChat(
 		bookingId,
@@ -71,7 +115,7 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 		},
 	);
 
-	const navigateToSessionList = useCallback(() => {
+	const navigateToSessionList = () => {
 		if (isMentor) {
 			router.navigate({
 				to: "/mentor-sessions",
@@ -93,15 +137,15 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 				},
 			});
 		}
-	}, [isMentor, router]);
+	};
 	const localLabel = localParticipantName.trim() || "You";
 	const remoteLabel = remoteParticipantName.trim() || "Participant";
 
-	const emitLeaveOnce = useCallback(() => {
+	const emitLeaveOnce = () => {
 		if (!socket || hasSentLeaveRef.current) return;
 		hasSentLeaveRef.current = true;
 		socket.emit("call:leave", { bookingId });
-	}, [bookingId, socket]);
+	};
 
 	const {
 		localStream,
@@ -154,6 +198,10 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 		const handleTerminated = () => {
 			setIsTerminating(false);
 			setShowTerminateConfirm(false);
+			terminateForm.reset({
+				bookingId,
+				feedback: "",
+			});
 			toast.info(
 				isMentor
 					? "Session terminated successfully."
@@ -175,15 +223,7 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 			socket.off("call:user-left", handleUserLeft);
 			socket.off("call:terminated", handleTerminated);
 		};
-	}, [
-		socket,
-		bookingId,
-		isMentor,
-		leaveSession,
-		remoteLabel,
-		emitLeaveOnce,
-		navigateToSessionList,
-	]);
+	}, [socket, bookingId, isMentor, leaveSession, remoteLabel]);
 
 	useEffect(() => {
 		if (!socket) return;
@@ -196,6 +236,11 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 				err.message?.includes("5 minutes before the start time")
 			) {
 				setJoinError(err.message || "Session has not started yet.");
+				return;
+			}
+
+			if (err.message) {
+				toast.error(err.message);
 			}
 		};
 
@@ -227,9 +272,13 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 	};
 
 	const handleTerminateSession = () => {
-		if (!socket) return;
-		setIsTerminating(true);
-		socket.emit("call:terminate", { bookingId });
+		const currentFeedback = terminateForm.state.values.feedback;
+		if (currentFeedback === "") {
+			setIsTerminating(true);
+			socket?.emit("call:terminate", { bookingId });
+			return;
+		}
+		void terminateForm.handleSubmit();
 	};
 
 	// Auto-select pinned view if none is pinned
@@ -452,9 +501,9 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 				/>
 			</div>
 
-			{/* Chat Side Panel */}
+			{/* Chat Panel */}
 			{isChatOpen && (
-				<div className="w-80 md:w-96 flex-shrink-0 animate-in slide-in-from-right duration-300">
+				<div className="absolute inset-0 z-30 animate-in slide-in-from-right duration-300 md:relative md:inset-auto md:z-auto md:w-96 md:shrink-0">
 					<ChatPanel
 						messages={messages}
 						onSendMessage={sendMessage}
@@ -476,13 +525,43 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 
 			<ConfirmModal
 				isOpen={showTerminateConfirm}
-				onClose={() => setShowTerminateConfirm(false)}
+				onClose={() => {
+					setShowTerminateConfirm(false);
+					terminateForm.reset({
+						bookingId,
+						feedback: "",
+					});
+				}}
 				onConfirm={handleTerminateSession}
 				title="Terminate Session?"
 				message="This will permanently end the session and mark it as completed. You will not be able to rejoin."
 				confirmText={isTerminating ? "Terminating..." : "Terminate"}
 				variant="destructive"
-			/>
+			>
+				<div className="mt-4 space-y-2">
+					<terminateForm.Field name="feedback">
+						{(field) => (
+							<div className="space-y-2">
+								<label htmlFor={field.name} className="text-sm font-medium">
+									Feedback for mentee
+								</label>
+								<Textarea
+									id={field.name}
+									value={field.state.value}
+									onBlur={field.handleBlur}
+									onChange={(e) => field.handleChange(e.target.value)}
+									placeholder=" write at least 10 characters..."
+									className="min-h-25 resize-none"
+									maxLength={1000}
+								/>
+								<FieldError
+									message={getErrorMessage(field.state.meta.errors?.[0])}
+								/>
+							</div>
+						)}
+					</terminateForm.Field>
+				</div>
+			</ConfirmModal>
 		</div>
 	);
 };

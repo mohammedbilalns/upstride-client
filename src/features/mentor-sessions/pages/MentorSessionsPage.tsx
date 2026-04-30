@@ -116,7 +116,7 @@ export function MentorSessionsPage() {
 	};
 
 	return (
-		<div className="p-4 md:p-6 space-y-6 max-w-[90rem] mx-auto animate-in fade-in duration-500">
+		<div className="p-4 md:p-6 space-y-6 max-w-360 mx-auto animate-in fade-in duration-500">
 			<Card className="border-border/60 shadow-sm">
 				<CardHeader className="space-y-5">
 					<div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
@@ -357,7 +357,7 @@ function MentorSessionCard({
 				</Button>
 
 				{isCancelled && booking.notes && (
-					<div className="hidden lg:block text-[10px] text-zinc-500 text-right max-w-[220px] line-clamp-1 italic">
+					<div className="hidden lg:block text-[10px] text-zinc-500 text-right max-w-55 line-clamp-1 italic">
 						"{booking.notes}"
 					</div>
 				)}

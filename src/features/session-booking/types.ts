@@ -40,6 +40,15 @@ export interface CancelBookingResponse {
 	};
 }
 
+export interface CreateFeedbackInput {
+	bookingId: string;
+	feedback: string;
+}
+
+export interface CreateFeedbackResponse {
+	message?: string;
+}
+
 export type BookingFilter =
 	| "past"
 	| "completed"
@@ -78,6 +87,7 @@ export interface Booking {
 	notes: string | null;
 	menteeName: string | null;
 	mentorName: string | null;
+	feedback: string | null;
 	review: Review | null;
 	settledAt: string | null;
 	createdAt: string;

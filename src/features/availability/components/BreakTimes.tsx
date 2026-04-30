@@ -1,4 +1,5 @@
 import { Plus, X } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
@@ -22,6 +23,24 @@ export function CreateRuleBreakTimes({
 	onUpdateBreakTime,
 	onRemoveBreakTime,
 }: CreateRuleBreakTimesProps) {
+	const breakKeysRef = useRef<string[]>([]);
+
+	useEffect(() => {
+		const breakTimes = form.state.values.breakTimes ?? [];
+		if (breakKeysRef.current.length < breakTimes.length) {
+			const nextKeys = [...breakKeysRef.current];
+			for (let index = nextKeys.length; index < breakTimes.length; index += 1) {
+				nextKeys.push(`break-${crypto.randomUUID()}`);
+			}
+			breakKeysRef.current = nextKeys;
+			return;
+		}
+
+		if (breakKeysRef.current.length > breakTimes.length) {
+			breakKeysRef.current = breakKeysRef.current.slice(0, breakTimes.length);
+		}
+	}, [form.state.values.breakTimes]);
+
 	return (
 		<div className="flex flex-col gap-4 rounded-xl border bg-transparent p-4 sm:p-6">
 			<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -48,7 +67,10 @@ export function CreateRuleBreakTimes({
 						<div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
 							{breakTimes.map((bt, i) => (
 								<div
-									key={`${bt.startTime}-${bt.endTime}`}
+									key={
+										breakKeysRef.current[i] ??
+										`break-fallback-${bt.startTime}-${bt.endTime}`
+									}
 									className="flex flex-col gap-3 rounded-lg border bg-background p-3 sm:flex-row sm:items-center"
 								>
 									<Input

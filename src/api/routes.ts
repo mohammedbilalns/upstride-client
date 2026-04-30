@@ -168,6 +168,7 @@ export const ROUTES = {
 		RECEIPT: (id: string) => `/${id}/receipt`,
 		USER: "/me",
 		MENTOR: "/mentor/me",
+		FEEDBACK: "/feedback",
 	},
 	SESSION_BOOKINGS: {
 		BASE: "/session-bookings",
