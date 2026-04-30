@@ -1,10 +1,5 @@
 import { useCallback, useEffect } from "react";
 import type { Socket } from "socket.io-client";
-import type {
-	WebRTCAnswerPayload,
-	WebRTCIceCandidatePayload,
-	WebRTCOfferPayload,
-} from "../types/call-events";
 import { useMediaDevices } from "./useMediaDevices";
 import { useRTCPeerConnection } from "./useRtcPeerConnection";
 
@@ -113,9 +108,7 @@ export const useWebRTC = (
 			createOffer();
 		};
 
-		const handleOffer = async ({
-			offer,
-		}: Pick<WebRTCOfferPayload, "offer">) => {
+		const handleOffer = async ({ offer }: { offer: any }) => {
 			if (!peerConnection.current) return;
 			if (!isLocalMediaReady.current) {
 				setTimeout(() => handleOffer({ offer }), 500);
@@ -141,9 +134,7 @@ export const useWebRTC = (
 			}
 		};
 
-		const handleAnswer = async ({
-			answer,
-		}: Pick<WebRTCAnswerPayload, "answer">) => {
+		const handleAnswer = async ({ answer }: { answer: any }) => {
 			if (!peerConnection.current) return;
 			try {
 				await peerConnection.current.setRemoteDescription(
@@ -162,7 +153,9 @@ export const useWebRTC = (
 
 		const handleIceCandidate = async ({
 			candidate,
-		}: Pick<WebRTCIceCandidatePayload, "candidate">) => {
+		}: {
+			candidate: RTCIceCandidateInit;
+		}) => {
 			if (!peerConnection.current) return;
 			try {
 				if (peerConnection.current.remoteDescription) {
@@ -238,9 +231,9 @@ export const useWebRTC = (
 		peerConnection.current = pc;
 
 		initLocalMedia().then((stream) => {
-			if (stream) {
+			if (stream && peerConnection.current) {
 				for (const track of stream.getTracks()) {
-					pc.addTrack(track, stream);
+					peerConnection.current.addTrack(track, stream);
 				}
 			}
 		});
@@ -248,22 +241,14 @@ export const useWebRTC = (
 		return () => {
 			leaveSession();
 		};
-	}, [
-		socket,
-		createPeerConnection,
-		enabled,
-		initLocalMedia,
-		leaveSession,
-		peerConnection,
-	]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [socket, createPeerConnection, enabled]);
 
 	const toggleCam = useCallback(async () => {
 		if (!peerConnection.current) return;
 
 		if (isCamOn && localStream) {
-			localStream.getVideoTracks().forEach((track) => {
-				track.stop();
-			});
+			localStream.getVideoTracks().forEach((t) => t.stop());
 			setIsCamOn(false);
 			socket?.emit("call:toggled-media", {
 				bookingId,
@@ -337,9 +322,7 @@ export const useWebRTC = (
 
 		if (isScreenSharing) {
 			if (localScreenStream) {
-				localScreenStream.getTracks().forEach((track) => {
-					track.stop();
-				});
+				localScreenStream.getTracks().forEach((t) => t.stop());
 				const sender = peerConnection.current
 					.getSenders()
 					.find((s) => s.track === localScreenStream.getVideoTracks()[0]);

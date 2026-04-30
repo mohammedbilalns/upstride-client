@@ -1,3 +1,4 @@
+import { useForm } from "@tanstack/react-form";
 import { Link } from "@tanstack/react-router";
 import { format } from "date-fns";
 import {
@@ -11,6 +12,7 @@ import {
 	Video,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import FieldError from "@/components/common/FieldError";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import {
@@ -24,8 +26,10 @@ import {
 import { Textarea } from "@/components/ui/Textarea";
 import { sessionBookingService } from "@/features/session-booking";
 import type { Booking } from "@/features/session-booking/types";
+import { feedbackFormSchema } from "@/features/session-booking/validators/feedback.schema";
 import { cn } from "@/shared/utils/cn";
 import { formatDateShort, formatTimeShort } from "@/shared/utils/date";
+import { getErrorMessage } from "@/shared/utils/formValidation";
 
 interface SessionDetailsDialogProps {
 	isOpen: boolean;
@@ -37,12 +41,16 @@ interface SessionDetailsDialogProps {
 	reviewTitle?: string;
 	showReceipt?: boolean;
 	canSubmitReview?: boolean;
+	feedbackTitle?: string;
+	canSubmitFeedback?: boolean;
 	onRepay?: () => void | Promise<void>;
 	onSubmitReview?: (input: {
 		rating: number;
 		comment: string;
 	}) => Promise<void>;
+	onSubmitFeedback?: (input: { feedback: string }) => Promise<void>;
 	isSubmittingReview?: boolean;
+	isSubmittingFeedback?: boolean;
 	mode?: "dialog" | "page";
 	onBack?: () => void;
 	backLabel?: string;
@@ -58,9 +66,13 @@ export function SessionDetailsDialog({
 	reviewTitle = "Your Review",
 	showReceipt = true,
 	canSubmitReview = false,
+	feedbackTitle = "Mentor Feedback",
+	canSubmitFeedback = false,
 	onRepay,
 	onSubmitReview,
 	isSubmittingReview = false,
+	onSubmitFeedback,
+	isSubmittingFeedback = false,
 	mode = "dialog",
 	onBack,
 	backLabel = "Back",
@@ -69,12 +81,37 @@ export function SessionDetailsDialog({
 	const [reviewComment, setReviewComment] = useState("");
 	const booking = selectedBooking;
 	const existingReview = booking?.review ?? null;
+	const existingFeedback = booking?.feedback ?? null;
+	const feedbackForm = useForm({
+		defaultValues: {
+			bookingId: booking?.id ?? "",
+			feedback: existingFeedback ?? "",
+		},
+		onSubmit: async ({ value }) => {
+			if (!onSubmitFeedback) return;
+			await onSubmitFeedback({ feedback: value.feedback });
+		},
+		validators: {
+			onSubmit: feedbackFormSchema,
+		},
+	});
 
 	useEffect(() => {
 		if (!isOpen) return;
 		setReviewRating(existingReview?.rating ?? 0);
 		setReviewComment(existingReview?.comment ?? "");
-	}, [existingReview?.comment, existingReview?.rating, isOpen]);
+		feedbackForm.reset({
+			bookingId: booking?.id ?? "",
+			feedback: existingFeedback ?? "",
+		});
+	}, [
+		booking?.id,
+		existingFeedback,
+		existingReview?.comment,
+		existingReview?.rating,
+		feedbackForm,
+		isOpen,
+	]);
 
 	if (!booking) {
 		if (mode === "page") return null;
@@ -584,6 +621,22 @@ export function SessionDetailsDialog({
 						</section>
 					)}
 
+					{existingFeedback && (
+						<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-3.5 space-y-2.5">
+							<div>
+								<p className="text-xs uppercase tracking-wide text-muted-foreground">
+									{feedbackTitle}
+								</p>
+								<p className="mt-1 text-sm text-muted-foreground">
+									Shared after session completion.
+								</p>
+							</div>
+							<p className="text-sm text-zinc-700 dark:text-zinc-300">
+								{existingFeedback}
+							</p>
+						</section>
+					)}
+
 					{canReviewSession && (
 						<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-3.5 space-y-3">
 							<div>
@@ -633,6 +686,68 @@ export function SessionDetailsDialog({
 								</Button>
 							</div>
 						</section>
+					)}
+
+					{canSubmitFeedback && !existingFeedback && (
+						<form
+							onSubmit={(e) => {
+								e.preventDefault();
+								e.stopPropagation();
+								void feedbackForm.handleSubmit();
+							}}
+							className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-3.5 space-y-3"
+						>
+							<div>
+								<p className="text-xs uppercase tracking-wide text-muted-foreground">
+									Add feedback
+								</p>
+								<p className="mt-1 text-sm text-muted-foreground">
+									Share a short summary with the mentee after the session.
+								</p>
+							</div>
+							<feedbackForm.Field name="feedback">
+								{(field) => (
+									<div className="space-y-2">
+										<Textarea
+											id={field.name}
+											value={field.state.value}
+											onBlur={field.handleBlur}
+											onChange={(e) => field.handleChange(e.target.value)}
+											placeholder="Write at least 10 characters..."
+											className="min-h-[100px]"
+											maxLength={1000}
+										/>
+										<p className="text-xs text-muted-foreground">
+											Minimum 10 characters.
+										</p>
+										<FieldError
+											message={getErrorMessage(field.state.meta.errors?.[0])}
+										/>
+									</div>
+								)}
+							</feedbackForm.Field>
+							<div className="flex justify-end">
+								<feedbackForm.Subscribe
+									selector={(state) => ({
+										canSubmit: state.canSubmit,
+										isSubmitting: state.isSubmitting,
+									})}
+								>
+									{({ canSubmit, isSubmitting }) => (
+										<Button
+											type="submit"
+											disabled={
+												!canSubmit || isSubmitting || isSubmittingFeedback
+											}
+										>
+											{isSubmitting || isSubmittingFeedback
+												? "Saving..."
+												: "Save Feedback"}
+										</Button>
+									)}
+								</feedbackForm.Subscribe>
+							</div>
+						</form>
 					)}
 
 					{showReceipt && canDownloadReceipt && (
