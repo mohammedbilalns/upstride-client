@@ -54,7 +54,7 @@ export function MentorSessionDetailsPage() {
 			feedbackTitle="Your Feedback"
 			showReceipt={false}
 			canSubmitReview={false}
-			canSubmitFeedback={!booking.feedback && booking.status === "COMPLETED"}
+			canSubmitFeedback={booking.status === "COMPLETED"}
 			onSubmitFeedback={async (input) => {
 				await feedbackMutation.mutateAsync({
 					bookingId: booking.id,

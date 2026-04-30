@@ -1,4 +1,5 @@
 import {
+	ChevronDown,
 	MessageSquare,
 	Mic,
 	MicOff,
@@ -9,6 +10,7 @@ import {
 	XSquare,
 } from "lucide-react";
 import type React from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 
 interface CallControlsProps {
@@ -44,74 +46,116 @@ export const CallControls: React.FC<CallControlsProps> = ({
 	isChatOpen,
 	hasUnreadChat,
 }) => {
+	const [showMoreActions, setShowMoreActions] = useState(false);
+	const inactiveControlClass =
+		"border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-100 hover:text-slate-900 shadow-sm";
+	const activeControlClass =
+		"bg-primary text-primary-foreground hover:bg-primary/90 border-primary shadow-sm";
+
 	return (
-		<div className="flex items-center justify-center gap-4 bg-background/90 p-4 backdrop-blur-md border border-border shadow-lg rounded-2xl mb-4 w-fit mx-auto">
-			<Button
-				variant={isMicOn ? "secondary" : "destructive"}
-				size="icon"
-				onClick={onToggleMic}
-				className="rounded-full h-12 w-12"
-				title={isMicOn ? "Mute Microphone" : "Unmute Microphone"}
-			>
-				{isMicOn ? <Mic className="h-5 w-5" /> : <MicOff className="h-5 w-5" />}
-			</Button>
+		<div className="mx-auto mb-4 w-[calc(100%-1rem)] rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-lg backdrop-blur-md sm:w-fit sm:max-w-fit sm:p-4 dark:border-border dark:bg-background/90">
+			<div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+				<Button
+					variant={isMicOn ? "secondary" : "destructive"}
+					size="icon"
+					onClick={onToggleMic}
+					className={`h-10 w-10 rounded-full sm:h-12 sm:w-12 ${
+						isMicOn ? inactiveControlClass : "shadow-sm"
+					}`}
+					title={isMicOn ? "Mute Microphone" : "Unmute Microphone"}
+				>
+					{isMicOn ? (
+						<Mic className="h-4 w-4 sm:h-5 sm:w-5" />
+					) : (
+						<MicOff className="h-4 w-4 sm:h-5 sm:w-5" />
+					)}
+				</Button>
 
-			<Button
-				variant={isCamOn ? "secondary" : "destructive"}
-				size="icon"
-				onClick={onToggleCam}
-				className="rounded-full h-12 w-12"
-				title={isCamOn ? "Turn off Camera" : "Turn on Camera"}
-			>
-				{isCamOn ? (
-					<Video className="h-5 w-5" />
-				) : (
-					<VideoOff className="h-5 w-5" />
-				)}
-			</Button>
+				<Button
+					variant={isCamOn ? "secondary" : "destructive"}
+					size="icon"
+					onClick={onToggleCam}
+					className={`h-10 w-10 rounded-full sm:h-12 sm:w-12 ${
+						isCamOn ? inactiveControlClass : "shadow-sm"
+					}`}
+					title={isCamOn ? "Turn off Camera" : "Turn on Camera"}
+				>
+					{isCamOn ? (
+						<Video className="h-4 w-4 sm:h-5 sm:w-5" />
+					) : (
+						<VideoOff className="h-4 w-4 sm:h-5 sm:w-5" />
+					)}
+				</Button>
 
-			<Button
-				variant={isScreenSharing ? "default" : "secondary"}
-				size="icon"
-				onClick={onToggleScreenShare}
-				className="rounded-full h-12 w-12"
-				title={isScreenSharing ? "Stop sharing" : "Share screen"}
-			>
-				<MonitorUp className="h-5 w-5" />
-			</Button>
+				<Button
+					variant={isScreenSharing ? "default" : "secondary"}
+					size="icon"
+					onClick={onToggleScreenShare}
+					className={`h-10 w-10 rounded-full sm:h-12 sm:w-12 ${
+						isScreenSharing ? activeControlClass : inactiveControlClass
+					}`}
+					title={isScreenSharing ? "Stop sharing" : "Share screen"}
+				>
+					<MonitorUp className="h-4 w-4 sm:h-5 sm:w-5" />
+				</Button>
 
-			<Button
-				variant={isWhiteboardActive ? "default" : "secondary"}
-				size="icon"
-				onClick={onToggleWhiteboard}
-				className="rounded-full h-12 w-12"
-				title="Toggle Whiteboard"
-			>
-				<SquareCheck className="h-5 w-5" />
-			</Button>
+				<Button
+					variant={isWhiteboardActive ? "default" : "secondary"}
+					size="icon"
+					onClick={onToggleWhiteboard}
+					className={`h-10 w-10 rounded-full sm:h-12 sm:w-12 ${
+						isWhiteboardActive ? activeControlClass : inactiveControlClass
+					}`}
+					title="Toggle Whiteboard"
+				>
+					<SquareCheck className="h-4 w-4 sm:h-5 sm:w-5" />
+				</Button>
 
-			<Button
-				variant={isChatOpen ? "default" : "secondary"}
-				size="icon"
-				onClick={onToggleChat}
-				className="rounded-full h-12 w-12 relative"
-				title={isChatOpen ? "Close Chat" : "Open Chat"}
-			>
-				<MessageSquare className="h-5 w-5" />
-				{!isChatOpen && hasUnreadChat && (
-					<span className="absolute top-2 right-2 h-3 w-3 bg-primary rounded-full border-2 border-background" />
-				)}
-			</Button>
+				<Button
+					variant={isChatOpen ? "default" : "secondary"}
+					size="icon"
+					onClick={onToggleChat}
+					className={`relative h-10 w-10 rounded-full sm:h-12 sm:w-12 ${
+						isChatOpen ? activeControlClass : inactiveControlClass
+					}`}
+					title={isChatOpen ? "Close Chat" : "Open Chat"}
+				>
+					<MessageSquare className="h-4 w-4 sm:h-5 sm:w-5" />
+					{!isChatOpen && hasUnreadChat && (
+						<span className="absolute top-2 right-2 h-3 w-3 rounded-full border-2 border-background bg-primary" />
+					)}
+				</Button>
 
-			<div className="flex gap-2 ml-4 pl-4 border-l border-border">
+				<Button
+					type="button"
+					variant="secondary"
+					size="sm"
+					onClick={() => setShowMoreActions((value) => !value)}
+					className={`h-10 rounded-full px-4 font-medium sm:hidden ${inactiveControlClass}`}
+					title="More actions"
+				>
+					<span>More</span>
+					<ChevronDown
+						className={`h-4 w-4 transition-transform ${
+							showMoreActions ? "rotate-180" : ""
+						}`}
+					/>
+				</Button>
+			</div>
+
+			<div
+				className={`${
+					showMoreActions ? "mt-3 flex" : "hidden"
+				} flex-col gap-2 border-t border-slate-200 pt-3 sm:hidden dark:border-border`}
+			>
 				<Button
 					variant="secondary"
 					size="sm"
 					onClick={onLeave}
-					className="h-10 px-4 rounded-xl font-medium"
+					className={`h-10 rounded-xl px-4 font-medium ${inactiveControlClass}`}
 					title="Leave Session"
 				>
-					<XSquare className="h-4 w-4 mr-2" />
+					<XSquare className="mr-2 h-4 w-4" />
 					Leave
 				</Button>
 
@@ -120,10 +164,36 @@ export const CallControls: React.FC<CallControlsProps> = ({
 						variant="destructive"
 						size="sm"
 						onClick={onTerminate}
-						className="h-10 px-4 rounded-xl font-medium bg-rose-600 hover:bg-rose-700"
+						className="h-10 rounded-xl bg-rose-600 px-4 font-medium text-white shadow-sm hover:bg-rose-700 hover:text-white"
 						title="Terminate Session"
 					>
-						<SquareCheck className="h-4 w-4 mr-2" />
+						<SquareCheck className="mr-2 h-4 w-4 text-white" />
+						Terminate
+					</Button>
+				)}
+			</div>
+
+			<div className="ml-4 hidden gap-2 border-l border-slate-200 pl-4 dark:border-border sm:flex sm:items-center">
+				<Button
+					variant="secondary"
+					size="sm"
+					onClick={onLeave}
+					className={`h-10 rounded-xl px-4 font-medium ${inactiveControlClass}`}
+					title="Leave Session"
+				>
+					<XSquare className="mr-2 h-4 w-4" />
+					Leave
+				</Button>
+
+				{isMentor && (
+					<Button
+						variant="destructive"
+						size="sm"
+						onClick={onTerminate}
+						className="h-10 rounded-xl bg-rose-600 px-4 font-medium text-white shadow-sm hover:bg-rose-700 hover:text-white"
+						title="Terminate Session"
+					>
+						<SquareCheck className="mr-2 h-4 w-4 text-white" />
 						Terminate
 					</Button>
 				)}

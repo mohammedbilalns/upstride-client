@@ -501,9 +501,9 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 				/>
 			</div>
 
-			{/* Chat Side Panel */}
+			{/* Chat Panel */}
 			{isChatOpen && (
-				<div className="w-80 md:w-96 flex-shrink-0 animate-in slide-in-from-right duration-300">
+				<div className="absolute inset-0 z-30 animate-in slide-in-from-right duration-300 md:relative md:inset-auto md:z-auto md:w-96 md:shrink-0">
 					<ChatPanel
 						messages={messages}
 						onSendMessage={sendMessage}
@@ -550,8 +550,8 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 									value={field.state.value}
 									onBlur={field.handleBlur}
 									onChange={(e) => field.handleChange(e.target.value)}
-									placeholder="Optional. If provided, write at least 10 characters..."
-									className="min-h-[100px] resize-none"
+									placeholder=" write at least 10 characters..."
+									className="min-h-25 resize-none"
 									maxLength={1000}
 								/>
 								<FieldError

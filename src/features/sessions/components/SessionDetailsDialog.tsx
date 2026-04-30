@@ -79,6 +79,7 @@ export function SessionDetailsDialog({
 }: SessionDetailsDialogProps) {
 	const [reviewRating, setReviewRating] = useState(0);
 	const [reviewComment, setReviewComment] = useState("");
+	const [isEditingFeedback, setIsEditingFeedback] = useState(false);
 	const booking = selectedBooking;
 	const existingReview = booking?.review ?? null;
 	const existingFeedback = booking?.feedback ?? null;
@@ -90,6 +91,7 @@ export function SessionDetailsDialog({
 		onSubmit: async ({ value }) => {
 			if (!onSubmitFeedback) return;
 			await onSubmitFeedback({ feedback: value.feedback });
+			setIsEditingFeedback(false);
 		},
 		validators: {
 			onSubmit: feedbackFormSchema,
@@ -104,6 +106,7 @@ export function SessionDetailsDialog({
 			bookingId: booking?.id ?? "",
 			feedback: existingFeedback ?? "",
 		});
+		setIsEditingFeedback(false);
 	}, [
 		booking?.id,
 		existingFeedback,
@@ -140,6 +143,7 @@ export function SessionDetailsDialog({
 	const isCompleted = booking.status === "COMPLETED";
 	const isSlotTakenByAnotherUser =
 		booking.status === "SLOT_TAKEN_BY_ANOTHER_USER";
+	const canManageFeedback = canSubmitFeedback && isCompleted;
 	const canJoinMeeting =
 		!isCancelled &&
 		!isSlotTakenByAnotherUser &&
@@ -621,21 +625,31 @@ export function SessionDetailsDialog({
 						</section>
 					)}
 
-					{existingFeedback && (
-						<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-3.5 space-y-2.5">
-							<div>
-								<p className="text-xs uppercase tracking-wide text-muted-foreground">
-									{feedbackTitle}
+					{existingFeedback &&
+						(!canManageFeedback ||
+							(canManageFeedback && !isEditingFeedback)) && (
+							<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-3.5 space-y-2.5">
+								<div className="flex items-center justify-between gap-3">
+									<p className="text-xs uppercase tracking-wide text-muted-foreground">
+										{feedbackTitle}
+									</p>
+									{canManageFeedback && (
+										<Button
+											type="button"
+											variant="outline"
+											size="sm"
+											className="h-7 text-xs"
+											onClick={() => setIsEditingFeedback(true)}
+										>
+											Edit Feedback
+										</Button>
+									)}
+								</div>
+								<p className="text-sm text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap">
+									{existingFeedback}
 								</p>
-								<p className="mt-1 text-sm text-muted-foreground">
-									Shared after session completion.
-								</p>
-							</div>
-							<p className="text-sm text-zinc-700 dark:text-zinc-300">
-								{existingFeedback}
-							</p>
-						</section>
-					)}
+							</section>
+						)}
 
 					{canReviewSession && (
 						<section className="rounded-2xl border border-zinc-200/60 dark:border-zinc-800 p-3.5 space-y-3">
@@ -688,7 +702,7 @@ export function SessionDetailsDialog({
 						</section>
 					)}
 
-					{canSubmitFeedback && !existingFeedback && (
+					{canManageFeedback && (!existingFeedback || isEditingFeedback) && (
 						<form
 							onSubmit={(e) => {
 								e.preventDefault();
@@ -699,10 +713,12 @@ export function SessionDetailsDialog({
 						>
 							<div>
 								<p className="text-xs uppercase tracking-wide text-muted-foreground">
-									Add feedback
+									{existingFeedback ? "Update feedback" : "Add feedback"}
 								</p>
 								<p className="mt-1 text-sm text-muted-foreground">
-									Share a short summary with the mentee after the session.
+									{existingFeedback
+										? "Edit the summary you shared with the mentee."
+										: "Share a short summary with the mentee after the session."}
 								</p>
 							</div>
 							<feedbackForm.Field name="feedback">
@@ -726,7 +742,23 @@ export function SessionDetailsDialog({
 									</div>
 								)}
 							</feedbackForm.Field>
-							<div className="flex justify-end">
+							<div className="flex justify-end gap-2">
+								{existingFeedback && (
+									<Button
+										type="button"
+										variant="ghost"
+										onClick={() => {
+											setIsEditingFeedback(false);
+											feedbackForm.reset({
+												bookingId: booking?.id ?? "",
+												feedback: existingFeedback ?? "",
+											});
+										}}
+										disabled={isSubmittingFeedback}
+									>
+										Cancel
+									</Button>
+								)}
 								<feedbackForm.Subscribe
 									selector={(state) => ({
 										canSubmit: state.canSubmit,
@@ -742,7 +774,9 @@ export function SessionDetailsDialog({
 										>
 											{isSubmitting || isSubmittingFeedback
 												? "Saving..."
-												: "Save Feedback"}
+												: existingFeedback
+													? "Update Feedback"
+													: "Save Feedback"}
 										</Button>
 									)}
 								</feedbackForm.Subscribe>
