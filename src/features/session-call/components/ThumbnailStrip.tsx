@@ -43,64 +43,66 @@ export const ThumbnailStrip: React.FC<ThumbnailStripProps> = ({
 	onPinView,
 }) => {
 	return (
-		<div className="h-40 px-6 pb-20 flex gap-4 justify-center items-end pointer-events-none mb-4">
-			{/* Local Cam Thumbnail */}
-			{pinnedViewId !== "LOCAL_CAM" && (
-				<div className="pointer-events-auto h-full aspect-video shadow-2xl">
-					<VideoCard
-						stream={localStream}
-						isCamOn={isCamOn}
-						label={localLabel}
-						roleIndicator={isMentor ? "Mentor" : undefined}
-						isMicOn={isMicOn}
-						isLocal
-						isThumbnail
-						onPin={() => onPinView("LOCAL_CAM")}
-					/>
-				</div>
-			)}
-
-			{/* Remote Cam/Waiting Thumbnail */}
-			{pinnedViewId !== "REMOTE_CAM" && (
-				<div className="pointer-events-auto h-full aspect-video shadow-2xl">
-					{isWaiting ? (
-						<WaitingScreen
-							remoteLabel={remoteLabel}
-							isThumbnail
-							onPin={() => onPinView("REMOTE_CAM")}
-						/>
-					) : (
+		<div className="h-28 sm:h-32 pb-2 sm:pb-4 w-full pointer-events-none shrink-0 relative z-20">
+			<div className="flex h-full w-full gap-2 sm:gap-4 overflow-x-auto px-2 sm:px-6 pointer-events-auto justify-start sm:justify-center items-end scrollbar-hide snap-x">
+				{/* Local Cam Thumbnail */}
+				{pinnedViewId !== "LOCAL_CAM" && (
+					<div className="pointer-events-auto h-full aspect-video shadow-2xl shrink-0 snap-center">
 						<VideoCard
-							stream={remoteVideoStream}
-							isCamOn={isRemoteCamOn}
-							label={remoteLabel}
-							roleIndicator={!isMentor ? "Mentor" : undefined}
-							isMicOn={isRemoteMicOn}
+							stream={localStream}
+							isCamOn={isCamOn}
+							label={localLabel}
+							roleIndicator={isMentor ? "Mentor" : undefined}
+							isMicOn={isMicOn}
+							isLocal
 							isThumbnail
-							onPin={() => onPinView("REMOTE_CAM")}
+							onPin={() => onPinView("LOCAL_CAM")}
 						/>
-					)}
-				</div>
-			)}
+					</div>
+				)}
 
-			{/* Local Screen Thumbnail */}
-			{pinnedViewId !== "LOCAL_SCREEN" && isScreenSharing && (
-				<ScreenThumbnail
-					stream={localScreenStream}
-					label="Your Screen"
-					onPin={() => onPinView("LOCAL_SCREEN")}
-					muted
-				/>
-			)}
+				{/* Remote Cam/Waiting Thumbnail */}
+				{pinnedViewId !== "REMOTE_CAM" && (
+					<div className="pointer-events-auto h-full aspect-video shadow-2xl shrink-0 snap-center">
+						{isWaiting ? (
+							<WaitingScreen
+								remoteLabel={remoteLabel}
+								isThumbnail
+								onPin={() => onPinView("REMOTE_CAM")}
+							/>
+						) : (
+							<VideoCard
+								stream={remoteVideoStream}
+								isCamOn={isRemoteCamOn}
+								label={remoteLabel}
+								roleIndicator={!isMentor ? "Mentor" : undefined}
+								isMicOn={isRemoteMicOn}
+								isThumbnail
+								onPin={() => onPinView("REMOTE_CAM")}
+							/>
+						)}
+					</div>
+				)}
 
-			{/* Remote Screen Thumbnail */}
-			{pinnedViewId !== "REMOTE_SCREEN" && isRemoteScreenSharing && (
-				<ScreenThumbnail
-					stream={remoteScreenStream}
-					label="Remote Screen"
-					onPin={() => onPinView("REMOTE_SCREEN")}
-				/>
-			)}
+				{/* Local Screen Thumbnail */}
+				{pinnedViewId !== "LOCAL_SCREEN" && isScreenSharing && (
+					<ScreenThumbnail
+						stream={localScreenStream}
+						label="Your Screen"
+						onPin={() => onPinView("LOCAL_SCREEN")}
+						muted
+					/>
+				)}
+
+				{/* Remote Screen Thumbnail */}
+				{pinnedViewId !== "REMOTE_SCREEN" && isRemoteScreenSharing && (
+					<ScreenThumbnail
+						stream={remoteScreenStream}
+						label="Remote Screen"
+						onPin={() => onPinView("REMOTE_SCREEN")}
+					/>
+				)}
+			</div>
 		</div>
 	);
 };
@@ -127,7 +129,7 @@ const ScreenThumbnail: React.FC<ScreenThumbnailProps> = ({
 	}, [stream]);
 
 	return (
-		<div className="pointer-events-auto h-full aspect-video shadow-2xl relative rounded-xl overflow-hidden border border-slate-700">
+		<div className="pointer-events-auto h-full aspect-video shadow-2xl relative rounded-xl overflow-hidden border border-slate-700 shrink-0 snap-center">
 			<video
 				ref={videoRef}
 				autoPlay
