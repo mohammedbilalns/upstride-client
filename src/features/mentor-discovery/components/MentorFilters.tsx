@@ -7,7 +7,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/Select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import type { CatalogInterest } from "@/features/onboarding/types";
 import type { MentorDiscoverySearch } from "../validators/mentor-discovery-params.schema";
 
@@ -66,23 +65,28 @@ export function MentorFilters({
 			<div className="px-4 pb-4 space-y-6">
 				<div className="space-y-2">
 					<p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">
-						DISCOVERY MODE
+						SORT BY
 					</p>
-					<Tabs
-						value={search.sort === "recent" ? "recent" : "feed"}
+					<Select
+						value={search.sort ?? "feed"}
 						onValueChange={(value) =>
-							onUpdate({ sort: value === "recent" ? "recent" : undefined })
+							onUpdate({
+								sort:
+									value === "feed"
+										? undefined
+										: (value as MentorDiscoverySearch["sort"]),
+							})
 						}
 					>
-						<TabsList className="grid h-auto w-full grid-cols-2 bg-zinc-100/70 p-1 dark:bg-zinc-900/60">
-							<TabsTrigger value="feed" className="text-xs">
-								For You
-							</TabsTrigger>
-							<TabsTrigger value="recent" className="text-xs">
-								Recently Joined
-							</TabsTrigger>
-						</TabsList>
-					</Tabs>
+						<SelectTrigger className="h-10 w-full justify-between bg-white/60 dark:bg-zinc-950/40">
+							<SelectValue placeholder="Sort by" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="feed">For You</SelectItem>
+							<SelectItem value="rating">Top Rated</SelectItem>
+							<SelectItem value="recent">Recently Joined</SelectItem>
+						</SelectContent>
+					</Select>
 				</div>
 
 				<div className="space-y-2">

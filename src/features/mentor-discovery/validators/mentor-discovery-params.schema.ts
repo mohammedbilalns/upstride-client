@@ -7,7 +7,7 @@ export const MentorDiscoverySearchSchema = z.object({
 	tierId: z.string().optional().catch(undefined),
 	minExperience: z.number().int().nonnegative().optional().catch(undefined),
 	maxExperience: z.number().int().nonnegative().optional().catch(undefined),
-	sort: z.enum(["recent"]).optional().catch(undefined),
+	sort: z.enum(["rating", "recent"]).optional().catch(undefined),
 });
 
 export type MentorDiscoverySearch = z.infer<typeof MentorDiscoverySearchSchema>;
