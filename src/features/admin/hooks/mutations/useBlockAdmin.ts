@@ -23,7 +23,7 @@ export function useBlockAdmin() {
 	});
 }
 
-function updateAdminStatus(
+export function updateAdminStatus(
 	data: GetAdminsResponse,
 	adminId: string,
 	status: "active" | "blocked",
