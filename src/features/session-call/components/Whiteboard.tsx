@@ -132,17 +132,44 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 		});
 	};
 
+	const throttleTimeout = useRef<NodeJS.Timeout | null>(null);
+	const lastEmitTime = useRef<number>(0);
+
 	const handleChange = useCallback(
 		(elements: readonly ExcalidrawElement[]) => {
 			if (!socket || !hasPermission || isRemoteUpdate.current) return;
 
 			if (elements.length === 0 && !isInitialized.current) return;
 
-			// Emit the sync event
-			socket.emit("whiteboard:sync", {
-				bookingId,
-				update: elements,
-			});
+			const now = Date.now();
+			const timeSinceLastEmit = now - lastEmitTime.current;
+			const emitDelay = 200; // Emit max once per 200ms
+
+			if (timeSinceLastEmit >= emitDelay) {
+				// Immediate emit for leading edge
+				lastEmitTime.current = now;
+				socket.emit("whiteboard:sync", {
+					bookingId,
+					update: elements,
+				});
+				if (throttleTimeout.current) {
+					clearTimeout(throttleTimeout.current);
+					throttleTimeout.current = null;
+				}
+			} else {
+				// Schedule trailing edge emit
+				if (throttleTimeout.current) {
+					clearTimeout(throttleTimeout.current);
+				}
+				throttleTimeout.current = setTimeout(() => {
+					lastEmitTime.current = Date.now();
+					socket.emit("whiteboard:sync", {
+						bookingId,
+						update: elements,
+					});
+					throttleTimeout.current = null;
+				}, emitDelay - timeSinceLastEmit);
+			}
 		},
 		[socket, bookingId, hasPermission],
 	);
