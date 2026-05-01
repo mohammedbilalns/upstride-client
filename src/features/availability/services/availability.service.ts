@@ -2,10 +2,13 @@ import type { ApiSuccess } from "@/api/apiSuccess";
 import api from "@/api/axios";
 import { ROUTES } from "@/api/routes";
 import type {
+	CheckAndCreateAvailabilityResponse,
 	CheckAndReenableAvailabilityResponse,
+	CheckAndUpdateAvailabilityResponse,
 	CreateAvailabilityInput,
 	GetMentorAvailabilitiesInput,
 	MentorAvailabilitiesResponse,
+	UpdateAvailabilityInput,
 } from "../types";
 
 export const availabilityManagementService = {
@@ -19,8 +22,18 @@ export const availabilityManagementService = {
 
 	checkAndCreateAvailability: async (data: CreateAvailabilityInput) => {
 		const response = await api.post<
-			ApiSuccess<CheckAndReenableAvailabilityResponse>
+			ApiSuccess<CheckAndCreateAvailabilityResponse>
 		>(`${ROUTES.AVAILABILITY.BASE}${ROUTES.AVAILABILITY.CHECK_CREATE}`, data);
+		return response.data;
+	},
+	checkAndUpdateAvailability: async (data: UpdateAvailabilityInput) => {
+		const { id, ...rest } = data;
+		const response = await api.post<
+			ApiSuccess<CheckAndUpdateAvailabilityResponse>
+		>(
+			`${ROUTES.AVAILABILITY.BASE}${ROUTES.AVAILABILITY.CHECK_UPDATE(id)}`,
+			rest,
+		);
 		return response.data;
 	},
 	checkAndReenableAvailability: async (id: string) => {

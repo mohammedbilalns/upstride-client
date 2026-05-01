@@ -16,6 +16,7 @@ interface AvailabilityRulesSectionProps {
 	onLoadMore: () => void;
 	onDisableRule: (ruleId: string) => void;
 	onEnableRule: (ruleId: string) => void;
+	onEditRule: (rule: AvailabilityRule) => void;
 }
 
 export function AvailabilityRulesSection({
@@ -30,6 +31,7 @@ export function AvailabilityRulesSection({
 	onLoadMore,
 	onDisableRule,
 	onEnableRule,
+	onEditRule,
 }: AvailabilityRulesSectionProps) {
 	return (
 		<div className="space-y-4">
@@ -92,6 +94,7 @@ export function AvailabilityRulesSection({
 								rule={rule}
 								onDisable={onDisableRule}
 								onEnable={onEnableRule}
+								onEdit={onEditRule}
 							/>
 						))}
 					</div>

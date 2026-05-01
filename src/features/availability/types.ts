@@ -91,6 +91,26 @@ export interface CheckAndReenableAvailabilityResponse {
 	conflicts?: ConflictAvailabilitySummary[];
 }
 
+export interface UpdateAvailabilityInput {
+	id: string;
+	name?: string;
+	description?: string;
+	days?: DayOfWeek[];
+	startTime?: string;
+	endTime?: string;
+	startDate?: string;
+	endDate?: string;
+	breakTimes?: BreakTime[];
+	slotDuration?: 30 | 60;
+	bufferTime?: number;
+}
+
+export interface CheckAndUpdateAvailabilityResponse {
+	updated: boolean;
+	availability?: AvailabilityRule;
+	conflicts?: ConflictAvailabilitySummary[];
+}
+
 export interface ConflictAvailabilitySummary {
 	name: string;
 	startDate: string; // YYYY-MM-DD
