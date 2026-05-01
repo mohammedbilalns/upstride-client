@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import type { ApiError } from "@/api/apiError";
 import ErrorComponent from "@/components/common/ErrorComponent";
-import NotFoundComponent from "@/components/common/NotFound";
+import { SessionNotFound } from "@/features/sessions/components/SessionNotFound";
 import { sessionDetailsQueryOptions } from "@/features/sessions/hooks/queries/useSessionDetails";
 import { UserSessionDetailsPage } from "@/features/sessions/pages/UserSessionDetailsPage";
 
@@ -13,11 +14,10 @@ export const Route = createFileRoute(
 		);
 	},
 	errorComponent: ({ error }) => {
-		const status =
-			(error as { response?: { status?: number } })?.response?.status ??
-			(error as { status?: number })?.status;
+		const status = (error as ApiError).response?.status;
+
 		if (status === 404 || status === 400) {
-			return <NotFoundComponent />;
+			return <SessionNotFound />;
 		}
 		return <ErrorComponent error={error} />;
 	},
