@@ -9,8 +9,10 @@ import { RuleManagementHeader } from "@/features/availability/components/RuleMan
 import { availabilityManagementService } from "@/features/availability/services/availability.service";
 import type {
 	AvailabilityRule,
+	CheckAndUpdateAvailabilityResponse,
 	CreateAvailabilityInput,
 	MentorAvailabilitiesResponse,
+	UpdateAvailabilityInput,
 } from "@/features/availability/types";
 import type { AvailabilityFormValues } from "@/features/availability/validators/rule.schema";
 import { useProfile } from "@/features/profile/hooks/queries/useProfile";
@@ -26,6 +28,7 @@ export function MentorRuleManagementPage() {
 	const limit = 5;
 	const [rules, setRules] = useState<AvailabilityRule[]>([]);
 	const [formKey, setFormKey] = useState(0);
+	const [editingRule, setEditingRule] = useState<AvailabilityRule | null>(null);
 	const today = new Date().toISOString().split("T")[0];
 	const defaultValues: AvailabilityFormValues = {
 		name: "",
@@ -43,11 +46,12 @@ export function MentorRuleManagementPage() {
 	};
 
 	const [confirmAction, setConfirmAction] = useState<{
-		type: "enable" | "delete" | "add";
+		type: "enable" | "delete" | "add" | "update";
 		ruleId?: string;
 	} | null>(null);
-	const [pendingRule, setPendingRule] =
-		useState<CreateAvailabilityInput | null>(null);
+	const [pendingRule, setPendingRule] = useState<
+		CreateAvailabilityInput | UpdateAvailabilityInput | null
+	>(null);
 	const updateAvailabilityCache = (
 		updater: (items: AvailabilityRule[]) => AvailabilityRule[],
 	) => {
@@ -83,8 +87,27 @@ export function MentorRuleManagementPage() {
 	};
 
 	const handleRuleSubmit = (parsedData: unknown) => {
-		setPendingRule(parsedData as CreateAvailabilityInput);
-		setConfirmAction({ type: "add" });
+		if (editingRule) {
+			setPendingRule({
+				...(parsedData as UpdateAvailabilityInput),
+				id: editingRule.id,
+			});
+			setConfirmAction({ type: "update" });
+		} else {
+			setPendingRule(parsedData as CreateAvailabilityInput);
+			setConfirmAction({ type: "add" });
+		}
+	};
+
+	const handleEditRule = (rule: AvailabilityRule) => {
+		setEditingRule(rule);
+		setFormKey((prev) => prev + 1);
+		window.scrollTo({ top: 0, behavior: "smooth" });
+	};
+
+	const handleCancelEdit = () => {
+		setEditingRule(null);
+		setFormKey((prev) => prev + 1);
 	};
 
 	const { data, isLoading, isFetching } = useQuery({
@@ -150,6 +173,36 @@ export function MentorRuleManagementPage() {
 		},
 		onError: (error: ApiError) => {
 			toast.error(error?.response?.data?.message || "Failed to add rule");
+		},
+	});
+
+	const updateMutation = useMutation({
+		mutationFn: (data: UpdateAvailabilityInput) =>
+			availabilityManagementService.checkAndUpdateAvailability(data),
+		onSuccess: (response) => {
+			if (response.data.updated) {
+				const updatedAvailability = response.data.availability;
+				if (updatedAvailability) {
+					updateAvailabilityCache((items) =>
+						items.map((item) =>
+							item.id === updatedAvailability.id ? updatedAvailability : item,
+						),
+					);
+				}
+				toast.success("Availability rule updated");
+				setEditingRule(null);
+				setFormKey((prev) => prev + 1);
+				setPendingRule(null);
+				return;
+			}
+
+			toast.error(
+				"This update overlaps with another active rule. Please adjust the schedule.",
+			);
+			setPendingRule(null);
+		},
+		onError: (error: ApiError) => {
+			toast.error(error?.response?.data?.message || "Failed to update rule");
 		},
 	});
 
@@ -223,7 +276,9 @@ export function MentorRuleManagementPage() {
 	const confirmAndRun = () => {
 		if (!confirmAction) return;
 		if (confirmAction.type === "add" && pendingRule)
-			addMutation.mutate(pendingRule);
+			addMutation.mutate(pendingRule as CreateAvailabilityInput);
+		if (confirmAction.type === "update" && pendingRule)
+			updateMutation.mutate(pendingRule as UpdateAvailabilityInput);
 		if (confirmAction.type === "delete" && confirmAction.ruleId)
 			deleteMutation.mutate(confirmAction.ruleId);
 		if (confirmAction.type === "enable" && confirmAction.ruleId) {
@@ -237,9 +292,12 @@ export function MentorRuleManagementPage() {
 			<RuleManagementHeader />
 
 			<RuleCreationCard
-				defaultValues={defaultValues}
+				title={editingRule ? "Edit Availability Rule" : "Create New Rule"}
+				submitLabel={editingRule ? "Update Rule" : "Submit Rule Configuration"}
+				onCancel={editingRule ? handleCancelEdit : undefined}
+				defaultValues={editingRule || defaultValues}
 				onSubmit={handleRuleSubmit}
-				isPending={addMutation.isPending}
+				isPending={addMutation.isPending || updateMutation.isPending}
 				formKey={formKey}
 			/>
 
@@ -275,6 +333,7 @@ export function MentorRuleManagementPage() {
 						ruleId,
 					})
 				}
+				onEditRule={handleEditRule}
 			/>
 
 			<ConfirmModal
@@ -284,20 +343,25 @@ export function MentorRuleManagementPage() {
 				title={
 					confirmAction?.type === "add"
 						? "Confirm New Rule"
-						: confirmAction?.type === "delete"
-							? "Disable Rule"
-							: "Re-enable Rule"
+						: confirmAction?.type === "update"
+							? "Confirm Rule Update"
+							: confirmAction?.type === "delete"
+								? "Disable Rule"
+								: "Re-enable Rule"
 				}
 				message={
 					confirmAction?.type === "add"
 						? "This will create a new availability rule for mentees to book sessions."
-						: confirmAction?.type === "delete"
-							? "Are you sure you want to disable this availability rule? Mentees won't be able to book these slots while disabled."
-							: "Bring this rule back into active rotation?"
+						: confirmAction?.type === "update"
+							? "This will update the selected availability rule. Mentees will see the updated schedule immediately."
+							: confirmAction?.type === "delete"
+								? "Are you sure you want to disable this availability rule? Mentees won't be able to book these slots while disabled."
+								: "Bring this rule back into active rotation?"
 				}
 				variant={confirmAction?.type === "delete" ? "destructive" : "default"}
 				isLoading={
 					addMutation.isPending ||
+					updateMutation.isPending ||
 					deleteMutation.isPending ||
 					enableMutation.isPending ||
 					checkEnableMutation.isPending

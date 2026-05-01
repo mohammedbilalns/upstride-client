@@ -1,4 +1,4 @@
-import { Clock, Power } from "lucide-react";
+import { Clock, Pencil, Power } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
@@ -10,12 +10,14 @@ interface AvailabilityRuleCardProps {
 	rule: AvailabilityRule;
 	onDisable: (ruleId: string) => void;
 	onEnable: (ruleId: string) => void;
+	onEdit: (rule: AvailabilityRule) => void;
 }
 
 export function AvailabilityRuleCard({
 	rule,
 	onDisable,
 	onEnable,
+	onEdit,
 }: AvailabilityRuleCardProps) {
 	const active = rule.status;
 
@@ -102,24 +104,32 @@ export function AvailabilityRuleCard({
 					</div>
 				)}
 			</CardContent>
-			<div className="p-4 border-t bg-transparent flex justify-end gap-2 shrink-0">
+			<div className="p-4 border-t bg-transparent grid grid-cols-2 gap-2 shrink-0">
+				<Button
+					variant="ghost"
+					size="sm"
+					className="text-primary hover:text-primary/80 hover:bg-primary/10 justify-center"
+					onClick={() => onEdit(rule)}
+				>
+					<Pencil className="h-4 w-4 mr-2" /> Edit
+				</Button>
 				{active ? (
 					<Button
 						variant="ghost"
 						size="sm"
-						className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 w-full justify-center"
+						className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 justify-center"
 						onClick={() => onDisable(rule.id)}
 					>
-						<Power className="h-4 w-4 mr-2" /> Disable Rule
+						<Power className="h-4 w-4 mr-2" /> Disable
 					</Button>
 				) : (
 					<Button
 						variant="ghost"
 						size="sm"
-						className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 w-full justify-center"
+						className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 justify-center"
 						onClick={() => onEnable(rule.id)}
 					>
-						<Power className="h-4 w-4 mr-2" /> Enable Rule
+						<Power className="h-4 w-4 mr-2" /> Enable
 					</Button>
 				)}
 			</div>

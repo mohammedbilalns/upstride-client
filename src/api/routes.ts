@@ -136,6 +136,8 @@ export const ROUTES = {
 		ROOT: "/",
 		MENTOR: "/mentor/me",
 		CHECK_CREATE: "/check-create",
+		UPDATE: (id: string) => `/${id}`,
+		CHECK_UPDATE: (id: string) => `/${id}/check-update`,
 		DELETE: (id: string) => `/${id}`,
 		REENABLE: (id: string) => `/${id}/reenable`,
 		CHECK_REENABLE: (id: string) => `/${id}/check-reenable`,

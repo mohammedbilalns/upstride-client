@@ -35,12 +35,16 @@ interface CreateRuleFormProps {
 	defaultValues: AvailabilityFormValues;
 	onSubmit: (data: AvailabilityFormValues) => void;
 	isPending: boolean;
+	submitLabel?: string;
+	onCancel?: () => void;
 }
 
 export function CreateRuleForm({
 	defaultValues,
 	onSubmit,
 	isPending,
+	submitLabel = "Submit Rule Configuration",
+	onCancel,
 }: CreateRuleFormProps) {
 	const todayDate = useMemo(() => {
 		const date = new Date();
@@ -156,13 +160,26 @@ export function CreateRuleForm({
 				selector={(state) => [state.canSubmit, state.isSubmitting]}
 			>
 				{([canSubmit, isSubmitting]) => (
-					<Button
-						type="submit"
-						className="mt-6 h-11 px-8 w-full md:w-auto"
-						disabled={!canSubmit || isSubmitting || isPending}
-					>
-						Submit Rule Configuration
-					</Button>
+					<div className="mt-6 flex flex-col md:flex-row gap-3">
+						<Button
+							type="submit"
+							className="h-11 px-8 w-full md:w-auto"
+							disabled={!canSubmit || isSubmitting || isPending}
+						>
+							{submitLabel}
+						</Button>
+						{onCancel && (
+							<Button
+								type="button"
+								variant="outline"
+								className="h-11 px-8 w-full md:w-auto"
+								onClick={onCancel}
+								disabled={isSubmitting || isPending}
+							>
+								Cancel
+							</Button>
+						)}
+					</div>
 				)}
 			</form.Subscribe>
 		</form>
