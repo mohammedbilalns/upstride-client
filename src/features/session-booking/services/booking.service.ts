@@ -71,6 +71,17 @@ export const sessionBookingService = {
 		);
 		return response.data;
 	},
+	rescheduleBooking: async (
+		bookingId: string,
+		startTime: string,
+		endTime: string,
+	) => {
+		const response = await api.patch<ApiSuccess>(
+			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.RESCHEDULE(bookingId)}`,
+			{ startTime, endTime },
+		);
+		return response.data;
+	},
 	downloadReceipt: async (bookingId: string): Promise<void> => {
 		const response = await api.get(
 			`${ROUTES.BOOKINGS.BASE}${ROUTES.BOOKINGS.RECEIPT(bookingId)}`,
