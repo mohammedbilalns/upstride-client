@@ -10,6 +10,7 @@ import {
 	Download,
 	Star,
 	Video,
+	RefreshCcw,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import FieldError from "@/components/common/FieldError";
@@ -49,6 +50,7 @@ interface SessionDetailsDialogProps {
 		comment: string;
 	}) => Promise<void>;
 	onSubmitFeedback?: (input: { feedback: string }) => Promise<void>;
+	onReschedule?: () => void;
 	isSubmittingReview?: boolean;
 	isSubmittingFeedback?: boolean;
 	mode?: "dialog" | "page";
@@ -72,6 +74,7 @@ export function SessionDetailsDialog({
 	onSubmitReview,
 	isSubmittingReview = false,
 	onSubmitFeedback,
+	onReschedule,
 	isSubmittingFeedback = false,
 	mode = "dialog",
 	onBack,
@@ -160,6 +163,10 @@ export function SessionDetailsDialog({
 		booking.paymentStatus === "COMPLETED" &&
 		Boolean(booking.settledAt) &&
 		!existingReview;
+	const canReschedule =
+		onReschedule &&
+		booking.status === "CONFIRMED" &&
+		new Date(booking.startTime).getTime() > Date.now() + 24 * 60 * 60 * 1000;
 	const showNextStep = !isCompleted;
 	const resolvedPayoutLabel = isCompleted
 		? payoutLabel.replace("Receives", "Received").replace("Receive", "Received")
@@ -250,6 +257,20 @@ export function SessionDetailsDialog({
 						<span>Complete payment</span>
 					</Button>
 				) : null,
+			};
+		}
+
+		if (canReschedule) {
+			return {
+				title: "Reschedule available",
+				description:
+					"You can reschedule this session up to 24 hours before the start time.",
+				node: (
+					<Button type="button" variant="outline" onClick={onReschedule}>
+						<RefreshCcw className="mr-2 h-4 w-4" />
+						<span>Reschedule Session</span>
+					</Button>
+				),
 			};
 		}
 

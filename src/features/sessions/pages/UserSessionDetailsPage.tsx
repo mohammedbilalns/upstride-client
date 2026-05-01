@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import type { ApiError } from "@/api/apiError";
 import { reviewService } from "@/features/reviews";
 import { sessionBookingService } from "@/features/session-booking";
+import { RescheduleSessionModal } from "@/features/session-booking/components/RescheduleSessionModal";
 import { Route } from "@/routes/_app-layout/_user-layout/sessions/$sessionId";
 import { SessionDetailsDialog } from "../components/SessionDetailsDialog";
 import { useSessionDetails } from "../hooks/queries/useSessionDetails";
@@ -14,6 +16,7 @@ export function UserSessionDetailsPage() {
 	const queryClient = useQueryClient();
 	const { data, isLoading } = useSessionDetails(sessionId);
 	const booking = data?.data.booking ?? null;
+	const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState(false);
 
 	const repayMutation = useMutation({
 		mutationFn: (bookingId: string) =>
@@ -83,32 +86,44 @@ export function UserSessionDetailsPage() {
 	);
 
 	return (
-		<SessionDetailsDialog
-			isOpen
-			onClose={() => undefined}
-			selectedBooking={booking}
-			personLabel="Mentor"
-			personName={booking.mentorName}
-			showReceipt
-			mode="page"
-			onBack={() =>
-				navigate({
-					to: "/sessions",
-				})
-			}
-			backLabel="Back to sessions"
-			onRepay={async () => {
-				await repayMutation.mutateAsync(booking.id);
-			}}
-			canSubmitReview={canSubmitReview}
-			onSubmitReview={async (input) => {
-				await reviewMutation.mutateAsync({
-					bookingId: booking.id,
-					rating: input.rating,
-					comment: input.comment,
-				});
-			}}
-			isSubmittingReview={reviewMutation.isPending}
-		/>
+		<>
+			<SessionDetailsDialog
+				isOpen
+				onClose={() => undefined}
+				selectedBooking={booking}
+				personLabel="Mentor"
+				personName={booking.mentorName}
+				showReceipt
+				mode="page"
+				onBack={() =>
+					navigate({
+						to: "/sessions",
+					})
+				}
+				backLabel="Back to sessions"
+				onRepay={async () => {
+					await repayMutation.mutateAsync(booking.id);
+				}}
+				onReschedule={() => setIsRescheduleModalOpen(true)}
+				canSubmitReview={canSubmitReview}
+				onSubmitReview={async (input) => {
+					await reviewMutation.mutateAsync({
+						bookingId: booking.id,
+						rating: input.rating,
+						comment: input.comment,
+					});
+				}}
+				isSubmittingReview={reviewMutation.isPending}
+			/>
+
+			{isRescheduleModalOpen && (
+				<RescheduleSessionModal
+					isOpen={isRescheduleModalOpen}
+					onClose={() => setIsRescheduleModalOpen(false)}
+					bookingId={booking.id}
+					mentorId={booking.mentorId}
+				/>
+			)}
+		</>
 	);
 }

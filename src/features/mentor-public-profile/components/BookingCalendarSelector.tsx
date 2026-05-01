@@ -18,6 +18,8 @@ interface BookingCalendarSelectorProps {
 	handleBookClick: (slot: AvailabilitySlot) => void;
 	bookingSlotId: string | null;
 	isBooking: boolean;
+	layout?: "vertical" | "horizontal";
+	bookLabel?: string;
 }
 
 export function BookingCalendarSelector({
@@ -29,9 +31,19 @@ export function BookingCalendarSelector({
 	handleBookClick,
 	bookingSlotId,
 	isBooking,
+	layout = "vertical",
+	bookLabel = "Book",
 }: BookingCalendarSelectorProps) {
+	const isHorizontal = layout === "horizontal";
+
 	return (
-		<div className="space-y-4 xl:sticky xl:top-6">
+		<div
+			className={
+				isHorizontal
+					? "grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.2fr]"
+					: "space-y-4 xl:sticky xl:top-6"
+			}
+		>
 			<Card className="border-border/60 shadow-sm">
 				<CardHeader className="flex flex-col gap-2">
 					<CardTitle className="text-lg">Pick a day</CardTitle>
@@ -77,7 +89,7 @@ export function BookingCalendarSelector({
 						</div>
 					)}
 					{!isLoading && availableSlots.length > 0 && (
-						<ScrollArea className="xl:h-[34rem]">
+						<ScrollArea className={isHorizontal ? "h-[30rem]" : "xl:h-[34rem]"}>
 							<div className="grid grid-cols-1 gap-2 xl:pr-3">
 								{availableSlots.map((slot) => (
 									<div
@@ -115,8 +127,8 @@ export function BookingCalendarSelector({
 														}
 													>
 														{isBooking && bookingSlotId === slot.startTime
-															? "Booking..."
-															: "Book"}
+															? "Processing..."
+															: bookLabel}
 													</Button>
 												</>
 											) : (
