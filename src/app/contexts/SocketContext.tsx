@@ -10,11 +10,11 @@ import type {
 	GetUnreadNotificationCountOutput,
 	Notification,
 } from "@/features/notification/types";
+import { IncomingCallOverlay } from "@/features/session-call/components/IncomingCallOverlay";
 import {
 	disconnectSocket,
 	getSocketInstance,
 } from "@/shared/services/socket.service";
-import { IncomingCallOverlay } from "@/features/session-call/components/IncomingCallOverlay";
 
 interface SocketContextType {
 	socket: Socket | null;

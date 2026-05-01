@@ -1,15 +1,11 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { authService } from "@/features/auth/services/auth.service";
 import { sessionBookingService } from "@/features/session-booking/services/booking.service";
 import { CallRoom } from "@/features/session-call/components/CallRoom";
 
 export const Route = createFileRoute("/_app-layout/call/$bookingId")({
-	loader: async ({ params }) => {
-		// Ideally we would fetch the booking details here and ensure the
-		// current user is either the mentor or the mentee.
+	loader: async ({ params, context }) => {
 		try {
-			const me = await authService.getMe();
-			const userId = me.data.user.id;
+			const userId = context.auth.user?.id;
 			const bookingResponse = await sessionBookingService.getBookingDetails(
 				params.bookingId,
 			);

@@ -17,7 +17,7 @@ export const Route = createFileRoute(
 	},
 	component: MentorPublicProfileRoute,
 	errorComponent: ({ error }) => {
-		const status = (error as ApiError | undefined)?.response?.status;
+		const status = (error as ApiError)?.response?.status;
 		if (status === 404 || status === 400) {
 			return <NotFoundComponent />;
 		}

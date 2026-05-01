@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import type { ApiError } from "@/api/apiError";
 import ErrorComponent from "@/components/common/ErrorComponent";
 import { ChatNotFound } from "@/features/chat/components/ChatNotFound";
 import { getChatInfiniteQueryOptions } from "@/features/chat/hooks/queries/useChatQueries";
@@ -6,24 +7,12 @@ import { getChatInfiniteQueryOptions } from "@/features/chat/hooks/queries/useCh
 export const Route = createFileRoute("/_app-layout/_user-layout/chats/$chatId")(
 	{
 		loader: async ({ context: { queryClient }, params }) => {
-			try {
-				await queryClient.ensureInfiniteQueryData(
-					getChatInfiniteQueryOptions(params.chatId),
-				);
-			} catch (error) {
-				const status =
-					(error as { response?: { status?: number } })?.response?.status ??
-					(error as { status?: number })?.status;
-				if (status === 404 || status === 400) {
-					return;
-				}
-				throw error;
-			}
+			await queryClient.ensureInfiniteQueryData(
+				getChatInfiniteQueryOptions(params.chatId),
+			);
 		},
 		errorComponent: ({ error }) => {
-			const status =
-				(error as { response?: { status?: number } })?.response?.status ??
-				(error as { status?: number })?.status;
+			const status = (error as ApiError)?.response?.status;
 			if (status === 404 || status === 400) {
 				return <ChatNotFound />;
 			}
