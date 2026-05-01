@@ -27,7 +27,7 @@ const App = () => {
 		};
 	}, []);
 
-	if (loading) return <PendingComponent resource="session" />;
+	if (loading) return <PendingComponent />;
 
 	return <RouterProvider router={router} />;
 };
