@@ -108,7 +108,11 @@ export const useWebRTC = (
 			createOffer();
 		};
 
-		const handleOffer = async ({ offer }: { offer: any }) => {
+		const handleOffer = async ({
+			offer,
+		}: {
+			offer: RTCSessionDescriptionInit;
+		}) => {
 			if (!peerConnection.current) return;
 			if (!isLocalMediaReady.current) {
 				setTimeout(() => handleOffer({ offer }), 500);
@@ -134,7 +138,11 @@ export const useWebRTC = (
 			}
 		};
 
-		const handleAnswer = async ({ answer }: { answer: any }) => {
+		const handleAnswer = async ({
+			answer,
+		}: {
+			answer: RTCSessionDescriptionInit;
+		}) => {
 			if (!peerConnection.current) return;
 			try {
 				await peerConnection.current.setRemoteDescription(
@@ -241,7 +249,6 @@ export const useWebRTC = (
 		return () => {
 			leaveSession();
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [socket, createPeerConnection, enabled]);
 
 	const toggleCam = useCallback(async () => {

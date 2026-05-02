@@ -46,7 +46,6 @@ export function EditProfileDialog({ profile, open, onOpenChange }: Props) {
 		},
 	});
 
-	//FIX: use tanstack form here
 	const form = useForm({
 		defaultValues: {
 			name: profile.name,

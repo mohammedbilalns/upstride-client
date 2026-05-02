@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { updateQueryCache } from "@/shared/utils/updateQueryCache";
 import { AdminManagementService } from "../../services/admin.service";
 import type { GetAdminsResponse } from "../../types";
+import { updateAdminStatus } from "./useBlockAdmin";
 
 export function useUnblockAdmin() {
 	const queryClient = useQueryClient();
@@ -19,17 +20,4 @@ export function useUnblockAdmin() {
 			toast.error(error?.message || "Failed to unblock admin");
 		},
 	});
-}
-
-function updateAdminStatus(
-	data: GetAdminsResponse,
-	adminId: string,
-	status: "active" | "blocked",
-): GetAdminsResponse {
-	return {
-		...data,
-		admins: data.admins.map((admin) =>
-			admin.id === adminId ? { ...admin, status } : admin,
-		),
-	};
 }
