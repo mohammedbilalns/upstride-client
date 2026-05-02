@@ -249,8 +249,7 @@ export function SessionDetailsDialog({
 		if (booking.paymentStatus === "PENDING") {
 			return {
 				title: "Payment pending",
-				description:
-					"Complete payment to confirm this booking and unlock the session details.",
+				description: "Complete payment to confirm this booking.",
 				node: onRepay ? (
 					<Button type="button" onClick={onRepay}>
 						<CreditCard className="h-4 w-4" />
@@ -277,8 +276,7 @@ export function SessionDetailsDialog({
 		if (canJoinMeeting) {
 			return {
 				title: "Join meeting room",
-				description:
-					"Join the room on scheduled time.",
+				description: "Join the room on scheduled time.",
 				node: (
 					<Link
 						to="/call/$bookingId"
