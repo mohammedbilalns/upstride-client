@@ -278,7 +278,7 @@ export function SessionDetailsDialog({
 			return {
 				title: "Join meeting room",
 				description:
-					"The session is active. Open the room from here when you're ready.",
+					"Join the room on scheduled time.",
 				node: (
 					<Link
 						to="/call/$bookingId"
