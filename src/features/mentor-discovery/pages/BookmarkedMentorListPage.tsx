@@ -84,7 +84,9 @@ export function BookmarkedMentorListPage() {
 						Delete list
 					</Button>
 					<Button asChild variant="outline" className="w-full sm:w-auto">
-						<Link to="/mentors">Find more mentors</Link>
+						<Link to="/mentors" search={{}}>
+							Find more mentors
+						</Link>
 					</Button>
 				</div>
 			</div>

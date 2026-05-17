@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/Card";
 import { Separator } from "@/components/ui/Separator";
 import type { UserProfile } from "@/features/profile/types";
 import type { Review } from "@/features/reviews";
+import { MentorLanguageMap } from "@/shared/constants/language.constants";
 import { formatDateShort } from "@/shared/utils/date";
 import type { PublicMentorProfile } from "../types";
 
@@ -138,6 +139,18 @@ export function MentorProfileDetails({
 						{profile.skills.map((skill) => (
 							<Badge key={skill.id} variant="outline">
 								{skill.name} · {skill.level.toLowerCase()}
+							</Badge>
+						))}
+					</div>
+				</div>
+				<div className="space-y-3">
+					<h3 className="text-sm font-semibold">Languages</h3>
+					<div className="flex flex-wrap gap-2">
+						{profile.languages.map((language) => (
+							<Badge key={language} variant="outline">
+								{MentorLanguageMap[
+									language as keyof typeof MentorLanguageMap
+								] ?? language}
 							</Badge>
 						))}
 					</div>

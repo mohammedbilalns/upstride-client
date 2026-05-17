@@ -7,6 +7,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/Select";
+import {
+	MentorLanguageCodes,
+	MentorLanguageMap,
+} from "@/shared/constants/language.constants";
 import type { CatalogInterest } from "@/features/onboarding/types";
 import type { MentorDiscoverySearch } from "../validators/mentor-discovery-params.schema";
 
@@ -50,6 +54,7 @@ export function MentorFilters({
 	const hasFilters =
 		search.search ||
 		search.category ||
+		(search.languages && search.languages.length > 0) ||
 		search.sort !== undefined ||
 		search.minExperience !== undefined ||
 		search.maxExperience !== undefined;
@@ -116,6 +121,39 @@ export function MentorFilters({
 							))}
 						</SelectContent>
 					</Select>
+				</div>
+
+				<div className="space-y-2">
+					<p className="text-xs font-semibold tracking-widest text-zinc-500 dark:text-zinc-400">
+						LANGUAGES
+					</p>
+					<div className="flex flex-wrap gap-2">
+						{MentorLanguageCodes.map((languageCode) => {
+							const selected =
+								search.languages?.includes(languageCode) ?? false;
+							return (
+								<button
+									key={languageCode}
+									type="button"
+									className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
+										selected
+											? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900"
+											: "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950/40 dark:text-zinc-300"
+									}`}
+									onClick={() => {
+										const current = search.languages ?? [];
+										onUpdate({
+											languages: selected
+												? current.filter((value) => value !== languageCode)
+												: [...current, languageCode],
+										});
+									}}
+								>
+									{MentorLanguageMap[languageCode]}
+								</button>
+							);
+						})}
+					</div>
 				</div>
 
 				<div className="space-y-2">

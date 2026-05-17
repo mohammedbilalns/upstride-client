@@ -120,7 +120,9 @@ export function BookmarkedMentorsPage() {
 					</CardHeader>
 					<CardContent>
 						<Button asChild variant="outline">
-							<Link to="/mentors">Find mentors</Link>
+							<Link to="/mentors" search={{}}>
+								Find mentors
+							</Link>
 						</Button>
 					</CardContent>
 				</Card>

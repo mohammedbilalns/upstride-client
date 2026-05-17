@@ -48,6 +48,7 @@ export interface GetMentorsDiscoveryInput {
 	page: number;
 	search?: string;
 	category?: string;
+	languages?: string[];
 	tierId?: string;
 	minExperience?: number;
 	maxExperience?: number;
@@ -64,6 +65,7 @@ export interface MentorDiscoveryItem {
 	yearsOfExperience: number;
 	avgRating: number;
 	tierId: string | null;
+	languages: string[];
 	categoryIds: string[];
 	categories: {
 		id: string;

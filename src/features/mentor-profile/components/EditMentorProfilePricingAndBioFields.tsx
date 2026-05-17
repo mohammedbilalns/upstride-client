@@ -7,6 +7,10 @@ import { Label } from "@/components/ui/Label";
 import { Textarea } from "@/components/ui/Textarea";
 import { useProfessions } from "@/features/mentor-registration/hooks/queries/useCatalog";
 import type { Profession } from "@/features/mentor-registration/services/catalog.service";
+import {
+	MentorLanguageCodes,
+	MentorLanguageMap,
+} from "@/shared/constants/language.constants";
 import { getErrorMessage } from "@/shared/utils/formValidation";
 import type { MentorProfileResponse } from "../types";
 import type { EditMentorProfileForm } from "./EditMentorProfileEditor";
@@ -108,6 +112,43 @@ export function EditMentorProfilePricingAndBioFields({
 							onChange={(e) => field.handleChange(e.target.value)}
 							onBlur={field.handleBlur}
 						/>
+						<FieldError
+							message={getErrorMessage(field.state.meta.errors?.[0])}
+						/>
+					</div>
+				)}
+			</form.Field>
+			<form.Field name="languages">
+				{(field) => (
+					<div className="space-y-2">
+						<Label>Languages</Label>
+						<div className="flex flex-wrap gap-2">
+							{MentorLanguageCodes.map((languageCode) => {
+								const selected = field.state.value.includes(languageCode);
+								return (
+									<button
+										key={languageCode}
+										type="button"
+										className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
+											selected
+												? "border-primary bg-primary text-primary-foreground"
+												: "border-border bg-background text-foreground hover:border-primary/40"
+										}`}
+										onClick={() =>
+											field.handleChange(
+												selected
+													? field.state.value.filter(
+															(value) => value !== languageCode,
+														)
+													: [...field.state.value, languageCode],
+											)
+										}
+									>
+										{MentorLanguageMap[languageCode]}
+									</button>
+								);
+							})}
+						</div>
 						<FieldError
 							message={getErrorMessage(field.state.meta.errors?.[0])}
 						/>

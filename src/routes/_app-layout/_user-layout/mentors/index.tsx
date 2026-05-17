@@ -11,6 +11,7 @@ export const Route = createFileRoute("/_app-layout/_user-layout/mentors/")({
 			getMentorsInfiniteQueryOptions({
 				search: search.search,
 				category: search.category,
+				languages: search.languages,
 				tierId: search.tierId,
 				minExperience: search.minExperience,
 				maxExperience: search.maxExperience,

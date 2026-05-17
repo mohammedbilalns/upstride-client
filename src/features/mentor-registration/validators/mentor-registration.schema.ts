@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { SkillLevelValues } from "@/shared/types/user";
+import { MentorLanguageCodes } from "@/shared/constants/language.constants";
 
 export const MAX_MENTOR_AREAS_OF_EXPERTISE = 2;
 export const MAX_MENTOR_EXPERIENCE_ITEMS = 7;
@@ -42,6 +43,9 @@ export const RegisterMentorSchema = z.object({
 	educationalQualifications: z
 		.array(z.string().trim().min(1, "Qualification details cannot be empty"))
 		.min(1, "At least one qualification is required"),
+	languages: z
+		.array(z.enum(MentorLanguageCodes))
+		.min(1, "Select at least one language"),
 	areasOfExpertise: z
 		.array(z.string().trim().min(1, "Please select an area of expertise"))
 		.min(1, "At least one area of expertise is required")

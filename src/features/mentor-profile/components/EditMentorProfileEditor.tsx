@@ -18,6 +18,7 @@ export type EditMentorProfileFormValues = {
 	currentRoleId: string;
 	organization: string;
 	areasOfExpertise: string[];
+	languages: string[];
 	currentPricePer30Min: string;
 	bio: string;
 	newSkillId: string;
@@ -95,6 +96,7 @@ export function EditMentorProfileEditor({
 			currentRoleId: "",
 			organization: "",
 			areasOfExpertise: [] as string[],
+			languages: [] as string[],
 			currentPricePer30Min: "",
 			bio: "",
 			newSkillId: "",
@@ -106,6 +108,7 @@ export function EditMentorProfileEditor({
 				currentRoleId: value.currentRoleId,
 				organization: value.organization.trim(),
 				areasOfExpertise: value.areasOfExpertise,
+				languages: value.languages,
 				currentPricePer30Min:
 					value.currentPricePer30Min && value.currentPricePer30Min.trim() !== ""
 						? Number(value.currentPricePer30Min)
@@ -149,6 +152,7 @@ export function EditMentorProfileEditor({
 				"areasOfExpertise",
 				profile.expertises.map((expertise) => expertise.id),
 			);
+			form.setFieldValue("languages", profile.languages);
 			form.setFieldValue(
 				"currentPricePer30Min",
 				profile.currentPricePer30Min

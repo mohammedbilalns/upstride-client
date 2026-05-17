@@ -25,6 +25,7 @@ import { Route as AdminLayoutMentorManagementRouteImport } from './routes/_admin
 import { Route as AdminLayoutDashboardRouteImport } from './routes/_admin-layout/dashboard'
 import { Route as AdminLayoutCatalogManagementRouteImport } from './routes/_admin-layout/catalog-management'
 import { Route as AdminLayoutAdminManagementRouteImport } from './routes/_admin-layout/admin-management'
+import { Route as AppLayoutCallTestRouteImport } from './routes/_app-layout/call/test'
 import { Route as AppLayoutCallBookingIdRouteImport } from './routes/_app-layout/call/$bookingId'
 import { Route as AppLayoutUserLayoutSessionsRouteImport } from './routes/_app-layout/_user-layout/sessions'
 import { Route as AppLayoutUserLayoutProfileRouteImport } from './routes/_app-layout/_user-layout/profile'
@@ -141,6 +142,11 @@ const AdminLayoutAdminManagementRoute =
     path: '/admin-management',
     getParentRoute: () => AdminLayoutRoute,
   } as any)
+const AppLayoutCallTestRoute = AppLayoutCallTestRouteImport.update({
+  id: '/call/test',
+  path: '/call/test',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 const AppLayoutCallBookingIdRoute = AppLayoutCallBookingIdRouteImport.update({
   id: '/call/$bookingId',
   path: '/call/$bookingId',
@@ -360,6 +366,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AppLayoutUserLayoutProfileRouteWithChildren
   '/sessions': typeof AppLayoutUserLayoutSessionsRouteWithChildren
   '/call/$bookingId': typeof AppLayoutCallBookingIdRoute
+  '/call/test': typeof AppLayoutCallTestRoute
   '/mentor-sessions/$sessionId': typeof AppLayoutMentorLayoutMentorSessionsSessionIdRoute
   '/chats/$chatId': typeof AppLayoutUserLayoutChatsChatIdRoute
   '/mentor/register': typeof AppLayoutUserLayoutMentorRegisterRoute
@@ -399,6 +406,7 @@ export interface FileRoutesByTo {
   '/home': typeof AppLayoutUserLayoutHomeRoute
   '/mentor': typeof AppLayoutUserLayoutMentorRouteWithChildren
   '/call/$bookingId': typeof AppLayoutCallBookingIdRoute
+  '/call/test': typeof AppLayoutCallTestRoute
   '/mentor-sessions/$sessionId': typeof AppLayoutMentorLayoutMentorSessionsSessionIdRoute
   '/chats/$chatId': typeof AppLayoutUserLayoutChatsChatIdRoute
   '/mentor/register': typeof AppLayoutUserLayoutMentorRegisterRoute
@@ -449,6 +457,7 @@ export interface FileRoutesById {
   '/_app-layout/_user-layout/profile': typeof AppLayoutUserLayoutProfileRouteWithChildren
   '/_app-layout/_user-layout/sessions': typeof AppLayoutUserLayoutSessionsRouteWithChildren
   '/_app-layout/call/$bookingId': typeof AppLayoutCallBookingIdRoute
+  '/_app-layout/call/test': typeof AppLayoutCallTestRoute
   '/_app-layout/_mentor-layout/mentor-sessions/$sessionId': typeof AppLayoutMentorLayoutMentorSessionsSessionIdRoute
   '/_app-layout/_user-layout/chats/$chatId': typeof AppLayoutUserLayoutChatsChatIdRoute
   '/_app-layout/_user-layout/mentor/register': typeof AppLayoutUserLayoutMentorRegisterRoute
@@ -495,6 +504,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/sessions'
     | '/call/$bookingId'
+    | '/call/test'
     | '/mentor-sessions/$sessionId'
     | '/chats/$chatId'
     | '/mentor/register'
@@ -534,6 +544,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/mentor'
     | '/call/$bookingId'
+    | '/call/test'
     | '/mentor-sessions/$sessionId'
     | '/chats/$chatId'
     | '/mentor/register'
@@ -583,6 +594,7 @@ export interface FileRouteTypes {
     | '/_app-layout/_user-layout/profile'
     | '/_app-layout/_user-layout/sessions'
     | '/_app-layout/call/$bookingId'
+    | '/_app-layout/call/test'
     | '/_app-layout/_mentor-layout/mentor-sessions/$sessionId'
     | '/_app-layout/_user-layout/chats/$chatId'
     | '/_app-layout/_user-layout/mentor/register'
@@ -722,6 +734,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin-management'
       preLoaderRoute: typeof AdminLayoutAdminManagementRouteImport
       parentRoute: typeof AdminLayoutRoute
+    }
+    '/_app-layout/call/test': {
+      id: '/_app-layout/call/test'
+      path: '/call/test'
+      fullPath: '/call/test'
+      preLoaderRoute: typeof AppLayoutCallTestRouteImport
+      parentRoute: typeof AppLayoutRoute
     }
     '/_app-layout/call/$bookingId': {
       id: '/_app-layout/call/$bookingId'
@@ -1144,12 +1163,14 @@ interface AppLayoutRouteChildren {
   AppLayoutMentorLayoutRoute: typeof AppLayoutMentorLayoutRouteWithChildren
   AppLayoutUserLayoutRoute: typeof AppLayoutUserLayoutRouteWithChildren
   AppLayoutCallBookingIdRoute: typeof AppLayoutCallBookingIdRoute
+  AppLayoutCallTestRoute: typeof AppLayoutCallTestRoute
 }
 
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppLayoutMentorLayoutRoute: AppLayoutMentorLayoutRouteWithChildren,
   AppLayoutUserLayoutRoute: AppLayoutUserLayoutRouteWithChildren,
   AppLayoutCallBookingIdRoute: AppLayoutCallBookingIdRoute,
+  AppLayoutCallTestRoute: AppLayoutCallTestRoute,
 }
 
 const AppLayoutRouteWithChildren = AppLayoutRoute._addFileChildren(

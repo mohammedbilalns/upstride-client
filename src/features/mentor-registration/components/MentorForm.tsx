@@ -46,6 +46,7 @@ export function MentorForm({ existingProfile, onCancel }: MentorFormProps) {
 			educationalQualifications: existingProfile?.educationalQualifications || [
 				"",
 			],
+			languages: existingProfile?.languages || ["en"],
 			areasOfExpertise: existingProfile?.areasOfExpertise || [],
 			toolsAndSkills: (existingProfile?.toolsAndSkills as MentorSkill[]) || [],
 			experience: (existingProfile?.experience as MentorExperience[]) || [

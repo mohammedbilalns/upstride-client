@@ -18,6 +18,7 @@ import { EditMentorProfileEditor } from "@/features/mentor-profile/components/Ed
 import { ProfileEditView, useProfile } from "@/features/profile";
 import { EditPreferencesEditor } from "@/features/profile/components/EditPreferencesEditor";
 import { ProfilePreferencesCard } from "@/features/profile/components/ProfilePreferencesCard";
+import { MentorLanguageMap } from "@/shared/constants/language.constants";
 
 export function ProfileOverviewPage() {
 	const { data: profile, isLoading } = useProfile();
@@ -230,6 +231,20 @@ export function ProfileOverviewPage() {
 												{mentorProfile.expertises.map((exp) => (
 													<Badge key={exp.id} variant="outline">
 														{exp.name}
+													</Badge>
+												))}
+											</div>
+										</div>
+										<div className="space-y-2">
+											<p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+												Languages
+											</p>
+											<div className="flex flex-wrap gap-2">
+												{mentorProfile.languages.map((language) => (
+													<Badge key={language} variant="outline">
+														{MentorLanguageMap[
+															language as keyof typeof MentorLanguageMap
+														] ?? language}
 													</Badge>
 												))}
 											</div>

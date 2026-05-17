@@ -34,7 +34,15 @@ export function MentorDiscoveryPage() {
 
 	const clearFilters = () => {
 		navigate({
-			search: {},
+			search: () => ({
+				search: undefined,
+				category: undefined,
+				languages: undefined,
+				tierId: undefined,
+				minExperience: undefined,
+				maxExperience: undefined,
+				sort: undefined,
+			}),
 		});
 	};
 
@@ -53,6 +61,7 @@ export function MentorDiscoveryPage() {
 			getMentorsInfiniteQueryOptions({
 				search: search.search,
 				category: search.category,
+				languages: search.languages,
 				tierId: search.tierId,
 				minExperience: search.minExperience,
 				maxExperience: search.maxExperience,

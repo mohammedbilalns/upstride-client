@@ -12,6 +12,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/Card";
+import { MentorLanguageMap } from "@/shared/constants/language.constants";
 import type { MentorDiscoveryItem } from "../types";
 import { MentorListDialog } from "./MentorListDialog";
 
@@ -82,6 +83,17 @@ export function MentorCard({ mentor, showBookmark = true }: MentorCardProps) {
 						</div>
 					)}
 					<div className="flex flex-wrap gap-1.5">
+						{mentor.languages.slice(0, 2).map((language) => (
+							<Badge
+								key={language}
+								variant="outline"
+								className="font-normal text-zinc-600 dark:text-zinc-300"
+							>
+								{MentorLanguageMap[
+									language as keyof typeof MentorLanguageMap
+								] ?? language}
+							</Badge>
+						))}
 						{mentor.categories.slice(0, 3).map((category) => (
 							<Badge
 								key={category.id}

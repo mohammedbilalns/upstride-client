@@ -14,6 +14,7 @@ export interface MentorProfileResponse {
 		};
 		personalWebsite: string | null;
 		educationalQualifications: string[];
+		languages: string[];
 		expertises: { id: string; name: string }[];
 		skills: { id: string; name: string; level: string }[];
 		tierName: string | null;
@@ -27,6 +28,7 @@ export interface UpdateMentorProfileInput {
 	currentRoleId?: string;
 	organization?: string;
 	areasOfExpertise?: string[];
+	languages?: string[];
 	currentPricePer30Min?: number;
 	bio?: string;
 	educationalQualifications?: string[];
