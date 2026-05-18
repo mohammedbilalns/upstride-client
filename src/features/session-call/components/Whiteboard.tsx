@@ -9,6 +9,7 @@ import type { Socket } from "socket.io-client";
 import { toast } from "sonner";
 import { useTheme } from "@/app/contexts/ThemeContext";
 import { Button } from "@/components/ui/Button";
+import { emitWhenConnected } from "@/shared/services/socket.service";
 
 interface WhiteboardProps {
 	socket: Socket | null;
@@ -125,7 +126,7 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 		const newPerm = !menteeHasPermission;
 		setMenteeHasPermission(newPerm);
 
-		socket.emit("whiteboard:permission", {
+		void emitWhenConnected(socket, "whiteboard:permission", {
 			bookingId,
 			menteeId,
 			allow: newPerm,
@@ -148,7 +149,7 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 			if (timeSinceLastEmit >= emitDelay) {
 				// Immediate emit for leading edge
 				lastEmitTime.current = now;
-				socket.emit("whiteboard:sync", {
+				void emitWhenConnected(socket, "whiteboard:sync", {
 					bookingId,
 					update: elements,
 				});
@@ -163,7 +164,7 @@ export const Whiteboard: React.FC<WhiteboardProps> = ({
 				}
 				throttleTimeout.current = setTimeout(() => {
 					lastEmitTime.current = Date.now();
-					socket.emit("whiteboard:sync", {
+					void emitWhenConnected(socket, "whiteboard:sync", {
 						bookingId,
 						update: elements,
 					});

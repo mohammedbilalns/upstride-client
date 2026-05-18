@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 import type { Socket } from "socket.io-client";
+import { emitWhenConnected } from "@/shared/services/socket.service";
 
 export const useRTCPeerConnection = (
 	bookingId: string,
@@ -66,7 +67,7 @@ export const useRTCPeerConnection = (
 
 		pc.onicecandidate = (event) => {
 			if (event.candidate && socket) {
-				socket.emit("call:ice-candidate", {
+				void emitWhenConnected(socket, "call:ice-candidate", {
 					bookingId,
 					candidate: event.candidate,
 				});

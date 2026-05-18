@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from "react";
 import type { Socket } from "socket.io-client";
+import { emitWhenConnected } from "@/shared/services/socket.service";
 import { useMediaDevices } from "./useMediaDevices";
 import { useRTCPeerConnection } from "./useRtcPeerConnection";
 
@@ -58,7 +59,7 @@ export const useWebRTC = (
 			console.log("[WebRTC] Creating offer", bookingId);
 			const offer = await peerConnection.current.createOffer();
 			await peerConnection.current.setLocalDescription(offer);
-			socket?.emit("call:offer", { bookingId, offer });
+			await emitWhenConnected(socket, "call:offer", { bookingId, offer });
 		} catch (error) {
 			console.error("[WebRTC] Failed to create offer", error, bookingId);
 		}
@@ -132,7 +133,7 @@ export const useWebRTC = (
 
 				const answer = await peerConnection.current.createAnswer();
 				await peerConnection.current.setLocalDescription(answer);
-				socket.emit("call:answer", { bookingId, answer });
+				await emitWhenConnected(socket, "call:answer", { bookingId, answer });
 			} catch (error) {
 				console.error("[WebRTC] Failed to handle offer", error, bookingId);
 			}
@@ -257,7 +258,7 @@ export const useWebRTC = (
 		if (isCamOn && localStream) {
 			localStream.getVideoTracks().forEach((t) => t.stop());
 			setIsCamOn(false);
-			socket?.emit("call:toggled-media", {
+			void emitWhenConnected(socket, "call:toggled-media", {
 				bookingId,
 				mediaType: "camera",
 				isEnabled: false,
@@ -289,7 +290,7 @@ export const useWebRTC = (
 				}
 
 				setIsCamOn(true);
-				socket?.emit("call:toggled-media", {
+				void emitWhenConnected(socket, "call:toggled-media", {
 					bookingId,
 					mediaType: "camera",
 					isEnabled: true,
@@ -315,7 +316,7 @@ export const useWebRTC = (
 				const enabled = !audioTrack.enabled;
 				audioTrack.enabled = enabled;
 				setIsMicOn(enabled);
-				socket?.emit("call:toggled-media", {
+				void emitWhenConnected(socket, "call:toggled-media", {
 					bookingId,
 					mediaType: "mic",
 					isEnabled: enabled,
@@ -337,7 +338,7 @@ export const useWebRTC = (
 				setLocalScreenStream(null);
 			}
 			setIsScreenSharing(false);
-			socket?.emit("call:toggled-media", {
+			void emitWhenConnected(socket, "call:toggled-media", {
 				bookingId,
 				mediaType: "screen",
 				isEnabled: false,
@@ -361,7 +362,7 @@ export const useWebRTC = (
 
 				setLocalScreenStream(screenStream);
 				setIsScreenSharing(true);
-				socket?.emit("call:toggled-media", {
+				void emitWhenConnected(socket, "call:toggled-media", {
 					bookingId,
 					mediaType: "screen",
 					isEnabled: true,

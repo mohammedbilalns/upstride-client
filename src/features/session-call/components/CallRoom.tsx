@@ -10,6 +10,7 @@ import FieldError from "@/components/common/FieldError";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Textarea";
 import { feedbackFormSchema } from "@/features/session-booking/validators/feedback.schema";
+import { emitWhenConnected } from "@/shared/services/socket.service";
 import { playNotificationSound } from "@/shared/utils/audio";
 import { getErrorMessage } from "@/shared/utils/formValidation";
 import { useChat } from "../hooks/useChat";
@@ -66,7 +67,15 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 				bookingId: value.bookingId,
 				feedback: value.feedback,
 			};
-			socket.emit("call:terminate", payload);
+			const emitted = await emitWhenConnected(
+				socket,
+				"call:terminate",
+				payload,
+			);
+			if (!emitted) {
+				setIsTerminating(false);
+				toast.error("Unable to reach the call server. Please try again.");
+			}
 		},
 		validators: {
 			onSubmit: feedbackFormSchema
@@ -145,7 +154,7 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 	const emitLeaveOnce = () => {
 		if (!socket || hasSentLeaveRef.current) return;
 		hasSentLeaveRef.current = true;
-		socket.emit("call:leave", { bookingId });
+		void emitWhenConnected(socket, "call:leave", { bookingId });
 	};
 
 	const {
@@ -174,14 +183,21 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 		if (!socket) return;
 
 		console.log("[CallRoom] Initiating pre-join check", bookingId);
-		socket.emit("call:pre-join-check", { bookingId });
+		void emitWhenConnected(socket, "call:pre-join-check", { bookingId }).then(
+			(emitted) => {
+				if (!emitted) {
+					setIsValidating(false);
+					setJoinError("Unable to connect to the call server.");
+				}
+			},
+		);
 
 		const handlePreJoinSuccess = () => {
 			console.log("[CallRoom] Pre-join check successful", bookingId);
 			setJoinError(null);
 			setIsAuthorized(true);
 			setIsValidating(false);
-			socket.emit("call:join", { bookingId });
+			void emitWhenConnected(socket, "call:join", { bookingId });
 		};
 
 		const handleUserJoined = () => {
@@ -277,7 +293,7 @@ export const CallRoom: React.FC<CallRoomProps> = ({
 		const currentFeedback = terminateForm.state.values.feedback;
 		if (currentFeedback === "") {
 			setIsTerminating(true);
-			socket?.emit("call:terminate", { bookingId });
+			void emitWhenConnected(socket, "call:terminate", { bookingId });
 			return;
 		}
 		void terminateForm.handleSubmit();

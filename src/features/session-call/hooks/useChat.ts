@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Socket } from "socket.io-client";
+import { emitWhenConnected } from "@/shared/services/socket.service";
 import type { ChatMessagePayload } from "../types/call-events";
 
 export interface ChatMessage extends ChatMessagePayload {
@@ -43,7 +44,7 @@ export const useChat = (
 	}, [socket, currentUserId, onMessageReceived]);
 
 	const sendMessage = useCallback(
-		(message: string) => {
+		async (message: string) => {
 			if (!socket || !message.trim()) return;
 
 			const payload = {
@@ -51,7 +52,14 @@ export const useChat = (
 				message: message.trim(),
 			};
 
-			socket.emit("call:chat-message", payload);
+			const emitted = await emitWhenConnected(
+				socket,
+				"call:chat-message",
+				payload,
+			);
+			if (!emitted) {
+				return;
+			}
 
 			setMessages((prev) => [
 				...prev,
