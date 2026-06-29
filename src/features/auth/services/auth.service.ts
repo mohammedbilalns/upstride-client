@@ -25,6 +25,13 @@ export const authService = {
 		return response.data;
 	},
 
+	dummyLogin: async () => {
+		const response = await api.post<ApiSuccess<LoginResponse>>(
+			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.DUMMY_LOGIN}`,
+		);
+		return response.data;
+	},
+
 	register: async (data: Omit<RegisterFormValues, "confirmPassword">) => {
 		const response = await api.post<ApiSuccess>(
 			`${ROUTES.AUTH.BASE}${ROUTES.AUTH.REGISTER}`,

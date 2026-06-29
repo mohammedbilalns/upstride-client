@@ -8,7 +8,9 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Separator } from "@/components/ui/Separator";
+import type { UserRole } from "@/shared/types/user";
 import { getErrorMessage } from "@/shared/utils/formValidation";
+import { useDummyLogin } from "../hooks/mutations/useDummyLogin";
 import { useLogin } from "../hooks/mutations/useLogin";
 import type { AuthView } from "../types";
 import { loginSchema } from "../validators";
@@ -22,19 +24,30 @@ interface Props {
 export function LoginView({ onNavigate }: Props) {
 	const router = useRouter();
 	const [apiError, setApiError] = useState<string | null>(null);
+	const handleAuthSuccess = async ({ user }: { user: { role: UserRole } }) => {
+		if (user.role === "ADMIN" || user.role === "SUPER_ADMIN") {
+			await router.navigate({ to: "/dashboard" });
+		} else {
+			await router.navigate({ to: "/home" });
+		}
+	};
 
 	const loginMutation = useLogin({
-		onSuccess: async ({ user }) => {
-			if (user.role === "ADMIN" || user.role === "SUPER_ADMIN") {
-				await router.navigate({ to: "/dashboard" });
-			} else {
-				await router.navigate({ to: "/home" });
-			}
-		},
+		onSuccess: handleAuthSuccess,
 		onError: (error: ApiError) => {
 			const message =
 				error.response?.data?.message ||
 				"Invalid credentials. Please try again.";
+			setApiError(message);
+		},
+	});
+
+	const dummyLoginMutation = useDummyLogin({
+		onSuccess: handleAuthSuccess,
+		onError: (error: ApiError) => {
+			const message =
+				error.response?.data?.message ||
+				"Unable to sign in with dummy credentials.";
 			setApiError(message);
 		},
 	});
@@ -130,16 +143,42 @@ export function LoginView({ onNavigate }: Props) {
 
 				<form.Subscribe selector={(s) => s.isSubmitting}>
 					{(isSubmitting) => (
-						<Button
-							type="submit"
-							className="w-full"
-							disabled={isSubmitting || loginMutation.isPending}
-						>
-							{(isSubmitting || loginMutation.isPending) && (
-								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							)}
-							Sign in
-						</Button>
+						<div className="flex flex-col gap-3">
+							<Button
+								type="submit"
+								className="w-full"
+								disabled={
+									isSubmitting ||
+									loginMutation.isPending ||
+									dummyLoginMutation.isPending
+								}
+							>
+								{(isSubmitting || loginMutation.isPending) && (
+									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+								)}
+								Sign in
+							</Button>
+
+							<Button
+								type="button"
+								variant="secondary"
+								className="w-full"
+								disabled={
+									isSubmitting ||
+									loginMutation.isPending ||
+									dummyLoginMutation.isPending
+								}
+								onClick={() => {
+									setApiError(null);
+									dummyLoginMutation.mutate();
+								}}
+							>
+								{dummyLoginMutation.isPending && (
+									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+								)}
+								Try as Guest
+							</Button>
+						</div>
 					)}
 				</form.Subscribe>
 			</form>
