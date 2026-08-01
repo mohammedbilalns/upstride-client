@@ -11,35 +11,36 @@ export const chatKeys = {
 };
 
 export const getChatsInfiniteQueryOptions = (
-	filters: Omit<GetChatsInput, "page"> = {},
+	filters: Omit<GetChatsInput, "cursor"> = {},
 ) =>
 	infiniteQueryOptions({
 		queryKey: chatKeys.list(filters),
 		queryFn: ({ pageParam }) =>
-			chatService.getChats({ ...filters, page: pageParam as number }),
-		initialPageParam: 1,
-		getNextPageParam: (lastPage) =>
-			lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
+			chatService.getChats({
+				...filters,
+				cursor: (pageParam as string | null) ?? null,
+			}),
+		initialPageParam: null as string | null,
+		getNextPageParam: (lastPage) => lastPage.nextCursor,
 	});
 
 export const getChatInfiniteQueryOptions = (
 	otherUserId: string,
-	filters: Omit<GetChatInput, "page"> = {},
+	filters: Omit<GetChatInput, "cursor"> = {},
 ) =>
 	infiniteQueryOptions({
 		queryKey: chatKeys.detail(otherUserId),
 		queryFn: ({ pageParam }) =>
 			chatService.getChat(otherUserId, {
 				...filters,
-				page: pageParam as number,
+				cursor: (pageParam as string | null) ?? null,
 			}),
-		initialPageParam: 1,
-		getNextPageParam: (lastPage) =>
-			lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
+		initialPageParam: null as string | null,
+		getNextPageParam: (lastPage) => lastPage.nextCursor,
 	});
 
 export const getChatQueryOptions = (otherUserId: string) =>
 	queryOptions({
 		queryKey: chatKeys.detail(otherUserId),
-		queryFn: () => chatService.getChat(otherUserId, { page: 1 }),
+		queryFn: () => chatService.getChat(otherUserId, { cursor: null }),
 	});
