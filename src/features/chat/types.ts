@@ -47,30 +47,28 @@ export interface ChatMessage {
 export type ChatReadFilter = "read" | "unread" | "all";
 
 export interface GetChatsInput {
-	page?: number;
+	cursor?: string | null;
 	filter?: ChatReadFilter;
 }
 
 export interface GetChatsOutput {
 	chats: Chat[];
-	total: number;
-	page: number;
 	limit: number;
-	totalPages: number;
+	nextCursor: string | null;
+	hasMore: boolean;
 }
 
 export interface GetChatInput {
-	page?: number;
+	cursor?: string | null;
 }
 
 export interface GetChatOutput {
 	chat: Chat | null;
 	receiver: ChatUser | null;
 	messages: ChatMessage[];
-	total: number;
-	page: number;
 	limit: number;
-	totalPages: number;
+	nextCursor: string | null;
+	hasMore: boolean;
 }
 
 export interface SendMessageInput {

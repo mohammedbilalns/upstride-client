@@ -191,12 +191,7 @@ export function ChatDetailPage() {
 	useEffect(() => {
 		if (!chat) return;
 		queryClient.setQueriesData({ queryKey: chatKeys.lists() }, (old) => {
-			const typed = old as
-				| (InfiniteData<GetChatsOutput> & {
-						total?: number;
-						totalPages?: number;
-				  })
-				| undefined;
+			const typed = old as InfiniteData<GetChatsOutput> | undefined;
 			if (!typed?.pages?.length) return typed;
 			const alreadyIncluded = typed.pages.some((page) =>
 				page.chats?.some((item) => item.id === chat.id),
@@ -209,13 +204,9 @@ export function ChatDetailPage() {
 				chats: [...(firstPage.chats ?? []), chat],
 			};
 			pages[0] = updatedFirst;
-			const limit = firstPage.limit ?? 10;
-			const total = (typed.total ?? 0) + 1;
 			return {
 				...typed,
 				pages,
-				total,
-				totalPages: limit ? Math.ceil(total / limit) : typed.totalPages,
 			};
 		});
 	}, [chat, queryClient]);

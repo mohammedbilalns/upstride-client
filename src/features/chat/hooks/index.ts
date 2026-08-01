@@ -21,7 +21,7 @@ import {
 /**
  * Hook to get the paginated list of all chats.
  */
-export const useGetChats = (filters: Omit<GetChatsInput, "page"> = {}) => {
+export const useGetChats = (filters: Omit<GetChatsInput, "cursor"> = {}) => {
 	return useInfiniteQuery(getChatsInfiniteQueryOptions(filters));
 };
 

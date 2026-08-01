@@ -6,6 +6,7 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { Socket } from "socket.io-client";
 import { toast } from "sonner";
 import type { ChatMessage, GetChatOutput } from "@/features/chat/types";
+import { chatKeys } from "@/features/chat/hooks/queries/useChatQueries";
 import type {
 	GetUnreadNotificationCountOutput,
 	Notification,
@@ -91,7 +92,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 				) {
 					console.log("[WS] Updating current chat messages cache");
 					queryClient.setQueryData<InfiniteData<GetChatOutput>>(
-						["chats", data.chatId],
+						chatKeys.detail(data.message.senderId),
 						(oldData) => {
 							if (!oldData) return oldData;
 							return {
