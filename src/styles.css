@@ -47,8 +47,8 @@
 
   --font-sans: 'Geist Sans', sans-serif;
   
-  --shadow-soft: 0 0 0 1px color-mix(in oklab, var(--border) 40%, transparent);
-  --shadow-soft-xl: 0 0 0 1px color-mix(in oklab, var(--border) 60%, transparent);
+  --shadow-soft: 0 1px 3px 0 color-mix(in oklab, var(--foreground) 4%, transparent), 0 1px 2px -1px color-mix(in oklab, var(--foreground) 4%, transparent);
+  --shadow-soft-xl: 0 12px 24px -6px color-mix(in oklab, var(--foreground) 6%, transparent), 0 4px 12px -2px color-mix(in oklab, var(--foreground) 4%, transparent);
 }
 
 html {
@@ -95,41 +95,41 @@ body[style*="padding-right"] {
 
 :root {
   --radius: 0.75rem;
-  --surface-1: oklch(0.97 0.005 260);
-  --surface-2: oklch(0.94 0.01 260);
-  --surface-3: oklch(0.9 0.015 260);
-  --background: #FAFAFA;
-  --foreground: oklch(0.12 0 0);
-  --card: #FFFFFF;
-  --card-foreground: oklch(0.145 0.004 285.823);
+  --surface-1: oklch(0.98 0.003 250);
+  --surface-2: oklch(0.955 0.005 250);
+  --surface-3: oklch(0.92 0.008 250);
+  --background: oklch(0.985 0.003 250);
+  --foreground: oklch(0.24 0.01 250);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.24 0.01 250);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0.004 285.823);
-  --primary: oklch(0.55 0.20 250);
-  --primary-foreground: oklch(0.98 0.01 250);
-  --secondary: oklch(0.92 0.02 250);
-  --secondary-foreground: oklch(0.18 0.02 260);
-  --muted: oklch(0.94 0.01 260);
-  --muted-foreground: oklch(0.5 0.02 260);
-  --accent: oklch(0.96 0.005 286);
-  --accent-foreground: oklch(0.145 0.004 285.823);
-  --destructive: oklch(0.6 0.2 25);
-  --rating: oklch(0.85 0.15 85);
-  --border: oklch(0.88 0.01 260);
-  --input: oklch(0.88 0.01 260);
-  --ring: oklch(0.65 0.22 250);
+  --popover-foreground: oklch(0.24 0.01 250);
+  --primary: oklch(0.48 0.14 252);
+  --primary-foreground: oklch(0.99 0.002 250);
+  --secondary: oklch(0.95 0.008 250);
+  --secondary-foreground: oklch(0.24 0.012 250);
+  --muted: oklch(0.96 0.005 250);
+  --muted-foreground: oklch(0.46 0.015 250);
+  --accent: oklch(0.955 0.006 250);
+  --accent-foreground: oklch(0.24 0.01 250);
+  --destructive: oklch(0.58 0.18 25);
+  --rating: oklch(0.82 0.16 85);
+  --border: oklch(0.91 0.005 250);
+  --input: oklch(0.91 0.005 250);
+  --ring: oklch(0.52 0.14 252);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.99 0.001 106);
-  --sidebar-foreground: oklch(0.145 0.004 285.823);
-  --sidebar-primary: oklch(0.6 0.18 250);
-  --sidebar-primary-foreground: oklch(0.985 0.001 106);
-  --sidebar-accent: oklch(0.96 0.01 250);
-  --sidebar-accent-foreground: oklch(0.2 0.05 250);
-  --sidebar-border: oklch(0.92 0.005 286);
-  --sidebar-ring: oklch(0.6 0.18 250);
+  --sidebar: oklch(0.988 0.003 250);
+  --sidebar-foreground: oklch(0.24 0.01 250);
+  --sidebar-primary: oklch(0.48 0.14 252);
+  --sidebar-primary-foreground: oklch(0.99 0.002 250);
+  --sidebar-accent: oklch(0.95 0.008 250);
+  --sidebar-accent-foreground: oklch(0.22 0.012 250);
+  --sidebar-border: oklch(0.91 0.005 250);
+  --sidebar-ring: oklch(0.52 0.14 252);
 }
 
 .dark {
@@ -169,7 +169,8 @@ body[style*="padding-right"] {
 
   body {
     font-family: var(--font-sans);
-    @apply bg-background text-foreground antialiased selection:bg-primary/20;
+    @apply bg-background text-foreground antialiased selection:bg-primary/15 selection:text-foreground;
+    caret-color: var(--primary);
   }
 
   button,
@@ -180,10 +181,9 @@ body[style*="padding-right"] {
 
 @layer utilities {
   .glass {
-background: color-mix(in oklch, var(--background) 70%, transparent);
-	backdrop-filter: blur(12px);
-	border: 1px solid oklch(0.9 0.01 260 / 0.4);
-    /* @apply bg-background/70 backdrop-blur-xl border border-border/40 shadow-soft; */
+    background: color-mix(in oklch, var(--background) 75%, transparent);
+    backdrop-filter: blur(12px);
+    border: 1px solid color-mix(in oklch, var(--border) 60%, transparent);
   }
 
   .glass-dark {

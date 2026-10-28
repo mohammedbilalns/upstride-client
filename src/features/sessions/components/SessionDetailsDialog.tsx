@@ -843,7 +843,7 @@ export function SessionDetailsDialog({
 
 	if (mode === "page") {
 		return (
-			<div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.08),transparent_28%),linear-gradient(180deg,hsl(var(--background))_0%,hsl(var(--background))_100%)]">
+			<div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.08),transparent_28%),var(--background)]">
 				<div className="mx-auto max-w-7xl space-y-6 px-4 py-6 md:px-6 md:py-8">
 					{onBack ? (
 						<Button

@@ -8,7 +8,7 @@ export default function FooterCTA() {
 		<section className="relative z-10 container mx-auto px-6 py-28">
 			<div className="relative rounded-3xl border border-primary/20 bg-primary text-primary-foreground px-8 py-16 text-center overflow-hidden">
 				{/* Radial accent */}
-				<div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_100%,hsl(var(--primary-foreground)/0.12),transparent)] pointer-events-none" />
+				<div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_100%,color-mix(in_oklab,var(--primary-foreground)_12%,transparent),transparent)] pointer-events-none" />
 
 				<div className="relative z-10">
 					<div className="inline-flex items-center gap-2 border border-primary-foreground/20 rounded-full px-4 py-1.5 text-sm text-primary-foreground/90 font-medium mb-6 bg-primary-foreground/10">

@@ -28,7 +28,7 @@ export default function LandingPage() {
 			{/*  Mentor CTA  */}
 			<section className="relative z-10 container mx-auto px-6 py-28">
 				<Card className="border border-primary/20 bg-primary/5 rounded-3xl overflow-hidden relative">
-					<div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_150%,hsl(var(--primary)/0.10),transparent)] pointer-events-none" />
+					<div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_150%,color-mix(in_oklab,var(--primary)_8%,transparent),transparent)] pointer-events-none" />
 					<CardContent className="relative z-10 p-12 md:p-16 text-center">
 						<div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 text-primary mb-6">
 							<Heart className="h-7 w-7" />

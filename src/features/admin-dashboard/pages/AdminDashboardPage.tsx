@@ -138,7 +138,7 @@ export function AdminDashboardPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.08),transparent_28%),linear-gradient(180deg,hsl(var(--background))_0%,hsl(var(--background))_100%)] px-3 py-4 text-foreground sm:px-5 lg:px-6">
+		<div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.08),transparent_28%),var(--background)] px-3 py-4 text-foreground sm:px-5 lg:px-6">
 			<div className="mx-auto max-w-7xl space-y-3.5">
 				<div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
 					<div>

@@ -43,7 +43,7 @@ export function SystemHealthCard({ systemHealth }: SystemHealthCardProps) {
 					result={systemHealth.services.notificationQueue}
 					icon={Activity}
 				/>
-				<div className="rounded-3xl border border-border/70 bg-[radial-gradient(circle_at_top,rgba(34,197,94,0.16),transparent_45%),hsl(var(--background))] p-4 text-center">
+				<div className="rounded-3xl border border-border/70 bg-[radial-gradient(circle_at_top,rgba(34,197,94,0.16),transparent_45%),var(--background)] p-4 text-center">
 					<div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-emerald-500/30 bg-emerald-500/10">
 						<Activity className="h-7 w-7 text-emerald-500" />
 					</div>
