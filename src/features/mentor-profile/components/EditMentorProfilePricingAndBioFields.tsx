@@ -1,4 +1,4 @@
-import { Coins } from "lucide-react";
+import { ChevronDown, Coins } from "lucide-react";
 import { useState } from "react";
 import FieldError from "@/components/common/FieldError";
 import { Button } from "@/components/ui/Button";
@@ -57,7 +57,7 @@ export function EditMentorProfilePricingAndBioFields({
 								onClick={() => setIsRoleMenuOpen((open) => !open)}
 							>
 								<span>{selectedProfession?.name ?? "Select current role"}</span>
-								<span className="text-muted-foreground">⌄</span>
+								<ChevronDown className="h-4 w-4 text-muted-foreground" />
 							</Button>
 							{isRoleMenuOpen && (
 								<div className="rounded-xl border border-border/60 bg-background p-2 shadow-xl">

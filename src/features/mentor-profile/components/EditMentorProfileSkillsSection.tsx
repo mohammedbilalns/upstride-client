@@ -1,3 +1,4 @@
+import { ChevronDown } from "lucide-react";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import FieldError from "@/components/common/FieldError";
@@ -144,7 +145,7 @@ export function EditMentorProfileSkillsSection({
 										? getSkillName(field.state.value)
 										: "Select skill"}
 								</span>
-								<span className="text-muted-foreground">⌄</span>
+								<ChevronDown className="h-4 w-4 text-muted-foreground" />
 							</Button>
 							{isSkillMenuOpen && (
 								<div className="rounded-xl border border-border/60 bg-background p-2 shadow-xl">

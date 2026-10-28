@@ -1,5 +1,5 @@
 import { useRouter } from "@tanstack/react-router";
-import { ArrowRight, Users } from "lucide-react";
+import { ArrowRight, Star, Users } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { stats } from "../data";
@@ -15,7 +15,7 @@ export default function HeroSection() {
 				className="mb-8 px-4 py-1.5 text-sm font-medium bg-primary/10 text-primary border border-primary/20 rounded-full
 					shadow-sm hover:bg-primary/15 transition-colors"
 			>
-				🚀 Join 10,000+ learners growing their skills
+				Join 10,000+ learners growing their skills
 			</Badge>
 
 			<h1 className="text-5xl md:text-7xl font-extrabold mb-5 tracking-tight leading-[1.1] text-foreground">
@@ -27,7 +27,7 @@ export default function HeroSection() {
 			</h1>
 
 			<div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-5">
-				<span className="text-(--rating)">★</span>
+				<Star className="h-4 w-4 text-(--rating) fill-(--rating)" />
 				<span className="font-medium text-foreground">4.9</span>
 				<span>rating from 2000+ users</span>
 			</div>
@@ -39,7 +39,8 @@ export default function HeroSection() {
 			</p>
 
 			<div className="flex justify-center items-center gap-2 text-sm text-muted-foreground mb-6">
-				<span>⭐ 4.9</span>
+				<Star className="h-4 w-4 text-(--rating) fill-(--rating)" />
+				<span className="font-medium text-foreground">4.9</span>
 				<span>Trusted by 10,000+ learners</span>
 			</div>
 

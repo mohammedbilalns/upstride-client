@@ -1,5 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-import { Loader2 } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { useState } from "react";
 import type { ApiError } from "@/api/apiError";
 import { Button } from "@/components/ui/Button";
@@ -116,9 +116,18 @@ export function ChangePasswordView({ email, resetToken, onNavigate }: Props) {
 							].map(({ label, test }) => (
 								<li
 									key={label}
-									className={test ? "text-green-500" : "text-muted-foreground"}
+									className={`flex items-center gap-1.5 ${
+										test ? "text-green-500" : "text-muted-foreground"
+									}`}
 								>
-									{test ? "✓" : "•"} {label}
+									{test ? (
+										<Check className="h-3 w-3 shrink-0" />
+									) : (
+										<span className="h-3 w-3 flex items-center justify-center text-[10px]">
+											•
+										</span>
+									)}
+									{label}
 								</li>
 							))}
 						</ul>

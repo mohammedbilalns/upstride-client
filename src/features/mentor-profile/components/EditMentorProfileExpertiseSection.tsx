@@ -1,3 +1,4 @@
+import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import FieldError from "@/components/common/FieldError";
 import { Badge } from "@/components/ui/Badge";
@@ -97,7 +98,7 @@ export function EditMentorProfileExpertiseSection({
 								}
 							>
 								<span>Select a new area of interest</span>
-								<span className="text-muted-foreground">⌄</span>
+								<ChevronDown className="h-4 w-4 text-muted-foreground" />
 							</Button>
 
 							{isInterestMenuOpen && (
